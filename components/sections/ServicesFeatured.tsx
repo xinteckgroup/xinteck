@@ -1,9 +1,12 @@
 "use client";
 
-import { cn } from "@/components/lib/utils";
+import { useServices } from "@/components/providers/ServicesContext";
+import { TYPOGRAPHY } from "@/lib/typography";
+import { cn } from "@/lib/utils";
 import { motion } from "framer-motion";
 import {
     ArrowUpRight,
+    Briefcase,
     Cloud,
     Globe,
     Palette,
@@ -11,59 +14,54 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 
-const services = [
-  {
-    title: "Web Development",
-    desc: "Scaleable, high-performance web applications built with modern frameworks.",
-    icon: Globe,
-    href: "/services/web-development",
-    colSpan: "md:col-span-2",
-    bg: "bg-blue-500/5",
-  },
-  {
-    title: "Mobile Apps",
-    desc: "Native and cross-platform mobile experiences.",
-    icon: Smartphone,
-    href: "/services/mobile-app-development",
-    colSpan: "md:col-span-1",
-    bg: "bg-purple-500/5",
-  },
-  {
-    title: "Cloud & DevOps",
-    desc: "Infrastructure automation, CI/CD pipelines, and cloud-native architecture.",
-    icon: Cloud,
-    href: "/services/cloud-devops",
-    colSpan: "md:col-span-1",
-    bg: "bg-orange-500/5",
-  },
-  {
-    title: "UI/UX Design",
-    desc: "User-centric design systems balancing beauty and function.",
-    icon: Palette,
-    href: "/services/ui-ux-design",
-    colSpan: "md:col-span-2",
-    bg: "bg-primary/5",
-  },
-];
+// Map service slugs to icons and visual config
+const slugConfig: Record<string, { icon: React.ComponentType<{ size?: number }>; colSpan: string; bg: string }> = {
+  "web-development": { icon: Globe, colSpan: "md:col-span-2", bg: "bg-blue-500/5" },
+  "mobile-app-development": { icon: Smartphone, colSpan: "md:col-span-1", bg: "bg-purple-500/5" },
+  "cloud-devops": { icon: Cloud, colSpan: "md:col-span-1", bg: "bg-orange-500/5" },
+  "ui-ux-design": { icon: Palette, colSpan: "md:col-span-2", bg: "bg-primary/5" },
+  "custom-software-development": { icon: Briefcase, colSpan: "md:col-span-1", bg: "bg-green-500/5" },
+};
+
+// Default config for unknown slugs
+const defaultConfig = { icon: Briefcase, colSpan: "md:col-span-1", bg: "bg-secondary/5" };
+
+// Alternating col-span pattern for services not in slugConfig
+const colSpanPattern = ["md:col-span-2", "md:col-span-1", "md:col-span-1", "md:col-span-2"];
 
 export function ServicesFeatured() {
+  const dynamicServices = useServices();
+
+  // Build service cards from context
+  const services = dynamicServices.map((s, i) => {
+    const config = slugConfig[s.slug] || defaultConfig;
+    return {
+      title: s.name,
+      desc: "", // Brief descriptions are not stored in nav items — the card still looks good without
+      icon: config.icon,
+      href: `/services/${s.slug}`,
+      colSpan: slugConfig[s.slug]?.colSpan || colSpanPattern[i % colSpanPattern.length],
+      bg: config.bg,
+    };
+  });
+
   return (
     <section className="py-24 px-6 relative overflow-hidden">
       <div className="max-w-7xl mx-auto">
         <div className="flex flex-col md:flex-row justify-between items-end gap-8 mb-16">
           <div className="flex flex-col gap-4">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-[10px] bg-secondary/5 border border-primary/10 w-fit">
+            <div className={`${TYPOGRAPHY.badge} inline-flex items-center gap-2 px-3 py-1 rounded-[10px] bg-secondary/5 w-fit text-primary`}>
                 <span className="w-2 h-2 rounded-full bg-primary animate-pulse" />
-                <span className="text-[10px] font-bold tracking-widest uppercase text-white">Our Capabilities</span>
+                <span className="tracking-widest uppercase">Our Capabilities</span>
             </div>
-            <h3 className="text-4xl md:text-5xl font-black tracking-tighter text-white">
-              ENGINEERED <span className="text-white/40">FOR</span> <br />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-yellow-200">IMPACT.</span>
+            <h3 className="text-2xl md:text-5xl font-bold tracking-tight text-white">
+              ENGINEERED <span className="text-white">FOR</span> <br />
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-yellow-600 dark:to-yellow-200">IMPACT.</span>
             </h3>
           </div>
           <Link
             href="/services"
-            className="group flex items-center gap-2 text-white font-bold hover:text-primary transition-colors"
+            className={`${TYPOGRAPHY.button} group flex items-center gap-2 text-white hover:text-primary transition-colors`}
           >
             Explore All Services
             <div className="w-8 h-8 rounded-[10px] bg-secondary/5 flex items-center justify-center group-hover:bg-primary group-hover:text-black transition-all">
@@ -81,7 +79,7 @@ export function ServicesFeatured() {
               viewport={{ once: true }}
               transition={{ delay: i * 0.1 }}
               className={cn(
-                "group relative p-8 rounded-[10px] border border-primary/10 hover:border-primary/30 transition-all duration-300 flex flex-col gap-6",
+                "group relative p-8 rounded-[10px] transition-all duration-300 flex flex-col gap-6",
                 service.colSpan,
                 "backdrop-blur-sm",
                 service.bg
@@ -97,12 +95,14 @@ export function ServicesFeatured() {
               </div>
               
               <div className="mt-auto flex flex-col gap-2">
-                <h4 className="text-2xl font-bold text-white group-hover:text-primary transition-colors">
+                <h4 className={`${TYPOGRAPHY.sectionTitle} text-white group-hover:text-primary transition-colors`}>
                   {service.title}
                 </h4>
-                <p className="text-white/60 leading-relaxed text-sm max-w-sm">
-                  {service.desc}
-                </p>
+                {service.desc && (
+                  <p className={`${TYPOGRAPHY.body} text-white leading-relaxed max-w-sm`}>
+                    {service.desc}
+                  </p>
+                )}
               </div>
 
               <Link href={service.href} className="absolute inset-0 z-10" />
@@ -118,12 +118,12 @@ export function ServicesFeatured() {
               className="md:col-span-1 p-8 rounded-[10px] bg-primary flex flex-col justify-center items-center text-center gap-6 relative overflow-hidden group"
             >
                <div className="absolute inset-0 bg-black/10 translate-y-full group-hover:translate-y-0 transition-transform duration-500 ease-out" />
-               <h4 className="text-3xl font-black text-black relative z-10">
+               <h4 className={`${TYPOGRAPHY.sectionTitle} text-background relative z-10`}>
                    BUILD YOUR VISION
                </h4>
                <Link 
                  href="/contact"
-                 className="px-6 py-2 bg-black/20 hover:bg-black/30 text-black font-bold rounded-[10px] w-full relative z-10 transition-colors"
+                 className={`${TYPOGRAPHY.button} px-6 py-2 bg-black/20 hover:bg-black/30 text-black rounded-[10px] w-full relative z-10 transition-colors`}
                >
                  Start Now
                </Link>

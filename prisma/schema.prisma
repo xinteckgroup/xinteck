@@ -220,6 +220,9 @@ model ContactSubmission {
   email   String
   service String?
   budget  String?
+  phone       String @default("Not Provided")
+  projectType String @default("General Inquiry") // "I Need To"
+  industry    String @default("Unspecified")
   message String  @db.Text
 
   status     MessageStatus @default(UNREAD)
@@ -500,4 +503,28 @@ enum InvitationStatus {
   ACCEPTED
   EXPIRED
   REVOKED
+}
+
+// ═══════════════════════════════════════════════════════════════
+// CAREERS / JOB LISTINGS
+// ═══════════════════════════════════════════════════════════════
+
+model CareerPosition {
+  id           String   @id @default(cuid())
+  title        String
+  department   String
+  type         String   // "Full-Time", "Part-Time", "Contract", "Internship"
+  location     String
+  description  String?  @db.Text
+  requirements String[]
+  salaryRange  String?  // e.g. "$80k - $120k"
+  isActive     Boolean  @default(true)
+  sortOrder    Int      @default(0)
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime? // Soft delete
+
+  @@index([isActive])
+  @@index([department])
 }

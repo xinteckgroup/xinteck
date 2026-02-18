@@ -24,14 +24,14 @@ export function BlogGrid({ initialPosts }: { initialPosts: Post[] }) {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ delay: i * 0.1 }}
-          className={`group cursor-pointer flex flex-col gap-6 p-8 rounded-[10px] border border-primary/10 hover:border-primary/40 transition-all bg-primary/5 backdrop-blur-xl relative ${
+          className={`group cursor-pointer flex flex-col gap-6 p-8 rounded-[10px] backdrop-blur-xl transition-all bg-white/30 dark:bg-black/80 relative shadow-lg ${
             i === 0 ? "lg:col-span-2 md:flex-row items-center gap-12" : ""
           }`}
         >
           <Link href={`/blog/${post.slug}`} className="absolute inset-0 z-10 rounded-[10px]" />
           
           {/* Featured Image Placeholder */}
-          <div className={`aspect-[4/3] rounded-[10px] bg-primary/10 backdrop-blur-xl border border-primary/10 flex items-center justify-center relative overflow-hidden ${
+          <div className={`aspect-[4/3] rounded-[10px] bg-primary/10 backdrop-blur-xl flex items-center justify-center relative overflow-hidden ${
              i === 0 ? "md:flex-[0.6]" : "w-full"
           }`}>
              <div className="absolute inset-0 bg-gradient-to-tr from-gold/10 to-transparent group-hover:scale-110 transition-transform duration-700" />

@@ -11,10 +11,10 @@ interface StatusCardProps {
 
 export function StatusCard({ title, isConfigured, envKey, description, docsLink, docsLabel }: StatusCardProps) {
     return (
-        <div className={`relative overflow-hidden rounded-[12px] border backdrop-blur-md p-4 transition-all shadow-sm ${
+        <div className={`relative overflow-hidden rounded-[10px] border backdrop-blur-xs p-4 transition-all shadow-none ${
             isConfigured 
-                ? "bg-green-500/10 border-green-500/20" 
-                : "bg-red-500/10 border-red-500/20"
+                ? "bg-green-500/5 border-green-500/20" 
+                : "bg-red-500/5 border-red-500/20"
         }`}>
             <div className="flex items-start justify-between gap-4">
                 <div className="flex gap-3">
@@ -24,13 +24,13 @@ export function StatusCard({ title, isConfigured, envKey, description, docsLink,
                         {isConfigured ? <CheckCircle2 size={18} /> : <XCircle size={18} />}
                     </div>
                     <div className="flex flex-col gap-1">
-                         <h3 className={`font-bold text-sm ${isConfigured ? "text-white" : "text-red-200"}`}>
+                         <h3 className={`font-bold text-sm ${isConfigured ? "text-[var(--admin-text)]" : "text-red-400 dark:text-red-200"}`}>
                             {title}
                          </h3>
-                         <code className="text-[10px] font-mono bg-black/20 px-1.5 py-0.5 rounded text-white/40 w-fit">
+                         <code className="text-[10px] font-mono bg-[var(--admin-text)]/10 px-1.5 py-0.5 rounded text-[var(--admin-text)]/90 w-fit border border-[var(--admin-border)]">
                             {envKey}
                          </code>
-                         <p className="text-xs text-white/50 leading-relaxed max-w-md mt-1">
+                         <p className="text-xs text-[var(--admin-text)]/80 leading-relaxed max-w-md mt-1">
                             {description}
                          </p>
                     </div>
@@ -41,7 +41,7 @@ export function StatusCard({ title, isConfigured, envKey, description, docsLink,
                         href={docsLink} 
                         target="_blank" 
                         rel="noreferrer"
-                        className="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wider text-white/40 hover:text-gold transition-colors shrink-0 bg-white/50 dark:bg-white/5 hover:bg-white dark:hover:bg-white/10 px-2 py-1 rounded-md"
+                        className="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wider text-[var(--admin-text)] hover:text-gold transition-colors shrink-0 bg-[var(--admin-text)]/10 hover:bg-[var(--admin-text)]/20 px-2 py-1 rounded-md border border-[var(--admin-border)]"
                     >
                         <span>{docsLabel || "Docs"}</span>
                         <ExternalLink size={10} />

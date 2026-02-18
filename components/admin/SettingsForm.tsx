@@ -50,16 +50,16 @@ export function SettingsForm({ initialSettings }: SettingsFormProps) {
                 subtitle="Manage your secure credentials, API integrations, and environment status."
                 actions={
                   <div className="flex gap-2 md:gap-3 w-full sm:w-auto">
-                        <div className="bg-white/30 p-1 rounded-[8px] flex gap-1 backdrop-blur-md border border-white/10">
+                        <div className="admin-surface-secondary flex gap-1 p-1 rounded-[8px] border border-border backdrop-blur-xs">
                             <button
                                 onClick={() => setActiveTab("integrations")}
-                                className={`px-3 py-1.5 rounded-[6px] text-xs font-bold transition-all ${activeTab === "integrations" ? "bg-white/20 text-white shadow-sm" : "text-white/40 hover:text-white"}`}
+                                className={`px-3 py-1.5 rounded-[6px] text-xs font-bold uppercase tracking-wider transition-all backdrop-blur-xs ${activeTab === "integrations" ? "bg-gold text-primary-foreground shadow-sm" : "text-[var(--admin-text)]/80 hover:text-[var(--admin-text)] hover:bg-[var(--admin-text)]/5"}`}
                             >
                                 Integrations
                             </button>
                             <button
                                 onClick={() => setActiveTab("environment")}
-                                className={`px-3 py-1.5 rounded-[6px] text-xs font-bold transition-all ${activeTab === "environment" ? "bg-white/20 text-white shadow-sm" : "text-white/40 hover:text-white"}`}
+                                className={`px-3 py-1.5 rounded-[6px] text-xs font-bold uppercase tracking-wider transition-all backdrop-blur-xs ${activeTab === "environment" ? "bg-gold text-primary-foreground shadow-sm" : "text-[var(--admin-text)]/80 hover:text-[var(--admin-text)] hover:bg-[var(--admin-text)]/5"}`}
                             >
                                 Environment
                             </button>
@@ -68,10 +68,10 @@ export function SettingsForm({ initialSettings }: SettingsFormProps) {
                       <button 
                           onClick={handleSubmit}
                           disabled={isPending}
-                          className="flex-1 sm:flex-initial px-3 py-1.5 md:px-6 md:py-2 rounded-[8px] bg-gold text-black font-bold text-[10px] md:text-sm hover:bg-white transition-colors flex items-center justify-center gap-1 md:gap-2 whitespace-nowrap disabled:opacity-50"
+                          className="flex-1 sm:flex-initial px-3 py-1.5 md:px-6 md:py-2 rounded-[10px] bg-primary text-primary-foreground font-black text-[10px] md:text-xs uppercase tracking-widest hover:bg-gold transition-all flex items-center justify-center gap-1 md:gap-2 whitespace-nowrap disabled:opacity-50 shadow-lg shadow-primary/20"
                       >
                           {isPending ? (
-                              <span className="w-4 h-4 border-2 border-black/30 border-t-black rounded-full animate-spin"/>
+                              <span className="w-4 h-4 border-2 border-primary-foreground/30 border-t-primary-foreground rounded-full animate-spin"/>
                           ) : (
                               <>
                                   <Save size={12} className="md:w-4 md:h-4" />
@@ -104,7 +104,7 @@ export function SettingsForm({ initialSettings }: SettingsFormProps) {
 
                             {/* Resend Section */}
                             <div className="flex flex-col gap-4">
-                                <h3 className="text-white/60 font-bold text-xs uppercase tracking-widest pl-2 border-l-2 border-gold/50">Email Delivery</h3>
+                                <h3 className="text-[var(--admin-text)] font-black text-[10px] md:text-xs uppercase tracking-widest pl-2 border-l-2 border-gold/50">Email Delivery</h3>
                                 <SecretCard 
                                     title="Resend API Key" 
                                     description="Used for sending system emails (magic links, notifications). Get this from the API Keys section in your Resend dashboard."
@@ -115,7 +115,7 @@ export function SettingsForm({ initialSettings }: SettingsFormProps) {
                                     docsLabel="Resend Console"
                                     isSaved={!!initialSettings.resendApiKey}
                                 />
-                                <div className="bg-white/30 dark:bg-white/5 border border-white/20 dark:border-white/10 rounded-[12px] p-4 md:p-6 backdrop-blur-md shadow-sm">
+                                <div className="admin-surface-primary rounded-[10px] p-4 md:p-6 shadow-none border border-[var(--admin-border)] backdrop-blur-xs">
                                     <div className="grid md:grid-cols-2 gap-4">
                                         <Input 
                                             label="From Email"
@@ -135,7 +135,7 @@ export function SettingsForm({ initialSettings }: SettingsFormProps) {
 
                             {/* AI Section */}
                             <div className="flex flex-col gap-4">
-                                <h3 className="text-white/60 font-bold text-xs uppercase tracking-widest pl-2 border-l-2 border-purple-500/50">Artificial Intelligence</h3>
+                                <h3 className="text-[var(--admin-text)] font-black text-[10px] md:text-xs uppercase tracking-widest pl-2 border-l-2 border-purple-500/50">Artificial Intelligence</h3>
                                 <SecretCard 
                                     title="Gemini API Key" 
                                     description="Required for the AI Blog Assistant. Get a free API key from Google AI Studio."
@@ -149,8 +149,8 @@ export function SettingsForm({ initialSettings }: SettingsFormProps) {
                             </div>
 
                             {/* Cloudinary Section */}
-                             <div className="flex flex-col gap-4">
-                                <h3 className="text-white/60 font-bold text-xs uppercase tracking-widest pl-2 border-l-2 border-blue-500/50">Media Storage (Cloudinary)</h3>
+                            <div className="flex flex-col gap-4">
+                                <h3 className="text-[var(--admin-text)] font-black text-[10px] md:text-xs uppercase tracking-widest pl-2 border-l-2 border-blue-500/50">Media Storage (Cloudinary)</h3>
                                 
                                 <SecretCard 
                                     title="Cloud Name" 
@@ -234,31 +234,31 @@ export function SettingsForm({ initialSettings }: SettingsFormProps) {
 
                 {/* Sidebar */}
                 <div className="flex flex-col gap-6">
-                    <div className="bg-white/30 dark:bg-white/5 border border-white/20 dark:border-white/10 rounded-[10px] p-6 backdrop-blur-md flex flex-col gap-4 sticky top-24 shadow-sm">
-                        <h3 className="font-bold text-white text-sm border-b border-white/10 pb-2">Encrypted Storage</h3>
+                    <div className="admin-surface-primary rounded-[10px] p-6 flex flex-col gap-4 sticky top-24 shadow-none border border-[var(--admin-border)] backdrop-blur-xs">
+                        <h3 className="font-bold text-[var(--admin-text)] text-xs md:text-sm border-b border-[var(--admin-border)] pb-2 uppercase tracking-wider">Encrypted Storage</h3>
                         
                         <div className="flex items-start gap-3">
                             <div className="mt-1 text-green-400">
                                 <Shield size={16} />
                             </div>
                             <div>
-                                <h4 className="font-bold text-white text-xs">AES-256-GCM</h4>
-                                <p className="text-[10px] text-white/50 leading-relaxed mt-1">
+                                <h4 className="font-bold text-[var(--admin-text)] text-xs">AES-256-GCM</h4>
+                                <p className="text-[10px] text-[var(--admin-text)]/80 leading-relaxed mt-1">
                                     All secrets are encrypted at rest using industry-standard AES-256-GCM authenticated encryption. The initialization vector (IV) is stored with each secret.
                                 </p>
                             </div>
                         </div>
                         
-                        <div className="h-px bg-white/10 my-1" />
+                        <div className="h-px bg-[var(--admin-border)] my-1" />
 
                         <div className="flex items-start gap-3">
-                            <div className="mt-1 text-gold">
+                            <div className="mt-1 text-primary">
                                 <KeyIcon size={16} /> 
                             </div>
                             <div>
-                                <h4 className="font-bold text-white text-xs">Master Key Protection</h4>
-                                <p className="text-[10px] text-white/50 leading-relaxed mt-1">
-                                    Your <code>ENCRYPTION_KEY</code> is never stored in the database. It exists only in memory during runtime.
+                                <h4 className="font-bold text-[var(--admin-text)] text-xs">Master Key Protection</h4>
+                                <p className="text-[10px] text-[var(--admin-text)]/80 leading-relaxed mt-1">
+                                    Your <code className="bg-[var(--admin-text)]/10 px-1 rounded">ENCRYPTION_KEY</code> is never stored in the database. It exists only in memory during runtime.
                                 </p>
                             </div>
                         </div>

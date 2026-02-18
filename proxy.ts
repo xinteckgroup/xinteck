@@ -1,11 +1,10 @@
+import { authLimiter, contactLimiter, newsletterLimiter } from '@/lib/rate-limit';
 import { jwtVerify } from 'jose';
 import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
 
-// Use same secret as backend
 const JWT_SECRET = new TextEncoder().encode(process.env.JWT_SECRET || 'development_super_secret_key_change_me');
 
-// Public admin auth routes that don't require authentication
 const PUBLIC_AUTH_ROUTES = [
     '/admin/login',
     '/admin/register',
@@ -13,80 +12,88 @@ const PUBLIC_AUTH_ROUTES = [
     '/admin/reset-password',
 ];
 
-
-import { authLimiter, contactLimiter, newsletterLimiter } from '@/lib/rate-limit';
+// Standard rate limit denial response with proper headers
+function rateLimitResponse(limit: number, remaining: number, reset: number) {
+    return new NextResponse(JSON.stringify({ error: 'Too Many Requests. Please try again later.' }), {
+        status: 429,
+        headers: {
+            'Content-Type': 'application/json',
+            'X-RateLimit-Limit': limit.toString(),
+            'X-RateLimit-Remaining': remaining.toString(),
+            'X-RateLimit-Reset': reset.toString(),
+            'Retry-After': Math.ceil((reset - Date.now()) / 1000).toString(),
+        },
+    });
+}
 
 export async function proxy(request: NextRequest) {
     const { pathname } = request.nextUrl;
-    // Fix: Cast to any because NextRequest type might miss 'ip' in some versions
-    const ip = (request as any).ip || request.headers.get('x-forwarded-for') || '127.0.0.1';
+    const ip = request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || '127.0.0.1';
 
-    // 1. Rate Limiting for Public APIs
+    // ─── 1. Rate Limiting for Public APIs ───
     if (pathname === '/api/auth/login') {
         const { success, limit, remaining, reset } = await authLimiter.limit(ip);
-        if (!success) {
-            return new NextResponse('Too Many Requests', {
-                status: 429,
-                headers: {
-                    'X-RateLimit-Limit': limit.toString(),
-                    'X-RateLimit-Remaining': remaining.toString(),
-                    'X-RateLimit-Reset': reset.toString(),
-                },
-            });
-        }
+        if (!success) return rateLimitResponse(limit, remaining, reset);
     }
 
     if (pathname === '/api/contact') {
         const { success, limit, remaining, reset } = await contactLimiter.limit(ip);
-        if (!success) {
-            return new NextResponse('Too Many Requests', { status: 429, headers: { 'Retry-After': reset.toString() } });
-        }
+        if (!success) return rateLimitResponse(limit, remaining, reset);
     }
 
     if (pathname === '/api/newsletter') {
         const { success, limit, remaining, reset } = await newsletterLimiter.limit(ip);
-        if (!success) {
-            return new NextResponse('Too Many Requests', { status: 429 });
-        }
+        if (!success) return rateLimitResponse(limit, remaining, reset);
     }
 
-    // 2. Protect Admin Routes
+    // ─── 2. Protect Admin Routes ───
     if (pathname.startsWith('/admin')) {
-        // Check if this is a public auth route
-        const isPublicAuthRoute = PUBLIC_AUTH_ROUTES.some(route => pathname === route || pathname.startsWith(route + '/'));
+        const isPublicAuthRoute = PUBLIC_AUTH_ROUTES.some(
+            route => pathname === route || pathname.startsWith(route + '/')
+        );
 
         if (isPublicAuthRoute) {
-            // For login page specifically, redirect to dashboard if already authenticated
+            // Redirect already-authenticated users away from login
             if (pathname === '/admin/login') {
                 const token = request.cookies.get('session_token')?.value;
                 if (token) {
                     try {
                         await jwtVerify(token, JWT_SECRET);
                         return NextResponse.redirect(new URL('/admin', request.url));
-                    } catch (e) {
-                        // invalid token, allow access to login page
+                    } catch {
+                        // Invalid token — allow access to login page
                     }
                 }
             }
             return NextResponse.next();
         }
 
-        // Checking authentication for protected routes
+        // Protected admin route — require valid JWT
         const token = request.cookies.get('session_token')?.value;
 
         if (!token) {
-            // Store return URL for better UX later? (omitted for now)
-            return NextResponse.redirect(new URL('/admin/login', request.url));
+            const loginUrl = new URL('/admin/login', request.url);
+            // Preserve return URL for post-login redirect
+            if (pathname !== '/admin') {
+                loginUrl.searchParams.set('returnUrl', pathname);
+            }
+            return NextResponse.redirect(loginUrl);
         }
 
         try {
-            // Verify JWT signature (stateless check for speed)
             await jwtVerify(token, JWT_SECRET);
-            return NextResponse.next();
-        } catch (e) {
-            // Invalid token (expired or tampered)
-            const response = NextResponse.redirect(new URL('/admin/login', request.url));
-            response.cookies.delete('session_token'); // Clear invalid cookie
+            const response = NextResponse.next();
+            // Prevent caching of authenticated admin pages
+            response.headers.set('x-middleware-cache', 'no-cache');
+            return response;
+        } catch {
+            // Invalid/expired token — clear and redirect to login
+            const loginUrl = new URL('/admin/login', request.url);
+            if (pathname !== '/admin') {
+                loginUrl.searchParams.set('returnUrl', pathname);
+            }
+            const response = NextResponse.redirect(loginUrl);
+            response.cookies.delete('session_token');
             return response;
         }
     }
@@ -96,9 +103,7 @@ export async function proxy(request: NextRequest) {
 
 export const config = {
     matcher: [
-        // Apply to all admin routes
         '/admin/:path*',
-        // Apply to specific API routes for rate limiting
         '/api/auth/login',
         '/api/contact',
         '/api/newsletter',

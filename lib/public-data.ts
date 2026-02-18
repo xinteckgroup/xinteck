@@ -211,7 +211,9 @@ export async function getPublicServices() {
         return services.map(s => ({
             slug: s.slug,
             title: s.name,
+            subName: s.subName,
             description: s.description,
+            image: s.image,
             features: s.features,
         }));
     } catch (error) {
@@ -254,5 +256,31 @@ export async function getPublicService(slug: string): Promise<PublicService | nu
     } catch (error) {
         console.error(`Failed to fetch service ${slug}:`, error);
         return null;
+    }
+}
+
+/**
+ * Lightweight fetch for navigation items (FloatingDock, Footer, ServicesFeatured).
+ * Returns only { name, slug } to avoid leaking internal fields.
+ */
+export async function getServiceNavItems(): Promise<{ name: string; slug: string }[]> {
+    try {
+        const services = await prisma.service.findMany({
+            where: { isActive: true },
+            orderBy: { sortOrder: 'asc' },
+            select: { name: true, slug: true },
+        });
+
+        return services.map(s => ({ name: s.name, slug: s.slug }));
+    } catch (error) {
+        console.error("Failed to fetch service nav items:", error);
+        // Hardcoded fallback to prevent broken navigation
+        return [
+            { name: "Web Development", slug: "web-development" },
+            { name: "Mobile App Development", slug: "mobile-app-development" },
+            { name: "Custom Software Development", slug: "custom-software-development" },
+            { name: "UI/UX Design", slug: "ui-ux-design" },
+            { name: "Cloud & DevOps", slug: "cloud-devops" },
+        ];
     }
 }

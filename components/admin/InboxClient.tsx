@@ -10,6 +10,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState, useTransition } from "react";
 
 import { PaginatedResponse } from "@/lib/pagination";
+import { cn } from "@/lib/utils";
 import { useSearchParams } from "next/navigation";
 
 interface InboxClientProps {
@@ -28,10 +29,6 @@ export function InboxClient({ initialData }: InboxClientProps) {
   type FilterType = "all" | "unread" | "starred" | "archived";
   const activeFilter = (filterParam as FilterType) || "all";
   
-  // We use local state for immediate UI updates, but also rely on router.refresh() 
-  // or revalidatePath from actions to keep in sync. 
-  // For better UX, optimistic updates would be ideal, but for now we'll rely on fast server actions + router refresh.
-  // Actually, let's keep local state initialized from props to mask latency.
   const [messages, setMessages] = useState<InboxMessage[]>(initialData.data);
   const [meta, setMeta] = useState({
       page: initialData.page,
@@ -39,7 +36,6 @@ export function InboxClient({ initialData }: InboxClientProps) {
       total: initialData.total
   });
   
-  // Sync messages when initialData change
   useEffect(() => {
       setMessages(initialData.data);
       setMeta({
@@ -57,11 +53,9 @@ export function InboxClient({ initialData }: InboxClientProps) {
   const activeMessage = messages.find((m) => m.id === activeMessageId) || null;
 
   const handleTabChange = (newFilter: string) => {
-      // Navigate to page with filter param
       router.push(`/admin/inbox?filter=${newFilter}`);
   };
 
-  // Derived state for SEARCH only (filter is handled by server)
   const filteredMessages = useMemo(() => {
     return messages.filter((m) => {
       const query = searchQuery.toLowerCase();
@@ -78,12 +72,11 @@ export function InboxClient({ initialData }: InboxClientProps) {
     const msg = messages.find((m) => m.id === id);
     if (!msg) return;
 
-    // Optimistic
     const newStatus = !msg.unread;
     setMessages(prev => prev.map((m) => m.id === id ? { ...m, unread: !newStatus } : m));
 
     startTransition(async () => {
-        await markAsRead(id, !newStatus); // passed boolean is isRead
+        await markAsRead(id, !newStatus); 
         router.refresh();
     });
   };
@@ -128,7 +121,6 @@ export function InboxClient({ initialData }: InboxClientProps) {
       try {
         await replyToMessage(activeMessage.id, replyText);
         setReplyText("");
-        // Update local state to show replied status
         setMessages(prev => prev.map((m) => m.id === activeMessage.id ? { ...m, replied: true } : m));
         toast("Reply sent successfully", "success");
       } catch (e: any) {
@@ -147,187 +139,261 @@ export function InboxClient({ initialData }: InboxClientProps) {
       />
 
       <div className="flex flex-1 gap-4 md:gap-6 min-h-0">
-      {/* Sidebar/List - Hidden on mobile when message is selected */}
-      <div className={`w-full lg:w-80 xl:w-96 flex flex-col bg-white/30 dark:bg-white/5 border border-white/20 dark:border-white/10 rounded-[10px] backdrop-blur-md overflow-hidden min-w-0 shadow-xl ${activeMessageId ? 'hidden lg:flex' : 'flex'}`}>
-        <div className="p-3 md:p-4 border-b border-white/20 dark:border-white/10 flex flex-col gap-3">
-          <div className="flex items-center justify-between">
-             <div className="flex items-center gap-2">
-                <h3 className="text-sm md:text-base font-bold text-white">Messages</h3>
-                <span className="bg-gold/10 text-gold border border-gold/20 px-2 py-0.5 rounded-full text-[10px] md:text-xs font-bold shadow-[0_0_10px_-3px_rgba(255,215,0,0.2)]">
-                   {initialData.total} Messages
-                </span>
+        {/* Sidebar/List */}
+        <div className={cn(
+          "w-full lg:w-80 xl:w-96 flex flex-col admin-surface-primary backdrop-blur-xs rounded-[10px] border border-[var(--admin-border)] overflow-hidden min-w-0 shadow-xl",
+          activeMessageId ? 'hidden lg:flex' : 'flex'
+        )}>
+          <div className="p-3 md:p-4 border-b border-[var(--admin-border)] flex flex-col gap-3 admin-surface-secondary/50">
+            <div className="flex items-center justify-between">
+               <div className="flex items-center gap-2">
+                  <h3 className="text-[14px] font-bold text-[var(--admin-text)] uppercase tracking-wider">Messages</h3>
+                  <span className="bg-gold/10 text-gold border border-gold/20 px-2 py-0.5 rounded-full text-[10px] md:text-xs font-bold shadow-[0_0_10px_-3px_rgba(255,215,0,0.2)]">
+                     {initialData.total}
+                  </span>
+               </div>
+            </div>
+
+            <div className="grid grid-cols-3 gap-1 admin-surface-input p-1 rounded-[8px] border border-[var(--admin-border)]">
+               <button 
+                  onClick={() => handleTabChange("all")} 
+                  className={cn(
+                    "py-1.5 rounded-[6px] text-xs font-bold transition-all",
+                    activeFilter === 'all' 
+                      ? "admin-surface-floating text-[var(--admin-text)] shadow-sm border border-[var(--admin-border)]" 
+                      : "text-[var(--admin-text)]/40 hover:text-[var(--admin-text)]"
+                  )}
+               >
+                  All
+               </button>
+               <button 
+                  onClick={() => handleTabChange("unread")} 
+                  className={cn(
+                    "py-1.5 rounded-[6px] text-xs font-bold transition-all",
+                    activeFilter === 'unread' 
+                      ? "admin-surface-floating text-[var(--admin-text)] shadow-sm border border-[var(--admin-border)]" 
+                      : "text-[var(--admin-text)]/40 hover:text-[var(--admin-text)]"
+                  )}
+               >
+                  Unread
+               </button>
+               <button 
+                  onClick={() => handleTabChange("starred")} 
+                  className={cn(
+                    "py-1.5 rounded-[6px] text-xs font-bold transition-all",
+                    activeFilter === 'starred' 
+                      ? "admin-surface-floating text-[var(--admin-text)] shadow-sm border border-[var(--admin-border)]" 
+                      : "text-[var(--admin-text)]/40 hover:text-[var(--admin-text)]"
+                  )}
+               >
+                  Starred
+               </button>
+            </div>
+             
+             <div className="relative bg-black/60 dark:bg-white/30 rounded-[10px]">
+                <div className="relative">
+                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--admin-muted)] pointer-events-none" size={18} />
+                  <input 
+                    type="text" 
+                    placeholder="Search messages..." 
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    className="w-full admin-surface-input border border-[var(--admin-border)] rounded-[10px] pl-10 pr-4 py-2 text-sm text-[var(--admin-text)] placeholder:text-[var(--admin-muted)] focus:border-gold/50 focus:outline-none transition-colors"
+                  />
+                </div>
              </div>
           </div>
-
-          <div className="grid grid-cols-3 gap-1 bg-black/20 p-1 rounded-[8px]">
-             <button 
-                onClick={() => handleTabChange("all")} 
-                className={`w-full py-1.5 rounded-[6px] text-[10px] md:text-xs font-bold transition-all ${activeFilter === 'all' ? 'bg-white text-black shadow-sm' : 'text-white/40 hover:text-white hover:bg-white/5'}`}
-             >
-                All
-             </button>
-             <button 
-                onClick={() => handleTabChange("unread")} 
-                className={`w-full py-1.5 rounded-[6px] text-[10px] md:text-xs font-bold transition-all ${activeFilter === 'unread' ? 'bg-white text-black shadow-sm' : 'text-white/40 hover:text-white hover:bg-white/5'}`}
-             >
-                Unread
-             </button>
-             <button 
-                onClick={() => handleTabChange("starred")} 
-                className={`w-full py-1.5 rounded-[6px] text-[10px] md:text-xs font-bold transition-all ${activeFilter === 'starred' ? 'bg-white text-black shadow-sm' : 'text-white/40 hover:text-white hover:bg-white/5'}`}
-             >
-                Starred
-             </button>
-          </div>
-           
-           <div className="relative">
-            <Search className="absolute left-2 md:left-3 top-1/2 -translate-y-1/2 text-white/30" size={14} />
-            <input 
-              type="text" 
-              placeholder="Search messages..." 
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full bg-black/20 dark:bg-white/5 border border-white/5 dark:border-white/10 rounded-[8px] pl-7 md:pl-9 pr-2 md:pr-3 py-1.5 md:py-2 text-xs md:text-sm text-white focus:border-gold/50 outline-none placeholder:text-white/20 dark:placeholder:text-white/30"
-            />
+          
+          <div className="flex-1 overflow-y-auto custom-scrollbar">
+            {filteredMessages.map((msg) => (
+              <div 
+                key={msg.id} 
+                onClick={() => setActiveMessageId(msg.id)}
+                className={cn(
+                  "p-3 md:p-4 border-b border-[var(--admin-border)] cursor-pointer hover:bg-[var(--admin-text)]/5 transition-all group relative",
+                  activeMessageId === msg.id && "bg-[var(--admin-text)]/5",
+                  msg.unread && "border-l-2 border-l-gold"
+                )}
+              >
+                <div className="flex justify-between items-start mb-1">
+                  <h4 className={cn(
+                    "text-xs md:text-sm",
+                    msg.unread ? "font-bold text-[var(--admin-text)]" : "font-medium text-[var(--admin-text)]/60"
+                  )}>{msg.sender}</h4>
+                  <div className="flex items-center gap-2">
+                     {msg.starred && <Star size={10} className="text-gold fill-gold" />}
+                     <span className="text-[10px] font-bold text-[var(--admin-text)]/40 uppercase tracking-tighter">{msg.date}</span>
+                  </div>
+                </div>
+                <p className={cn(
+                  "text-xs mb-1 truncate pr-6",
+                  msg.unread ? "text-[var(--admin-text)] font-semibold" : "text-[var(--admin-text)]/70 font-medium"
+                )}>{msg.subject}</p>
+                <p className="text-[12px] text-[var(--admin-text)]/40 truncate">{msg.preview}</p>
+                
+                {/* Quick Actions on Hover */}
+                <div className="absolute right-2 bottom-2 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                   <button onClick={(e) => handleStarToggle(msg.id, e)} className="p-1.5 hover:bg-[var(--admin-text)]/5 rounded text-[var(--admin-text)]/40 hover:text-gold"><Star size={12} className={msg.starred ? "fill-gold text-gold" : ""} /></button>
+                   <button onClick={(e) => handleReadToggle(msg.id, e)} className="p-1.5 hover:bg-[var(--admin-text)]/5 rounded text-[var(--admin-text)]/40 hover:text-[var(--admin-text)]" title={msg.unread ? "Mark Read" : "Mark Unread"}>
+                      {msg.unread ? <MailOpen size={12} /> : <Mail size={12} />}
+                   </button>
+                   <RoleGate allowedRoles={[Role.SUPER_ADMIN, Role.ADMIN]}>
+                     <button onClick={(e) => { e.stopPropagation(); handleDelete(msg.id); }} className="p-1.5 hover:bg-[var(--admin-text)]/5 rounded text-[var(--admin-text)]/40 hover:text-red-400"><Trash2 size={12} /></button>
+                   </RoleGate>
+                </div>
+              </div>
+            ))}
+            {filteredMessages.length === 0 && (
+               <div className="p-12 text-center flex flex-col items-center gap-4">
+                  <div className="w-12 h-12 rounded-full admin-surface-input flex items-center justify-center text-[var(--admin-text)]/20 border border-dashed border-[var(--admin-border)]">
+                    <Mail size={24} />
+                  </div>
+                  <p className="text-sm font-bold text-[var(--admin-text)]/40 uppercase tracking-wider">No messages found</p>
+               </div>
+            )}
+            
+            <div className="p-2 border-t border-[var(--admin-border)] sticky bottom-0 admin-surface-secondary/80 backdrop-blur-md">
+              <Pagination 
+                  currentPage={meta.page}
+                  totalPages={meta.totalPages}
+                  baseUrl="/admin/inbox"
+              />
+            </div>
           </div>
         </div>
         
-        <div className="flex-1 overflow-y-auto">
-          {filteredMessages.map((msg) => (
-            <div 
-              key={msg.id} 
-              onClick={() => setActiveMessageId(msg.id)}
-              className={`p-2 md:p-4 border-b border-white/5 cursor-pointer hover:bg-white/30 dark:bg-white/5 transition-all group relative ${
-                activeMessageId === msg.id ? "bg-white/10" : ""
-              } ${msg.unread ? "border-l-2 border-l-gold" : "opacity-80"}`}
-            >
-              <div className="flex justify-between items-start mb-1">
-                <h4 className={`text-xs md:text-sm ${msg.unread ? "font-bold text-white" : "font-medium text-white/80"}`}>{msg.sender}</h4>
-                <div className="flex items-center gap-2">
-                   {msg.starred && <Star size={10} className="text-gold fill-gold" />}
-                   <span className="text-xs text-white/40">{msg.date}</span>
+        {/* Detail View */}
+        <div className={cn(
+          "flex-1 flex-col admin-surface-primary backdrop-blur-xs rounded-[10px] border border-[var(--admin-border)] overflow-hidden relative",
+          activeMessageId ? 'flex' : 'hidden lg:flex'
+        )}>
+          {activeMessage ? (
+            <>
+              {/* Detail Toolbar */}
+              <div className="p-2 md:p-3 border-b border-[var(--admin-border)] flex justify-between items-center admin-surface-secondary/50 backdrop-blur-md">
+                <div className="flex gap-1 md:gap-2 items-center">
+                    <button onClick={() => setActiveMessageId(null)} className="p-2 text-[var(--admin-text)]/60 hover:text-[var(--admin-text)] hover:bg-[var(--admin-text)]/5 rounded-[8px] transition-colors lg:hidden" title="Back">
+                       <ArrowLeft size={18} />
+                    </button>
+                    <RoleGate allowedRoles={[Role.SUPER_ADMIN, Role.ADMIN]}>
+                      <button onClick={() => handleArchive(activeMessage.id)} className="p-2 text-[var(--admin-text)]/60 hover:text-[var(--admin-text)] hover:bg-[var(--admin-text)]/5 rounded-[8px] transition-colors" title="Archive"><Archive size={18} /></button>
+                    </RoleGate>
+                    <RoleGate allowedRoles={[Role.SUPER_ADMIN]}>
+                      <button onClick={() => handleDelete(activeMessage.id)} className="p-2 text-[var(--admin-text)]/60 hover:text-red-400 hover:bg-red-500/5 rounded-[8px] transition-colors" title="Delete"><Trash2 size={18} /></button>
+                    </RoleGate>
+                    <div className="w-[1px] h-6 bg-[var(--admin-border)] mx-1 md:mx-2" />
+                    <button onClick={() => handleReadToggle(activeMessage.id)} className="p-2 text-[var(--admin-text)]/60 hover:text-[var(--admin-text)] hover:bg-[var(--admin-text)]/5 rounded-[8px] transition-colors" title={activeMessage.unread ? "Mark as Read" : "Mark as Unread"}>
+                        {activeMessage.unread ? <MailOpen size={18} /> : <Mail size={18} />}
+                    </button>
+                    <button onClick={() => handleStarToggle(activeMessage.id)} className={cn(
+                      "p-2 rounded-[8px] transition-colors",
+                      activeMessage.starred ? "text-gold bg-gold/5" : "text-[var(--admin-text)]/60 hover:text-gold hover:bg-gold/5"
+                    )} title="Star">
+                        <Star size={18} className={activeMessage.starred ? "fill-gold" : ""} />
+                    </button>
                 </div>
+                <button className="p-2 text-[var(--admin-text)]/60 hover:text-[var(--admin-text)] hover:bg-[var(--admin-text)]/5 rounded-[8px] transition-colors">
+                  <MoreVertical size={18} />
+                </button>
               </div>
-              <p className={`text-xs ${msg.unread ? "text-white font-medium" : "text-white/60"} mb-1 truncate pr-6`}>{msg.subject}</p>
-              <p className="text-xs text-white/40 truncate">{msg.preview}</p>
               
-              {/* Quick Actions on Hover */}
-              <div className="absolute right-2 bottom-2 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                 <button onClick={(e) => handleStarToggle(msg.id, e)} className="p-1.5 hover:bg-white/20 rounded text-white/60 hover:text-gold"><Star size={12} className={msg.starred ? "fill-gold text-gold" : ""} /></button>
-                 <button onClick={(e) => handleReadToggle(msg.id, e)} className="p-1.5 hover:bg-white/20 rounded text-white/60 hover:text-white" title={msg.unread ? "Mark Read" : "Mark Unread"}>
-                    {msg.unread ? <MailOpen size={12} /> : <Mail size={12} />}
-                 </button>
-                 <RoleGate allowedRoles={[Role.SUPER_ADMIN, Role.ADMIN]}>
-                   <button onClick={(e) => { e.stopPropagation(); handleDelete(msg.id); }} className="p-1.5 hover:bg-white/20 rounded text-white/60 hover:text-red-400"><Trash2 size={12} /></button>
-                 </RoleGate>
+              {/* Message Content */}
+              <div className="flex-1 p-4 md:p-10 overflow-y-auto custom-scrollbar">
+                  <div className="flex flex-col md:flex-row justify-between items-start gap-4 mb-8 md:mb-12">
+                    <div className="flex gap-3 md:gap-5">
+                        <div className={cn(
+                          "w-12 h-12 md:w-16 md:h-16 rounded-full flex items-center justify-center border-2 font-black text-lg md:text-2xl shrink-0 shadow-lg",
+                          activeMessage.color
+                        )}>
+                          {activeMessage.avatar}
+                        </div>
+                        <div className="min-w-0">
+                          <h2 className="text-lg md:text-2xl font-black text-[var(--admin-text)] leading-tight tracking-tight mb-2">{activeMessage.subject}</h2>
+                          <div className="flex flex-wrap items-center gap-2 md:gap-3">
+                              <span className="text-xs md:text-sm font-bold text-[var(--admin-text)]">{activeMessage.sender}</span>
+                              <span className="w-1 h-1 rounded-full bg-[var(--admin-text)]/20" />
+                              <span className="text-xs md:text-sm font-medium text-[var(--admin-text)]/40 truncate">&lt;{activeMessage.email}&gt;</span>
+                          </div>
+                        </div>
+                    </div>
+                    <span className="text-[12px] font-bold text-[var(--admin-text)]/40 uppercase tracking-widest shrink-0 bg-[var(--admin-text)]/5 px-3 py-1 rounded-full border border-[var(--admin-border)]">
+                      {activeMessage.date}
+                    </span>
+                  </div>
+                  
+                  <div className="text-[var(--admin-text)] leading-relaxed text-sm md:text-base space-y-6 max-w-4xl border-t border-[var(--admin-border)] pt-8 md:pt-12 font-medium">
+                    <p className="text-[var(--admin-text)]/60 italic">Message Content:</p>
+                    <p className="whitespace-pre-wrap text-[var(--admin-text)]/90">{activeMessage.message}</p>
+                  </div>
+                  
+                  {/* Reply Section */}
+                  <div className="mt-12 md:mt-20 pt-8 md:pt-12 border-t border-[var(--admin-border)]">
+                     <div className="flex flex-col gap-4">
+                        <div className="flex items-center justify-between">
+                           <h4 className="text-[12px] md:text-sm font-black text-[var(--admin-text)] uppercase tracking-widest flex items-center gap-2">
+                             <Reply size={16} className="text-gold" /> 
+                             Reply to {activeMessage.sender.split(' ')[0]}
+                           </h4>
+                           {activeMessage.replied && (
+                             <span className="text-[10px] font-bold text-green-400 uppercase tracking-widest bg-green-500/10 px-2 py-1 rounded-md border border-green-500/20 flex items-center gap-1">
+                               <Send size={10} /> Replied
+                             </span>
+                           )}
+                        </div>
+                        <textarea 
+                           value={replyText}
+                           onChange={(e) => setReplyText(e.target.value)}
+                           placeholder="Type your response here..." 
+                           className="w-full h-32 md:h-48 admin-surface-input rounded-[12px] border border-[var(--admin-border)] p-4 md:p-6 text-[var(--admin-text)] text-sm md:text-base outline-none focus:border-gold/50 focus:ring-1 focus:ring-gold/20 resize-none shadow-inner transition-all"
+                        />
+                        <div className="flex justify-end gap-3">
+                           <button 
+                               onClick={handleSendReply}
+                               disabled={!replyText || isReplying}
+                               className={cn(
+                                 "bg-primary text-primary-foreground font-black px-6 py-2 md:px-10 md:py-3 rounded-[10px] flex items-center gap-2 hover:bg-gold transition-all text-xs md:text-sm shadow-xl shadow-primary/20",
+                                 (!replyText || isReplying) && "opacity-50 cursor-not-allowed grayscale"
+                               )}
+                           >
+                              {isReplying ? (
+                                  <div className="w-4 h-4 border-2 border-primary-foreground/30 border-t-primary-foreground rounded-full animate-spin" />
+                              ) : (
+                                  <><Send size={16} /> Send Reply</>
+                              )}
+                           </button>
+                        </div>
+                     </div>
+                  </div>
               </div>
+            </>
+          ) : (
+            <div className="flex-1 flex flex-col items-center justify-center text-[var(--admin-text)] p-4 text-center">
+              <div className="w-20 h-20 md:w-24 md:h-24 rounded-full admin-surface-input flex items-center justify-center mb-6 border border-dashed border-[var(--admin-border)] animate-pulse">
+                   <Mail size={40} className="text-[var(--admin-text)]/20" />
+              </div>
+              <p className="text-base md:text-xl font-bold text-[var(--admin-text)]/40 uppercase tracking-widest">Select a message</p>
+              <p className="text-xs md:text-sm text-[var(--admin-text)]/20 mt-2">Pick a communication from the list to view the full details.</p>
             </div>
-          ))}
-          {filteredMessages.length === 0 && (
-             <div className="p-8 text-center text-white/40 text-sm">No messages found.</div>
           )}
-          
-          <div className="p-2 border-t border-white/10 sticky bottom-0 bg-black/40 backdrop-blur-md">
-            <Pagination 
-                currentPage={meta.page}
-                totalPages={meta.totalPages}
-                baseUrl="/admin/inbox"
-            />
-          </div>
         </div>
       </div>
       
-      {/* Detail View - Mobile: Full screen when message selected, Desktop: Always visible */}
-      <div className={`flex-1 flex-col bg-white/30 dark:bg-white/5 border border-white/20 dark:border-white/10 rounded-[10px] backdrop-blur-md overflow-hidden relative ${activeMessageId ? 'flex' : 'hidden lg:flex'}`}>
-        {/* Toolbar */}
-        {activeMessage ? (
-        <>
-            <div className="p-2 md:p-4 border-b border-white/20 dark:border-white/10 flex justify-between items-center bg-black/20">
-            <div className="flex gap-1 md:gap-2 items-center">
-                {/* Mobile Back Button */}
-                <button onClick={() => setActiveMessageId(null)} className="p-1.5 md:p-2 text-white/60 hover:text-white hover:bg-white/10 rounded-[6px] transition-colors lg:hidden" title="Back">
-                   <ArrowLeft size={16} />
-                </button>
-                <RoleGate allowedRoles={[Role.SUPER_ADMIN, Role.ADMIN]}>
-                  <button onClick={() => handleArchive(activeMessage.id)} className="p-1.5 md:p-2 text-white/60 hover:text-white hover:bg-white/10 rounded-[6px] transition-colors" title="Archive"><Archive size={14} className="md:w-[18px] md:h-[18px]" /></button>
-                </RoleGate>
-                <RoleGate allowedRoles={[Role.SUPER_ADMIN]}>
-                  <button onClick={() => handleDelete(activeMessage.id)} className="p-1.5 md:p-2 text-white/60 hover:text-white hover:bg-white/10 rounded-[6px] transition-colors" title="Delete"><Trash2 size={14} className="md:w-[18px] md:h-[18px]" /></button>
-                </RoleGate>
-                <div className="w-[1px] h-4 md:h-6 bg-white/10 mx-1 md:mx-2" />
-                <button onClick={(e) => handleReadToggle(activeMessage.id)} className="p-1.5 md:p-2 text-white/60 hover:text-white hover:bg-white/10 rounded-[6px] transition-colors" title={activeMessage.unread ? "Mark as Read" : "Mark as Unread"}>
-                    {activeMessage.unread ? <MailOpen size={14} className="md:w-[18px] md:h-[18px]" /> : <Mail size={14} className="md:w-[18px] md:h-[18px]" />}
-                </button>
-                <button onClick={(e) => handleStarToggle(activeMessage.id)} className={`p-1.5 md:p-2 hover:bg-white/10 rounded-[6px] transition-colors ${activeMessage.starred ? "text-gold" : "text-white/60 hover:text-gold"}`} title="Star">
-                    <Star size={14} className={`md:w-[18px] md:h-[18px] ${activeMessage.starred ? "fill-gold" : ""}`} />
-                </button>
-            </div>
-            <button className="p-1.5 md:p-2 text-white/60 hover:text-white hover:bg-white/10 rounded-[6px]"><MoreVertical size={14} className="md:w-[18px] md:h-[18px]" /></button>
-            </div>
-            
-            {/* Message Content */}
-            <div className="flex-1 p-4 md:p-8 overflow-y-auto">
-                <div className="flex flex-col md:flex-row justify-between items-start gap-3 mb-4 md:mb-8">
-                <div className="flex gap-2 md:gap-4">
-                    <div className={`w-10 h-10 md:w-12 md:h-12 rounded-full flex items-center justify-center border font-bold text-sm md:text-lg shrink-0 ${activeMessage.color}`}>
-                    {activeMessage.avatar}
-                    </div>
-                    <div className="min-w-0">
-                    <h2 className="text-sm md:text-xl font-bold text-white leading-tight">{activeMessage.subject}</h2>
-                    <div className="flex flex-wrap items-center gap-1 md:gap-2 text-[10px] md:text-sm text-white/60 mt-1">
-                        <span className="text-white">{activeMessage.sender}</span>
-                        <span className="w-1 h-1 rounded-full bg-white/20" />
-                        <span className="truncate">&lt;{activeMessage.email}&gt;</span>
-                    </div>
-                    </div>
-                </div>
-                <span className="text-[10px] md:text-sm text-white/40 shrink-0">{activeMessage.date}</span>
-                </div>
-                
-                <div className="text-white/80 leading-relaxed text-xs md:text-sm space-y-3 md:space-y-4 max-w-3xl border-t border-white/5 pt-4 md:pt-8">
-                <p>Hi team,</p>
-                <p className="whitespace-pre-wrap">{activeMessage.message}</p>
-                {/* <p>I would appreciate a quick response.</p> */ /* Removed hardcoded mock text */}
-                {/* <p>Best,<br/>{activeMessage.sender.split(' ')[0]}</p> */ /* Derived from message content usually */}
-                </div>
-                
-                {/* Reply Section */}
-                <div className="mt-4 md:mt-8 pt-4 md:pt-8 border-t border-white/20 dark:border-white/10">
-                   <div className="flex flex-col gap-3 md:gap-4">
-                      <h4 className="text-[10px] md:text-sm font-bold text-white/60 uppercase flex items-center gap-1 md:gap-2"><Reply size={12} className="md:w-3.5 md:h-3.5" /> Reply to {activeMessage.sender.split(' ')[0]}</h4>
-                      <textarea 
-                         value={replyText}
-                         onChange={(e) => setReplyText(e.target.value)}
-                         placeholder="Type your response here..." 
-                         className="w-full h-24 md:h-32 bg-black/20 border border-white/20 dark:border-white/10 rounded-[10px] p-3 md:p-4 text-white text-xs md:text-sm outline-none focus:border-gold/50 resize-none"
-                      />
-                      <div className="flex justify-end">
-                         <button 
-                             onClick={handleSendReply}
-                             disabled={!replyText || isReplying}
-                             className={`bg-gold text-black font-bold px-4 py-1.5 md:px-6 md:py-2 rounded-[8px] flex items-center gap-1 md:gap-2 hover:bg-white transition-colors text-[10px] md:text-sm ${(!replyText || isReplying) ? 'opacity-50 cursor-not-allowed' : ''}`}
-                         >
-                            {isReplying ? (
-                                <>Sending...</>
-                            ) : (
-                                <><Send size={12} className="md:w-4 md:h-4" /> Send Reply</>
-                            )}
-                         </button>
-                      </div>
-                   </div>
-                </div>
-            </div>
-        </>
-        ) : (
-          <div className="flex-1 flex flex-col items-center justify-center text-white/40 gap-3 md:gap-4 p-4">
-            <div className="w-12 h-12 md:w-16 md:h-16 rounded-full bg-white/30 dark:bg-white/5 flex items-center justify-center">
-                 <Mail size={24} className="md:w-8 md:h-8" />
-            </div>
-            <p className="text-xs md:text-base">Select a message to view details</p>
-          </div>
-        )}
-      </div>
-      </div>
-      </PageContainer>
+      <style jsx global>{`
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: var(--admin-border);
+            border-radius: 10px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: var(--admin-text);
+            opacity: 0.2;
+        }
+      `}</style>
+    </PageContainer>
   );
 }

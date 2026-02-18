@@ -53,7 +53,7 @@ export function ConfirmDialog({
                         <AlertTriangle size={24} className="text-red-400" />
                     </div>
                 )}
-                <p className="text-sm text-white/70">{message}</p>
+                <p className="text-sm text-[var(--admin-text)]/70">{message}</p>
             </div>
         </Modal>
     );

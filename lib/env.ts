@@ -1,29 +1,34 @@
-import { z } from "zod";
-
-const envSchema = z.object({
-    DATABASE_URL: z.string().url(),
-    NEXT_PUBLIC_APP_URL: z.string().url(),
-    NEXT_PUBLIC_GA_ID: z.string().optional(),
-    JWT_SECRET: z.string().min(32),
-    ENCRYPTION_KEY: z.string().min(32),
-    UPSTASH_REDIS_REST_URL: z.string().url().optional(),
-    UPSTASH_REDIS_REST_TOKEN: z.string().min(1).optional(),
-    RESEND_API_KEY: z.string().optional(),
-    CLOUDINARY_CLOUD_NAME: z.string().optional(),
-    CLOUDINARY_API_KEY: z.string().optional(),
-    CLOUDINARY_API_SECRET: z.string().optional(),
-});
-
+/**
+ * Runtime environment variable validation.
+ * Called from instrumentation.ts on server startup.
+ */
 export function validateEnv() {
-    const parsed = envSchema.safeParse(process.env);
+    const required: string[] = [
+        "DATABASE_URL",
+        "JWT_SECRET",
+    ];
 
-    if (!parsed.success) {
-        console.error(
-            "❌ Invalid environment variables:",
-            parsed.error.flatten().fieldErrors
+    const optional: string[] = [
+        "RESEND_API_KEY",
+        "RESEND_FROM_EMAIL",
+        "NEXT_PUBLIC_APP_URL",
+        "UPSTASH_REDIS_REST_URL",
+        "UPSTASH_REDIS_REST_TOKEN",
+        "SENTRY_DSN",
+    ];
+
+    const missing = required.filter((key) => !process.env[key]);
+
+    if (missing.length > 0) {
+        throw new Error(
+            `Missing required environment variables: ${missing.join(", ")}`
         );
-        throw new Error("Invalid environment variables");
     }
 
-    return parsed.data;
+    const missingOptional = optional.filter((key) => !process.env[key]);
+    if (missingOptional.length > 0) {
+        console.warn(
+            `⚠️  Missing optional environment variables: ${missingOptional.join(", ")}`
+        );
+    }
 }

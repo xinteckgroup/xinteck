@@ -67,14 +67,14 @@ export default function CookiesPage() {
             <h1 className="text-sm font-bold tracking-[0.3em] text-gold uppercase">
               Legal & Compliance
             </h1>
-            <h2 className="text-5xl md:text-8xl font-black tracking-tighter text-foreground">
+            <h2 className="text-5xl md:text-7xl font-black tracking-tighter text-foreground">
               COOKIE <span className="text-gold">POLICY.</span>
             </h2>
-            <p className="text-lg md:text-xl text-foreground/60 leading-relaxed max-w-2xl mx-auto">
+            <p className="text-lg md:text-xl text-foreground leading-relaxed max-w-2xl mx-auto">
               This policy explains how Xinteck uses cookies and similar technologies 
               on our website, your choices regarding cookies, and how they affect your privacy.
             </p>
-            <div className="text-xs font-bold uppercase tracking-widest text-foreground/40 mt-4">
+            <div className="text-xs font-bold uppercase tracking-widest text-foreground mt-4">
               Last Updated: {lastUpdated}
             </div>
           </motion.div>
@@ -324,10 +324,10 @@ export default function CookiesPage() {
               <Mail size={32} />
             </div>
             <h3 className="text-3xl font-black tracking-tight mb-4 text-foreground">Questions?</h3>
-            <p className="text-foreground/60 mb-6 max-w-2xl mx-auto">
+            <p className="text-foreground mb-6 max-w-2xl mx-auto">
               If you have any questions about our use of cookies or this policy, please contact us:
             </p>
-            <p className="text-foreground/70">
+            <p className="text-foreground">
               <strong>Email:</strong> <a href="mailto:privacy@xinteck.com" className="text-gold hover:underline">privacy@xinteck.com</a>
             </p>
             <p className="mt-6">

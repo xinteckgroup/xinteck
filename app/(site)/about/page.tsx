@@ -1,10 +1,12 @@
 "use client";
 
 import { VideoScrollLayout } from "@/components/services/VideoScrollLayout";
+import { TYPOGRAPHY } from "@/lib/typography";
 import { VIDEO_STATS } from "@/lib/videoStats";
 import { motion } from "framer-motion";
-import { CheckCircle2, Rocket, Shield, Target, Users } from "lucide-react";
+import { CheckCircle2, MessageSquare, Rocket, Shield, Target, Users, Wrench } from "lucide-react";
 import Image from "next/image";
+import Link from "next/link";
 
 // Shared animation config for synchronized pulsing
 const pulseAnimation = {
@@ -14,6 +16,23 @@ const pulseAnimation = {
   },
   transition: { duration: 3, repeat: Infinity, ease: "easeInOut" as const }
 };
+
+// Collaboration tools data — split into two rows for the dual-direction marquee
+const toolsRow1 = [
+  { name: "Slack", logo: "/logos/tools/slack.png" },
+  { name: "GitHub", logo: "/logos/tools/github.png" },
+  { name: "Figma", logo: "/logos/tools/figma.png" },
+  { name: "Jira", logo: "/logos/tools/jira.png" },
+  { name: "Notion", logo: "/logos/tools/notion.png" },
+];
+
+const toolsRow2 = [
+  { name: "Trello", logo: "/logos/tools/trello.png" },
+  { name: "Zoom", logo: "/logos/tools/zoom.png" },
+  { name: "Teams", logo: "/logos/tools/teams.png" },
+  { name: "Confluence", logo: "/logos/tools/confluence.png" },
+  { name: "Asana", logo: "/logos/tools/asana.png" },
+];
 
 const stats = [
   { label: "Successful Projects", value: "250+" },
@@ -64,7 +83,7 @@ export default function AboutPage() {
               <h1 className="text-xs md:text-sm font-bold tracking-[0.3em] text-gold uppercase text-foreground">
                 Our Story
               </h1>
-              <h2 className="text-4xl md:text-7xl font-black tracking-tighter leading-tight text-foreground">
+              <h2 className="text-3xl md:text-5xl lg:text-6xl font-black tracking-tighter leading-[0.95] text-white">
                 ENGINEERING THE <br />
                 <span className="text-gold">DIGITAL FRONTIER.</span>
               </h2>
@@ -154,7 +173,7 @@ export default function AboutPage() {
               <h2 className="text-xs md:text-sm font-bold tracking-[0.3em] uppercase text-foreground">
                 Core Philosophy
               </h2>
-              <h3 className="text-3xl md:text-6xl font-black tracking-tighter text-foreground">
+              <h3 className={`${TYPOGRAPHY.pageTitle} text-foreground !text-6xl`}>
                 WHAT DRIVES <span className="text-foreground/40">US.</span>
               </h3>
             </div>
@@ -181,44 +200,131 @@ export default function AboutPage() {
           </div>
         </section>
 
-        {/* Leadership Section */}
+        {/* How We Work Section */}
         <section className="px-6">
           <div className="max-w-7xl mx-auto">
             <div className="text-center max-w-3xl mx-auto mb-12 md:mb-20 flex flex-col gap-4 md:gap-6 bg-white/30 dark:bg-black/80 backdrop-blur-xl border border-primary/10 rounded-[10px] p-6 md:p-8">
               <h2 className="text-xs md:text-sm font-bold tracking-[0.3em] uppercase text-foreground">
-                The Architects
+                How We Deliver
               </h2>
-              <h3 className="text-3xl md:text-6xl font-black tracking-tighter text-foreground">
-                DRIVING <span className="text-foreground/40">INNOVATION.</span>
+              <h3 className={`${TYPOGRAPHY.pageTitle} text-foreground !text-5xl`}>
+                OUR <span className="text-foreground/40">PROCESS.</span>
               </h3>
             </div>
-            <div className="grid md:grid-cols-3 gap-6 md:gap-12">
-              {[
-                { name: "Dr. Elena Vance", role: "Chief Technology Officer", expertise: "Cloud Systems & AI" },
-                { name: "Marcus Aurelius", role: "Head of Engineering", expertise: "Distributed Systems" },
-                { name: "Zarah Chen", role: "Creative Director", expertise: "Premium Design Systems" },
-              ].map((member, i) => (
-                <motion.div
-                  key={member.name}
-                  initial={{ opacity: 0, scale: 0.95 }}
-                  whileInView={{ opacity: 1, scale: 1 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: i * 0.1 }}
-                  className="group flex flex-col gap-6 bg-white/30 dark:bg-black/80 backdrop-blur-xl border border-primary/10 rounded-[10px] p-6 hover:border-primary/40 transition-all"
-                >
-                  <div className="aspect-square bg-white/50 dark:bg-secondary/10 rounded-[10px] border border-primary/10 overflow-hidden relative group-hover:border-primary/40 transition-all">
-                     <div className="absolute inset-0 bg-gradient-to-tr from-gold/5 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-                     <div className="absolute inset-0 flex items-center justify-center opacity-10 group-hover:opacity-20 transition-all scale-100 group-hover:scale-110">
-                        <Users size={150} className="text-foreground" />
-                     </div>
+            <div className="grid md:grid-cols-2 gap-6 md:gap-8">
+              {/* Card 1: Project Communication Structure */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                className="p-8 md:p-10 rounded-[10px] bg-white/30 dark:bg-black/80 backdrop-blur-xl border border-primary/10 hover:border-primary/40 transition-all flex flex-col gap-8"
+              >
+                <div className="flex items-center gap-4">
+                  <div className="w-12 h-12 rounded-[10px] bg-white/50 dark:bg-black/50 flex items-center justify-center text-gold border border-primary/20">
+                    <MessageSquare size={24} />
                   </div>
-                  <div className="flex flex-col gap-2">
-                     <h4 className="text-xl md:text-2xl font-black tracking-tight text-foreground">{member.name}</h4>
-                     <p className="text-gold font-bold text-xs md:text-sm uppercase tracking-widest">{member.role}</p>
-                     <p className="text-foreground/40 text-[10px] md:text-xs font-medium uppercase mt-2">Expertise: {member.expertise}</p>
+                  <h4 className="text-xl md:text-2xl font-black tracking-tight text-foreground">
+                    Project Communication Structure
+                  </h4>
+                </div>
+                <div className="flex flex-col gap-4">
+                  {[
+                    { label: "Frequent Scrum Standup", desc: "Daily sync to unblock, align, and ship faster.", icon: "🔄" },
+                    { label: "Weekly Review", desc: "Demo, feedback, and course-correct every sprint.", icon: "📊" },
+                    { label: "Sprint Delivery", desc: "Iterative releases with clear milestones.", icon: "🚀" },
+                    { label: "Code Reviews", desc: "Peer-reviewed code for quality and knowledge sharing.", icon: "✅" },
+                  ].map((item, i) => (
+                    <motion.div
+                      key={item.label}
+                      initial={{ opacity: 0, x: -20 }}
+                      whileInView={{ opacity: 1, x: 0 }}
+                      viewport={{ once: true }}
+                      transition={{ delay: i * 0.12 }}
+                      className="flex items-start gap-4 p-4 rounded-[10px] bg-white/40 dark:bg-white/5 border border-primary/10 hover:border-gold/40 transition-all group"
+                    >
+                      <span className="text-2xl mt-0.5 shrink-0">{item.icon}</span>
+                      <div className="flex flex-col gap-1">
+                        <span className="font-bold text-foreground group-hover:text-gold transition-colors">
+                          {item.label}
+                        </span>
+                        <span className="text-sm text-foreground/50">
+                          {item.desc}
+                        </span>
+                      </div>
+                    </motion.div>
+                  ))}
+                </div>
+              </motion.div>
+
+              {/* Card 2: Collaboration Tools */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: 0.15 }}
+                className="p-8 md:p-10 rounded-[10px] bg-white/30 dark:bg-black/80 backdrop-blur-xl border border-primary/10 hover:border-primary/40 transition-all flex flex-col gap-8 overflow-hidden"
+              >
+                <div className="flex items-center gap-4">
+                  <div className="w-12 h-12 rounded-[10px] bg-white/50 dark:bg-black/50 flex items-center justify-center text-gold border border-primary/20">
+                    <Wrench size={24} />
                   </div>
-                </motion.div>
-              ))}
+                  <h4 className="text-xl md:text-2xl font-black tracking-tight text-foreground">
+                    Collaboration Tools
+                  </h4>
+                </div>
+                <p className="text-foreground/50 text-sm leading-relaxed">
+                  We leverage industry-leading platforms to keep teams connected, code reviewed, and projects on track — wherever you are.
+                </p>
+
+                {/* Infinite Marquee Slideshow */}
+                <div className="relative w-full overflow-hidden py-4">
+                  {/* Gradient Masks */}
+                  <div className="absolute top-0 left-0 w-16 h-full bg-gradient-to-r from-white/30 dark:from-black/80 to-transparent z-10 pointer-events-none" />
+                  <div className="absolute top-0 right-0 w-16 h-full bg-gradient-to-l from-white/30 dark:from-black/80 to-transparent z-10 pointer-events-none" />
+                  
+                  {/* Row 1 — moves left */}
+                  <div className="flex gap-6 mb-6 animate-marquee-left">
+                    {[...toolsRow1, ...toolsRow1].map((tool, i) => (
+                      <div
+                        key={`r1-${i}`}
+                        className="flex-shrink-0 w-[120px] h-[80px] rounded-[10px] bg-white/60 dark:bg-white/10 border border-primary/10 hover:border-gold/50 flex flex-col items-center justify-center gap-2 transition-all hover:scale-105 group"
+                      >
+                        <Image
+                          src={tool.logo}
+                          alt={tool.name}
+                          width={36}
+                          height={36}
+                          className="object-contain rounded-md group-hover:scale-110 transition-transform"
+                        />
+                        <span className="text-[10px] font-bold text-foreground/60 uppercase tracking-wider">
+                          {tool.name}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+
+                  {/* Row 2 — moves right */}
+                  <div className="flex gap-6 animate-marquee-right">
+                    {[...toolsRow2, ...toolsRow2].map((tool, i) => (
+                      <div
+                        key={`r2-${i}`}
+                        className="flex-shrink-0 w-[120px] h-[80px] rounded-[10px] bg-white/60 dark:bg-white/10 border border-primary/10 hover:border-gold/50 flex flex-col items-center justify-center gap-2 transition-all hover:scale-105 group"
+                      >
+                        <Image
+                          src={tool.logo}
+                          alt={tool.name}
+                          width={36}
+                          height={36}
+                          className="object-contain rounded-md group-hover:scale-110 transition-transform"
+                        />
+                        <span className="text-[10px] font-bold text-foreground/60 uppercase tracking-wider">
+                          {tool.name}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </motion.div>
             </div>
           </div>
         </section>
@@ -226,15 +332,18 @@ export default function AboutPage() {
         {/* Team CTA */}
         <section className="px-6 mb-12 md:mb-20">
           <div className="max-w-7xl mx-auto bg-white/30 dark:bg-black/80 backdrop-blur-xl border border-primary/10 rounded-[10px] p-8 md:p-24 text-center shadow-[0_10px_40px_-10px_rgba(0,0,0,0.1)]">
-              <h3 className="text-3xl md:text-7xl font-black tracking-tighter mb-6 md:mb-8 max-w-4xl mx-auto text-foreground">
+              <h3 className={`${TYPOGRAPHY.pageTitle} text-foreground !text-5xl mb-6 md:mb-8 max-w-4xl mx-auto`}>
                 PASSIONATE ABOUT <span className="text-gold">CODE?</span>
               </h3>
               <p className="text-lg md:text-xl text-foreground/60 max-w-2xl mx-auto mb-8 md:mb-10">
                 We are always looking for visionary engineers and designers to join our elite squad.
               </p>
-              <button className="px-8 md:px-10 py-4 md:py-5 bg-foreground text-background font-black rounded-[10px] hover:bg-gold-hover transition-all text-sm md:text-base">
+              <Link 
+                href="/careers"
+                className="inline-block px-8 md:px-10 py-4 md:py-5 bg-foreground text-background font-black rounded-[10px] hover:bg-gold-hover transition-all text-sm md:text-base"
+              >
                 Join the Team
-              </button>
+              </Link>
           </div>
         </section>
       </div>

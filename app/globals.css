@@ -12,7 +12,22 @@
   --color-foreground: var(--foreground);
   
   --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
   --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
   
   --radius-lg: var(--radius);
   --radius-md: calc(var(--radius) - 2px);
@@ -22,15 +37,46 @@
 :root {
   --background: #ffffff;
   --foreground: #0a0a0a;
+  --card: #ffffff;
+  --card-foreground: #0a0a0a;
+  --popover: #ffffff;
+  --popover-foreground: #0a0a0a;
   --primary: #D4AF37;
-  --secondary: #000000;
-  --radius: 10px;
+  --primary-foreground: #ffffff;
+  --secondary: #f4f4f5;
+  --secondary-foreground: #18181b;
+  --muted: #f4f4f5;
+  --muted-foreground: #71717a;
+  --accent: #f4f4f5;
+  --accent-foreground: #18181b;
+  --destructive: #ef4444;
+  --destructive-foreground: #ffffff;
+  --border: #e4e4e7;
+  --input: #e4e4e7;
+  --ring: #D4AF37;
+  --radius: 0.5rem;
 }
+
 .dark {
   --background: #000000;
   --foreground: #ffffff;
+  --card: #09090b;
+  --card-foreground: #ffffff;
+  --popover: #09090b;
+  --popover-foreground: #ffffff;
   --primary: #D4AF37;
-  --secondary: #ffffff;
+  --primary-foreground: #000000;
+  --secondary: #27272a;
+  --secondary-foreground: #ffffff;
+  --muted: #27272a;
+  --muted-foreground: #a1a1aa;
+  --accent: #27272a;
+  --accent-foreground: #ffffff;
+  --destructive: #7f1d1d;
+  --destructive-foreground: #ffffff;
+  --border: #27272a;
+  --input: #27272a;
+  --ring: #D4AF37;
 }
 
 body {
@@ -73,6 +119,25 @@ body {
   animation: gold-pulse 3s ease-in-out infinite;
 }
 
+/* Infinite Marquee Animations */
+@keyframes marquee-left {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+@keyframes marquee-right {
+  0% { transform: translateX(-50%); }
+  100% { transform: translateX(0); }
+}
+
+.animate-marquee-left {
+  animation: marquee-left 20s linear infinite;
+}
+
+.animate-marquee-right {
+  animation: marquee-right 20s linear infinite;
+}
+
 /* Custom Scrollbar - 2px Gold Theme */
 * {
   scrollbar-width: thin;
@@ -113,4 +178,153 @@ body {
   100% {
     transform: translateY(0px);
   }
+}
+
+/* =========================
+   ADMIN THEME ROOT
+========================= */
+
+.admin-background-root {
+  /* Shared foundation */
+  /* Background handled by AdminBackground.tsx */
+  /* background-image: url("/admin-bg/circuit.png"); removed */
+
+
+  min-height: 100vh;
+  width: 100%;
+
+  /* Accent system */
+  --admin-gold: #D4AF37;
+  --admin-border: rgba(212, 175, 55, 0.15);
+}
+
+/* =========================
+   ADMIN — Gold Border Pulse
+   Scoped to admin pages only.
+   Uses admin variables exclusively.
+========================= */
+
+@keyframes admin-gold-pulse {
+  0%, 100% {
+    border-color: var(--admin-border);
+    box-shadow: 0 0 0px rgba(212, 175, 55, 0.2);
+  }
+  50% {
+    border-color: var(--admin-gold);
+    box-shadow: 0 0 15px rgba(212, 175, 55, 0.6);
+  }
+}
+
+.admin-background-root .admin-gold-pulse {
+  animation: admin-gold-pulse 3s ease-in-out infinite;
+}
+
+/* =========================
+   ADMIN — LIGHT MODE
+========================= */
+
+.admin-background-root {
+  --admin-text: #ffffff;
+  --admin-muted: #a1a1aa;
+
+  --admin-surface-primary: rgba(255, 255, 255, 0.35);
+  --admin-surface-secondary: rgba(255, 255, 255, 0.22);
+  --admin-surface-floating: rgba(255, 255, 255, 0.55);
+  --admin-surface-input: rgba(255, 255, 255, 0.18);
+
+  color: var(--admin-text);
+}
+
+/* =========================
+   ADMIN — DARK MODE
+========================= */
+
+.dark .admin-background-root {
+  --admin-text: #ffffff;
+  --admin-muted: #a1a1aa;
+
+  --admin-surface-primary: rgba(0, 0, 0, 0.72);
+  --admin-surface-secondary: rgba(0, 0, 0, 0.55);
+  --admin-surface-floating: rgba(0, 0, 0, 0.85);
+  --admin-surface-input: rgba(255, 255, 255, 0.06);
+
+  color: var(--admin-text);
+}
+
+/* =========================
+   ADMIN — TYPOGRAPHY SYNC
+========================= */
+
+.admin-background-root {
+  --foreground: var(--admin-text);
+  --muted-foreground: var(--admin-muted);
+}
+
+/* =========================
+   ADMIN SURFACES
+========================= */
+
+@layer utilities {
+
+  .admin-surface-primary {
+    background: var(--admin-surface-primary);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid var(--admin-border);
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+  }
+
+  .admin-surface-secondary {
+    background: var(--admin-surface-secondary);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid var(--admin-border);
+  }
+
+  .admin-surface-floating {
+    background: var(--admin-surface-floating);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    border: 1px solid var(--admin-border);
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.25);
+  }
+
+  .admin-surface-input {
+    background: var(--admin-surface-input);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid var(--admin-border);
+    transition: all 0.25s ease;
+  }
+
+  /* Public Theme Standardization Utilities */
+  .glass-panel {
+    @apply bg-white/30 dark:bg-black/80 backdrop-blur-xl border border-primary/10 shadow-[0_10px_40px_-10px_rgba(0,0,0,0.1)];
+  }
+
+  .glass-card {
+    @apply bg-white/50 dark:bg-background/50 border border-primary/10 hover:border-primary/30 transition-all;
+  }
+}
+
+/* =========================
+   ADMIN — PORTAL SCOPING
+   Calendar & Popover portals render outside
+   .admin-background-root so they need explicit vars.
+========================= */
+
+[data-slot="calendar"],
+[data-slot="admin-select"] {
+  --admin-text: #ffffff;
+  --admin-muted: #a1a1aa;
+  --admin-border: rgba(212, 175, 55, 0.15);
+  --admin-gold: #D4AF37;
+  --admin-surface-primary: rgba(0, 0, 0, 0.72);
+  --admin-surface-input: rgba(255, 255, 255, 0.06);
+  color: var(--admin-text);
+}
+
+[data-slot="calendar"] *,
+[data-slot="admin-select"] * {
+  color: inherit;
 }

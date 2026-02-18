@@ -106,10 +106,10 @@ export function VideoScrollLayout({ children, videoSrc, videoStats, videoClassNa
   return (
     <div className="relative w-full min-h-[300vh]">
       {/* Video Background */}
-      <div className="fixed inset-0 w-full h-full z-[-10] bg-black">
+      <div className="fixed inset-0 w-full h-full z-0 bg-black">
         <div className="absolute inset-0 bg-black/30 z-[1]" />
         
-        {/* Fallback Image - Shows while loading or on error */}
+        {/* Fallback Image */}
         {fallbackSrc && (
           <img
             src={fallbackSrc}

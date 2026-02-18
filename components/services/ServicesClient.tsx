@@ -1,150 +1,155 @@
 "use client";
 
 import { VideoScrollLayout } from "@/components/services/VideoScrollLayout";
+import { TYPOGRAPHY } from "@/lib/typography";
 import { VIDEO_STATS } from "@/lib/videoStats";
 import { motion } from "framer-motion";
 import {
     BarChart,
     ChevronRight,
-    Cloud,
-    Code, // Placeholder for default icon
-    Globe,
-    Layers,
+    Code,
     Lock,
-    Palette,
-    Smartphone,
     Zap
 } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
 
 interface PublicService {
     slug: string;
     title: string;
+    subName?: string;
     description: string;
     features: string[];
+    image?: string | null;
 }
 
 export default function ServicesClient({ services }: { services: PublicService[] }) {
-
-  const getIcon = (title: string) => {
-      // Simple mapping based on title keywords or exact match
-      const t = title.toLowerCase();
-      if (t.includes("web")) return Globe;
-      if (t.includes("mobile")) return Smartphone;
-      if (t.includes("custom")) return Layers;
-      if (t.includes("design") || t.includes("ui")) return Palette;
-      if (t.includes("cloud") || t.includes("devops")) return Cloud;
-      return Code;
-  };
 
   return (
     <VideoScrollLayout 
       videoSrc={VIDEO_STATS.services.src}
       videoStats={VIDEO_STATS.services}
     >
-      <div className="flex flex-col gap-24 py-20 ">
-      {/* Header Section */}
-      <section className="px-6 text-center max-w-4xl mx-auto pt-20">
-        <motion.div
-           initial={{ opacity: 0, y: 20 }}
-           animate={{ opacity: 1, y: 0 }}
-           transition={{ duration: 0.8 }}
-            className="flex flex-col gap-8 bg-primary/5 backdrop-blur-xl border border-primary/10 rounded-[10px] p-8 md:p-12 shadow-[0_10px_40px_-10px_rgba(0,0,0,0.1)]"
-        >
-          <h1 className="text-sm font-bold tracking-[0.3em] text-gold uppercase">
-            Our Capabilities
-          </h1>
-          <h2 className="text-5xl md:text-8xl font-black tracking-tighter text-foreground">
-            FULL-STACK <br />
-            <span className="text-gold">EXCELLENCE.</span>
-          </h2>
-          <p className="text-xl text-foreground/60 leading-relaxed">
-            We provide end-to-end technology solutions. From initial architectural 
-            prototyping to global cloud deployment, we cover every byte of the 
-            development lifecycle.
-          </p>
-        </motion.div>
+      <div className="flex flex-col gap-12 md:gap-24 py-12 md:py-20">
+      {/* Hero Section */}
+      <section className="px-6 pt-12 md:pt-20">
+        <div className="max-w-7xl mx-auto">
+            <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8 }}
+                className="flex flex-col items-center text-center gap-6 md:gap-8 bg-white/30 dark:bg-black/80 backdrop-blur-xl rounded-[10px] p-6 md:p-16 shadow-[0_10px_40px_-10px_rgba(0,0,0,0.1)]"
+            >
+            <h1 className="text-sm md:text-base font-bold text-gold uppercase tracking-[0.2em] mb-2">
+                Our Capabilities
+            </h1>
+            <h2 className="text-2xl md:text-5xl font-extrabold tracking-tighter text-foreground uppercase">
+                FULL-STACK <span className="text-gold">EXCELLENCE.</span>
+            </h2>
+            <p className={`${TYPOGRAPHY.pageSubtitle} max-w-3xl mx-auto`}>
+                We provide end-to-end technology solutions. From initial architectural 
+                prototyping to global cloud deployment, we cover every byte of the 
+                development lifecycle.
+            </p>
+            </motion.div>
+        </div>
       </section>
 
       {/* Services Grid */}
       <section className="px-6">
         <div className="max-w-7xl mx-auto flex flex-col gap-12">
-          {services.map((service, i) => {
-            const Icon = getIcon(service.title);
-            return (
-                <motion.div
+          {services.map((service, i) => (
+            <motion.div
                 key={service.slug}
                 initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: i * 0.1 }}
-                className={`grid grid-cols-1 lg:grid-cols-12 gap-4 ${
+                className={`grid grid-cols-1 lg:grid-cols-12 gap-6 ${
                     i % 2 !== 0 ? "lg:direction-rtl" : ""
                 }`}
-                >
+            >
                 {/* Text Card */}
-                <div className={`lg:col-span-9 ${i % 2 !== 0 ? "lg:order-2" : "lg:order-1"}`}>
-                    <div className="h-full p-8 md:p-12 rounded-[10px] border border-primary/10 bg-primary/5 backdrop-blur-xl hover:border-primary/40 transition-all shadow-lg">
-                    <div className="flex flex-col gap-6 h-full">
-                        <h3 className="text-3xl md:text-4xl font-bold tracking-tight text-foreground">
-                        {service.title}
-                        </h3>
-                        <p className="text-lg text-foreground/60 leading-relaxed">
-                        {service.description}
-                        </p>
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-2">
-                        {service.features.map((feature) => (
-                            <div key={feature} className="flex items-center gap-3 text-sm text-foreground">
-                            <div className="w-2 h-2 rounded-full bg-gold shrink-0" />
-                            <span className="font-semibold">{feature}</span>
+                <div className={`lg:col-span-8 ${i % 2 !== 0 ? "lg:order-2" : "lg:order-1"}`}>
+                    <div className="h-full p-8 md:p-12 rounded-[10px] bg-white/30 dark:bg-black/80 backdrop-blur-xl transition-all shadow-lg flex flex-col justify-between">
+                        <div className="flex flex-col gap-6">
+                            {service.subName && (
+                                <span className={`${TYPOGRAPHY.tableHeader} text-gold`}>
+                                    {service.subName}
+                                </span>
+                            )}
+                            <h3 className={`${TYPOGRAPHY.sectionTitle} text-foreground`}>
+                                {service.title}
+                            </h3>
+                            <p className={`${TYPOGRAPHY.body} text-foreground leading-relaxed`}>
+                                {service.description}
+                            </p>
+                            <div className="flex gap-2 flex-wrap mt-2">
+                                {service.features.map((feature) => (
+                                    <span 
+                                        key={feature} 
+                                        className={`${TYPOGRAPHY.badge} px-3 py-1 bg-primary/5 rounded-[10px] text-foreground`}
+                                    >
+                                        {feature}
+                                    </span>
+                                ))}
                             </div>
-                        ))}
                         </div>
                         <Link
-                        href={`/services/${service.slug}`}
-                        className="mt-auto pt-4 flex items-center gap-2 text-gold font-bold hover:gap-4 transition-all w-fit"
+                            href={`/services/${service.slug}`}
+                            className={`${TYPOGRAPHY.button} mt-8 pt-6 border-t border-primary/10 flex items-center gap-2 text-gold transition-all w-fit hover:gap-4`}
                         >
-                        Explore Details <ChevronRight size={20} />
+                            Explore Details <ChevronRight size={20} />
                         </Link>
-                    </div>
                     </div>
                 </div>
 
-                {/* Icon Card - Hidden on mobile */}
-                <div className={`hidden lg:block lg:col-span-3 ${i % 2 !== 0 ? "lg:order-1" : "lg:order-2"}`}>
-                    <div className="h-full min-h-[200px] lg:min-h-full p-8 rounded-[10px] border border-primary/10 bg-primary/5 backdrop-blur-xl hover:border-gold/40 transition-all shadow-lg flex items-center justify-center group">
-                    <div className="relative">
-                        <div className="absolute inset-0 bg-gradient-to-br from-gold/30 to-transparent rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-opacity" />
-                        <Icon 
-                        size={120} 
-                        className="text-gold group-hover:text-gold transition-colors" 
-                        strokeWidth={1}
-                        />
-                    </div>
+                {/* Image Card */}
+                <div className={`lg:col-span-4 ${i % 2 !== 0 ? "lg:order-1" : "lg:order-2"}`}>
+                    <div className="h-full min-h-[300px] flex items-center justify-center relative">
+                        {service.image ? (
+                            <motion.div
+                                animate={{ y: [0, -10, 0] }}
+                                transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+                                className="relative w-full aspect-square flex items-center justify-center"
+                            >
+                                <div className="relative w-full h-full rounded-[10px] overflow-hidden shadow-2xl">
+                                    <Image
+                                        src={service.image}
+                                        alt={service.title}
+                                        fill
+                                        className="object-cover"
+                                    />
+                                </div>
+                            </motion.div>
+                        ) : (
+                            <div className="w-full aspect-square flex items-center justify-center rounded-[10px] bg-white/5 backdrop-blur-sm">
+                                <Code size={80} className="text-primary/20" />
+                            </div>
+                        )}
                     </div>
                 </div>
-                </motion.div>
-            );
-          })}
+            </motion.div>
+          ))}
         </div>
       </section>
 
       {/* Why Choose Us Icons */}
-      <section className="py-24 px-6 bg-primary/5 backdrop-blur-xl border-y border-primary/10">
+      <section className="px-6">
         <div className="max-w-7xl mx-auto">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-12">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
             {[
               { icon: Code, title: "Clean Code", desc: "Maintainable, scalable, documented." },
               { icon: Zap, title: "High Speed", desc: "Optimized for performance." },
               { icon: Lock, title: "Elite Security", desc: "Bank-grade data protection." },
               { icon: BarChart, title: "Data Driven", desc: "Built with analytics in mind." },
             ].map((item, i) => (
-              <div key={i} className="flex flex-col gap-4 text-center items-center">
-                 <div className="w-20 h-20 rounded-[10px] border border-primary/20 flex items-center justify-center text-gold mb-4 group-hover:bg-primary transition-all">
-                    <item.icon size={32} />
+              <div key={i} className="flex flex-col gap-4 text-center items-center bg-white/30 dark:bg-black/80 backdrop-blur-xl rounded-[10px] p-6 transition-all shadow-lg">
+                 <div className="w-16 h-16 rounded-[10px] flex items-center justify-center text-gold mb-2 bg-primary/5">
+                    <item.icon size={28} />
                  </div>
-                  <h4 className="font-bold text-lg text-foreground">{item.title}</h4>
-                  <p className="text-sm text-foreground/60">{item.desc}</p>
+                  <h4 className={`${TYPOGRAPHY.cardTitle} text-foreground`}>{item.title}</h4>
+                  <p className={`${TYPOGRAPHY.cardSubtitle} text-foreground`}>{item.desc}</p>
               </div>
             ))}
           </div>
@@ -153,14 +158,14 @@ export default function ServicesClient({ services }: { services: PublicService[]
 
       {/* Contact Prompt */}
       <section className="px-6 mb-20">
-        <div className="max-w-4xl mx-auto text-center flex flex-col gap-10 bg-primary/5 backdrop-blur-xl border border-primary/10 rounded-[10px] p-8 md:p-16 shadow-[0_10px_40px_-10px_rgba(0,0,0,0.1)]">
-            <h3 className="text-4xl md:text-7xl font-black tracking-tighter text-foreground">
+        <div className="max-w-4xl mx-auto text-center flex flex-col gap-10 bg-white/30 dark:bg-black/80 backdrop-blur-xl rounded-[10px] p-8 md:p-16 shadow-[0_10px_40px_-10px_rgba(0,0,0,0.1)]">
+            <h3 className={`${TYPOGRAPHY.pageTitle} text-foreground`}>
               NEED A CUSTOM <br />
               <span className="text-gold">TECH SOLUTION?</span>
             </h3>
             <Link 
               href="/contact"
-              className="px-12 py-2 bg-foreground text-background font-black text-xl rounded-[10px] hover:bg-gold-hover transition-all mx-auto"
+              className={`${TYPOGRAPHY.button} px-12 py-2 bg-foreground text-background rounded-[10px] hover:bg-gold-hover transition-all mx-auto`}
             >
               Contact Our Engineers
             </Link>

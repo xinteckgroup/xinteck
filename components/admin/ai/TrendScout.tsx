@@ -61,10 +61,10 @@ export function TrendScout() {
 
     return (
         <div className="flex flex-col gap-6">
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white/30 dark:bg-white/5 border border-white/20 dark:border-white/10 rounded-[12px] p-6 backdrop-blur-md">
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 admin-surface-secondary rounded-[12px] p-6">
                 <div>
-                    <h2 className="text-lg md:text-xl font-bold text-white mb-1">Trend Intelligence</h2>
-                    <p className="text-xs md:text-sm text-white/60">AI agents are ready to scan your target niches (`Settings`) for high-value opportunities.</p>
+                    <h2 className="text-lg md:text-xl font-bold text-[var(--admin-text)] mb-1">Trend Intelligence</h2>
+                    <p className="text-xs md:text-sm text-[var(--admin-muted)]">AI agents are ready to scan your target niches (`Settings`) for high-value opportunities.</p>
                 </div>
                 <div className="flex gap-2">
                      {ideas.length > 0 && (
@@ -80,7 +80,7 @@ export function TrendScout() {
                             <button
                                 onClick={handleDiscardAll}
                                 disabled={saving}
-                                className="flex items-center gap-2 px-4 py-3 bg-white/5 text-white/40 font-bold text-sm rounded-[10px] hover:bg-red-500/20 hover:text-red-400 transition-all disabled:opacity-50"
+                                className="flex items-center gap-2 px-4 py-3 admin-surface-input text-[var(--admin-muted)] font-bold text-sm rounded-[10px] hover:bg-red-500/10 hover:text-red-400 transition-all disabled:opacity-50"
                             >
                                 <X size={16} />
                                 <span className="hidden md:inline">Discard All</span>
@@ -90,7 +90,7 @@ export function TrendScout() {
                     <button
                         onClick={handleScout}
                         disabled={scouting || saving}
-                        className="flex items-center gap-2 px-6 py-3 bg-gold text-black font-bold text-sm rounded-[10px] hover:bg-white transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-[0_4px_14px_0_rgba(212,175,55,0.39)] whitespace-nowrap"
+                        className="flex items-center gap-2 px-6 py-3 bg-gold text-primary-foreground font-bold text-sm rounded-[10px] hover:bg-[var(--admin-text)] hover:text-[var(--admin-background)] transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-[0_4px_14px_0_rgba(212,175,55,0.39)] whitespace-nowrap"
                     >
                         {scouting ? (
                             <><Loader2 className="animate-spin w-4 h-4" /> Scouting...</>
@@ -115,28 +115,28 @@ export function TrendScout() {
                             animate={{ opacity: 1, scale: 1 }}
                             exit={{ opacity: 0, scale: 0.9 }}
                             transition={{ duration: 0.2 }}
-                            className="bg-white/30 dark:bg-white/5 border border-white/20 dark:border-white/10 rounded-[12px] p-6 flex flex-col gap-4 hover:border-gold/30 transition-colors backdrop-blur-md group"
+                            className="admin-surface-secondary rounded-[12px] p-6 flex flex-col gap-4 hover:border-gold/30 transition-colors group"
                         >
                             <div className="flex justify-between items-start gap-4">
-                                <h3 className="font-bold text-base md:text-lg text-white leading-tight">{idea.title}</h3>
+                                <h3 className="font-bold text-base md:text-lg text-[var(--admin-text)] leading-tight">{idea.title}</h3>
                                 <div className={`px-2 py-0.5 rounded-[4px] text-[10px] font-bold uppercase tracking-wider whitespace-nowrap border ${
                                     idea.score > 80 
                                         ? "bg-green-500/10 text-green-400 border-green-500/20" 
-                                        : "bg-yellow-500/10 text-yellow-400 border-yellow-500/20"
+                                        : "bg-yellow-500/10 text-yellow-500 border-yellow-500/20"
                                 }`}>
                                     Score: {idea.score}
                                 </div>
                             </div>
                             
-                            <p className="text-white/60 text-xs md:text-sm line-clamp-3 leading-relaxed">{idea.reasoning}</p>
+                            <p className="text-[var(--admin-muted)] text-xs md:text-sm line-clamp-3 leading-relaxed">{idea.reasoning}</p>
                             
                             <div className="flex flex-wrap gap-2">
                                 {idea.keywords.map((k: string) => (
-                                    <span key={k} className="text-[10px] bg-white/10 border border-white/5 px-2 py-1 rounded text-white/60">{k}</span>
+                                    <span key={k} className="text-[10px] admin-surface-input px-2 py-1 rounded text-[var(--admin-muted)]/80">{k}</span>
                                 ))}
                             </div>
 
-                            <div className="flex items-center gap-2 mt-auto pt-4 border-t border-white/5">
+                            <div className="flex items-center gap-2 mt-auto pt-4 border-t border-[var(--admin-border)]">
                                 <button 
                                     onClick={() => handleApprove(idea)}
                                     className="flex-1 flex items-center justify-center gap-2 bg-green-500/10 text-green-400 hover:bg-green-500/20 hover:text-green-300 py-2 rounded-[8px] font-bold text-xs transition-colors"
@@ -146,7 +146,7 @@ export function TrendScout() {
                                 </button>
                                 <button 
                                     onClick={() => handleReject(idea.title)}
-                                    className="flex-1 flex items-center justify-center gap-2 bg-white/5 text-white/40 hover:bg-red-500/10 hover:text-red-400 py-2 rounded-[8px] font-bold text-xs transition-colors"
+                                    className="flex-1 flex items-center justify-center gap-2 admin-surface-input text-[var(--admin-muted)] hover:bg-red-500/10 hover:text-red-400 py-2 rounded-[8px] font-bold text-xs transition-colors"
                                     title="Discard Idea"
                                 >
                                     <X size={14} /> Discard
@@ -158,10 +158,10 @@ export function TrendScout() {
             </motion.div>
 
             {!scouting && ideas.length === 0 && (
-                <div className="flex flex-col items-center justify-center py-20 border border-dashed border-white/20 dark:border-white/10 rounded-[12px] bg-white/5">
-                    <Sparkles className="text-white/20 mb-4" size={48} />
-                    <p className="text-white/40 text-sm font-medium">No active intelligence.</p>
-                    <p className="text-white/30 text-xs">Click "Scout Trends" to begin analysis.</p>
+                <div className="flex flex-col items-center justify-center py-20 border border-dashed border-[var(--admin-border)] rounded-[12px] admin-surface-input">
+                    <Sparkles className="text-[var(--admin-muted)]/30 mb-4" size={48} />
+                    <p className="text-[var(--admin-muted)] text-sm font-medium">No active intelligence.</p>
+                    <p className="text-[var(--admin-muted)]/50 text-xs">Click "Scout Trends" to begin analysis.</p>
                 </div>
             )}
         </div>

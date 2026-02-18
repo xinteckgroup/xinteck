@@ -91,7 +91,7 @@ export function ProjectManager({ initialData }: ProjectManagerProps) {
         subtitle={`Manage your portfolio case studies. Total: ${meta.total}`}
         actions={
           <RoleGate allowedRoles={[Role.SUPER_ADMIN, Role.ADMIN]}>
-              <Link href="/admin/projects/new" className="bg-gold text-black font-bold px-3 py-1.5 md:px-6 md:py-3 text-[10px] md:text-sm rounded-[10px] flex items-center gap-1 md:gap-2 hover:bg-white transition-colors shadow-[0_4px_14px_0_rgba(212,175,55,0.39)] whitespace-nowrap">
+              <Link href="/admin/projects/new" className="bg-gold text-primary-foreground font-bold px-3 py-1.5 md:px-6 md:py-3 text-[10px] md:text-sm rounded-[10px] flex items-center gap-1 md:gap-2 hover:bg-gold/90 transition-colors shadow-[0_4px_14px_0_rgba(212,175,55,0.39)] whitespace-nowrap">
                 <Plus size={14} className="md:w-[18px] md:h-[18px]" />
                 Add Project
               </Link>
@@ -102,18 +102,20 @@ export function ProjectManager({ initialData }: ProjectManagerProps) {
       {/* Content Area */}
       <div className="flex flex-col gap-3">
         {/* Toolbar */}
-        <div className="flex flex-row items-center gap-2 justify-between bg-white/30 dark:bg-white/5 border border-white/20 dark:border-white/10 rounded-[10px] p-2 backdrop-blur-md">
-        <div className="relative flex-1 min-w-0 max-w-[200px] md:max-w-[360px]">
-          <Search className="absolute left-2 md:left-3 top-1/2 -translate-y-1/2 text-white/30" size={14} />
-          <input 
-            type="text" 
-            placeholder="Search projects..." 
-            value={searchQuery}
-            onChange={(e) => handleSearchChange(e.target.value)}
-            className="w-full bg-black/20 dark:bg-white/5 border border-white/5 dark:border-white/10 rounded-[10px] pl-7 md:pl-9 pr-2 md:pr-3 py-1.5 md:py-2 text-xs md:text-sm text-white focus:border-gold/50 outline-none placeholder:text-white/20 dark:placeholder:text-white/30 transition-colors"
-          />
+        <div className="flex flex-row items-center gap-2 justify-between admin-surface-primary backdrop-blur-xs rounded-[10px] p-2">
+        <div className="relative flex-1 min-w-0 md:w-64 lg:w-96 bg-black/60 dark:bg-white/30 rounded-[10px]">
+          <div className="relative">
+             <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--admin-muted)] pointer-events-none" size={18} />
+             <input 
+               type="text" 
+               placeholder="Search projects..." 
+               value={searchQuery}
+               onChange={(e) => handleSearchChange(e.target.value)}
+               className="w-full admin-surface-input border border-[var(--admin-border)] rounded-[10px] pl-10 pr-4 py-2 text-sm text-[var(--admin-text)] placeholder:text-[var(--admin-muted)] focus:border-gold/50 focus:outline-none transition-colors"
+             />
+          </div>
         </div>
-        <div className="flex items-center gap-1 md:gap-2 border-l border-white/20 dark:border-white/10 pl-2 md:pl-4 shrink-0">
+        <div className="flex items-center gap-1 md:gap-2 border-l border-[var(--admin-border)] pl-2 md:pl-4 shrink-0">
            {/* Category Filter */}
            <Select 
               value={categoryFilter}
@@ -131,13 +133,13 @@ export function ProjectManager({ initialData }: ProjectManagerProps) {
 
           <button 
             onClick={() => setViewMode("grid")}
-            className={`p-1.5 md:p-2 rounded-[6px] transition-colors ${viewMode === 'grid' ? 'bg-white/10 text-white' : 'text-white/40 hover:text-white'}`}
+            className={`p-1.5 md:p-2 rounded-[6px] transition-colors ${viewMode === 'grid' ? 'bg-gold text-primary-foreground' : 'text-[var(--admin-muted)] hover:text-[var(--admin-text)]'}`}
           >
             <Grid size={14} className="md:w-[18px] md:h-[18px]" />
           </button>
           <button 
             onClick={() => setViewMode("list")}
-            className={`p-1.5 md:p-2 rounded-[6px] transition-colors ${viewMode === 'list' ? 'bg-white/10 text-white' : 'text-white/40 hover:text-white'}`}
+            className={`p-1.5 md:p-2 rounded-[6px] transition-colors ${viewMode === 'list' ? 'bg-gold text-primary-foreground' : 'text-[var(--admin-muted)] hover:text-[var(--admin-text)]'}`}
           >
             <LayoutList size={14} className="md:w-[18px] md:h-[18px]" />
           </button>
@@ -152,8 +154,8 @@ export function ProjectManager({ initialData }: ProjectManagerProps) {
              onClick={() => handleCategoryChange(filter)}
              className={`px-4 py-1.5 rounded-full border text-xs font-medium whitespace-nowrap transition-colors ${
                 categoryFilter === filter 
-                ? "bg-gold text-black border-gold font-bold shadow-[0_4px_14px_0_rgba(212,175,55,0.39)]" 
-                : "bg-white/30 dark:bg-white/5 border-white/20 dark:border-white/10 text-white/60 hover:bg-white/50 dark:hover:bg-white/10 hover:text-white hover:border-white/40 dark:hover:border-white/20 backdrop-blur-sm"
+                ? "bg-gold text-[var(--admin-text)] border-gold font-bold shadow-sm" 
+                : "admin-surface-primary border-[var(--admin-border)] text-[var(--admin-text)] hover:bg-[var(--admin-text)]/5 hover:text-gold backdrop-blur-sm"
              }`}
            >
              {filter}
@@ -170,13 +172,13 @@ export function ProjectManager({ initialData }: ProjectManagerProps) {
             />
         </div>
 
-      {/* Grid View */}
+                 {/* Grid View */}
       {viewMode === "grid" ? (
         <div className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 md:gap-6">
           {projects.map((project) => (
-            <div key={project.id} className="group bg-white/30 dark:bg-white/5 border border-white/20 dark:border-white/10 rounded-[10px] overflow-hidden hover:border-gold/30 transition-all flex flex-col">
+            <div key={project.id} className="group admin-surface-primary backdrop-blur-xs rounded-[10px] overflow-hidden hover:border-primary/50 transition-all flex flex-col">
               {/* Image Area */}
-              <div className="aspect-video bg-black/20 relative overflow-hidden">
+              <div className="aspect-video admin-surface-input relative overflow-hidden">
                  {/* Placeholder Gradient if image fails or for mock */}
                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-60" />
                  
@@ -186,39 +188,39 @@ export function ProjectManager({ initialData }: ProjectManagerProps) {
                  )}
 
                  {/* Status Badge */}
-                 <div className="absolute top-3 left-3">
-                    <span className={`px-2 py-0.5 rounded-[4px] text-[10px] font-bold uppercase tracking-wider ${
-                      project.status === "Active" ? "bg-green-500 text-black" : 
-                      project.status === "Completed" ? "bg-blue-500 text-white" : "bg-white/20 text-white backdrop-blur-md"
-                    }`}>
-                      {project.status}
-                    </span>
-                 </div>
+                  <div className="absolute top-3 left-3">
+                     <span className={`px-2 py-0.5 rounded-[4px] text-[10px] font-bold uppercase tracking-wider ${
+                       project.status === "Active" ? "bg-green-500 text-primary-foreground" : 
+                       project.status === "Completed" ? "bg-gold text-primary-foreground" : "admin-surface-input text-[var(--admin-text)]"
+                     }`}>
+                       {project.status}
+                     </span>
+                  </div>
 
                  {/* Actions Overlay */}
-                 <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2 backdrop-blur-sm">
-                    <button onClick={() => router.push(`/portfolio/${project.id}`)} className="p-2 bg-white/10 hover:bg-white text-white hover:text-black rounded-full transition-colors" title="View in Portfolio">
+                 <div className="absolute inset-0 bg-[var(--admin-background)]/80 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2 backdrop-blur-sm">
+                    <button onClick={() => router.push(`/portfolio/${project.id}`)} className="p-2 bg-secondary hover:bg-[var(--admin-background)] text-secondary-foreground hover:text-[var(--admin-text)] rounded-full transition-colors" title="View in Portfolio">
                        <Eye size={18} />
                     </button>
-                    <button onClick={() => router.push(`/admin/projects/${project.id}`)} className="p-2 bg-white/10 hover:bg-white text-white hover:text-black rounded-full transition-colors" title="Edit">
+                    <button onClick={() => router.push(`/admin/projects/${project.id}`)} className="p-2 bg-secondary hover:bg-[var(--admin-background)] text-secondary-foreground hover:text-[var(--admin-text)] rounded-full transition-colors" title="Edit">
                        <Edit size={18} />
                     </button>
                  </div>
               </div>
 
               {/* Content */}
-              <div className="p-4 flex flex-col flex-1">
+                  <div className="p-4 flex flex-col flex-1">
                  <div className="flex justify-between items-start mb-2">
                     <div>
-                      <h3 className="text-sm md:text-base font-bold text-white leading-tight line-clamp-1">{project.title}</h3>
-                      <p className="text-xs text-white/40">{project.client}</p>
+                      <h3 className="text-sm md:text-base font-bold text-[var(--admin-text)] leading-tight line-clamp-1">{project.title}</h3>
+                      <p className="text-xs text-[var(--admin-text)]">{project.client}</p>
                     </div>
                  </div>
                  
-                 <div className="mt-auto pt-4 border-t border-white/5 flex items-center justify-between">
+                 <div className="mt-auto pt-4 border-t border-[var(--admin-border)] flex items-center justify-between">
                     <span className="text-xs font-bold text-gold px-2 py-1 bg-gold/10 rounded-[4px]">{project.category}</span>
                     <RoleGate allowedRoles={[Role.SUPER_ADMIN, Role.ADMIN]}>
-                      <button onClick={() => handleDelete(project.id)} className="text-white/40 hover:text-red-400 transition-colors">
+                      <button onClick={() => handleDelete(project.id)} className="text-[var(--admin-text)]/60 hover:text-red-400 transition-colors">
                          <Trash2 size={16} />
                       </button>
                     </RoleGate>
@@ -227,9 +229,9 @@ export function ProjectManager({ initialData }: ProjectManagerProps) {
             </div>
           ))}
           
-          {/* Add New Placeholer */}
-          <Link href="/admin/projects/new" className="border border-dashed border-white/20 dark:border-white/10 rounded-[10px] flex flex-col items-center justify-center gap-4 text-white/20 hover:text-gold hover:border-gold/30 hover:bg-gold/5 transition-all min-h-[200px]">
-             <div className="w-12 h-12 rounded-full bg-white/30 dark:bg-white/5 flex items-center justify-center border border-white/5">
+           {/* Add New Placeholer */}
+          <Link href="/admin/projects/new" className="border border-dashed border-[var(--admin-muted)] bg-[var(--admin-surface-primary)] backdrop-blur-xs hover:bg-[var(--admin-surface-primary)] rounded-[10px] flex flex-col items-center justify-center gap-4 text-[var(--admin-text)] hover:text-gold hover:border-gold/100 hover:bg-gold/5 transition-all min-h-[200px]">
+             <div className="w-12 h-12 rounded-full admin-surface-input flex items-center justify-center">
                 <Plus size={24} />
              </div>
              <span className="font-bold text-sm">Create New Project</span>
@@ -237,12 +239,12 @@ export function ProjectManager({ initialData }: ProjectManagerProps) {
         </div>
       ) : (
         /* List View */
-        <DataGrid 
+          <DataGrid 
           columns={[
-            { key: "title", label: "Project", render: (row: ProjectSummary) => <span className="font-bold text-white max-w-[200px] truncate text-xs md:text-base block">{row.title}</span> },
-            { key: "client", label: "Client", render: (row: ProjectSummary) => <span className="text-white/60 text-[10px] md:text-sm whitespace-nowrap">{row.client}</span> },
-            { key: "category", label: "Category", render: (row: ProjectSummary) => <span className="text-[10px] md:text-xs bg-white/10 px-2 py-1 rounded text-white/80 whitespace-nowrap">{row.category}</span> },
-            { key: "status", label: "Status", render: (row: ProjectSummary) => <span className="text-[10px] md:text-sm font-medium text-white">{row.status}</span> }
+            { key: "title", label: "Project", render: (row: ProjectSummary) => <span className="font-bold text-[var(--admin-text)] max-w-[200px] truncate text-xs md:text-base block">{row.title}</span> },
+            { key: "client", label: "Client", render: (row: ProjectSummary) => <span className="text-[var(--admin-text)] text-[10px] md:text-sm whitespace-nowrap">{row.client}</span> },
+            { key: "category", label: "Category", render: (row: ProjectSummary) => <span className="text-[10px] md:text-xs admin-surface-input px-2 py-1 rounded text-[var(--admin-text)] whitespace-nowrap">{row.category}</span> },
+            { key: "status", label: "Status", render: (row: ProjectSummary) => <span className="text-[10px] md:text-sm font-medium text-[var(--admin-text)]">{row.status}</span> }
           ]}
           data={projects}
           hideSearch={true}

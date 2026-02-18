@@ -23,7 +23,7 @@ export async function requireRole(allowedRoles: Role[]) {
 
     if (!allowedRoles.includes(session.user.role)) {
         console.warn(`Unauthorized access attempt by ${session.user.email} (${session.user.role})`);
-        redirect("/admin");
+        redirect("/admin/unauthorized");
     }
 
     return session.user;

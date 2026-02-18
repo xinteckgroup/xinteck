@@ -64,14 +64,14 @@ export function TeamManagementClient({ users, invitations }: { users: User[]; in
                 Decision: Separated from invitations to cleanly distinguish between current access and pending access.
                 */}
                 <section>
-                    <h3 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
+                    <h3 className="text-lg font-bold text-[var(--admin-text)] mb-4 flex items-center gap-2">
                         <Shield size={18} className="text-gold" />
                         Active Members ({users.length})
                     </h3>
-                    <div className="border border-white/10 rounded-xl overflow-hidden bg-black/20">
+                    <div className="border border-[var(--admin-border)] rounded-[10px] overflow-hidden admin-surface-primary shadow-sm">
                         <div className="overflow-x-auto">
-                            <table className="w-full text-left text-sm text-white/60">
-                                <thead className="bg-white/5 text-xs uppercase font-medium text-white/40">
+                            <table className="w-full text-left text-sm text-[var(--admin-text)]/80">
+                                <thead className="bg-[var(--admin-text)]/5 text-[10px] uppercase font-black tracking-widest text-[var(--admin-text)]/60 border-b border-[var(--admin-border)]">
                                     <tr>
                                         <th className="px-4 py-3">User</th>
                                         <th className="px-4 py-3">Role</th>
@@ -79,12 +79,12 @@ export function TeamManagementClient({ users, invitations }: { users: User[]; in
                                         <th className="px-4 py-3">Last Active</th>
                                     </tr>
                                 </thead>
-                                <tbody className="divide-y divide-white/5">
+                                <tbody className="divide-y divide-[var(--admin-border)]">
                                     {users.map((user) => (
-                                        <tr key={user.id} className="hover:bg-white/5 transition-colors">
+                                        <tr key={user.id} className="hover:bg-[var(--admin-text)]/5 transition-colors">
                                             <td className="px-4 py-3">
                                                 <div className="flex items-center gap-3">
-                                                    <div className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center text-white font-bold overflow-hidden">
+                                                    <div className="w-8 h-8 rounded-full admin-surface-input flex items-center justify-center text-[var(--admin-text)] font-bold overflow-hidden border border-[var(--admin-border)]">
                                                         {user.avatar ? (
                                                             <img src={user.avatar} alt={user.name} className="w-full h-full object-cover" />
                                                         ) : (
@@ -92,8 +92,8 @@ export function TeamManagementClient({ users, invitations }: { users: User[]; in
                                                         )}
                                                     </div>
                                                     <div>
-                                                        <div className="font-medium text-white">{user.name}</div>
-                                                        <div className="text-xs text-white/40">{user.email}</div>
+                                                        <div className="font-medium text-[var(--admin-text)]">{user.name}</div>
+                                                        <div className="text-xs text-[var(--admin-muted)]">{user.email}</div>
                                                     </div>
                                                 </div>
                                             </td>
@@ -105,7 +105,7 @@ export function TeamManagementClient({ users, invitations }: { users: User[]; in
                                                     {user.status}
                                                 </span>
                                             </td>
-                                            <td className="px-4 py-3 text-xs">
+                                            <td className="px-4 py-3 text-xs text-[var(--admin-muted)]">
                                                 {user.lastActiveAt ? formatDistanceToNow(new Date(user.lastActiveAt), { addSuffix: true }) : "Never"}
                                             </td>
                                         </tr>
@@ -121,7 +121,7 @@ export function TeamManagementClient({ users, invitations }: { users: User[]; in
                 Decision: This section provides audit visibility into who has been invited and the status of those links.
                 */}
                 <section>
-                    <h3 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
+                    <h3 className="text-lg font-bold text-[var(--admin-text)] mb-4 flex items-center gap-2">
                         <MailIcon />
                         Invitations ({invitations.filter(i => i.status === "PENDING").length} Pending)
                     </h3>
@@ -134,22 +134,22 @@ export function TeamManagementClient({ users, invitations }: { users: User[]; in
 
 function RoleBadge({ role }: { role: Role }) {
     const styles = {
-        SUPER_ADMIN: "bg-purple-500/20 text-purple-300 border-purple-500/30",
-        ADMIN: "bg-blue-500/20 text-blue-300 border-blue-500/30",
-        SUPPORT_STAFF: "bg-white/10 text-white/60 border-white/10",
+        SUPER_ADMIN: "bg-purple-500/10 text-purple-400 border-purple-500/20",
+        ADMIN: "bg-blue-500/10 text-blue-400 border-blue-500/20",
+        SUPPORT_STAFF: "bg-[var(--admin-text)]/10 text-[var(--admin-muted)] border-[var(--admin-border)]",
     };
     return (
-        <span className={`px-2 py-0.5 rounded text-[10px] font-bold border ${styles[role]}`}>
+        <span className={`px-2 py-0.5 rounded-[4px] text-[10px] font-black uppercase tracking-wider border ${styles[role]}`}>
             {role.replace("_", " ")}
         </span>
     );
 }
 
 const statusStyles = {
-    ACTIVE: "bg-green-500/20 text-green-300 border-green-500/30",
-    SUSPENDED: "bg-red-500/20 text-red-300 border-red-500/30",
-    AWAY: "bg-orange-500/20 text-orange-300 border-orange-500/30",
-    DELETED: "bg-gray-500/20 text-gray-400 border-gray-500/30",
+    ACTIVE: "bg-green-500/10 text-green-400 border-green-500/20",
+    SUSPENDED: "bg-red-500/10 text-red-400 border-red-500/20",
+    AWAY: "bg-orange-500/10 text-orange-400 border-orange-500/20",
+    DELETED: "bg-[var(--admin-text)]/10 text-[var(--admin-muted)] border-[var(--admin-border)]",
 };
 
 function MailIcon() {

@@ -53,7 +53,7 @@ export default async function BlogPostPage({ params }: { params: { slug: string 
         </p>
       </header>
 
-      <div className="prose prose-invert prose-gold max-w-none 
+      <div className="prose dark:prose-invert prose-headings:text-foreground prose-gold max-w-none 
         prose-headings:font-black prose-headings:tracking-tighter prose-headings:italic
         prose-p:text-foreground/70 prose-p:text-lg prose-p:leading-relaxed
         prose-strong:text-gold prose-a:text-gold hover:prose-a:underline

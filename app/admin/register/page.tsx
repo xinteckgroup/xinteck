@@ -84,20 +84,20 @@ function RegisterContent() {
     // 1. INVALID STATE
     if (status === "invalid") {
         return (
-            <div className="min-h-screen flex flex-col items-center justify-center bg-black text-white p-4">
+            <div className="min-h-screen flex flex-col items-center justify-center p-4 bg-background">
                  <motion.div 
                     initial={{ opacity: 0, scale: 0.9 }}
                     animate={{ opacity: 1, scale: 1 }}
-                    className="max-w-md w-full bg-[#111] border border-white/10 rounded-2xl p-8 text-center"
+                    className="max-w-md w-full bg-card border border-destructive/20 rounded-[20px] p-8 text-center shadow-lg"
                  >
-                    <div className="w-16 h-16 bg-red-500/10 rounded-full flex items-center justify-center mx-auto mb-6 text-red-500">
+                    <div className="w-16 h-16 bg-destructive/10 rounded-full flex items-center justify-center mx-auto mb-6 text-destructive">
                         <ShieldAlert size={32} />
                     </div>
-                    <h2 className="text-xl font-bold mb-2">Access Denied</h2>
-                    <p className="text-white/60 mb-8">{statusMessage}</p>
+                    <h2 className="text-xl font-bold mb-2 text-foreground">Access Denied</h2>
+                    <p className="text-muted-foreground mb-8">{statusMessage}</p>
                     <Link 
                         href="/admin/login"
-                        className="inline-flex items-center justify-center w-full bg-white text-black font-bold py-3 rounded-xl hover:bg-gray-200 transition-colors"
+                        className="inline-flex items-center justify-center w-full bg-foreground text-background font-bold py-3 rounded-xl hover:opacity-80 transition-colors"
                     >
                         Return to Login
                     </Link>
@@ -110,10 +110,10 @@ function RegisterContent() {
     // 2. VALIDATING STATE
     if (status === "validating") {
          return (
-            <div className="min-h-screen flex items-center justify-center bg-black text-white">
+            <div className="min-h-screen flex items-center justify-center bg-background">
                 <div className="flex flex-col items-center gap-4">
-                    <div className="w-8 h-8 border-2 border-gold border-t-transparent rounded-full animate-spin"></div>
-                    <p className="text-white/40 text-sm">Verifying secure link...</p>
+                    <div className="w-8 h-8 border-2 border-primary border-t-transparent rounded-full animate-spin"></div>
+                    <p className="text-foreground font-medium text-sm">Verifying secure link...</p>
                 </div>
             </div>
          );
@@ -121,21 +121,24 @@ function RegisterContent() {
 
     // 3. VALID STATE (Form)
     return (
-        <div className="min-h-screen grid lg:grid-cols-2 bg-black text-white">
+        <div className="min-h-screen grid lg:grid-cols-2 bg-background text-foreground">
             {/* Left Side - Visuals */}
             <div className="hidden lg:flex relative items-center justify-center overflow-hidden bg-[#0a0a0a]">
                 <div className="absolute inset-0 z-0">
+                   {/* IMAGE IMPLEMENTED HALFWAY */}
                    <Image
                      src="/admin-bg/circuit.png"
-                     alt="Background"
+                     alt="Register Background"
                      fill
                      priority
                      quality={100}
-                     className="object-cover opacity-60"
+                     className="object-cover opacity-80"
                    />
-                   <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-black/40" />
+                   {/* Overlay matching Login */}
+                   <div className="absolute inset-0 bg-black/40" />
                 </div>
                 
+                {/* LOGO CENTERED ON THE IMAGE */}
                 <div className="relative z-10 p-12 flex items-center justify-center">
                     <motion.div 
                       initial={{ opacity: 0, scale: 0.9 }}
@@ -145,9 +148,9 @@ function RegisterContent() {
                        <Image 
                          src="/logos/logo-dark-full.png"
                          alt="Xinteck Logo"
-                         width={600}
-                         height={225}
-                         className="w-auto h-auto max-w-[90%] max-h-[300px]"
+                         width={500}
+                         height={180}
+                         className="w-auto h-auto max-w-[80%] drop-shadow-2xl"
                          priority
                        />
                     </motion.div>
@@ -155,7 +158,7 @@ function RegisterContent() {
             </div>
 
             {/* Right Side - Register Form */}
-            <div className="flex items-center justify-center p-8 bg-black/50 backdrop-blur-sm">
+            <div className="flex items-center justify-center p-8 bg-background">
                 <motion.div 
                     initial={{ opacity: 0, x: 20 }}
                     animate={{ opacity: 1, x: 0 }}
@@ -163,11 +166,11 @@ function RegisterContent() {
                     className="w-full max-w-md space-y-8"
                 >
                     <div className="text-center lg:text-left">
-                        <div className="inline-block px-3 py-1 bg-gold/10 border border-gold/20 rounded-full text-xs text-gold font-bold mb-4">
+                        <div className="inline-block px-3 py-1 bg-primary/10 border border-primary/20 rounded-full text-xs text-primary font-bold mb-4">
                             You've been invited by {invitedBy}
                         </div>
-                        <h2 className="text-3xl font-bold tracking-tight text-white">Create Account</h2>
-                        <p className="mt-2 text-sm text-white/40">Set up your credentials to join the team.</p>
+                        <h2 className="text-3xl font-bold tracking-tight text-foreground">Create Account</h2>
+                        <p className="mt-2 text-sm text-muted-foreground">Set up your credentials to join the team.</p>
                     </div>
 
                     <form onSubmit={handleSubmit} className="space-y-6">
@@ -180,30 +183,26 @@ function RegisterContent() {
                         <div className="space-y-4">
                             {/* Read Only Email */}
                             <div className="relative opacity-60">
-                                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 text-white/30" size={18} />
-                                {/* 
-                                Purpose: Read-only email field.
-                                Decision: Prevent users from changing the email associated with the invitation token. 
-                                */}
+                                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" size={18} />
                                 <input
                                     type="email"
                                     value={email}
                                     disabled
-                                    className="w-full bg-white/5 border border-white/10 rounded-[10px] pl-10 pr-4 py-3 text-white cursor-not-allowed"
+                                    className="w-full bg-muted/50 border border-input rounded-[10px] pl-10 pr-4 py-3 text-muted-foreground cursor-not-allowed"
                                 />
-                                <div className="absolute right-3 top-1/2 -translate-y-1/2 text-[10px] text-green-400 font-bold bg-green-900/40 px-2 py-0.5 rounded">
+                                <div className="absolute right-3 top-1/2 -translate-y-1/2 text-[10px] text-green-600 dark:text-green-400 font-bold bg-green-100 dark:bg-green-900/40 px-2 py-0.5 rounded">
                                     VERIFIED
                                 </div>
                             </div>
 
                             <div className="relative">
-                                <User className="absolute left-3 top-1/2 -translate-y-1/2 text-white/30" size={18} />
+                                <User className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" size={18} />
                                 <input
                                     type="text"
                                     placeholder="Full Name"
                                     value={formData.name}
                                     onChange={e => setFormData({ ...formData, name: e.target.value })}
-                                    className="w-full bg-white/5 border border-white/10 rounded-[10px] pl-10 pr-4 py-3 text-white placeholder:text-white/20 focus:border-gold/50 outline-none transition-all"
+                                    className="w-full bg-muted/30 border border-input rounded-[10px] pl-10 pr-4 py-3 text-foreground placeholder:text-muted-foreground focus:border-primary outline-none transition-all"
                                     required
                                     autoFocus
                                 />
@@ -214,11 +213,11 @@ function RegisterContent() {
                                     placeholder="Password"
                                     value={formData.password}
                                     onChange={e => setFormData({ ...formData, password: e.target.value })}
-                                    className="bg-white/5"
+                                    className="bg-muted/30 text-foreground border-input"
                                     required
-                                    leftIcon={<Lock size={18} />}
+                                    leftIcon={<Lock size={18} className="text-muted-foreground" />}
                                 />
-                                <p className="text-[10px] text-white/30 px-1">
+                                <p className="text-[10px] text-muted-foreground px-1">
                                     Must be at least 8 characters.
                                 </p>
                             </div>
@@ -227,10 +226,10 @@ function RegisterContent() {
                         <button
                             type="submit"
                             disabled={isSubmitting}
-                            className="w-full bg-gold text-black font-bold py-3 rounded-[10px] flex items-center justify-center gap-2 hover:bg-white hover:scale-[1.02] active:scale-[0.98] transition-all disabled:opacity-50 shadow-[0_4px_14px_0_rgba(212,175,55,0.39)]"
+                            className="w-full bg-primary text-primary-foreground font-bold py-3 rounded-[10px] flex items-center justify-center gap-2 hover:bg-primary/90 hover:scale-[1.02] active:scale-[0.98] transition-all disabled:opacity-50 shadow-lg"
                         >
                             {isSubmitting ? (
-                                <div className="w-5 h-5 border-2 border-black/30 border-t-black rounded-full animate-spin" />
+                                <div className="w-5 h-5 border-2 border-background/30 border-t-background rounded-full animate-spin" />
                             ) : (
                                 <>Complete Registration <ArrowRight size={18} /></>
                             )}
@@ -249,8 +248,8 @@ Decision: We validate the token immediately on mount and lock the email field to
 export default function RegisterPage() {
     return (
         <Suspense fallback={
-            <div className="min-h-screen flex items-center justify-center bg-black text-white">
-                <div className="w-8 h-8 border-2 border-gold border-t-transparent rounded-full animate-spin"></div>
+            <div className="min-h-screen flex items-center justify-center bg-background">
+                <div className="w-8 h-8 border-2 border-primary border-t-transparent rounded-full animate-spin"></div>
             </div>
         }>
             <RegisterContent />

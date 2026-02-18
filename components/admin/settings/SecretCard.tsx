@@ -25,15 +25,15 @@ export function SecretCard({
     const isMasked = value && (value.includes("...") || value.includes("****"));
 
     return (
-        <div className="bg-white/30 dark:bg-white/5 border border-white/20 dark:border-white/10 rounded-[12px] p-4 md:p-6 backdrop-blur-md flex flex-col gap-4 shadow-sm relative">
+        <div className="admin-surface-primary rounded-[10px] p-4 md:p-6 flex flex-col gap-4 relative border border-[var(--admin-border)] backdrop-blur-xs">
             <div className="flex items-start justify-between gap-4">
                 <div className="flex gap-3">
                     <div className="mt-1 w-8 h-8 rounded-full bg-gold/10 flex items-center justify-center text-gold shrink-0">
                         <Lock size={14} />
                     </div>
                     <div>
-                        <h3 className="font-bold text-white text-sm md:text-base">{title}</h3>
-                        <p className="text-xs text-white/50 leading-relaxed mt-1 max-w-xl">
+                        <h3 className="font-bold text-[var(--admin-text)] text-sm md:text-base">{title}</h3>
+                        <p className="text-xs text-[var(--admin-text)]/80 leading-relaxed mt-1 max-w-xl">
                             {description}
                         </p>
                     </div>
@@ -43,7 +43,7 @@ export function SecretCard({
                         href={docsLink} 
                         target="_blank" 
                         rel="noreferrer"
-                        className="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wider text-white/40 hover:text-gold transition-colors shrink-0 bg-white/50 dark:bg-white/5 hover:bg-white/60 dark:hover:bg-white/10 px-2 py-1 rounded-md h-fit"
+                        className="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wider text-[var(--admin-text)] hover:text-gold transition-colors shrink-0 admin-surface-input hover:bg-[var(--admin-text)]/5 px-2 py-1 rounded-md h-fit border border-[var(--admin-border)]"
                     >
                         <span>{docsLabel || "Guide"}</span>
                         <ExternalLink size={10} />
@@ -53,7 +53,7 @@ export function SecretCard({
 
             <div className="pl-0 md:pl-[44px]">
                  <div className="flex flex-col gap-1.5">
-                    <label className="text-[10px] font-bold text-white/40 uppercase tracking-widest">Secret Value</label>
+                    <label className="text-[10px] font-black text-[var(--admin-text)] uppercase tracking-widest">Secret Value</label>
                     <div className="relative">
                         <PasswordInput 
                             value={value || ""}
@@ -69,7 +69,7 @@ export function SecretCard({
                             </div>
                         )}
                     </div>
-                     <p className="text-[10px] text-white/30">
+                     <p className="text-[10px] text-[var(--admin-text)]/60">
                         Values are encrypted with AES-256-GCM before storage. Only the Super Admin can decrypt.
                     </p>
                 </div>

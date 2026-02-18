@@ -15,8 +15,8 @@ const sizeMap: Record<LoaderSize, string> = {
 export function Loader({ size = "md", className = "", label }: LoaderProps) {
     return (
         <div className={`flex flex-col items-center justify-center gap-2 ${className}`}>
-            <span className={`${sizeMap[size]} border-white/20 border-t-gold rounded-full animate-spin`} />
-            {label && <span className="text-xs text-white/40">{label}</span>}
+            <span className={`${sizeMap[size]} border-muted-foreground/20 border-t-gold rounded-full animate-spin`} />
+            {label && <span className="text-xs text-muted-foreground">{label}</span>}
         </div>
     );
 }

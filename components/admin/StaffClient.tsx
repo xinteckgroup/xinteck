@@ -4,8 +4,9 @@ import { deleteUser, deleteUsers, inviteUser, reactivateUser, suspendUser, updat
 import { DataGrid } from "@/components/admin/DataGrid";
 import { RoleGate } from "@/components/admin/RoleGate";
 import { PageContainer, PageHeader } from "@/components/admin/ui";
+import { cn } from "@/lib/utils";
 import { Role } from "@prisma/client";
-import { Ban, Check, RefreshCw, Shield, UserPlus, X } from "lucide-react";
+import { Activity, Ban, Check, RefreshCw, Shield, UserMinus, UserPlus, Users, X } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 import { useToast } from "./ui/Toast";
@@ -16,9 +17,8 @@ interface StaffClientProps {
 
 export function StaffClient({ initialStaff }: StaffClientProps) {
   const router = useRouter();
-  const { error } = useToast();
+  const { error, success } = useToast();
   const [isPending, startTransition] = useTransition();
-  const [staffList, setStaffList] = useState(initialStaff);
   const [isInviteOpen, setIsInviteOpen] = useState(false);
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [selectedStaff, setSelectedStaff] = useState<any>(null);
@@ -34,7 +34,7 @@ export function StaffClient({ initialStaff }: StaffClientProps) {
     startTransition(async () => {
         try {
             await inviteUser({ name: inviteName, email: inviteEmail, role: inviteRole });
-            
+            success("Invitation sent successfully");
             setIsInviteOpen(false);
             resetForm();
             router.refresh();
@@ -50,7 +50,7 @@ export function StaffClient({ initialStaff }: StaffClientProps) {
     startTransition(async () => {
         try {
             await updateUserRole(selectedStaff.id, inviteRole);
-            
+            success("Role updated successfully");
             setIsEditOpen(false);
             setSelectedStaff(null);
             router.refresh();
@@ -61,18 +61,21 @@ export function StaffClient({ initialStaff }: StaffClientProps) {
   };
 
   const handleDelete = (ids: string | string[]) => {
-       startTransition(async () => {
-           try {
-               if (Array.isArray(ids)) {
-                   await deleteUsers(ids);
-               } else {
-                   await deleteUser(ids);
+       if (confirm("Permanently delete this user? This cannot be undone.")) {
+           startTransition(async () => {
+               try {
+                   if (Array.isArray(ids)) {
+                       await deleteUsers(ids);
+                   } else {
+                       await deleteUser(ids);
+                   }
+                   success("User(s) deleted successfully");
+                   router.refresh();
+               } catch (e: any) {
+                   error("Failed to delete user: " + e.message);
                }
-               router.refresh();
-           } catch (e: any) {
-               alert("Failed to delete user: " + e.message);
-           }
-       });
+           });
+       }
   };
 
   const openEdit = (member: any) => {
@@ -92,6 +95,7 @@ export function StaffClient({ initialStaff }: StaffClientProps) {
       startTransition(async () => {
         try {
           await suspendUser(id);
+          success("User suspended");
           router.refresh();
         } catch (e: any) {
           error("Failed to suspend: " + e.message);
@@ -104,6 +108,7 @@ export function StaffClient({ initialStaff }: StaffClientProps) {
     startTransition(async () => {
       try {
         await reactivateUser(id);
+        success("User reactivated");
         router.refresh();
       } catch (e: any) {
         error("Failed to reactivate: " + e.message);
@@ -117,16 +122,16 @@ export function StaffClient({ initialStaff }: StaffClientProps) {
       label: "User Profile",
       render: (row: any) => (
          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center text-white font-bold border border-white/20 dark:border-white/10 overflow-hidden relative">
+            <div className="w-10 h-10 rounded-full admin-surface-input flex items-center justify-center text-[var(--admin-text)] font-black border border-[var(--admin-border)] overflow-hidden relative shadow-inner">
                {row.avatar?.startsWith('http') ? (
                   <img src={row.avatar} alt={row.name} className="w-full h-full object-cover" />
                ) : (
-                  <span>{row.avatar}</span>
+                  <span className="text-gold uppercase">{row.avatar || row.name.charAt(0)}</span>
                )}
             </div>
             <div>
-               <p className="font-bold text-white">{row.name}</p>
-               <p className="text-xs text-white/40">{row.email}</p>
+               <p className="text-[14px] font-black text-[var(--admin-text)] leading-tight">{row.name}</p>
+               <p className="text-[11px] font-bold text-[var(--admin-text)]/40 uppercase tracking-tighter">{row.email}</p>
             </div>
          </div>
       )
@@ -135,12 +140,13 @@ export function StaffClient({ initialStaff }: StaffClientProps) {
       key: "role",
       label: "Role",
       render: (row: any) => (
-         <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-[6px] text-xs font-medium border ${
-            row.role === 'Super Admin' ? 'bg-gold/10 text-gold border-gold/20' : 
+         <span className={cn(
+            "inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest border shadow-sm",
+            row.role === 'Super Admin' ? 'bg-primary/10 text-gold border-gold/20' : 
             row.role === 'Editor' ? 'bg-blue-500/10 text-blue-400 border-blue-500/20' :
-            'bg-white/30 dark:bg-white/5 text-white/60 border-white/20 dark:border-white/10'
-         }`}>
-            <Shield size={12} />
+            'admin-surface-input text-[var(--admin-text)]/40 border-[var(--admin-border)]'
+         )}>
+            <Shield size={10} />
             {row.role}
          </span>
       )
@@ -150,41 +156,56 @@ export function StaffClient({ initialStaff }: StaffClientProps) {
        label: "Status",
        render: (row: any) => (
           <div className="flex items-center gap-2">
-             <div className={`w-2 h-2 rounded-full ${
+             <div className={cn(
+                "w-2 h-2 rounded-full",
                 row.status === 'Active' ? 'bg-green-400 shadow-[0_0_8px_rgba(74,222,128,0.5)]' :
-                row.status === 'Away' ? 'bg-yellow-400' : 
-                row.status === 'Suspended' ? 'bg-red-400' : 'bg-white/20'
-             }`} />
-             <span className="text-white/60">{row.status}</span>
+                row.status === 'Away' ? 'bg-yellow-400 shadow-[0_0_8px_rgba(250,204,21,0.5)]' : 
+                row.status === 'Suspended' ? 'bg-red-400 shadow-[0_0_8px_rgba(248,113,113,0.5)]' : 
+                'bg-[var(--admin-text)]/20'
+             )} />
+             <span className="text-[12px] font-bold text-[var(--admin-text)]/60 uppercase tracking-wider">{row.status}</span>
           </div>
        )
     },
-    { key: "lastActive", label: "Last Active", align: "right" as const },
+    { 
+       key: "lastActive", 
+       label: "Last Active", 
+       align: "right" as const,
+       render: (row: any) => (
+          <span className="text-[12px] font-bold text-[var(--admin-text)]/40 uppercase tracking-widest bg-[var(--admin-text)]/5 px-2 py-1 rounded-md border border-[var(--admin-border)]">
+             {row.lastActive || "Never"}
+          </span>
+       )
+    },
     {
       key: "actions",
       label: "",
       align: "right" as const,
       render: (row: any) => (
         <RoleGate allowedRoles={[Role.SUPER_ADMIN]}>
-          {row.role !== 'Super Admin' && (
-            row.status === 'Suspended' ? (
-              <button
-                onClick={() => handleReactivate(row.id)}
-                disabled={isPending}
-                className="inline-flex items-center gap-1.5 px-3 py-1 rounded-[6px] text-xs font-medium bg-green-500/10 text-green-400 border border-green-500/20 hover:bg-green-500/20 transition-colors disabled:opacity-50"
-              >
-                <RefreshCw size={12} /> Reactivate
-              </button>
-            ) : row.status === 'Active' ? (
-              <button
-                onClick={() => handleSuspend(row.id)}
-                disabled={isPending}
-                className="inline-flex items-center gap-1.5 px-3 py-1 rounded-[6px] text-xs font-medium bg-red-500/10 text-red-400 border border-red-500/20 hover:bg-red-500/20 transition-colors disabled:opacity-50"
-              >
-                <Ban size={12} /> Suspend
-              </button>
-            ) : null
-          )}
+          <div className="flex items-center justify-end gap-1 opacity-0 group-hover:opacity-100 transition-all duration-300">
+            {row.role !== 'Super Admin' && (
+              row.status === 'Suspended' ? (
+                <button
+                  onClick={() => handleReactivate(row.id)}
+                  disabled={isPending}
+                  className="p-2 text-green-400 hover:bg-green-500/5 rounded-[8px] transition-all"
+                  title="Reactivate"
+                >
+                  <RefreshCw size={16} className={isPending ? "animate-spin" : ""} />
+                </button>
+              ) : row.status === 'Active' ? (
+                <button
+                  onClick={() => handleSuspend(row.id)}
+                  disabled={isPending}
+                  className="p-2 text-red-400 hover:bg-red-500/5 rounded-[8px] transition-all"
+                  title="Suspend"
+                >
+                  <Ban size={16} />
+                </button>
+              ) : null
+            )}
+          </div>
         </RoleGate>
       )
     }
@@ -192,111 +213,134 @@ export function StaffClient({ initialStaff }: StaffClientProps) {
 
   return (
     <PageContainer>
-      {/* Actions Header */}
       <PageHeader 
         title="Staff Management" 
         subtitle="Manage team access and permissions."
         actions={
           <RoleGate allowedRoles={[Role.SUPER_ADMIN]}>
-            <div className="flex gap-2 md:gap-3 w-full sm:w-auto">
-              <button 
-                onClick={() => setIsInviteOpen(true)} 
-                className="flex-1 sm:flex-initial px-3 py-1.5 md:px-6 md:py-2 rounded-[8px] bg-gold text-black font-bold text-[10px] md:text-sm hover:bg-white transition-colors flex items-center justify-center gap-1 md:gap-2 whitespace-nowrap shadow-[0_4px_14px_0_rgba(212,175,55,0.39)]"
-              >
-                <UserPlus size={14} className="md:w-[16px] md:h-[16px]" />
-                Invite Member
-              </button>
-            </div>
+            <button 
+              onClick={() => setIsInviteOpen(true)} 
+              className="bg-primary text-primary-foreground font-black px-6 py-2 md:px-10 md:py-3 rounded-[10px] flex items-center gap-2 hover:bg-gold transition-all text-xs md:text-sm shadow-xl shadow-primary/20"
+            >
+              <UserPlus size={16} />
+              Invite Member
+            </button>
           </RoleGate>
         }
       />
 
-      {/* Overview Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-3 md:gap-6">
-         <div className="p-3 md:p-6 bg-white/30 dark:bg-white/5 border border-white/20 dark:border-white/10 rounded-[10px] backdrop-blur-md">
-            <h3 className="text-white/60 text-[10px] md:text-xs font-bold uppercase mb-1">Total Members</h3>
-            <p className="text-2xl md:text-4xl font-black text-white">{initialStaff.length}</p>
-         </div>
-         <div className="p-3 md:p-6 bg-white/30 dark:bg-white/5 border border-white/20 dark:border-white/10 rounded-[10px] backdrop-blur-md">
-            <h3 className="text-white/60 text-[10px] md:text-xs font-bold uppercase mb-1">Active Now</h3>
-            <p className="text-2xl md:text-4xl font-black text-green-400 flex items-center gap-2">
-               {initialStaff.filter(s => s.status === 'Active').length} <span className="w-2 h-2 rounded-full bg-green-400 animate-pulse shadow-[0_0_8px_rgba(74,222,128,0.8)]" />
-            </p>
-         </div>
-         <div className="p-3 md:p-6 bg-white/30 dark:bg-white/5 border border-white/20 dark:border-white/10 rounded-[10px] backdrop-blur-md">
-            <h3 className="text-white/60 text-[10px] md:text-xs font-bold uppercase mb-1">Suspended</h3>
-            <p className="text-2xl md:text-4xl font-black text-red-400">
-                {initialStaff.filter(s => s.status === 'Suspended').length}
-            </p>
-         </div>
-      </div>
+      <div className="flex flex-col gap-6">
+        {/* Overview Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
+           <StatsCard 
+              label="Total Members" 
+              value={initialStaff.length} 
+              icon={<Users size={20} />} 
+              colorClass="bg-gold/10 text-gold" 
+              valueClass="text-[var(--admin-text)]" 
+           />
+           <StatsCard 
+              label="Active Now" 
+              value={initialStaff.filter(s => s.status === 'Active').length} 
+              icon={<Activity size={20} />} 
+              colorClass="bg-green-500/10 text-green-500" 
+              valueClass="text-green-500" 
+              pulse 
+           />
+           <StatsCard 
+              label="Suspended" 
+              value={initialStaff.filter(s => s.status === 'Suspended').length} 
+              icon={<UserMinus size={20} />} 
+              colorClass="bg-red-500/10 text-red-500" 
+              valueClass="text-red-500" 
+           />
+        </div>
 
-      {/* Data Grid */}
-      <DataGrid 
-         columns={columns}
-         data={initialStaff}
-         hideSearch={false}
-         actions={{
-            onEdit: (id) => openEdit(initialStaff.find(s => s.id === id)),
-            onDelete: (id: any) => handleDelete(id)
-         }}
-      />
+        {/* Data Grid */}
+        <div className="rounded-[12px] overflow-hidden shadow-2xl">
+           <DataGrid 
+              columns={columns}
+              data={initialStaff}
+              hideSearch={false}
+              actions={{
+                 onEdit: (id) => openEdit(initialStaff.find(s => s.id === id)),
+                 onDelete: (id: any) => handleDelete(id)
+              }}
+           />
+        </div>
+      </div>
 
       {/* Invite Modal */}
       {isInviteOpen && (
-         <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
-            <div className="bg-[#111] border border-white/20 dark:border-white/10 w-full max-w-md rounded-[16px] shadow-2xl animate-in fade-in zoom-in duration-300">
-               <div className="flex justify-between items-center p-6 border-b border-white/20 dark:border-white/10">
-                  <h3 className="text-xl font-bold text-white">Invite Team Member</h3>
-                  <button onClick={() => setIsInviteOpen(false)} className="text-white/40 hover:text-white"><X size={20} /></button>
-               </div>
-               <div className="p-6 flex flex-col gap-4">
+         <div className="fixed inset-0 z-[60] bg-black/80 backdrop-blur-xs flex items-center justify-center p-4 animate-in fade-in duration-300">
+            <div className="admin-surface-floating w-full max-w-md rounded-[20px] shadow-[0_32px_64px_-12px_rgba(0,0,0,0.5)] border border-[var(--admin-border)] overflow-hidden animate-in slide-in-from-bottom-8 duration-500">
+               <div className="flex justify-between items-center p-6 bg-black/20 border-b border-[var(--admin-border)]">
                   <div>
-                     <label className="text-xs font-bold text-white/60 uppercase mb-1 block">Full Name</label>
+                    <h3 className="text-xl font-black text-[var(--admin-text)] tracking-tight">Invite Member</h3>
+                    <p className="text-[12px] font-bold text-gold uppercase tracking-widest mt-0.5">Team Authorization</p>
+                  </div>
+                  <button onClick={() => setIsInviteOpen(false)} className="p-2 text-[var(--admin-text)] hover:text-gold hover:bg-[var(--admin-text)]/5 rounded-full transition-all">
+                    <X size={20} />
+                  </button>
+               </div>
+               <div className="p-8 flex flex-col gap-6">
+                  <div className="space-y-2">
+                     <label className="text-[12px] font-black text-[var(--admin-text)] uppercase tracking-widest ml-1">Full Name</label>
                      <input 
                         type="text" 
                         value={inviteName}
                         onChange={(e) => setInviteName(e.target.value)}
                         placeholder="e.g. John Doe"
-                        className="w-full bg-white/30 dark:bg-white/5 border border-white/20 dark:border-white/10 rounded-[8px] p-3 text-white outline-none focus:border-gold"
+                        className="w-full admin-surface-input rounded-[12px] border border-[var(--admin-border)] p-4 text-[var(--admin-text)] text-sm md:text-base outline-none focus:border-gold/50 focus:ring-1 focus:ring-gold/20 transition-all font-bold placeholder:text-[var(--admin-text)]"
                      />
                   </div>
-                  <div>
-                     <label className="text-xs font-bold text-white/60 uppercase mb-1 block">Email Address</label>
+                  <div className="space-y-2">
+                     <label className="text-[12px] font-black text-[var(--admin-text)] uppercase tracking-widest ml-1">Email Address</label>
                      <input 
                         type="email" 
                         value={inviteEmail}
                         onChange={(e) => setInviteEmail(e.target.value)}
                         placeholder="e.g. john@xinteck.com"
-                        className="w-full bg-white/30 dark:bg-white/5 border border-white/20 dark:border-white/10 rounded-[8px] p-3 text-white outline-none focus:border-gold"
+                        className="w-full admin-surface-input rounded-[12px] border border-[var(--admin-border)] p-4 text-[var(--admin-text)] text-sm md:text-base outline-none focus:border-gold/50 focus:ring-1 focus:ring-gold/20 transition-all font-bold placeholder:text-[var(--admin-text)]"
                      />
                   </div>
-                  <div>
-                     <label className="text-xs font-bold text-white/60 uppercase mb-1 block">Role</label>
+                  <div className="space-y-3">
+                     <label className="text-[12px] font-black text-[var(--admin-text)] uppercase tracking-widest ml-1">Access Tier</label>
                      <div className="grid grid-cols-3 gap-2">
                         {["Super Admin", "Editor", "Viewer"].map(role => (
                            <button 
                               key={role}
                               onClick={() => setInviteRole(role)}
-                              className={`p-2 rounded-[8px] text-xs font-bold border transition-all ${
-                                 inviteRole === role ? "bg-gold text-black border-gold" : "bg-white/30 dark:bg-white/5 text-white/60 border-white/20 dark:border-white/10 hover:border-white/30"
-                              }`}
+                              className={cn(
+                                 "py-2 rounded-[10px] text-[12px] font-bold uppercase tracking-widest border transition-all shadow-sm",
+                                 inviteRole === role 
+                                  ? "bg-primary text-[var(--admin-text)] border-primary shadow-lg shadow-primary/20 scale-105 z-10" 
+                                  : "admin-surface-input text-[var(--admin-text)] border-[var(--admin-border)] hover:border-gold/30"
+                              )}
                            >
                               {role}
                            </button>
                         ))}
                      </div>
                   </div>
-                  <p className="text-xs text-white/40">Default password will be <strong>xinteck123</strong></p>
+                  <div className="bg-gold/30 border border-gold/10 rounded-[12px] p-4 flex items-start gap-3">
+                    <Shield size={16} className="text-[var(--admin-text)] shrink-0 mt-0.5" />
+                    <p className="text-[11px] font-bold text-[var(--admin-text)] leading-relaxed uppercase tracking-wider">
+                      Default password will be <strong className="text-[var(--admin-text)] font-black underline">xinteck123</strong>. Member should change it upon first login.
+                    </p>
+                  </div>
                </div>
-               <div className="p-6 border-t border-white/20 dark:border-white/10 flex justify-end gap-3">
-                  <button onClick={() => setIsInviteOpen(false)} className="px-4 py-2 text-white/60 hover:text-white text-sm font-bold">Cancel</button>
+               <div className="p-6 bg-black/10 border-t border-[var(--admin-border)] flex justify-end gap-4">
+                  <button onClick={() => setIsInviteOpen(false)} className="px-6 py-2 text-[var(--admin-text)] hover:text-gold text-xs font-black uppercase tracking-widest transition-all">Cancel</button>
                   <button 
                      onClick={handleInvite}
                      disabled={!inviteName || !inviteEmail || isPending}
-                     className="bg-gold text-black px-6 py-2 rounded-[8px] text-sm font-bold hover:bg-white transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                     className={cn(
+                       "bg-primary text-[var(--admin-text)] font-black px-10 py-3 rounded-[12px] flex items-center gap-2 hover:bg-gold transition-all text-xs uppercase tracking-widest shadow-xl shadow-primary/20",
+                       (!inviteName || !inviteEmail || isPending) && "opacity-50 cursor-not-allowed grayscale"
+                     )}
                   >
-                     {isPending ? "Sending..." : "Send Invite"}
+                     {isPending ? "Configuring..." : "Send Invite"}
                   </button>
                </div>
             </div>
@@ -305,42 +349,105 @@ export function StaffClient({ initialStaff }: StaffClientProps) {
 
       {/* Edit Role Modal */}
       {isEditOpen && selectedStaff && (
-         <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
-            <div className="bg-[#111] border border-white/20 dark:border-white/10 w-full max-w-sm rounded-[16px] shadow-2xl animate-in fade-in zoom-in duration-300">
-               <div className="flex justify-between items-center p-6 border-b border-white/20 dark:border-white/10">
-                  <h3 className="text-lg font-bold text-white">Edit Role: <span className="text-gold">{selectedStaff.name}</span></h3>
-                  <button onClick={() => setIsEditOpen(false)} className="text-white/40 hover:text-white"><X size={20} /></button>
+         <div className="fixed inset-0 z-[60] bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 animate-in fade-in duration-300">
+            <div className="admin-surface-floating w-full max-w-sm rounded-[20px] shadow-[0_32px_64px_-12px_rgba(0,0,0,0.5)] border border-[var(--admin-border)] overflow-hidden animate-in zoom-in duration-500">
+               <div className="flex justify-between items-center p-6 bg-black/20 border-b border-[var(--admin-border)]">
+                  <div>
+                    <h3 className="text-lg font-black text-[var(--admin-text)] tracking-tight">Edit Permissions</h3>
+                    <p className="text-[10px] font-bold text-gold uppercase tracking-widest mt-0.5">{selectedStaff.name}</p>
+                  </div>
+                  <button onClick={() => setIsEditOpen(false)} className="p-2 text-[var(--admin-text)]/40 hover:text-gold hover:bg-[var(--admin-text)]/5 rounded-full transition-all">
+                    <X size={20} />
+                  </button>
                </div>
-               <div className="p-6">
-                  <label className="text-xs font-bold text-white/60 uppercase mb-2 block">Select New Role</label>
-                  <div className="flex flex-col gap-2">
+               <div className="p-8">
+                  <label className="text-[10px] font-black text-[var(--admin-text)]/40 uppercase tracking-widest ml-1 mb-4 block">Select Access Tier</label>
+                  <div className="flex flex-col gap-3">
                      {["Super Admin", "Editor", "Viewer"].map(role => (
                         <button 
                            key={role}
                            onClick={() => setInviteRole(role)}
-                           className={`p-3 rounded-[8px] text-sm font-bold border text-left flex justify-between items-center transition-all ${
-                              inviteRole === role ? "bg-gold/10 text-gold border-gold" : "bg-white/30 dark:bg-white/5 text-white/60 border-white/20 dark:border-white/10 hover:bg-white/10"
-                           }`}
+                           className={cn(
+                              "p-4 rounded-[12px] text-xs font-black uppercase tracking-widest border text-left flex justify-between items-center transition-all shadow-sm",
+                              inviteRole === role 
+                                ? "bg-primary/10 text-gold border-gold shadow-lg shadow-gold/5" 
+                                : "admin-surface-input text-[var(--admin-text)]/40 border-[var(--admin-border)] hover:bg-gold/5 hover:text-gold"
+                           )}
                         >
                            {role}
-                           {inviteRole === role && <Check size={16} />}
+                           {inviteRole === role && <Check size={16} className="animate-in zoom-in duration-300" />}
                         </button>
                      ))}
                   </div>
                </div>
-               <div className="p-6 border-t border-white/20 dark:border-white/10 flex justify-end gap-3">
-                  <button onClick={() => setIsEditOpen(false)} className="px-4 py-2 text-white/60 hover:text-white text-sm font-bold">Cancel</button>
+               <div className="p-6 bg-black/10 border-t border-[var(--admin-border)] flex justify-end gap-4">
+                  <button onClick={() => setIsEditOpen(false)} className="px-5 py-2 text-[var(--admin-text)]/40 hover:text-[var(--admin-text)] text-xs font-black uppercase tracking-widest">Cancel</button>
                   <button 
                      onClick={handleUpdateRole}
                      disabled={isPending}
-                     className="bg-white text-black px-6 py-2 rounded-[8px] text-sm font-bold hover:bg-gold transition-colors disabled:opacity-50"
+                     className={cn(
+                       "bg-primary text-primary-foreground font-black px-8 py-3 rounded-[12px] flex items-center gap-2 hover:bg-gold transition-all text-xs uppercase tracking-widest shadow-xl shadow-primary/20",
+                       isPending && "opacity-50 cursor-not-allowed grayscale"
+                     )}
                   >
-                     {isPending ? "Updating..." : "Update Role"}
+                     {isPending ? "Syncing..." : "Update Role"}
                   </button>
                </div>
             </div>
          </div>
       )}
+
+      <style jsx global>{`
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: var(--admin-border);
+            border-radius: 10px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: var(--admin-text);
+            opacity: 0.2;
+        }
+      `}</style>
     </PageContainer>
   );
+}
+
+function StatsCard({ 
+  icon, 
+  label, 
+  value, 
+  colorClass, 
+  valueClass,
+  pulse = false
+}: { 
+  icon: any, 
+  label: string, 
+  value: number, 
+  colorClass: string, 
+  valueClass: string,
+  pulse?: boolean
+}) {
+    return (
+        <div className="p-4 md:p-6 admin-surface-primary backdrop-blur-xs rounded-[12px] border border-[var(--admin-border)] shadow-xl relative overflow-hidden group hover:border-gold/30 transition-all duration-500">
+           <div className="absolute -right-4 -top-4 opacity-[0.03] group-hover:opacity-[0.08] transition-opacity duration-1000 rotate-12 scale-150 transform">
+              {icon}
+           </div>
+           <div className="flex items-center gap-3 mb-3">
+             <div className={cn("w-10 h-10 rounded-full flex items-center justify-center shadow-inner relative", colorClass)}>
+               {icon}
+               {pulse && (
+                  <span className="absolute inset-0 rounded-full bg-current animate-ping opacity-20" />
+               )}
+             </div>
+             <span className="text-[var(--admin-text)]/60 text-[12px] font-black uppercase tracking-widest">{label}</span>
+           </div>
+           <p className={cn("text-3xl md:text-4xl font-black tracking-tight", valueClass)}>{value}</p>
+        </div>
+    );
 }

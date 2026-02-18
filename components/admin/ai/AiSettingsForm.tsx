@@ -61,9 +61,9 @@ export function AiSettingsForm({ initialSettings }: SettingsProps) {
     return (
         <div className="space-y-8 max-w-5xl">
             {/* Target Niches */}
-            <div className="bg-white/30 dark:bg-white/5 border border-white/20 dark:border-white/10 rounded-[12px] p-6 backdrop-blur-md">
-                <h3 className="text-white/60 font-bold text-xs uppercase tracking-widest pl-2 border-l-2 border-gold/50 mb-4">Target Niches</h3>
-                <p className="text-white/60 text-sm mb-6 max-w-2xl">
+            <div className="admin-surface-secondary rounded-[12px] p-6">
+                <h3 className="text-[var(--admin-muted)] font-bold text-xs uppercase tracking-widest pl-2 border-l-2 border-gold/50 mb-4">Target Niches</h3>
+                <p className="text-[var(--admin-muted)] text-sm mb-6 max-w-2xl">
                     Select the engineering domains the AI should focus on. These drive the trend scouting engine.
                 </p>
 
@@ -71,7 +71,7 @@ export function AiSettingsForm({ initialSettings }: SettingsProps) {
                     {settings.targetNiches.map((niche: string) => (
                         <span key={niche} className="px-3 py-1 bg-gold/10 text-gold border border-gold/20 rounded-full text-xs font-bold flex items-center gap-2">
                             {niche}
-                            <button onClick={() => handleRemoveNiche(niche)} className="hover:text-white transition-colors"><X size={12} /></button>
+                            <button onClick={() => handleRemoveNiche(niche)} className="hover:text-[var(--admin-text)] transition-colors"><X size={12} /></button>
                         </span>
                     ))}
                 </div>
@@ -81,7 +81,7 @@ export function AiSettingsForm({ initialSettings }: SettingsProps) {
                         <button 
                             key={niche}
                             onClick={() => handleAddNiche(niche)}
-                            className="px-3 py-2 text-left bg-white/5 hover:bg-white/10 rounded-[8px] text-xs md:text-sm text-white/60 hover:text-white transition-colors flex items-center justify-between group border border-transparent hover:border-white/5"
+                            className="px-3 py-2 text-left admin-surface-input rounded-[8px] text-xs md:text-sm text-[var(--admin-muted)] hover:text-[var(--admin-text)] transition-colors flex items-center justify-between group border border-transparent hover:border-[var(--admin-border)]"
                         >
                             {niche}
                             <Plus size={12} className="opacity-0 group-hover:opacity-100 transition-opacity" />
@@ -91,23 +91,23 @@ export function AiSettingsForm({ initialSettings }: SettingsProps) {
             </div>
 
             {/* Brand Voice */}
-            <div className="bg-white/30 dark:bg-white/5 border border-white/20 dark:border-white/10 rounded-[12px] p-6 backdrop-blur-md">
-                <h3 className="text-white/60 font-bold text-xs uppercase tracking-widest pl-2 border-l-2 border-purple-500/50 mb-4">Brand Voice & Tone</h3>
-                <p className="text-white/60 text-sm mb-4">
+            <div className="admin-surface-secondary rounded-[12px] p-6">
+                <h3 className="text-[var(--admin-muted)] font-bold text-xs uppercase tracking-widest pl-2 border-l-2 border-purple-500/50 mb-4">Brand Voice & Tone</h3>
+                <p className="text-[var(--admin-muted)] text-sm mb-4">
                     Describe how the AI should write. Be specific about the persona (e.g., "Senior Engineer", "CTO").
                 </p>
                 <textarea 
                     value={settings.brandVoice}
                     onChange={(e) => setSettings({ ...settings, brandVoice: e.target.value })}
-                    className="w-full bg-white/5 border border-white/10 rounded-[8px] p-4 text-white text-sm outline-none focus:border-gold/50 min-h-[100px] transition-colors placeholder:text-white/20"
+                    className="w-full admin-surface-input border-none rounded-[8px] p-4 text-[var(--admin-text)] text-sm outline-none ring-1 ring-[var(--admin-border)] focus:ring-[var(--admin-brand)]/50 min-h-[100px] transition-colors placeholder:text-[var(--admin-muted)]/50"
                     placeholder="E.g. Professional, authoritative, yet accessible..."
                 />
             </div>
 
             {/* Exclusions */}
-            <div className="bg-white/30 dark:bg-white/5 border border-white/20 dark:border-white/10 rounded-[12px] p-6 backdrop-blur-md">
-                <h3 className="text-white/60 font-bold text-xs uppercase tracking-widest pl-2 border-l-2 border-red-500/50 mb-4">Excluded Topics/Keywords</h3>
-                <p className="text-white/60 text-sm mb-4">
+            <div className="admin-surface-secondary rounded-[12px] p-6">
+                <h3 className="text-[var(--admin-muted)] font-bold text-xs uppercase tracking-widest pl-2 border-l-2 border-red-500/50 mb-4">Excluded Topics/Keywords</h3>
+                <p className="text-[var(--admin-muted)] text-sm mb-4">
                     Terms the AI is strictly forbidden from using (competitors, cheap words, etc).
                 </p>
                 
@@ -118,9 +118,9 @@ export function AiSettingsForm({ initialSettings }: SettingsProps) {
                         onChange={(e) => setNewExclusion(e.target.value)}
                         onKeyDown={(e) => e.key === 'Enter' && handleAddExclusion()}
                         placeholder="Add exclusion..."
-                        className="flex-1 bg-white/5 border border-white/10 rounded-[8px] px-4 py-2 text-white text-sm outline-none focus:border-gold/50 transition-colors placeholder:text-white/20"
+                        className="flex-1 admin-surface-input border-none rounded-[8px] px-4 py-2 text-[var(--admin-text)] text-sm outline-none ring-1 ring-[var(--admin-border)] focus:ring-[var(--admin-brand)]/50 transition-colors placeholder:text-[var(--admin-muted)]/50"
                     />
-                    <button onClick={handleAddExclusion} className="bg-white/10 px-4 rounded-[8px] hover:bg-white/20 text-white transition-colors"><Plus size={16} /></button>
+                    <button onClick={handleAddExclusion} className="bg-[var(--admin-text)]/10 px-4 rounded-[8px] hover:bg-[var(--admin-text)]/20 text-[var(--admin-text)] transition-colors"><Plus size={16} /></button>
                 </div>
 
                 <div className="flex flex-wrap gap-2">
@@ -137,7 +137,7 @@ export function AiSettingsForm({ initialSettings }: SettingsProps) {
                 <button 
                     onClick={handleSave}
                     disabled={loading}
-                    className="flex items-center gap-2 px-6 py-2.5 bg-gold text-black font-bold text-sm rounded-[10px] hover:bg-white transition-colors disabled:opacity-50 shadow-[0_4px_14px_0_rgba(212,175,55,0.39)]"
+                    className="flex items-center gap-2 px-6 py-2.5 bg-[var(--admin-brand)] text-primary-foreground font-bold text-sm rounded-[10px] hover:bg-[var(--admin-brand)]/90 transition-colors disabled:opacity-50 shadow-sm"
                 >
                     {loading ? <Loader2 className="animate-spin" size={16} /> : <Save size={16} />}
                     Save Configuration

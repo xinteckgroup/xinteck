@@ -52,14 +52,14 @@ export default function ProfilePage() {
         }
     };
     return (
-        <div className="bg-white/30 dark:bg-white/5 border border-white/20 dark:border-white/10 rounded-[12px] p-4 md:p-6 space-y-4 md:space-y-6 w-full backdrop-blur-xl shadow-lg">
-            <div className="flex items-center gap-3 border-b border-white/10 pb-3 md:pb-4">
-                <div className="w-8 h-8 md:w-10 md:h-10 bg-blue-500/20 rounded-full flex items-center justify-center text-blue-400">
+        <div className="admin-surface-primary backdrop-blur-xs rounded-[12px] p-4 md:p-6 space-y-4 md:space-y-6 w-full">
+            <div className="flex items-center gap-3 border-b border-[var(--admin-border)] pb-3 md:pb-4">
+                <div className="w-8 h-8 md:w-10 md:h-10 bg-gold/10 rounded-full flex items-center justify-center text-gold border border-gold/20">
                     <User size={14} className="md:w-[18px] md:h-[18px]" />
                 </div>
                 <div>
-                    <h3 className="font-bold text-base md:text-lg text-white">Personal Info</h3>
-                    <p className="text-[10px] md:text-xs text-white/50">Update your name, email, and avatar.</p>
+                    <h3 className="font-bold text-base md:text-lg text-[var(--admin-text)]">Personal Info</h3>
+                    <p className="text-[10px] md:text-xs text-[var(--admin-text)]">Update your name, email, and avatar.</p>
                 </div>
             </div>
 
@@ -72,8 +72,8 @@ export default function ProfilePage() {
                 
                 {/* Avatar Section */}
                 <div className="space-y-3 md:space-y-4 pt-1 md:pt-2">
-                        <div className="flex flex-col items-center justify-center p-4 md:p-6 bg-black/5 dark:bg-black/20 rounded-xl border border-black/5 dark:border-white/5 mb-3 md:mb-4">
-                        <div className="w-20 h-20 md:w-24 md:h-24 rounded-full overflow-hidden border-4 border-white/5 shadow-xl relative mb-2 md:mb-3">
+                        <div className="flex flex-col items-center justify-center p-4 md:p-6 admin-surface-input rounded-xl border border-[var(--admin-border)] mb-3 md:mb-4">
+                        <div className="w-20 h-20 md:w-24 md:h-24 rounded-full overflow-hidden border-4 border-[var(--admin-border)] shadow-xl relative mb-2 md:mb-3">
                             {profileData.avatar ? (
                                 <Image 
                                     src={profileData.avatar} 
@@ -82,12 +82,12 @@ export default function ProfilePage() {
                                     className="object-cover"
                                 />
                             ) : (
-                                <div className="w-full h-full bg-blue-500/20 flex items-center justify-center text-blue-400">
+                                <div className="w-full h-full bg-gold/5 flex items-center justify-center text-gold/50">
                                     <User size={24} className="md:w-[32px] md:h-[32px]" />
                                 </div>
                             )}
                         </div>
-                        <p className="text-[10px] md:text-xs text-white/40">Current Avatar</p>
+                        <p className="text-[10px] md:text-xs text-[var(--admin-text)]">Current Avatar</p>
                         </div>
 
                         <AvatarPicker 
@@ -99,23 +99,23 @@ export default function ProfilePage() {
 
                 <div className="grid md:grid-cols-2 gap-3 md:gap-4">
                     <div>
-                        <label className="text-[10px] md:text-xs font-bold text-white/50 uppercase tracking-wider">Full Name</label>
+                        <label className="text-[10px] md:text-xs font-bold text-[var(--admin-text)] uppercase tracking-wider">Full Name</label>
                         <input
                             type="text"
                             value={profileData.name}
                             onChange={e => setProfileData(prev => ({ ...prev, name: e.target.value }))}
-                            className="w-full bg-black/50 dark:bg-black/20 border border-white/10 rounded-[8px] p-2.5 md:p-3 mt-1 text-white placeholder:text-white/20 focus:border-gold/50 focus:ring-1 focus:ring-gold/50 outline-none transition-all text-xs md:text-sm"
+                            className="w-full admin-surface-input border-none rounded-[8px] p-2.5 md:p-3 mt-1 text-[var(--admin-text)] placeholder:text-[var(--admin-text)]/50 focus:border-gold/50 focus:ring-1 focus:ring-gold/50 outline-none transition-all text-xs md:text-sm"
                             placeholder="Your name"
                             required
                         />
                     </div>
                     <div>
-                        <label className="text-[10px] md:text-xs font-bold text-white/50 uppercase tracking-wider">Email Address</label>
+                        <label className="text-[10px] md:text-xs font-bold text-[var(--admin-text)] uppercase tracking-wider">Email Address</label>
                         <input
                             type="email"
                             value={profileData.email}
                             onChange={e => setProfileData(prev => ({ ...prev, email: e.target.value }))}
-                            className="w-full bg-black/50 dark:bg-black/20 border border-white/10 rounded-[8px] p-2.5 md:p-3 mt-1 text-white placeholder:text-white/20 focus:border-gold/50 focus:ring-1 focus:ring-gold/50 outline-none transition-all text-xs md:text-sm"
+                            className="w-full admin-surface-input border-none rounded-[8px] p-2.5 md:p-3 mt-1 text-[var(--admin-text)] placeholder:text-[var(--admin-text)]/50 focus:border-gold/50 focus:ring-1 focus:ring-gold/50 outline-none transition-all text-xs md:text-sm"
                             placeholder="your@email.com"
                             required
                         />
@@ -126,10 +126,10 @@ export default function ProfilePage() {
                     type="submit"
                     disabled={profileLoading}
                     variant="primary"
-                    className="w-full text-xs md:text-sm"
+                    className="w-full text-xs md:text-sm backdrop-blur-xs"
                 >
                     {profileLoading ? (
-                        <div className="w-4 h-4 border-2 border-black/30 border-t-black rounded-full animate-spin" />
+                        <div className="w-4 h-4 border-2 border-primary-foreground/30 border-t-primary-foreground rounded-full animate-spin" />
                     ) : (
                         <>
                             <Save size={14} />

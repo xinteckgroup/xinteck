@@ -2,6 +2,8 @@
 
 import { ConfirmDialog } from "@/components/admin/ui";
 import { Pagination } from "@/components/admin/ui/Pagination";
+import { TYPOGRAPHY } from "@/lib/typography";
+import { cn } from "@/lib/utils";
 import { Edit, Search, Trash2 } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
@@ -23,223 +25,247 @@ interface DataGridProps<T> {
   };
   selectable?: boolean;
   editUrl?: string; // Optional URL pattern for edit links if onEdit not used
-   hideSearch?: boolean; // Hide internal search bar if parent has its own
-   hideBulkActions?: boolean; // Hide bulk action buttons (delete)
-   searchPlaceholder?: string; // Customizable placeholder text
- }
- 
- export interface PaginationConfig {
-    page: number;
-    totalPages: number;
-    total?: number;
-    onPageChange: (page: number) => void;
- }
+  hideSearch?: boolean; // Hide internal search bar if parent has its own
+  hideBulkActions?: boolean; // Hide bulk action buttons (delete)
+  searchPlaceholder?: string; // Customizable placeholder text
+}
 
- export function DataGrid<T extends { id: string }>({ columns, data, actions, selectable = true, editUrl, hideSearch = false, hideBulkActions = false, searchPlaceholder, selectedIds, onSelectionChange, pagination }: DataGridProps<T> & { selectedIds?: string[], onSelectionChange?: (ids: string[]) => void, pagination?: PaginationConfig }) {
-   const [internalSelectedItems, setInternalSelectedItems] = useState<string[]>([]);
-   
-   // Use controlled state if provided, otherwise internal
-   const selectedItems = selectedIds || internalSelectedItems;
-   const setSelectedItems = (ids: string[]) => {
-       if (onSelectionChange) {
-           onSelectionChange(ids);
-       } else {
-           setInternalSelectedItems(ids);
-       }
-   };
+export interface PaginationConfig {
+  page: number;
+  totalPages: number;
+  total?: number;
+  onPageChange: (page: number) => void;
+}
 
-   const [search, setSearch] = useState("");
-   const [currentPage, setCurrentPage] = useState(1);
-   const itemsPerPage = 10;
- 
-   // Filter Data (Client-side only if not server paginated)
-   // If server pagination is active, we assume data is already filtered/paginated
-   const isServerSide = !!pagination;
+export function DataGrid<T extends { id: string }>({ 
+  columns, 
+  data, 
+  actions, 
+  selectable = true, 
+  editUrl, 
+  hideSearch = false, 
+  hideBulkActions = false, 
+  searchPlaceholder, 
+  selectedIds, 
+  onSelectionChange, 
+  pagination 
+}: DataGridProps<T> & { selectedIds?: string[], onSelectionChange?: (ids: string[]) => void, pagination?: PaginationConfig }) {
+  const [internalSelectedItems, setInternalSelectedItems] = useState<string[]>([]);
+  
+  // Use controlled state if provided, otherwise internal
+  const selectedItems = selectedIds || internalSelectedItems;
+  const setSelectedItems = (ids: string[]) => {
+      if (onSelectionChange) {
+          onSelectionChange(ids);
+      } else {
+          setInternalSelectedItems(ids);
+      }
+  };
 
-   const filteredData = isServerSide ? data : data.filter(row => 
-      Object.values(row).some(val => 
-         String(val).toLowerCase().includes(search.toLowerCase())
-      )
-   );
- 
-   // Pagination Logic
-   // If server side, use provided totals. If client, calc from filteredData.
-   const totalPages = isServerSide ? pagination.totalPages : Math.ceil(filteredData.length / itemsPerPage);
-   const displayedPage = isServerSide ? pagination.page : currentPage;
-   
-   const paginatedData = isServerSide ? filteredData : filteredData.slice(
-      (currentPage - 1) * itemsPerPage,
-      currentPage * itemsPerPage
-   );
- 
-   const toggleSelect = (id: string) => {
-     if (selectedItems.includes(id)) {
-       setSelectedItems(selectedItems.filter(item => item !== id));
-     } else {
-       setSelectedItems([...selectedItems, id]);
-     }
-   };
- 
-   const toggleAll = () => {
-     if (selectedItems.length === paginatedData.length) {
-       setSelectedItems([]);
-     } else {
-       setSelectedItems(paginatedData.map(row => row.id));
-     }
-   };
- 
-   const isAllSelected = paginatedData.length > 0 && selectedItems.length === paginatedData.length;
-   const onDelete = actions?.onDelete;
- 
-    const showToolbar = !hideSearch || (!hideBulkActions && onDelete);
-    const [confirmDeleteIds, setConfirmDeleteIds] = useState<string[] | null>(null);
+  const [search, setSearch] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10;
 
-    return (
-      <div className="flex flex-col gap-4">
-         {/* Actions Bar */}
-         {showToolbar && (
-            <div className="w-auto inline-flex items-center gap-2 bg-white/30 dark:bg-white/5 border border-white/20 dark:border-white/10 p-2 rounded-[10px] backdrop-blur-md self-start">
-                {!hideSearch && (
-                 <div className="relative">
-                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-white/30" size={16} />
-                    <input 
-                      type="text" 
-                      placeholder={searchPlaceholder || "Search records..."} 
-                      value={search}
-                      onChange={(e) => setSearch(e.target.value)}
-                      className="pl-9 pr-4 py-2 w-48 md:w-64 bg-black/20 dark:bg-white/5 border border-white/5 dark:border-white/10 rounded-[10px] text-sm text-white placeholder:text-white/20 dark:placeholder:text-white/30 focus:border-gold/50 outline-none transition-colors"
-                    />
-                 </div>
-                )}
-                
-                {onDelete && !hideBulkActions && (
-                    <button 
-                    onClick={() => selectedItems.length > 0 && setConfirmDeleteIds(selectedItems)}
-                    disabled={selectedItems.length === 0}
-                    className="flex items-center gap-2 px-3 py-2 bg-red-500/10 border border-red-500/20 rounded-[8px] text-red-400 hover:bg-red-500/20 hover:text-red-300 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-                    >
-                        <Trash2 size={16} />
-                        <span className="hidden md:inline text-xs font-bold uppercase tracking-wider">Delete</span>
-                    </button>
-                )}
+  // Filter Data (Client-side only if not server paginated)
+  const isServerSide = !!pagination;
+
+  const filteredData = isServerSide ? data : data.filter((row: any) => 
+     Object.values(row).some(val => 
+        String(val).toLowerCase().includes(search.toLowerCase())
+     )
+  );
+
+  // Pagination Logic
+  const totalPages = isServerSide ? pagination.totalPages : Math.ceil(filteredData.length / itemsPerPage);
+  const displayedPage = isServerSide ? pagination.page : currentPage;
+  
+  const paginatedData = isServerSide ? filteredData : filteredData.slice(
+     (currentPage - 1) * itemsPerPage,
+     currentPage * itemsPerPage
+  );
+
+  const toggleSelect = (id: string) => {
+    if (selectedItems.includes(id)) {
+      setSelectedItems(selectedItems.filter(item => item !== id));
+    } else {
+      setSelectedItems([...selectedItems, id]);
+    }
+  };
+
+  const toggleAll = () => {
+    if (selectedItems.length === paginatedData.length) {
+      setSelectedItems([]);
+    } else {
+      setSelectedItems(paginatedData.map(row => row.id));
+    }
+  };
+
+  const isAllSelected = paginatedData.length > 0 && selectedItems.length === paginatedData.length;
+  const onDelete = actions?.onDelete;
+
+  const showToolbar = !hideSearch || (!hideBulkActions && onDelete);
+  const [confirmDeleteIds, setConfirmDeleteIds] = useState<string[] | null>(null);
+
+  return (
+    <div className="flex flex-col gap-4">
+      {/* Actions Bar */}
+      {showToolbar && (
+        <div className="w-auto inline-flex items-center gap-2 admin-surface-primary p-2 rounded-[10px] self-start border border-[var(--admin-border)]">
+          {!hideSearch && (
+            <div className="relative w-full md:w-64 lg:w-96 block bg-black/60 dark:bg-white/30 rounded-[10px]">
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--admin-muted)] pointer-events-none" size={18} />
+                <input 
+                  type="text" 
+                  placeholder={searchPlaceholder || "Search records..."} 
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
+                  className={cn(
+                    "w-full admin-surface-input border border-[var(--admin-border)] rounded-[10px] pl-10 pr-4 py-2 text-sm text-[var(--admin-text)] placeholder:text-[var(--admin-muted)] focus:border-gold/50 focus:outline-none transition-colors",
+                    TYPOGRAPHY.input
+                  )}
+                />
+              </div>
             </div>
-         )}
-         
-         <ConfirmDialog 
-            open={!!confirmDeleteIds} 
-            onClose={() => setConfirmDeleteIds(null)}
-            onConfirm={() => {
-                if (confirmDeleteIds && onDelete) {
-                    onDelete(confirmDeleteIds);
-                    setSelectedItems([]);
-                    setConfirmDeleteIds(null);
-                }
-            }}
-            title={`Delete ${confirmDeleteIds?.length} item${confirmDeleteIds?.length === 1 ? '' : 's'}?`}
-            message="This action cannot be undone. Selected items will be permanently removed."
-         />
- 
-        {/* Data Table */}
-        <div className="bg-white/30 dark:bg-white/5 border border-white/20 dark:border-white/10 rounded-[10px] overflow-hidden backdrop-blur-md">
-           <div className="overflow-x-auto">
-              <table className="w-full">
-                 <thead className="bg-white/5 border-b border-white/10">
-                    <tr>
-                       <th className="p-4 w-10">
-                          <div className="w-4 h-4 rounded-[4px] border border-white/20 flex items-center justify-center cursor-pointer" onClick={toggleAll}>
-                             {isAllSelected && <div className="w-2 h-2 bg-gold rounded-[2px]" />}
-                          </div>
-                       </th>
-                       {columns.map((col) => (
-                          <th key={col.key} className="p-4 text-left text-xs font-bold text-white/40 uppercase tracking-wider">
-                             {col.label}
-                          </th>
-                       ))}
-                       <th className="p-4 text-right">Actions</th>
-                    </tr>
-                 </thead>
-                 <tbody className="divide-y divide-white/5">
-                    {paginatedData.map((row: any) => (
-                       <tr key={row.id} className="hover:bg-white/5 transition-colors group">
-                          <td className="p-4">
-                             <div 
-                                className={`w-4 h-4 rounded-[4px] border ${selectedItems.includes(row.id) ? 'border-gold bg-gold/20' : 'border-white/20'} flex items-center justify-center cursor-pointer`}
-                                onClick={() => toggleSelect(row.id)}
-                             >
-                                {selectedItems.includes(row.id) && <div className="w-2 h-2 bg-gold rounded-[2px]" />}
-                             </div>
-                          </td>
-                          {columns.map((col) => (
-                             <td key={col.key} className="p-4 text-xs md:text-sm text-white font-medium whitespace-nowrap">
-                                {col.render ? col.render(row) : row[col.key]}
-                             </td>
-                          ))}
-                          <td className="p-4 text-right">
-                              <div className="flex items-center justify-end gap-2 text-opacity-100">
-                                 {editUrl ? (
-                                     <Link href={`${editUrl}/${row.id}`}>
-                                         <button className="p-1.5 hover:bg-white/10 rounded-[6px] text-white/60 hover:text-gold transition-colors">
-                                             <Edit size={16} />
-                                         </button>
-                                     </Link>
-                                 ) : actions?.onEdit && (
-                                     <button 
-                                         onClick={() => actions.onEdit!(row.id)}
-                                         className="p-1.5 hover:bg-white/10 rounded-[6px] text-white/60 hover:text-gold transition-colors"
-                                     >
-                                         <Edit size={16} />
-                                     </button>
-                                 )}
-                                 {onDelete && (
-                                    <button 
-                                       onClick={() => setConfirmDeleteIds([row.id])}
-                                       className="p-1.5 hover:bg-white/10 rounded-[6px] text-white/60 hover:text-red-400 transition-colors"
-                                    >
-                                       <Trash2 size={16} />
-                                    </button>
-                                 )}
-                              </div>
-                          </td>
-                       </tr>
-                    ))}
-                 </tbody>
-              </table>
-           </div>
-          {/* Pagination */}
-          <div className="p-4 border-t border-white/10 flex flex-col md:flex-row gap-4 items-center justify-between text-xs text-white/40">
-              {isServerSide ? (
-                  <span>Showing Page {displayedPage} of {totalPages} (Total {pagination.total || 'Unknown'})</span>
-              ) : (
-                  <span>Showing {Math.min((currentPage - 1) * itemsPerPage + 1, data.length)} to {Math.min(currentPage * itemsPerPage, data.length)} of {data.length} results</span>
-              )}
-              
+          )}
+          
+          {onDelete && !hideBulkActions && (
+            <button 
+              onClick={() => selectedItems.length > 0 && setConfirmDeleteIds(selectedItems)}
+              disabled={selectedItems.length === 0}
+              className="flex items-center gap-2 px-3 py-2 bg-red-500/60 border border-red-500/20 rounded-[8px] text-[var(--admin-text)] hover:bg-red-500/20 hover:text-red-400 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            >
+              <Trash2 size={16} />
+              <span className={cn("hidden md:inline text-xs font-black uppercase tracking-widest")}>Delete</span>
+            </button>
+          )}
+        </div>
+      )}
+      
+      <ConfirmDialog 
+        open={!!confirmDeleteIds} 
+        onClose={() => setConfirmDeleteIds(null)}
+        onConfirm={() => {
+          if (confirmDeleteIds && onDelete) {
+            onDelete(confirmDeleteIds);
+            setSelectedItems([]);
+            setConfirmDeleteIds(null);
+          }
+        }}
+        title={`Delete ${confirmDeleteIds?.length} item${confirmDeleteIds?.length === 1 ? '' : 's'}?`}
+        message="This action cannot be undone. Selected items will be permanently removed."
+      />
+
+      {/* Data Table */}
+      <div className="admin-surface-primary backdrop-blur-xs rounded-[10px] overflow-hidden border border-[var(--admin-border)] shadow-2xl">
+        <div className="overflow-x-auto">
+          <table className="w-full">
+            <thead className="admin-surface-secondary border-b border-[var(--admin-border)] text-[var(--admin-text)]">
+              <tr>
+                <th className="p-4 w-10">
+                  <div className="w-4 h-4 rounded-[4px] border border-[var(--admin-border)] bg-black/60 dark:bg-white/30 flex items-center justify-center cursor-pointer" onClick={toggleAll}>
+                    {isAllSelected && <div className="w-2 h-2 bg-[var(--admin-brand)] rounded-[2px]" />}
+                  </div>
+                </th>
+                {columns.map((col) => (
+                  <th key={col.key} className={cn("p-4 text-left whitespace-nowrap", TYPOGRAPHY.tableHeader)}>
+                    {col.label}
+                  </th>
+                ))}
+                <th className={cn("p-4 text-right whitespace-nowrap", TYPOGRAPHY.tableHeader)}>Actions</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-[var(--admin-border)]">
+              {paginatedData.map((row: any) => (
+                <tr key={row.id} className="hover:bg-[var(--admin-text)]/5 transition-colors group">
+                  <td className="p-4">
+                    <div 
+                      className={cn(
+                        "w-4 h-4 rounded-[4px] border bg-black/60 dark:bg-white/30 flex items-center justify-center cursor-pointer",
+                        selectedItems.includes(row.id) ? 'border-primary' : 'border-[var(--admin-border)]'
+                      )}
+                      onClick={() => toggleSelect(row.id)}
+                    >
+                      {selectedItems.includes(row.id) && <div className="w-2 h-2 bg-[var(--admin-brand)] rounded-[2px]" />}
+                    </div>
+                  </td>
+                  {columns.map((col) => (
+                    <td key={col.key} className="p-4 text-xs md:text-sm text-[var(--admin-text)] font-bold whitespace-nowrap">
+                      {col.render ? col.render(row) : (row as any)[col.key]}
+                    </td>
+                  ))}
+                  <td className="p-4 text-right">
+                    <div className="flex items-center justify-end gap-2">
+                      {editUrl ? (
+                        <Link href={`${editUrl}/${row.id}`}>
+                          <button className="p-1.5 hover:bg-[var(--admin-text)]/5 rounded-[6px] text-[var(--admin-text)] hover:text-gold transition-all">
+                            <Edit size={16} />
+                          </button>
+                        </Link>
+                      ) : actions?.onEdit && (
+                        <button 
+                          onClick={() => actions.onEdit!(row.id)}
+                          className="p-1.5 hover:bg-[var(--admin-text)]/5 rounded-[6px] text-[var(--admin-text)] hover:text-gold transition-all"
+                        >
+                          <Edit size={16} />
+                        </button>
+                      )}
+                      {onDelete && (
+                        <button 
+                          onClick={() => setConfirmDeleteIds([row.id])}
+                          className="p-1.5 hover:bg-[var(--admin-text)]/5 rounded-[6px] text-[var(--admin-text)] hover:text-red-500 transition-all"
+                        >
+                          <Trash2 size={16} />
+                        </button>
+                      )}
+                    </div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+
+        {/* Pagination */}
+        <div className="p-4 border-t border-[var(--admin-border)] flex flex-col md:flex-row gap-4 items-center justify-between">
+          {isServerSide ? (
+            <span className="text-[12px] font-black text-[var(--admin-text)] uppercase tracking-widest">
+              Showing Page <span className="text-gold">{displayedPage}</span> of <span className="text-gold">{totalPages}</span> (Total <span className="font-black">{pagination.total || 'Unknown'}</span>)
+            </span>
+          ) : (
+            <span className="text-[12px] font-black text-[var(--admin-text)] uppercase tracking-widest">
+              Showing <span className="text-gold">{Math.min((currentPage - 1) * itemsPerPage + 1, filteredData.length)}</span> to <span className="text-gold">{Math.min(currentPage * itemsPerPage, filteredData.length)}</span> of <span className="font-black">{filteredData.length}</span> results
+            </span>
+          )}
+          
+          <div className="flex gap-2">
+            {isServerSide ? (
+              <Pagination 
+                currentPage={displayedPage}
+                totalPages={totalPages}
+                onPageChange={pagination.onPageChange}
+              />
+            ) : (
               <div className="flex gap-2">
-                 {isServerSide ? (
-                     <Pagination 
-                        currentPage={displayedPage}
-                        totalPages={totalPages}
-                        onPageChange={pagination.onPageChange}
-                     />
-                 ) : (
-                     <div className="flex gap-2">
-                        <button 
-                            onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
-                            disabled={currentPage === 1}
-                            className="px-3 py-1 bg-white/5 border border-white/10 rounded-[6px] hover:bg-white/10 disabled:opacity-50 text-white"
-                        >
-                            Previous
-                        </button>
-                        <button 
-                            onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
-                            disabled={currentPage === totalPages}
-                            className="px-3 py-1 bg-white/5 border border-white/10 rounded-[6px] hover:bg-white/10 disabled:opacity-50 text-white"
-                        >
-                            Next
-                        </button>
-                     </div>
-                 )}
-             </div>
+                <button 
+                  onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+                  disabled={currentPage === 1}
+                  className="px-4 py-2 rounded-[6px] text-[12px] font-black uppercase tracking-widest border transition-all admin-surface-input text-[var(--admin-text)] border-[var(--admin-border)] hover:bg-gold hover:text-[var(--admin-text)] hover:border-gold/30 disabled:opacity-50"
+                >
+                  Previous
+                </button>
+                <button 
+                  onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
+                  disabled={currentPage === totalPages}
+                  className="px-4 py-2 rounded-[6px] text-[12px] font-black uppercase tracking-widest border transition-all admin-surface-input text-[var(--admin-text)] border-[var(--admin-border)] hover:bg-gold hover:text-[var(--admin-text)] hover:border-gold/30 disabled:opacity-50"
+                >
+                  Next
+                </button>
+              </div>
+            )}
           </div>
-       </div>
-    </div>);
+        </div>
+      </div>
+    </div>
+  );
 }

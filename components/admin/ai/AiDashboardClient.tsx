@@ -21,14 +21,14 @@ export function AiDashboardClient({ initialSettings }: AiDashboardProps) {
                 title="AI Editorial Assistant" 
                 subtitle="Automated trend discovery and drafting engine powered by Gemini 1.5 Flash."
                 actions={
-                    <div className="bg-white/30 dark:bg-white/5 p-1 rounded-[8px] flex gap-1 backdrop-blur-md border border-white/20 dark:border-white/10">
+                    <div className="admin-surface-secondary p-1 rounded-[8px] flex gap-1">
                         <button
                             onClick={() => setActiveTab("newsroom")}
                             className={cn(
                                 "flex items-center gap-2 px-3 py-1.5 rounded-[6px] text-xs font-bold transition-all",
                                 activeTab === "newsroom" 
-                                    ? "bg-white/20 text-white shadow-sm" 
-                                    : "text-white/40 hover:text-white"
+                                    ? "admin-surface-primary text-[var(--admin-text)] shadow-sm" 
+                                    : "text-[var(--admin-muted)] hover:text-[var(--admin-text)]"
                             )}
                         >
                             <Sparkles size={14} />
@@ -39,8 +39,8 @@ export function AiDashboardClient({ initialSettings }: AiDashboardProps) {
                             className={cn(
                                 "flex items-center gap-2 px-3 py-1.5 rounded-[6px] text-xs font-bold transition-all",
                                 activeTab === "queue" 
-                                    ? "bg-white/20 text-white shadow-sm" 
-                                    : "text-white/40 hover:text-white"
+                                    ? "admin-surface-primary text-[var(--admin-text)] shadow-sm" 
+                                    : "text-[var(--admin-muted)] hover:text-[var(--admin-text)]"
                             )}
                         >
                             <Newspaper size={14} />
@@ -51,8 +51,8 @@ export function AiDashboardClient({ initialSettings }: AiDashboardProps) {
                             className={cn(
                                 "flex items-center gap-2 px-3 py-1.5 rounded-[6px] text-xs font-bold transition-all",
                                 activeTab === "settings" 
-                                    ? "bg-white/20 text-white shadow-sm" 
-                                    : "text-white/40 hover:text-white"
+                                    ? "admin-surface-primary text-[var(--admin-text)] shadow-sm" 
+                                    : "text-[var(--admin-muted)] hover:text-[var(--admin-text)]"
                             )}
                         >
                             <Settings size={14} />

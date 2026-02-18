@@ -42,7 +42,6 @@ export async function getMessages(params: InboxFilter = {}): Promise<PaginatedRe
         where.OR = [
             { name: { contains: search, mode: 'insensitive' } },
             { email: { contains: search, mode: 'insensitive' } },
-            { subject: { contains: search, mode: 'insensitive' } }, // Note: subject is computed in map? No, schema has message.
             { message: { contains: search, mode: 'insensitive' } }
         ];
     }

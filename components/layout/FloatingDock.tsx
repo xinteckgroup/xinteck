@@ -1,6 +1,7 @@
 "use client";
 
-import { cn } from "@/components/lib/utils";
+import { useServices } from "@/components/providers/ServicesContext";
+import { cn } from "@/lib/utils";
 import { AnimatePresence, motion } from "framer-motion";
 import {
     Briefcase,
@@ -9,6 +10,7 @@ import {
     Globe,
     Home,
     Layers,
+    LayoutGrid,
     Mail,
     Palette,
     Smartphone,
@@ -33,18 +35,30 @@ const links = [
   { name: "Contact", href: "/contact", icon: Mail },
 ];
 
-const services = [
-  { name: "Web Dev", href: "/services/web-development", icon: Globe },
-  { name: "Mobile Apps", href: "/services/mobile-app-development", icon: Smartphone },
-  { name: "Custom Software", href: "/services/custom-software-development", icon: Briefcase },
-  { name: "UI/UX Design", href: "/services/ui-ux-design", icon: Palette },
-  { name: "Cloud & DevOps", href: "/services/cloud-devops", icon: Cloud },
-];
+// Map service slugs to icons for display
+const slugToIcon: Record<string, React.ComponentType<{ size?: number }>> = {
+  "web-development": Globe,
+  "mobile-app-development": Smartphone,
+  "custom-software-development": Briefcase,
+  "ui-ux-design": Palette,
+  "cloud-devops": Cloud,
+};
 
 export function FloatingDock() {
   const pathname = usePathname();
   const [isServicesOpen, setIsServicesOpen] = useState(false);
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
+  const dynamicServices = useServices();
+
+  // Build the services list: "All Services" first, then dynamic services from DB
+  const services = [
+    { name: "All Services", href: "/services", icon: LayoutGrid },
+    ...dynamicServices.map(s => ({
+      name: s.name,
+      href: `/services/${s.slug}`,
+      icon: slugToIcon[s.slug] || Briefcase,
+    })),
+  ];
 
   return (
     <>
@@ -69,12 +83,12 @@ export function FloatingDock() {
                   <Link
                     href={service.href}
                     onClick={() => setIsServicesOpen(false)}
-                    className="flex items-center gap-4 px-6 py-3 rounded-[10px] bg-primary border border-primary/20 hover:bg-gold-hover transition-all group shadow-[0_4px_20px_rgba(212,175,55,0.3)] hover:shadow-[0_8px_30px_rgba(212,175,55,0.5)]"
+                    className="flex items-center gap-4 px-6 py-3 rounded-[10px] bg-primary border border-primary/20 hover:bg-primary/90 transition-all group shadow-[0_4px_20px_rgba(212,175,55,0.3)] hover:shadow-[0_8px_30px_rgba(212,175,55,0.5)]"
                   >
-                      <div className="p-2 rounded-[10px] bg-black/10 dark:bg-white/20 text-black dark:text-white transition-colors">
+                      <div className="p-2 rounded-[10px] bg-background/20 text-primary-foreground transition-colors">
                         <service.icon size={18} />
                       </div>
-                      <span className="text-sm font-bold text-black dark:text-white tracking-wide">
+                      <span className="text-sm font-bold text-primary-foreground tracking-wide">
                           {service.name}
                       </span>
                   </Link>
@@ -86,13 +100,8 @@ export function FloatingDock() {
 
         {/* Main Dock */}
         <div className="fixed bottom-8 left-1/2 -translate-x-1/2 pointer-events-auto">
-        <motion.div 
-          animate={{ 
-            boxShadow: ["0 0 0px rgba(212,175,55,0.2)", "0 0 15px rgba(212,175,55,0.6)", "0 0 0px rgba(212,175,55,0.2)"],
-            borderColor: ["rgba(212,175,55,0.3)", "rgba(212,175,55,1)", "rgba(212,175,55,0.3)"]
-          }}
-          transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
-          className="flex items-center gap-2 p-2 bg-black/80 dark:bg-white/30 backdrop-blur-xl border-2 border-primary rounded-[10px]"
+        <div 
+          className="flex items-center gap-2 p-2 bg-[#000000]/80 backdrop-blur-xl border-2 border-[#D4AF37]/50 rounded-[10px] shadow-2xl animate-gold-pulse"
           onMouseLeave={() => setHoveredIndex(null)}
         >
           {links.map((link, i) => {
@@ -107,12 +116,12 @@ export function FloatingDock() {
                         onMouseEnter={() => setHoveredIndex(i)}
                         className={cn(
                             "relative w-12 h-12 flex items-center justify-center rounded-[8px] transition-all duration-300",
-                            isServicesOpen || isActive ? "bg-primary text-black" : "text-primary hover:text-white dark:hover:text-black hover:bg-white/10 dark:hover:bg-black/10"
+                            isServicesOpen || isActive ? "bg-[#D4AF37] text-black" : "text-gray-400 hover:text-white hover:bg-white/10"
                         )}
                     >
-                        <IsIcon size={24} />
+                        <IsIcon size={24} className={cn("transition-colors", isServicesOpen || isActive ? "text-white" : "text-primary")} />
                         {(isServicesOpen || isActive) && (
-                            <motion.div layoutId="dock-active" className="absolute -bottom-1 w-1 h-1 bg-primary rounded-full" />
+                            <motion.div layoutId="dock-active" className="absolute -bottom-1 w-1 h-1 bg-black rounded-full" />
                         )}
                     </button>
                 ) : (
@@ -121,10 +130,10 @@ export function FloatingDock() {
                         onMouseEnter={() => setHoveredIndex(i)}
                         className={cn(
                         "relative w-12 h-12 flex items-center justify-center rounded-[8px] transition-all duration-300",
-                        isActive ? "bg-primary text-black" : "text-primary hover:text-white dark:hover:text-black hover:bg-white/10 dark:hover:bg-black/10"
+                        isActive ? "bg-[#D4AF37] text-black" : "text-gray-400 hover:text-white hover:bg-white/10"
                         )}
                     >
-                        <IsIcon size={24} />
+                        <IsIcon size={24} className={cn("transition-colors", isActive ? "text-black" : "text-primary")} />
                     </Link>
                 )}
                 
@@ -137,7 +146,7 @@ export function FloatingDock() {
                             exit={{ opacity: 0, y: 10 }}
                             className="absolute left-1/2 -translate-x-1/2 pointer-events-none"
                         >
-                            <div className="px-3 py-1 bg-black border border-white/20 text-white text-xs font-bold rounded-[6px] whitespace-nowrap shadow-xl">
+                            <div className="px-3 py-1 bg-black/90 border border-white/10 text-white text-xs font-bold rounded-[6px] whitespace-nowrap shadow-xl">
                                 {link.name}
                             </div>
                         </motion.div>
@@ -146,7 +155,7 @@ export function FloatingDock() {
               </div>
             );
           })}
-        </motion.div>
+        </div>
         </div>
       </div>
     </>

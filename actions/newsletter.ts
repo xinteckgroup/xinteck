@@ -19,7 +19,7 @@ export async function getNewsletterSubscribers(params: NewsletterFilter = {}): P
     const { page, pageSize: limit, skip } = getPaginationParams(params);
     const { search, filter } = params;
 
-    const where: any = {};
+    const where: any = { deletedAt: null };
     if (search) {
         where.email = { contains: search, mode: 'insensitive' };
     }
@@ -56,9 +56,9 @@ export async function getNewsletterStats() {
     await requireRole([Role.SUPER_ADMIN, Role.ADMIN]);
 
     const [total, active, unsubscribed] = await Promise.all([
-        prisma.newsletterSubscriber.count(),
-        prisma.newsletterSubscriber.count({ where: { isActive: true } }),
-        prisma.newsletterSubscriber.count({ where: { isActive: false } })
+        prisma.newsletterSubscriber.count({ where: { deletedAt: null } }),
+        prisma.newsletterSubscriber.count({ where: { isActive: true, deletedAt: null } }),
+        prisma.newsletterSubscriber.count({ where: { isActive: false, deletedAt: null } })
     ]);
 
     return { total, active, unsubscribed };

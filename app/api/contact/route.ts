@@ -13,7 +13,10 @@ import { z } from "zod";
 const contactSchema = z.object({
   name: z.string().min(2, "Name is required"),
   email: z.string().email("Invalid email address"),
+  phone: z.string().min(8, "Valid phone number is required"),
   service: z.string().optional(),
+  projectType: z.string().min(1, "Project type is required"), // "I Need To"
+  industry: z.string().min(1, "Industry is required"),
   budget: z.string().optional(),
   message: z.string().min(10, "Message must be at least 10 characters"),
 });
@@ -35,14 +38,17 @@ export async function POST(req: Request) {
       );
     }
 
-    const { name, email, service, budget, message } = validation.data;
+    const { name, email, phone, service, projectType, industry, budget, message } = validation.data;
 
     // 2. Database Transaction (Primary Source of Truth)
     const submission = await prisma.contactSubmission.create({
       data: {
         name,
         email,
+        phone,
         service,
+        projectType,
+        industry,
         budget,
         message,
         ipAddress: req.headers.get("x-forwarded-for") || "unknown",
@@ -56,7 +62,7 @@ export async function POST(req: Request) {
       action: "contact.submission",
       entity: "ContactSubmission",
       entityId: submission.id,
-      metadata: { email, service }
+      metadata: { email, service, projectType, industry }
     });
 
     // 4. Notification Broadcast (NEW)
@@ -65,7 +71,7 @@ export async function POST(req: Request) {
       await NotificationService.broadcastToRoles({
         roles: [Role.SUPER_ADMIN, Role.ADMIN],
         title: "New Contact Inquiry",
-        message: `${name} has sent an inquiry regarding ${service || "General Inquiry"}.`,
+        message: `${name} has sent an inquiry regarding ${projectType} (${industry}).`,
         type: NotificationType.INFO,
         priority: NotificationPriority.HIGH,
         link: `/admin/inbox?filter=unread`, // Deep link
@@ -87,10 +93,14 @@ export async function POST(req: Request) {
         await resend.emails.send({
           from: fromEmail || "onboarding@resend.dev",
           to: [toEmail || "admin@xinteck.com"],
-          subject: `New Inquiry: ${name}`,
+          subject: `New Inquiry: ${name} (${projectType})`,
           text: `
             Name: ${name}
             Email: ${email}
+            Phone: ${phone}
+            
+            I Need To: ${projectType}
+            Industry: ${industry}
             Service: ${service || "Not specified"}
             Budget: ${budget || "Not specified"}
             

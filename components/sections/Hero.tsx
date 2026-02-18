@@ -1,5 +1,6 @@
 "use client";
 
+import { TYPOGRAPHY } from "@/lib/typography";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { ArrowRight, Server, Shield } from "lucide-react";
 import Link from "next/link";
@@ -48,19 +49,19 @@ export function Hero() {
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
               <span className="relative inline-flex rounded-full h-2 w-2 bg-primary"></span>
             </span>
-            <span className="text-[10px] font-bold tracking-widest text-primary uppercase">
+            <span className={`${TYPOGRAPHY.badge} text-primary`}>
               Accepting Waitlist for Q2
             </span>
           </div>
 
-          <h1 className="text-4xl md:text-6xl lg:text-7xl font-black leading-[0.95] tracking-tighter text-white">
+          <h1 className="text-3xl md:text-5xl lg:text-6xl font-black tracking-tighter text-white leading-[0.95]">
             WE <span className="text-white/40">ENGINEER YOUR</span> <br />
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary via-yellow-200 to-primary animate-gradient-x">
               DIGITAL FUTURE
             </span>
           </h1>
 
-          <p className="text-lg text-white/70 leading-relaxed max-w-lg">
+          <p className={`${TYPOGRAPHY.pageSubtitle} text-white max-w-lg`}>
             Xinteck is an elite software development collective. We build scalable platforms, intuitive interfaces, and robust infrastructure for the next generation of business.
           </p>
 
@@ -69,7 +70,7 @@ export function Hero() {
               href="/contact"
               className="group relative overflow-hidden rounded-[10px] transition-all"
             >
-              <div className="relative z-10 flex items-center gap-2 px-8 py-3 bg-primary text-black font-bold shadow-[0_0_20px_rgba(212,175,55,0.3)] hover:shadow-[0_0_40px_rgba(212,175,55,0.5)] transition-shadow">
+              <div className={`${TYPOGRAPHY.button} relative z-10 flex items-center gap-2 px-8 py-3 bg-primary text-black shadow-[0_0_20px_rgba(212,175,55,0.3)] hover:shadow-[0_0_40px_rgba(212,175,55,0.5)] transition-shadow`}>
                 Start a Project
                 <ArrowRight className="group-hover:translate-x-1 transition-transform" size={18} />
               </div>
@@ -78,30 +79,25 @@ export function Hero() {
               href="/portfolio"
               className="group"
             >
-              <motion.div
-                animate={{ 
-                  boxShadow: ["0 0 0px rgba(212,175,55,0.2)", "0 0 15px rgba(212,175,55,0.6)", "0 0 0px rgba(212,175,55,0.2)"],
-                  borderColor: ["rgba(212,175,55,0.3)", "rgba(212,175,55,1)", "rgba(212,175,55,0.3)"]
-                }}
-                transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" as const }}
-                className="px-8 py-3 rounded-[10px] border-2 border-primary bg-white/30 dark:bg-black/70 hover:scale-105 transition-transform"
+              <div
+                className="px-8 py-3 rounded-[10px] border-2 border-primary bg-white/30 dark:bg-black/70 hover:scale-105 transition-transform animate-gold-pulse"
               >
-                <span className="font-bold text-black dark:text-white flex items-center gap-2">
+                <span className={`${TYPOGRAPHY.button} text-black dark:text-white flex items-center gap-2`}>
                   View Our Work
                   <ArrowRight className="group-hover:translate-x-1 transition-transform" size={18} />
                 </span>
-              </motion.div>
+              </div>
             </Link>
           </div>
 
           <div className="flex items-center gap-8 pt-8 border-t border-primary/10 mt-4">
             {[
-              { label: "Uptime Guaranteed", val: "99.9%" },
-              { label: "Global Clients", val: "150+" },
+              { label: "Average Sprint Cycle", val: "<1 Week" },
+              { label: "Client Retention Rate", val: "100%" },
             ].map((stat) => (
               <div key={stat.label}>
-                <div className="text-2xl font-black text-primary font-mono">{stat.val}</div>
-                <div className="text-[10px] text-foreground/50 uppercase tracking-widest font-bold">
+                <div className={`${TYPOGRAPHY.sectionTitle} text-primary font-mono`}>{stat.val}</div>
+                <div className={`${TYPOGRAPHY.meta} text-foreground/50 uppercase tracking-widest font-bold`}>
                   {stat.label}
                 </div>
               </div>
@@ -158,7 +154,7 @@ export function Hero() {
              </div>
              
              {/* Status Bar */}
-             <div className="bg-primary text-black text-xs font-bold px-4 py-1 flex justify-between">
+             <div className={`bg-primary text-black ${TYPOGRAPHY.tableHeader} px-4 py-1 flex justify-between`}>
                 <span>NORMAL MODE</span>
                 <span>Ln 12, Col 44</span>
              </div>
@@ -174,8 +170,8 @@ export function Hero() {
                  <Shield size={20} />
               </div>
               <div className="flex flex-col">
-                 <span className="text-xs font-bold text-black">Security Audit</span>
-                 <span className="text-[10px] text-green-400 font-bold">PASSED</span>
+                 <span className={`${TYPOGRAPHY.cardTitle} text-black`}>Security Audit</span>
+                 <span className={`${TYPOGRAPHY.badge} text-green-400`}>PASSED</span>
               </div>
            </motion.div>
 
@@ -188,8 +184,8 @@ export function Hero() {
                  <Server size={20} />
               </div>
               <div className="flex flex-col">
-                 <span className="text-xs font-bold text-black">API Latency</span>
-                 <span className="text-[10px] text-gray-500">12ms (Global)</span>
+                 <span className={`${TYPOGRAPHY.cardTitle} text-black`}>API Latency</span>
+                 <span className={`${TYPOGRAPHY.badge} text-gray-500`}>12ms (Global)</span>
               </div>
            </motion.div>
         </motion.div>

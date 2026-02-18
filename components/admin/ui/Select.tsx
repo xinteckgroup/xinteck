@@ -53,7 +53,7 @@ const SelectScrollUpButton = React.forwardRef<
     )}
     {...props}
   >
-    <ChevronDown className="h-4 w-4 rotate-180 text-white" />
+    <ChevronDown className="h-4 w-4 rotate-180 text-[var(--admin-text)]" />
   </SelectPrimitive.ScrollUpButton>
 ));
 SelectScrollUpButton.displayName = SelectPrimitive.ScrollUpButton.displayName;
@@ -70,7 +70,7 @@ const SelectScrollDownButton = React.forwardRef<
     )}
     {...props}
   >
-    <ChevronDown className="h-4 w-4 text-white" />
+    <ChevronDown className="h-4 w-4 text-[var(--admin-text)]" />
   </SelectPrimitive.ScrollDownButton>
 ));
 SelectScrollDownButton.displayName =
@@ -79,12 +79,16 @@ SelectScrollDownButton.displayName =
 const SelectContent = React.forwardRef<
   React.ElementRef<typeof SelectPrimitive.Content>,
   React.ComponentPropsWithoutRef<typeof SelectPrimitive.Content>
->(({ className, children, position = "popper", ...props }, ref) => (
+>(({ className, children, position = "popper", ...props }, ref) => {
+  return (
   <SelectPrimitive.Portal>
     <SelectPrimitive.Content
       ref={ref}
+      data-slot="admin-select"
+      avoidCollisions
+      collisionPadding={16}
       className={cn(
-        "relative z-50 max-h-96 min-w-[8rem] overflow-hidden rounded-md border bg-popover text-popover-foreground shadow-md data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2",
+        "relative z-50 max-h-96 min-w-[8rem] overflow-hidden rounded-[10px] admin-surface-primary backdrop-blur-md border border-[var(--admin-border)] text-[var(--admin-text)] shadow-[0_32px_64px_-12px_rgba(0,0,0,0.5)] data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2",
         position === "popper" &&
           "data-[side=bottom]:translate-y-1 data-[side=left]:-translate-x-1 data-[side=right]:translate-x-1 data-[side=top]:-translate-y-1",
         className
@@ -97,7 +101,7 @@ const SelectContent = React.forwardRef<
         className={cn(
           "p-1",
           position === "popper" &&
-            "h-[var(--radix-select-trigger-height)] w-full min-w-[var(--radix-select-trigger-width)]"
+            "w-full min-w-[var(--radix-select-trigger-width)]"
         )}
       >
         {children}
@@ -105,7 +109,8 @@ const SelectContent = React.forwardRef<
       <SelectScrollDownButton />
     </SelectPrimitive.Content>
   </SelectPrimitive.Portal>
-));
+  );
+});
 SelectContent.displayName = SelectPrimitive.Content.displayName;
 
 const SelectLabel = React.forwardRef<
@@ -114,7 +119,7 @@ const SelectLabel = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <SelectPrimitive.Label
     ref={ref}
-    className={cn("px-2 py-1.5 text-sm font-semibold text-white", className)}
+    className={cn("px-2 py-1.5 text-xs font-black uppercase tracking-widest text-[var(--admin-text)]", className)}
     {...props}
   />
 ));
@@ -127,7 +132,7 @@ const SelectItem = React.forwardRef<
   <SelectPrimitive.Item
     ref={ref}
     className={cn(
-      "relative flex w-full cursor-default select-none items-center rounded-sm py-1.5 pl-2 pr-8 text-sm outline-none focus:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50 text-white",
+      "relative flex w-full cursor-pointer select-none items-center rounded-[6px] py-1.5 pl-2 pr-8 text-xs font-bold outline-none transition-all text-[var(--admin-text)] hover:bg-gold/10 hover:text-gold focus:bg-gold/10 focus:text-gold data-[state=checked]:text-gold data-[disabled]:pointer-events-none data-[disabled]:opacity-50",
       className
     )}
     {...props}
@@ -148,7 +153,7 @@ const SelectSeparator = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <SelectPrimitive.Separator
     ref={ref}
-    className={cn("-mx-1 my-1 h-px bg-muted", className)}
+    className={cn("-mx-1 my-1 h-px bg-[var(--admin-border)]", className)}
     {...props}
   />
 ));
@@ -180,26 +185,25 @@ export const Select = React.forwardRef<HTMLButtonElement, SelectProps>(({ value,
     return (
         <div className="flex flex-col gap-1 md:gap-2">
             {label && (
-                <label className="text-[8px] md:text-xs font-bold text-white/60 uppercase">{label}</label>
+                <label className="text-[8px] md:text-xs font-bold text-muted-foreground uppercase">{label}</label>
             )}
             <SelectRoot value={value} onValueChange={handleValueChange}>
                 <SelectTrigger 
                     ref={ref}
                     className={cn(
-                        "w-full bg-white/5 border border-white/10 rounded-[8px] text-white text-xs md:text-sm outline-none focus:ring-1 focus:ring-gold/50 transition-colors",
-                        error ? "border-red-500/50 focus:ring-red-500" : "border-white/10 focus:border-gold/50",
+                        "w-full admin-surface-input border border-[var(--admin-border)] rounded-[10px] text-[var(--admin-text)] text-xs md:text-sm outline-none focus:ring-1 focus:ring-gold/50 transition-colors",
+                        error ? "border-destructive/50 focus:ring-destructive" : "focus:border-gold/50",
                         className
                     )}
                 >
                     <SelectValue placeholder={placeholder} />
                 </SelectTrigger>
-                <SelectContent className="bg-[#111]/95 backdrop-blur-xl border border-white/10 text-white rounded-[8px]">
+                <SelectContent>
                     <SelectGroup>
                         {options.map((opt) => (
                             <SelectItem 
                                 key={opt.value} 
                                 value={opt.value}
-                                className="focus:bg-gold/20 focus:text-gold data-[state=checked]:text-gold cursor-pointer text-xs md:text-sm transition-colors hover:text-gold hover:bg-gold/10"
                             >
                                 {opt.label}
                             </SelectItem>
@@ -207,7 +211,7 @@ export const Select = React.forwardRef<HTMLButtonElement, SelectProps>(({ value,
                     </SelectGroup>
                 </SelectContent>
             </SelectRoot>
-            {error && <span className="text-[10px] text-red-400">{error}</span>}
+            {error && <span className="text-[10px] text-destructive">{error}</span>}
         </div>
     );
 });

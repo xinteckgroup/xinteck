@@ -39,22 +39,22 @@ export function MarkdownEditor({ value, onChange }: MarkdownEditorProps) {
   };
 
   return (
-    <div className="bg-white/30 dark:bg-white/5 border border-white/20 dark:border-white/10 rounded-[10px] overflow-hidden min-w-0">
+    <div className="admin-surface-primary backdrop-blur-sm rounded-[10px] overflow-hidden min-w-0">
       {/* Toolbar */}
-      <div className="flex items-center gap-0.5 md:gap-1 p-1.5 md:p-2 border-b border-white/20 dark:border-white/10 bg-black/5 dark:bg-black/20 overflow-x-auto">
-         <button onClick={() => insertFormat('bold')} className="p-1.5 md:p-2 text-white/60 hover:text-white hover:bg-white/10 rounded-[6px]" title="Bold"><Bold size={14} className="md:w-4 md:h-4" /></button>
-         <button onClick={() => insertFormat('italic')} className="p-1.5 md:p-2 text-white/60 hover:text-white hover:bg-white/10 rounded-[6px]" title="Italic"><Italic size={14} className="md:w-4 md:h-4" /></button>
-         <div className="w-[1px] h-3 md:h-4 bg-white/10 mx-0.5 md:mx-1" />
-         <button onClick={() => insertFormat('h1')} className="p-1.5 md:p-2 text-white/60 hover:text-white hover:bg-white/10 rounded-[6px]" title="Heading 1"><Heading1 size={14} className="md:w-4 md:h-4" /></button>
-         <button onClick={() => insertFormat('h2')} className="p-1.5 md:p-2 text-white/60 hover:text-white hover:bg-white/10 rounded-[6px]" title="Heading 2"><Heading2 size={14} className="md:w-4 md:h-4" /></button>
-         <button onClick={() => insertFormat('h3')} className="p-1.5 md:p-2 text-white/60 hover:text-white hover:bg-white/10 rounded-[6px]" title="Heading 3"><Heading3 size={14} className="md:w-4 md:h-4" /></button>
-         <div className="w-[1px] h-3 md:h-4 bg-white/10 mx-0.5 md:mx-1" />
-         <button onClick={() => insertFormat('quote')} className="p-1.5 md:p-2 text-white/60 hover:text-white hover:bg-white/10 rounded-[6px]" title="Quote"><Quote size={14} className="md:w-4 md:h-4" /></button>
-         <button onClick={() => insertFormat('code')} className="p-1.5 md:p-2 text-white/60 hover:text-white hover:bg-white/10 rounded-[6px]" title="Code Block"><Code size={14} className="md:w-4 md:h-4" /></button>
-         <div className="w-[1px] h-3 md:h-4 bg-white/10 mx-0.5 md:mx-1" />
-         <button onClick={() => insertFormat('link')} className="p-1.5 md:p-2 text-white/60 hover:text-white hover:bg-white/10 rounded-[6px]" title="Link"><Link size={14} className="md:w-4 md:h-4" /></button>
-         <button onClick={() => insertFormat('image')} className="p-1.5 md:p-2 text-white/60 hover:text-white hover:bg-white/10 rounded-[6px]" title="Image"><ImageIcon size={14} className="md:w-4 md:h-4" /></button>
-         <button onClick={() => insertFormat('list')} className="p-1.5 md:p-2 text-white/60 hover:text-white hover:bg-white/10 rounded-[6px]" title="List"><List size={14} className="md:w-4 md:h-4" /></button>
+      <div className="flex items-center gap-0.5 md:gap-1 p-1.5 md:p-2 border-b border-[var(--admin-border)] admin-surface-input overflow-x-auto">
+         <button onClick={() => insertFormat('bold')} className="p-1.5 md:p-2 text-[var(--admin-text)] hover:text-[var(--admin-text)] hover:bg-[var(--admin-text)]/5 rounded-[6px]" title="Bold"><Bold size={14} className="md:w-4 md:h-4" /></button>
+         <button onClick={() => insertFormat('italic')} className="p-1.5 md:p-2 text-[var(--admin-text)] hover:text-[var(--admin-text)] hover:bg-[var(--admin-text)]/5 rounded-[6px]" title="Italic"><Italic size={14} className="md:w-4 md:h-4" /></button>
+         <div className="w-[1px] h-3 md:h-4 bg-border mx-0.5 md:mx-1" />
+         <button onClick={() => insertFormat('h1')} className="p-1.5 md:p-2 text-[var(--admin-text)] hover:text-[var(--admin-text)] hover:bg-[var(--admin-text)]/5 rounded-[6px]" title="Heading 1"><Heading1 size={14} className="md:w-4 md:h-4" /></button>
+         <button onClick={() => insertFormat('h2')} className="p-1.5 md:p-2 text-[var(--admin-text)] hover:text-[var(--admin-text)] hover:bg-[var(--admin-text)]/5 rounded-[6px]" title="Heading 2"><Heading2 size={14} className="md:w-4 md:h-4" /></button>
+         <button onClick={() => insertFormat('h3')} className="p-1.5 md:p-2 text-[var(--admin-text)] hover:text-[var(--admin-text)] hover:bg-[var(--admin-text)]/5 rounded-[6px]" title="Heading 3"><Heading3 size={14} className="md:w-4 md:h-4" /></button>
+         <div className="w-[1px] h-3 md:h-4 bg-border mx-0.5 md:mx-1" />
+         <button onClick={() => insertFormat('quote')} className="p-1.5 md:p-2 text-[var(--admin-text)] hover:text-[var(--admin-text)] hover:bg-[var(--admin-text)]/5 rounded-[6px]" title="Quote"><Quote size={14} className="md:w-4 md:h-4" /></button>
+         <button onClick={() => insertFormat('code')} className="p-1.5 md:p-2 text-[var(--admin-text)] hover:text-[var(--admin-text)] hover:bg-[var(--admin-text)]/5 rounded-[6px]" title="Code Block"><Code size={14} className="md:w-4 md:h-4" /></button>
+         <div className="w-[1px] h-3 md:h-4 bg-border mx-0.5 md:mx-1" />
+         <button onClick={() => insertFormat('link')} className="p-1.5 md:p-2 text-[var(--admin-text)] hover:text-[var(--admin-text)] hover:bg-[var(--admin-text)]/5 rounded-[6px]" title="Link"><Link size={14} className="md:w-4 md:h-4" /></button>
+         <button onClick={() => insertFormat('image')} className="p-1.5 md:p-2 text-[var(--admin-text)] hover:text-[var(--admin-text)] hover:bg-[var(--admin-text)]/5 rounded-[6px]" title="Image"><ImageIcon size={14} className="md:w-4 md:h-4" /></button>
+         <button onClick={() => insertFormat('list')} className="p-1.5 md:p-2 text-[var(--admin-text)] hover:text-[var(--admin-text)] hover:bg-[var(--admin-text)]/5 rounded-[6px]" title="List"><List size={14} className="md:w-4 md:h-4" /></button>
       </div>
 
       <div className="relative">
@@ -62,29 +62,29 @@ export function MarkdownEditor({ value, onChange }: MarkdownEditorProps) {
          <div className="flex absolute right-4 top-4 gap-2 z-10">
             <button 
                onClick={() => setActiveTab("write")}
-               className={`text-[10px] md:text-xs font-bold px-2 md:px-3 py-0.5 md:py-1 rounded-full transition-colors ${activeTab === 'write' ? 'bg-gold text-black' : 'bg-white/10 text-white/60 border border-white/10'}`}
+               className={`text-[10px] md:text-xs font-bold px-2 md:px-3 py-0.5 md:py-1 rounded-full transition-colors ${activeTab === 'write' ? 'bg-primary text-primary-foreground' : 'admin-surface-input text-[var(--admin-text)]/60'}`}
             >
                Write
             </button>
             <button 
                onClick={() => setActiveTab("preview")}
-               className={`text-[10px] md:text-xs font-bold px-2 md:px-3 py-0.5 md:py-1 rounded-full transition-colors ${activeTab === 'preview' ? 'bg-gold text-black' : 'bg-white/10 text-white/60 border border-white/10'}`}
+               className={`text-[10px] md:text-xs font-bold px-2 md:px-3 py-0.5 md:py-1 rounded-full transition-colors ${activeTab === 'preview' ? 'bg-primary text-primary-foreground' : 'admin-surface-input text-[var(--admin-text)]/60'}`}
             >
                Preview
             </button>
          </div>
 
-         {activeTab === "write" ? (
+          {activeTab === "write" ? (
              <textarea 
                value={value}
                onChange={(e) => onChange(e.target.value)}
                placeholder="# Start writing your masterpiece..."
-               className="w-full h-[250px] md:h-[500px] bg-transparent p-3 md:p-6 text-white text-xs md:text-sm font-mono leading-relaxed outline-none resize-none placeholder:text-white/20"
+               className="w-full h-[250px] md:h-[500px] bg-transparent p-3 md:p-6 text-[var(--admin-text)] text-xs md:text-sm font-mono leading-relaxed outline-none resize-none placeholder:text-[var(--admin-text)]/60"
              />
          ) : (
-             <div className="w-full h-[250px] md:h-[500px] bg-white/5 p-3 md:p-6 overflow-y-auto prose prose-invert max-w-none text-white">
-                 <p className="text-white/40 italic text-center mt-20">Preview mode requires a markdown parser. <br/> (Install 'react-markdown' to enable full live preview)</p>
-                 <div className="mt-8 whitespace-pre-wrap text-white/80 font-serif border-t border-white/10 pt-8">{value}</div>
+             <div className="w-full h-[250px] md:h-[500px] admin-surface-input p-3 md:p-6 overflow-y-auto prose prose-invert max-w-none text-[var(--admin-text)]">
+                 <p className="text-[var(--admin-text)] italic text-center mt-20">Preview mode requires a markdown parser. <br/> (Install 'react-markdown' to enable full live preview)</p>
+                 <div className="mt-8 whitespace-pre-wrap text-[var(--admin-text)]/80 font-serif border-t border-[var(--admin-border)] pt-8">{value}</div>
              </div>
          )}
       </div>

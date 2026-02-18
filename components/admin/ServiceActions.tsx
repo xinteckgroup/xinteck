@@ -21,7 +21,7 @@ export function ServiceActions({ serviceId, isActive }: ServiceActionsProps) {
         <button
           onClick={() => startTransition(async () => { await toggleServiceStatus(serviceId, !isActive); })}
           disabled={isPending}
-          className={`w-10 h-10 rounded-[8px] flex items-center justify-center border transition-all disabled:opacity-50 ${isActive ? 'bg-green-500/10 border-green-500/20 text-green-400 hover:bg-green-500/20' : 'bg-white/5 border-white/10 text-white/20 hover:text-white/60'}`}
+          className={`w-10 h-10 rounded-[8px] flex items-center justify-center border transition-all disabled:opacity-50 ${isActive ? 'bg-green-500/10 border-green-500/20 text-green-400 hover:bg-green-500/20' : 'admin-surface-input border-[var(--admin-border)] text-[var(--admin-text)]/30 hover:text-[var(--admin-text)]/60 hover:bg-[var(--admin-text)]/5'}`}
           title={isActive ? "Deactivate" : "Activate"}
         >
           {isActive ? <CheckCircle2 size={18} /> : <XCircle size={18} />}
@@ -29,7 +29,7 @@ export function ServiceActions({ serviceId, isActive }: ServiceActionsProps) {
 
         <Link
           href={`/admin/services/${serviceId}`}
-          className="w-10 h-10 rounded-[8px] bg-white/5 border border-white/10 flex items-center justify-center text-white/60 hover:text-white hover:bg-white/10 transition-all"
+          className="w-10 h-10 rounded-[8px] admin-surface-input border border-[var(--admin-border)] flex items-center justify-center text-[var(--admin-text)]/60 hover:text-gold hover:bg-[var(--admin-text)]/5 transition-all"
           title="Edit"
         >
           <Pencil size={18} />

@@ -176,7 +176,7 @@ async function sendInvitationEmail(email: string, token: string) {
     const fromEmail = await INTERNAL_getSecret("RESEND_FROM_EMAIL");
 
     if (!resendApiKey) {
-        console.warn("Resend API Key missing. Token: " + token);
+        console.warn("Resend API Key missing. Invitation created but email not sent. Check System Settings.");
         if (process.env.NODE_ENV === "production") throw new Error("Email service not configured");
         return;
     }

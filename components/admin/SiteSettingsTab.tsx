@@ -67,9 +67,18 @@ export function SiteSettingsTab({ initialSettings, categories }: SiteSettingsTab
         });
     };
 
-    const handleSave = (key: string) => {
+    const handleSave = (key: string, type: string) => {
         startTransition(async () => {
             try {
+                // Validate JSON if type is JSON
+                if (type === 'JSON') {
+                    try {
+                        JSON.parse(editValue);
+                    } catch (e) {
+                        throw new Error("Invalid JSON format");
+                    }
+                }
+
                 await upsertSiteSetting({ key, value: editValue });
                 setEditingKey(null);
                 router.refresh();
@@ -105,8 +114,8 @@ export function SiteSettingsTab({ initialSettings, categories }: SiteSettingsTab
                         <Globe size={14} className="md:w-4 md:h-4" />
                     </div>
                     <div>
-                        <h3 className="font-bold text-white text-xs md:text-sm">Site Settings</h3>
-                        <p className="text-[8px] md:text-xs text-white/40">Key-value configuration for your site.</p>
+                        <h3 className="font-bold text-[var(--admin-text)] text-xs md:text-sm">Site Settings</h3>
+                        <p className="text-[8px] md:text-xs text-[var(--admin-text)]/80">Key-value configuration for your site.</p>
                     </div>
                 </div>
 
@@ -136,64 +145,86 @@ export function SiteSettingsTab({ initialSettings, categories }: SiteSettingsTab
             </div>
 
             {/* Settings List */}
-            <div className="bg-white/30 dark:bg-white/5 border border-white/20 dark:border-white/10 rounded-[10px] overflow-hidden backdrop-blur-md">
+            <div className="admin-surface-primary rounded-[10px] overflow-hidden border border-[var(--admin-border)] backdrop-blur-xs">
                 {filtered.length === 0 ? (
-                    <div className="p-8 text-center text-white/40 italic text-xs">
+                    <div className="p-8 text-center text-[var(--admin-text)]/60 italic text-xs">
                         No site settings found. Add one to get started.
                     </div>
                 ) : (
                     filtered.map((setting) => (
-                        <div key={setting.id} className="border-b border-white/5 last:border-0 p-3 md:p-4 hover:bg-white/5 transition-colors">
+                        <div key={setting.id} className="border-b border-[var(--admin-border)] last:border-0 p-3 md:p-4 hover:bg-[var(--admin-text)]/5 transition-colors">
                             <div className="flex flex-col md:flex-row md:items-center justify-between gap-2">
                                 <div className="flex flex-col gap-0.5 min-w-0">
                                     <div className="flex items-center gap-2">
-                                        <span className="text-xs font-bold font-mono text-white">{setting.key}</span>
-                                        <span className="text-[8px] px-1.5 py-0.5 rounded bg-white/5 text-white/40 border border-white/10">{setting.category}</span>
+                                        <span className="text-xs font-bold font-mono text-[var(--admin-text)]">{setting.key}</span>
+                                        <span className="text-[10px] px-2 py-0.5 rounded-[4px] admin-surface-input text-[var(--admin-muted)] border border-[var(--admin-border)] uppercase tracking-wider font-bold">{setting.category}</span>
                                         {setting.isPublic && (
-                                            <span className="text-[8px] px-1.5 py-0.5 rounded bg-green-500/10 text-green-400 border border-green-500/20">public</span>
+                                            <span className="text-[10px] px-2 py-0.5 rounded-[4px] bg-green-500/10 text-green-400 border border-green-500/20 uppercase tracking-wider font-bold">public</span>
                                         )}
                                     </div>
                                     {setting.description && (
-                                        <p className="text-[10px] text-white/30 truncate">{setting.description}</p>
+                                        <p className="text-[10px] text-[var(--admin-text)]/80 truncate font-medium">{setting.description}</p>
                                     )}
                                 </div>
 
                                 <div className="flex items-center gap-2">
                                     {editingKey === setting.key ? (
-                                        <>
-                                            <input
-                                                value={editValue}
-                                                onChange={(e) => setEditValue(e.target.value)}
-                                                className="bg-white/5 border border-white/10 rounded-[6px] px-2 py-1 text-white text-xs outline-none focus:border-gold/50 w-40 md:w-60"
-                                                autoFocus
-                                            />
-                                            <button
-                                                onClick={() => handleSave(setting.key)}
-                                                disabled={isPending}
-                                                className="p-1.5 rounded-[6px] bg-green-500/10 text-green-400 hover:bg-green-500/20 transition-colors disabled:opacity-50"
-                                            >
-                                                <Save size={12} />
-                                            </button>
-                                            <button
-                                                onClick={() => setEditingKey(null)}
-                                                className="p-1.5 rounded-[6px] bg-white/5 text-white/40 hover:bg-white/10 transition-colors"
-                                            >
-                                                <X size={12} />
-                                            </button>
-                                        </>
+                                        <div className="flex flex-col gap-2 w-full md:w-auto">
+                                            {setting.type === 'JSON' ? (
+                                                <textarea
+                                                    value={editValue}
+                                                    onChange={(e) => setEditValue(e.target.value)}
+                                                    className="admin-surface-input rounded-[6px] px-3 py-2 text-[var(--admin-text)] text-xs outline-none focus:border-gold/50 w-full md:min-w-[400px] font-mono"
+                                                    rows={8}
+                                                    autoFocus
+                                                />
+                                            ) : (
+                                                <input
+                                                    value={editValue}
+                                                    onChange={(e) => setEditValue(e.target.value)}
+                                                    className="admin-surface-input rounded-[6px] px-2 py-1 text-[var(--admin-text)] text-xs outline-none focus:border-gold/50 w-40 md:w-60"
+                                                    autoFocus
+                                                />
+                                            )}
+                                            <div className="flex gap-2 justify-end">
+                                                <button
+                                                    onClick={() => handleSave(setting.key, setting.type)}
+                                                    disabled={isPending}
+                                                    className="p-1.5 rounded-[6px] bg-green-500/10 text-green-400 hover:bg-green-500/20 transition-colors disabled:opacity-50 flex items-center gap-1 text-[10px] px-3 font-black uppercase tracking-widest border border-green-500/20"
+                                                >
+                                                    <Save size={12} /> Save
+                                                </button>
+                                                <button
+                                                    onClick={() => setEditingKey(null)}
+                                                    className="p-1.5 rounded-[6px] admin-surface-input text-[var(--admin-muted)] hover:text-[var(--admin-text)] transition-colors border border-[var(--admin-border)]"
+                                                >
+                                                    <X size={12} />
+                                                </button>
+                                            </div>
+                                        </div>
                                     ) : (
                                         <>
                                             {userRole === Role.SUPER_ADMIN ? (
-                                                <span
-                                                    onClick={() => { setEditingKey(setting.key); setEditValue(setting.value); }}
-                                                    className="text-xs font-mono text-white/60 bg-white/5 px-2 py-1 rounded-[6px] cursor-pointer hover:bg-white/10 transition-colors max-w-[200px] truncate"
-                                                    title="Click to edit"
-                                                >
-                                                    {setting.value}
-                                                </span>
+                                                setting.type === 'JSON' ? (
+                                                    <div 
+                                                        onClick={() => { setEditingKey(setting.key); setEditValue(setting.value); }}
+                                                        className="text-[10px] font-mono text-[var(--admin-text)]/80 admin-surface-input px-3 py-2 rounded-[6px] cursor-pointer hover:bg-[var(--admin-text)]/10 hover:text-gold transition-colors max-w-[300px] whitespace-pre-wrap break-all border border-[var(--admin-border)]"
+                                                        title="Click to edit raw JSON"
+                                                     >
+                                                        {setting.value.substring(0, 100) + (setting.value.length > 100 ? "..." : "")}
+                                                     </div>
+                                                ) : (
+                                                    <span
+                                                        onClick={() => { setEditingKey(setting.key); setEditValue(setting.value); }}
+                                                        className="text-xs font-mono text-[var(--admin-text)]/80 admin-surface-input px-3 py-1.5 rounded-[6px] cursor-pointer hover:bg-[var(--admin-text)]/10 hover:text-gold transition-colors max-w-[200px] truncate border border-[var(--admin-border)]"
+                                                        title="Click to edit"
+                                                    >
+                                                        {setting.value}
+                                                    </span>
+                                                )
                                             ) : (
                                                 <span
-                                                    className="text-xs font-mono text-white/60 bg-white/5 px-2 py-1 rounded-[6px] max-w-[200px] truncate cursor-default"
+                                                    className="text-xs font-mono text-[var(--admin-text)]/60 admin-surface-input px-3 py-1.5 rounded-[6px] max-w-[200px] truncate cursor-default border border-[var(--admin-border)]"
                                                     title={setting.value}
                                                 >
                                                     {setting.value}
@@ -203,7 +234,7 @@ export function SiteSettingsTab({ initialSettings, categories }: SiteSettingsTab
                                                 <button
                                                     onClick={() => handleDelete(setting.key)}
                                                     disabled={isPending}
-                                                    className="p-1.5 rounded-[6px] text-red-400/60 hover:bg-red-500/10 hover:text-red-400 transition-colors disabled:opacity-50"
+                                                    className="p-1.5 rounded-[6px] text-red-400/60 hover:bg-red-500/10 hover:text-red-400 transition-colors disabled:opacity-50 hover:border hover:border-red-500/20"
                                                 >
                                                     <Trash2 size={12} />
                                                 </button>
@@ -231,28 +262,28 @@ export function SiteSettingsTab({ initialSettings, categories }: SiteSettingsTab
             >
                 <div className="flex flex-col gap-4">
                     <div>
-                        <label className="text-xs font-bold text-white/60 uppercase mb-1 block">Key</label>
-                        <input value={newKey} onChange={(e) => setNewKey(e.target.value)} placeholder="SITE_NAME" className="w-full bg-white/5 border border-white/10 rounded-[8px] px-4 py-3 text-white text-sm outline-none focus:border-gold/50 font-mono" />
+                        <label className="text-[10px] font-black text-[var(--admin-text)] uppercase tracking-widest mb-1.5 block">Key</label>
+                        <input value={newKey} onChange={(e) => setNewKey(e.target.value)} placeholder="SITE_NAME" className="w-full admin-surface-input rounded-[10px] px-4 py-3 text-[var(--admin-text)] text-sm outline-none focus:border-gold/50 font-mono border border-[var(--admin-border)]" />
                     </div>
                     <div>
-                        <label className="text-xs font-bold text-white/60 uppercase mb-1 block">Value</label>
-                        <textarea value={newValue} onChange={(e) => setNewValue(e.target.value)} placeholder="Xinteck" rows={3} className="w-full bg-white/5 border border-white/10 rounded-[8px] px-4 py-3 text-white text-sm outline-none focus:border-gold/50 resize-none" />
+                        <label className="text-[10px] font-black text-[var(--admin-text)] uppercase tracking-widest mb-1.5 block">Value</label>
+                        <textarea value={newValue} onChange={(e) => setNewValue(e.target.value)} placeholder="Xinteck" rows={3} className="w-full admin-surface-input rounded-[10px] px-4 py-3 text-[var(--admin-text)] text-sm outline-none focus:border-gold/50 resize-none border border-[var(--admin-border)]" />
                     </div>
                     <div className="grid grid-cols-2 gap-4">
                         <div>
-                            <label className="text-xs font-bold text-white/60 uppercase mb-1 block">Category</label>
-                            <input value={newCategory} onChange={(e) => setNewCategory(e.target.value)} className="w-full bg-white/5 border border-white/10 rounded-[8px] px-4 py-3 text-white text-sm outline-none focus:border-gold/50" />
+                            <label className="text-[10px] font-black text-[var(--admin-text)] uppercase tracking-widest mb-1.5 block">Category</label>
+                            <input value={newCategory} onChange={(e) => setNewCategory(e.target.value)} className="w-full admin-surface-input rounded-[10px] px-4 py-3 text-[var(--admin-text)] text-sm outline-none focus:border-gold/50 border border-[var(--admin-border)]" />
                         </div>
                         <div className="flex flex-col gap-2 justify-end">
-                            <label className="flex items-center gap-2 cursor-pointer">
-                                <input type="checkbox" checked={newIsPublic} onChange={(e) => setNewIsPublic(e.target.checked)} className="w-4 h-4 rounded border-white/20 accent-gold" />
-                                <span className="text-xs text-white/60 font-bold">Public</span>
+                            <label className="flex items-center gap-2 cursor-pointer h-[46px] px-3 rounded-[10px] admin-surface-input border border-[var(--admin-border)] hover:border-gold/30 transition-colors">
+                                <input type="checkbox" checked={newIsPublic} onChange={(e) => setNewIsPublic(e.target.checked)} className="w-4 h-4 rounded border-primary/20 accent-gold" />
+                                <span className="text-xs text-[var(--admin-text)] font-bold">Public Setting</span>
                             </label>
                         </div>
                     </div>
                     <div>
-                        <label className="text-xs font-bold text-white/60 uppercase mb-1 block">Description (optional)</label>
-                        <input value={newDescription} onChange={(e) => setNewDescription(e.target.value)} placeholder="Brief description..." className="w-full bg-white/5 border border-white/10 rounded-[8px] px-4 py-3 text-white text-sm outline-none focus:border-gold/50" />
+                        <label className="text-[10px] font-black text-[var(--admin-text)] uppercase tracking-widest mb-1.5 block">Description (optional)</label>
+                        <input value={newDescription} onChange={(e) => setNewDescription(e.target.value)} placeholder="Brief description..." className="w-full admin-surface-input rounded-[10px] px-4 py-3 text-[var(--admin-text)] text-sm outline-none focus:border-gold/50 border border-[var(--admin-border)]" />
                     </div>
                 </div>
             </Modal>

@@ -9,13 +9,15 @@ import { Role } from "@prisma/client";
 
 export const dynamic = "force-dynamic";
 
+
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {
   const user = await getCurrentUser();
   
   return (
     <AdminSidebarProvider>
-      <div className="min-h-screen flex bg-transparent text-white font-sans selection:bg-gold/30">
-        <AdminBackground />
+      <AdminBackground />
+      <div className="min-h-screen flex bg-transparent text-foreground font-sans selection:bg-gold/30 admin-background-root">
+
         
         <AdminSidebar userRole={user?.role} />
         

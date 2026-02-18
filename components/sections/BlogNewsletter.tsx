@@ -1,8 +1,8 @@
 "use client";
 
-import { useState } from "react";
 import { motion } from "framer-motion";
 import { Clock } from "lucide-react";
+import { useState } from "react";
 
 export function BlogNewsletter() {
   const [email, setEmail] = useState("");
@@ -35,12 +35,12 @@ export function BlogNewsletter() {
   };
 
   return (
-    <section className="bg-primary/5 border border-primary/10 rounded-[10px] p-12 md:p-24 text-center">
+    <section className="bg-white/30 dark:bg-black/80 backdrop-blur-xl rounded-[10px] p-12 md:p-24 text-center shadow-[0_10px_40px_-10px_rgba(0,0,0,0.1)]">
       <div className="max-w-xl mx-auto flex flex-col gap-8">
         <h3 className="text-3xl md:text-5xl font-black tracking-tighter">
           STAY AHEAD OF THE <span className="text-gold underline underline-offset-8">CURVE.</span>
         </h3>
-        <p className="text-foreground/60">
+        <p className="text-foreground">
           Join 5,000+ tech leaders receiving our monthly lab reports.
         </p>
         
@@ -48,7 +48,7 @@ export function BlogNewsletter() {
           <motion.div 
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
-            className="bg-primary/10 border border-primary/20 p-6 rounded-[10px] flex flex-col items-center gap-4"
+            className="bg-primary/10 p-6 rounded-[10px] flex flex-col items-center gap-4"
           >
             <div className="w-12 h-12 rounded-full bg-primary/20 flex items-center justify-center text-gold">
                <Clock className="animate-pulse" />

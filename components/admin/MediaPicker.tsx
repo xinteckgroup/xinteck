@@ -1,3 +1,5 @@
+"use client";
+
 import { getMediaFiles, uploadFile } from "@/actions/media";
 import { Button } from "@/components/admin/ui/Button";
 import { useToast } from "@/components/admin/ui/Toast";
@@ -115,17 +117,28 @@ export function MediaPicker({ isOpen, onClose, onSelect }: MediaPickerProps) {
 
     // Portal to body to ensure it's on top
     return createPortal(
-        <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/80 backdrop-blur-sm p-4">
+        <div className="fixed inset-0 z-[9999] flex items-center justify-center admin-surface-primary backdrop-blur-sm p-4 text-[var(--admin-text)]"
+             style={{
+                 "--admin-text": "#ffffff",
+                 "--admin-muted": "#a1a1aa",
+                 "--admin-border": "rgba(212, 175, 55, 0.15)",
+                 "--admin-gold": "#D4AF37",
+                 "--admin-surface-primary": "rgba(0, 0, 0, 0.72)",
+                 "--admin-surface-secondary": "rgba(0, 0, 0, 0.55)",
+                 "--admin-surface-floating": "rgba(0, 0, 0, 0.85)",
+                 "--admin-surface-input": "rgba(255, 255, 255, 0.06)",
+             } as React.CSSProperties}
+        >
             <div 
-                className={`bg-[#111] border transition-colors rounded-[16px] w-full max-w-4xl max-h-[80vh] flex flex-col shadow-2xl overflow-hidden animate-in fade-in zoom-in duration-200 relative ${isDragging ? 'border-gold ring-2 ring-gold/20 bg-[#1a1a1a]' : 'border-white/10'}`}
+                className={`bg-white/50 transition-colors rounded-[16px] w-full max-w-4xl max-h-[80vh] flex flex-col shadow-2xl overflow-hidden animate-in fade-in zoom-in duration-200 relative ${isDragging ? 'border-gold ring-2 ring-gold/20 admin-surface-primary' : 'border-[var(--admin-border)]'}`}
                 onDragOver={onDragOver}
                 onDragLeave={onDragLeave}
                 onDrop={onDrop}
             >
                 {/* Drag Overlay */}
                 {isDragging && (
-                    <div className="absolute inset-0 bg-gold/10 z-50 flex items-center justify-center pointer-events-none">
-                        <div className="bg-[#111] p-6 rounded-[12px] border border-gold text-gold flex flex-col items-center animate-bounce">
+                    <div className="absolute inset-0 bg-primary/10 z-50 flex items-center justify-center pointer-events-none">
+                        <div className="bg-popover p-6 rounded-[12px] border border-primary text-primary flex flex-col items-center animate-bounce">
                             <UploadCloud size={48} className="mb-2" />
                             <span className="font-bold text-lg">Drop image to upload</span>
                         </div>
@@ -133,33 +146,35 @@ export function MediaPicker({ isOpen, onClose, onSelect }: MediaPickerProps) {
                 )}
                 
                 {/* Header */}
-                <div className="p-4 border-b border-white/10 flex items-center justify-between bg-white/5">
-                    <h3 className="text-lg font-bold text-white flex items-center gap-2">
+                <div className="p-4 border-b border-[var(--admin-border)] flex items-center justify-between admin-surface-primary">
+                    <h3 className="text-lg font-bold text-[var(--admin-text)] flex items-center gap-2">
                         <ImageIcon size={20} className="text-gold" />
                         Select Media
                     </h3>
-                    <button onClick={onClose} className="text-white/40 hover:text-white transition-colors">
+                    <button onClick={onClose} className="text-[var(--admin-text)]/40 hover:text-[var(--admin-text)] transition-colors">
                         <X size={24} />
                     </button>
                 </div>
 
                 {/* Toolbar */}
-                <div className="p-4 border-b border-white/10 flex gap-4 flex-wrap">
-                    <div className="relative flex-1 min-w-[200px]">
-                        <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-white/30" size={16} />
-                        <input 
-                            value={searchQuery}
-                            onChange={(e) => setSearchQuery(e.target.value)}
-                            onKeyDown={(e) => e.key === 'Enter' && loadFiles()}
-                            placeholder="Search images... (Press Enter)" 
-                            className="w-full bg-white/5 border border-white/10 rounded-[8px] pl-9 pr-4 py-2 text-white text-sm outline-none focus:border-gold/50 placeholder:text-white/20"
-                        />
+                <div className="p-4 border-b border-[var(--admin-border)] flex gap-4 flex-wrap admin-surface-input">
+                    <div className="relative flex-1 min-w-[200px] md:w-64 lg:w-96 bg-black/60 dark:bg-white/30 rounded-[10px]">
+                        <div className="relative">
+                            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--admin-muted)] pointer-events-none" size={18} />
+                            <input 
+                                value={searchQuery}
+                                onChange={(e) => setSearchQuery(e.target.value)}
+                                onKeyDown={(e) => e.key === 'Enter' && loadFiles()}
+                                placeholder="Search images... (Press Enter)" 
+                                className="w-full admin-surface-input border border-[var(--admin-border)] rounded-[10px] pl-10 pr-4 py-2 text-sm text-[var(--admin-text)] placeholder:text-[var(--admin-muted)] focus:border-gold/50 focus:outline-none transition-colors"
+                            />
+                        </div>
                     </div>
                     <Button variant="outline" onClick={loadFiles} disabled={loading || uploading}>
                         Search
                     </Button>
                     
-                    <div className="w-px bg-white/10 mx-2 hidden md:block" />
+                    <div className="w-px bg-[var(--admin-border)] mx-2 hidden md:block" />
 
                     <input 
                         type="file" 
@@ -171,7 +186,7 @@ export function MediaPicker({ isOpen, onClose, onSelect }: MediaPickerProps) {
                     <Button 
                         onClick={() => fileInputRef.current?.click()} 
                         disabled={uploading}
-                        className="bg-gold text-black hover:bg-white"
+                        className="bg-gold text-primary-foreground hover:bg-gold/90"
                     >
                         {uploading ? (
                             <><Loader2 className="animate-spin mr-2" size={16} /> Uploading...</>
@@ -182,14 +197,14 @@ export function MediaPicker({ isOpen, onClose, onSelect }: MediaPickerProps) {
                 </div>
 
                 {/* Grid */}
-                <div className="flex-1 overflow-y-auto p-4 bg-black/20">
+                <div className="flex-1 overflow-y-auto p-4 bg-transparent">
                     {loading && !uploading ? (
-                        <div className="flex items-center justify-center h-40 text-white/40">
+                        <div className="flex items-center justify-center h-40 text-[var(--admin-muted)]">
                             <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gold mr-2" />
                             Loading library...
                         </div>
                     ) : files.length === 0 && !loading ? (
-                        <div className="flex flex-col items-center justify-center h-40 text-white/40">
+                        <div className="flex flex-col items-center justify-center h-40 text-[var(--admin-muted)]">
                             <ImageIcon size={32} className="mb-2 opacity-50" />
                             <p>No images found.</p>
                             <button 
@@ -202,8 +217,8 @@ export function MediaPicker({ isOpen, onClose, onSelect }: MediaPickerProps) {
                     ) : (
                         <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-3">
                             {uploading && (
-                                <div className="aspect-square bg-white/5 rounded-[8px] border border-white/10 border-dashed flex items-center justify-center animate-pulse">
-                                    <div className="flex flex-col items-center text-white/50">
+                                <div className="aspect-square bg-[var(--admin-text)]/5 rounded-[8px] border border-[var(--admin-border)] border-dashed flex items-center justify-center animate-pulse">
+                                    <div className="flex flex-col items-center text-[var(--admin-muted)]">
                                         <Loader2 className="animate-spin mb-2" size={24} />
                                         <span className="text-xs">Uploading...</span>
                                     </div>
@@ -216,7 +231,7 @@ export function MediaPicker({ isOpen, onClose, onSelect }: MediaPickerProps) {
                                         onSelect(file.url);
                                         onClose();
                                     }}
-                                    className="group relative aspect-square bg-white/5 rounded-[8px] overflow-hidden border border-white/10 hover:border-gold/50 transition-all focus:outline-none focus:ring-2 focus:ring-gold/50"
+                                    className="group relative aspect-square admin-surface-secondary rounded-[8px] overflow-hidden border border-[var(--admin-border)] hover:border-gold/50 transition-all focus:outline-none focus:ring-2 focus:ring-gold/50"
                                 >
                                     <Image 
                                         src={file.url} 
@@ -224,10 +239,10 @@ export function MediaPicker({ isOpen, onClose, onSelect }: MediaPickerProps) {
                                         fill 
                                         className="object-cover transition-transform group-hover:scale-110" 
                                     />
-                                    <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                                        <span className="bg-gold text-black text-xs font-bold px-3 py-1 rounded-[4px]">Select</span>
+                                    <div className="absolute inset-0 bg-gold/20 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                                        <span className="bg-gold text-primary-foreground text-xs font-bold px-3 py-1 rounded-[4px]">Select</span>
                                     </div>
-                                    <div className="absolute bottom-0 left-0 right-0 bg-black/80 p-1 text-[10px] text-white truncate px-2">
+                                    <div className="absolute bottom-0 left-0 right-0 bg-popover/90 p-1 text-[10px] text-popover-foreground truncate px-2">
                                         {file.name}
                                     </div>
                                 </button>
@@ -237,8 +252,8 @@ export function MediaPicker({ isOpen, onClose, onSelect }: MediaPickerProps) {
                 </div>
 
                 {/* Footer */}
-                <div className="p-4 border-t border-white/10 bg-white/5 flex justify-between items-center">
-                     <p className="text-[10px] text-white/40">
+                <div className="p-4 border-t border-[var(--admin-border)] admin-surface-input flex justify-between items-center">
+                     <p className="text-[10px] text-[var(--admin-muted)]">
                         Drag & Drop an image anywhere, or use the button.
                      </p>
                      <Button variant="ghost" onClick={onClose}>Cancel</Button>

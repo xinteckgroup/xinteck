@@ -12,7 +12,7 @@ import {
     ServiceStat
 } from "@/types/service";
 import { Service } from "@prisma/client";
-import { Image as ImageIcon, Loader2, Plus, Save, X } from "lucide-react";
+import { Image as ImageIcon, Plus, Save, X } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
@@ -64,8 +64,8 @@ export function ServiceForm({ service }: ServiceFormProps) {
         subName: service?.subName || "",
         slug: service?.slug || "",
         description: service?.description || "",
-        image: (service as any)?.image || "", // Add image field
-        themeColor: service?.themeColor || "#B8860B", // Default to Gold
+        image: (service as any)?.image || "",
+        themeColor: service?.themeColor || "#B8860B",
         
         // Flattened JSON Sections
         section1Title: initialSection1.title || "",
@@ -88,7 +88,7 @@ export function ServiceForm({ service }: ServiceFormProps) {
         ctaTitle: initialBuyNow.title || "",
         ctaDesc: initialBuyNow.description || "",
         ctaButton: initialBuyNow.button || "",
-        version: (service as any)?.version // Cast to any to handle potential stale type definition
+        version: (service as any)?.version
     });
 
     // Dynamic Arrays
@@ -112,9 +112,9 @@ export function ServiceForm({ service }: ServiceFormProps) {
                     subName: formData.subName,
                     slug: formData.slug,
                     description: formData.description,
-                    image: formData.image, // Include image in payload
+                    image: formData.image,
                     themeColor: formData.themeColor,
-                    version: formData.version, // Pass version
+                    version: formData.version,
 
                     features: features.filter(f => f.trim() !== ""),
                     stats: stats.filter(s => s.label && s.val),
@@ -210,22 +210,26 @@ export function ServiceForm({ service }: ServiceFormProps) {
                 }} 
             />
 
-            {/* Action Bar */}
+            {/* Action Bar — matches BlogEditorForm pattern */}
             <PageHeader 
                 title={service ? "Edit Service" : "New Service"}
                 backUrl="/admin/services"
                 backLabel="Back to Services"
                 actions={
-                  <div className="flex gap-2 md:gap-3 w-full sm:w-auto">
-                    <button 
-                         onClick={onSubmit}
-                         disabled={isPending}
-                         className="flex-1 sm:flex-initial px-3 py-1.5 md:px-6 md:py-2 rounded-[8px] bg-gold text-black font-bold text-[10px] md:text-sm hover:bg-white transition-colors flex items-center justify-center gap-1 md:gap-2 whitespace-nowrap disabled:opacity-50"
-                    >
-                         {isPending ? <Loader2 className="animate-spin" size={16} /> : <Save size={12} className="md:w-4 md:h-4" />}
-                         Save Service
-                    </button>
-                  </div>
+          <div className="flex gap-2 md:gap-3 w-full sm:w-auto">
+            <button 
+                  onClick={onSubmit}
+                  disabled={isPending}
+                  className="backdrop-blur-xs flex-1 sm:flex-initial px-3 py-1.5 md:px-6 md:py-2 rounded-[8px] admin-surface-primary text-[var(--admin-text)] font-bold text-[10px] md:text-sm hover:text-gold hover:bg-[var(--admin-text)]/5 transition-colors flex items-center justify-center gap-1 md:gap-2 whitespace-nowrap disabled:opacity-50"
+            >
+                  {isPending ? (
+                      <span className="w-4 h-4 border-2 border-primary-foreground/30 border-t-primary-foreground rounded-full animate-spin"/>
+                  ) : (
+                      <Save size={12} className="md:w-4 md:h-4" />
+                  )}
+                  Save Service
+            </button>
+          </div>
                 }
             />
 
@@ -241,45 +245,42 @@ export function ServiceForm({ service }: ServiceFormProps) {
                 <div className="lg:col-span-2 flex flex-col gap-3 md:gap-6 min-w-0">
                      
                      {/* Core Details */}
-                     <div className="bg-white/30 dark:bg-white/5 border border-white/20 dark:border-white/10 rounded-[10px] p-3 md:p-6 backdrop-blur-md overflow-hidden">
+                     <div className="admin-surface-primary backdrop-blur-xs rounded-[10px] p-3 md:p-6 overflow-hidden">
 
                         <div className="flex flex-col gap-3 md:gap-4">
                             <div className="flex flex-col gap-1 md:gap-2">
-                                <label className="text-[8px] md:text-xs font-bold text-white/60 uppercase">Service Name</label>
+                                <label className="text-[8px] md:text-xs font-bold text-[var(--admin-text)] uppercase">Service Name</label>
                                 <input 
                                     value={formData.name}
                                     onChange={(e) => setFormData({...formData, name: e.target.value})}
                                     placeholder="e.g. Web Development" 
-                                    className="bg-white/5 border border-white/10 rounded-[8px] px-3 md:px-4 py-2 md:py-3 text-white text-sm md:text-lg font-bold outline-none focus:border-gold/50 placeholder:font-normal placeholder:text-white/20"
+                                    className="admin-surface-input rounded-[8px] px-3 md:px-4 py-2 md:py-3 text-[var(--admin-text)] text-sm md:text-lg font-bold outline-none focus:border-gold/50 placeholder:font-normal placeholder:text-[var(--admin-text)]"
                                 />
                             </div>
-                            
-                            
-
 
                             <div className="flex flex-col gap-1 md:gap-2">
-                                <label className="text-[8px] md:text-xs font-bold text-white/60 uppercase">Service Caricature / Image</label>
+                                <label className="text-[8px] md:text-xs font-bold text-[var(--admin-text)] uppercase">Service Caricature / Image</label>
                                 <div className="flex flex-col gap-3 w-full">
                                     <div className="w-full flex gap-2">
                                         <input 
                                             value={formData.image || ""}
                                             onChange={(e) => setFormData({...formData, image: e.target.value})}
                                             placeholder="/images/services/..." 
-                                            className="flex-1 bg-white/5 border border-white/10 rounded-[8px] px-3 py-2 text-white text-sm outline-none focus:border-gold/50 font-mono placeholder:text-white/20"
+                                            className="flex-1 admin-surface-input rounded-[8px] px-3 py-2 text-[var(--admin-text)] text-sm outline-none focus:border-gold/50 font-mono placeholder:text-[var(--admin-text)]"
                                         />
                                         <button 
                                             onClick={() => {
                                                 setPickerTarget('main');
                                                 setShowMediaPicker(true);
                                             }}
-                                            className="bg-white/10 hover:bg-white/20 text-white p-2 rounded-[8px] transition-colors"
+                                            className="admin-surface-input hover:bg-[var(--admin-text)]/5 text-[var(--admin-text)] hover:text-gold p-2 rounded-[8px] transition-colors"
                                             title="Select Image"
                                         >
                                             <ImageIcon size={18} />
                                         </button>
                                     </div>
                                     {formData.image && (
-                                        <div className="relative w-full aspect-square max-w-[300px] rounded-[12px] overflow-hidden border border-white/10 bg-black/50 shadow-xl">
+                                        <div className="relative w-full aspect-square max-w-[300px] rounded-[12px] overflow-hidden border border-[var(--admin-border)] admin-surface-input shadow-xl">
                                             <Image 
                                                 src={formData.image} 
                                                 alt="Preview" 
@@ -294,60 +295,63 @@ export function ServiceForm({ service }: ServiceFormProps) {
                             
                             <div className="grid md:grid-cols-2 gap-3 md:gap-4">
                                 <div className="flex flex-col gap-1 md:gap-2">
-                                    <label className="text-[8px] md:text-xs font-bold text-white/60 uppercase">Sub Name (Tag)</label>
+                                    <label className="text-[8px] md:text-xs font-bold text-[var(--admin-text)] uppercase">Sub Name (Tag)</label>
                                     <input 
                                         value={formData.subName}
                                         onChange={(e) => setFormData({...formData, subName: e.target.value})}
                                         placeholder="SERVICE" 
-                                        className="bg-white/5 border border-white/10 rounded-[8px] px-2 md:px-4 py-1.5 md:py-2 text-white text-xs md:text-sm outline-none focus:border-gold/50 placeholder:text-white/20"
+                                        className="admin-surface-input rounded-[8px] px-2 md:px-4 py-1.5 md:py-2 text-[var(--admin-text)] text-xs md:text-sm outline-none focus:border-gold/50 placeholder:text-[var(--admin-text)]"
                                     />
                                 </div>
                                 <div className="flex flex-col gap-1 md:gap-2">
-                                    <label className="text-[8px] md:text-xs font-bold text-white/60 uppercase">Slug (URL)</label>
-                                    <input 
-                                        value={formData.slug}
-                                        onChange={(e) => setFormData({...formData, slug: e.target.value})}
-                                        placeholder="web-development" 
-                                        className="bg-white/5 border border-white/10 rounded-[8px] px-2 md:px-4 py-1.5 md:py-2 text-white text-xs md:text-sm outline-none focus:border-gold/50 font-mono placeholder:text-white/20"
-                                    />
+                                    <label className="text-[8px] md:text-xs font-bold text-[var(--admin-text)] uppercase">Slug (URL)</label>
+                                    <div className="flex items-center admin-surface-input rounded-[8px] px-2 md:px-4 py-1.5 md:py-2 gap-1 md:gap-2 overflow-x-auto">
+                                        <span className="text-[var(--admin-text)] text-[10px] md:text-sm whitespace-nowrap">xinteck.com/services/</span>
+                                        <input 
+                                            value={formData.slug}
+                                            onChange={(e) => setFormData({...formData, slug: e.target.value})}
+                                            placeholder="web-development" 
+                                            className="bg-transparent border-none text-[var(--admin-text)] text-xs md:text-sm outline-none flex-1 font-mono min-w-0"
+                                        />
+                                    </div>
                                 </div>
                             </div>
 
                             <div className="flex flex-col gap-1 md:gap-2">
-                                <label className="text-[8px] md:text-xs font-bold text-white/60 uppercase">Short Description</label>
+                                <label className="text-[8px] md:text-xs font-bold text-[var(--admin-text)] uppercase">Short Description</label>
                                 <textarea 
                                     value={formData.description}
                                     onChange={(e) => setFormData({...formData, description: e.target.value})}
                                     placeholder="Brief overview for the card..."
                                     rows={3}
-                                    className="bg-white/5 border border-white/10 rounded-[8px] px-2 md:px-4 py-2 md:py-3 text-white text-xs md:text-sm outline-none focus:border-gold/50 resize-y placeholder:text-white/20"
+                                    className="admin-surface-input rounded-[8px] px-2 md:px-4 py-2 md:py-3 text-[var(--admin-text)] text-xs md:text-sm outline-none focus:border-gold/50 resize-y placeholder:text-[var(--admin-text)]"
                                 />
                             </div>
                         </div>
                      </div>
 
                      {/* Content Blocks */}
-                     <div className="bg-white/30 dark:bg-white/5 border border-white/20 dark:border-white/10 rounded-[10px] p-3 md:p-6 backdrop-blur-md overflow-hidden">
-                        <h3 className="font-bold text-white text-xs md:text-sm border-b border-white/10 pb-2 mb-3 md:mb-4">
+                     <div className="admin-surface-primary backdrop-blur-xs rounded-[10px] p-3 md:p-6 overflow-hidden">
+                        <h3 className="font-bold text-[var(--admin-text)] text-xs md:text-sm border-b border-[var(--admin-border)] pb-2 mb-3 md:mb-4">
                             Content Sections
                         </h3>
                         
                         <div className="space-y-6">
                             {/* Hero */}
                             <div className="space-y-3">
-                                <label className="text-[10px] font-bold uppercase tracking-wider text-gold/80 block">Hero Section</label>
+                                <label className="text-[12px] font-bold uppercase tracking-wider text-gold/80 block">Hero Section</label>
                                 <div className="grid gap-3">
                                     <input 
                                         value={formData.section1Title}
                                         onChange={(e) => setFormData({...formData, section1Title: e.target.value})}
                                         placeholder="Hero Title (e.g. Turn Vision Into Reality)" 
-                                        className="w-full bg-white/5 border border-white/10 rounded-[8px] px-3 py-2 text-white text-sm focus:border-gold/50 placeholder:text-white/20 outline-none"
+                                        className="w-full admin-surface-input rounded-[8px] px-3 py-2 text-[var(--admin-text)] text-sm focus:border-gold/50 placeholder:text-[var(--admin-text)] outline-none"
                                     />
                                     <input 
                                         value={formData.section1Subtitle}
                                         onChange={(e) => setFormData({...formData, section1Subtitle: e.target.value})}
                                         placeholder="Hero Subtitle" 
-                                        className="w-full bg-white/5 border border-white/10 rounded-[8px] px-3 py-2 text-white text-sm focus:border-gold/50 placeholder:text-white/20 outline-none"
+                                        className="w-full admin-surface-input rounded-[8px] px-3 py-2 text-[var(--admin-text)] text-sm focus:border-gold/50 placeholder:text-[var(--admin-text)] outline-none"
                                     />
                                     {/* Image Picker */}
                                     <div className="flex gap-4 items-start">
@@ -357,14 +361,14 @@ export function ServiceForm({ service }: ServiceFormProps) {
                                                     value={formData.section1Image}
                                                     onChange={(e) => setFormData({...formData, section1Image: e.target.value})}
                                                     placeholder="Hero Image URL" 
-                                                    className="w-full bg-white/5 border border-white/10 rounded-[8px] px-3 py-2 text-white text-sm focus:border-gold/50 placeholder:text-white/20 outline-none font-mono"
+                                                    className="w-full admin-surface-input rounded-[8px] px-3 py-2 text-[var(--admin-text)] text-sm focus:border-gold/50 placeholder:text-[var(--admin-text)] outline-none font-mono"
                                                 />
                                                 <button 
                                                     onClick={() => {
                                                         setPickerTarget('section1');
                                                         setShowMediaPicker(true);
                                                     }}
-                                                    className="bg-white/10 hover:bg-white/20 text-white p-2 rounded-[8px] transition-colors"
+                                                    className="admin-surface-input hover:bg-[var(--admin-text)]/5 text-[var(--admin-text)] hover:text-gold p-2 rounded-[8px] transition-colors"
                                                     title="Select Image"
                                                 >
                                                     <ImageIcon size={18} />
@@ -372,7 +376,7 @@ export function ServiceForm({ service }: ServiceFormProps) {
                                             </div>
                                         </div>
                                         {formData.section1Image && (
-                                            <div className="relative w-16 h-16 rounded-[8px] overflow-hidden border border-white/10 shrink-0 bg-black/50">
+                                            <div className="relative w-16 h-16 rounded-[8px] overflow-hidden border border-[var(--admin-border)] shrink-0 admin-surface-input">
                                                 <Image 
                                                     src={formData.section1Image} 
                                                     alt="Preview" 
@@ -387,73 +391,73 @@ export function ServiceForm({ service }: ServiceFormProps) {
                             </div>
 
                             {/* Block 1 */}
-                            <div className="space-y-3 pt-4 border-t border-white/10">
-                                <label className="text-[10px] font-bold uppercase tracking-wider text-gold/80 block">Content Block 1</label>
+                            <div className="space-y-3 pt-4 border-t border-[var(--admin-border)]">
+                                <label className="text-[12px] font-bold uppercase tracking-wider text-gold/80 block">Content Block 1</label>
                                 <div className="grid gap-3">
                                     <input 
                                         value={formData.section2Title}
                                         onChange={(e) => setFormData({...formData, section2Title: e.target.value})}
                                         placeholder="Initial Challenge Title" 
-                                        className="w-full bg-white/5 border border-white/10 rounded-[8px] px-3 py-2 text-white text-sm focus:border-gold/50 placeholder:text-white/20 outline-none"
+                                        className="w-full admin-surface-input rounded-[8px] px-3 py-2 text-[var(--admin-text)] text-sm focus:border-gold/50 placeholder:text-[var(--admin-text)] outline-none"
                                     />
                                     <textarea 
                                         value={formData.section2Desc}
                                         onChange={(e) => setFormData({...formData, section2Desc: e.target.value})}
                                         placeholder="Description..." 
                                         rows={3}
-                                        className="w-full bg-white/5 border border-white/10 rounded-[8px] px-3 py-2 text-white text-sm focus:border-gold/50 placeholder:text-white/20 outline-none resize-none"
+                                        className="w-full admin-surface-input rounded-[8px] px-3 py-2 text-[var(--admin-text)] text-sm focus:border-gold/50 placeholder:text-[var(--admin-text)] outline-none resize-none"
                                     />
                                 </div>
                             </div>
 
                             {/* Block 2 */}
-                            <div className="space-y-3 pt-4 border-t border-white/10">
-                                <label className="text-[10px] font-bold uppercase tracking-wider text-gold/80 block">Content Block 2</label>
+                            <div className="space-y-3 pt-4 border-t border-[var(--admin-border)]">
+                                <label className="text-[12px] font-bold uppercase tracking-wider text-gold/80 block">Content Block 2</label>
                                 <div className="grid gap-3">
                                     <input 
                                         value={formData.section3Title}
                                         onChange={(e) => setFormData({...formData, section3Title: e.target.value})}
                                         placeholder="Solution/Approach Title" 
-                                        className="w-full bg-white/5 border border-white/10 rounded-[8px] px-3 py-2 text-white text-sm focus:border-gold/50 placeholder:text-white/20 outline-none"
+                                        className="w-full admin-surface-input rounded-[8px] px-3 py-2 text-[var(--admin-text)] text-sm focus:border-gold/50 placeholder:text-[var(--admin-text)] outline-none"
                                     />
                                     <textarea 
                                         value={formData.section3Desc}
                                         onChange={(e) => setFormData({...formData, section3Desc: e.target.value})}
                                         placeholder="Description..." 
                                         rows={3}
-                                        className="w-full bg-white/5 border border-white/10 rounded-[8px] px-3 py-2 text-white text-sm focus:border-gold/50 placeholder:text-white/20 outline-none resize-none"
+                                        className="w-full admin-surface-input rounded-[8px] px-3 py-2 text-[var(--admin-text)] text-sm focus:border-gold/50 placeholder:text-[var(--admin-text)] outline-none resize-none"
                                     />
                                 </div>
                             </div>
 
                             {/* Freshness */}
-                            <div className="space-y-3 pt-4 border-t border-white/10">
-                                <label className="text-[10px] font-bold uppercase tracking-wider text-gold/80 block">Freshness / Innovation</label>
+                            <div className="space-y-3 pt-4 border-t border-[var(--admin-border)]">
+                                <label className="text-[12px] font-bold uppercase tracking-wider text-gold/80 block">Freshness / Innovation</label>
                                 <div className="grid gap-3">
                                     <input 
                                         value={formData.freshnessTitle}
                                         onChange={(e) => setFormData({...formData, freshnessTitle: e.target.value})}
                                         placeholder="Title (e.g. Always Cutting Edge)" 
-                                        className="w-full bg-white/5 border border-white/10 rounded-[8px] px-3 py-2 text-white text-sm focus:border-gold/50 placeholder:text-white/20 outline-none"
+                                        className="w-full admin-surface-input rounded-[8px] px-3 py-2 text-[var(--admin-text)] text-sm focus:border-gold/50 placeholder:text-[var(--admin-text)] outline-none"
                                     />
                                     <textarea 
                                         value={formData.freshnessDesc}
                                         onChange={(e) => setFormData({...formData, freshnessDesc: e.target.value})}
                                         placeholder="Innovation description..." 
                                         rows={3}
-                                        className="w-full bg-white/5 border border-white/10 rounded-[8px] px-3 py-2 text-white text-sm focus:border-gold/50 placeholder:text-white/20 outline-none resize-none"
+                                        className="w-full admin-surface-input rounded-[8px] px-3 py-2 text-[var(--admin-text)] text-sm focus:border-gold/50 placeholder:text-[var(--admin-text)] outline-none resize-none"
                                     />
                                 </div>
                             </div>
 
                              {/* Capabilities Title */}
-                             <div className="space-y-3 pt-4 border-t border-white/10">
-                                <label className="text-[10px] font-bold uppercase tracking-wider text-gold/80 block">Capabilities Section Title</label>
+                             <div className="space-y-3 pt-4 border-t border-[var(--admin-border)]">
+                                <label className="text-[12px] font-bold uppercase tracking-wider text-gold/80 block">Capabilities Section Title</label>
                                 <input 
                                     value={formData.capabilitiesTitle}
                                     onChange={(e) => setFormData({...formData, capabilitiesTitle: e.target.value})}
                                     placeholder="WHAT WE BUILD." 
-                                    className="w-full bg-white/5 border border-white/10 rounded-[8px] px-3 py-2 text-white text-sm focus:border-gold/50 placeholder:text-white/20 outline-none"
+                                    className="w-full admin-surface-input rounded-[8px] px-3 py-2 text-[var(--admin-text)] text-sm focus:border-gold/50 placeholder:text-[var(--admin-text)] outline-none"
                                 />
                             </div>
                         </div>
@@ -464,38 +468,38 @@ export function ServiceForm({ service }: ServiceFormProps) {
                 <div className="flex flex-col gap-3 md:gap-6 min-w-0">
                     
                     {/* Theme */}
-                    <div className="bg-white/30 dark:bg-white/5 border border-white/20 dark:border-white/10 rounded-[10px] p-3 md:p-6 backdrop-blur-md flex flex-col gap-3 md:gap-4">
-                        <h3 className="font-bold text-white text-xs md:text-sm border-b border-white/10 pb-2">
+                    <div className="admin-surface-primary backdrop-blur-xs rounded-[10px] p-3 md:p-6 flex flex-col gap-3 md:gap-4">
+                        <h3 className="font-bold text-[var(--admin-text)] text-xs md:text-sm border-b border-[var(--admin-border)] pb-2">
                             Branding
                         </h3>
                         <div className="flex flex-col gap-1 md:gap-2">
-                            <label className="text-[8px] md:text-xs font-bold text-white/60">Theme Color</label>
+                            <label className="text-[8px] md:text-xs font-bold text-[var(--admin-text)]">Theme Color</label>
                             <div className="flex gap-2">
                                 <input 
                                     type="color" 
                                     value={formData.themeColor} 
                                     onChange={(e) => setFormData({...formData, themeColor: e.target.value})}
-                                    className="h-9 w-12 bg-transparent border border-white/10 rounded-[6px] p-0 cursor-pointer" 
+                                    className="h-9 w-12 bg-transparent border border-[var(--admin-border)] rounded-full p-0 cursor-pointer" 
                                 />
                                 <input 
                                     value={formData.themeColor} 
                                     onChange={(e) => setFormData({...formData, themeColor: e.target.value})}
                                     placeholder="#000000" 
-                                    className="flex-1 bg-white/5 border border-white/10 rounded-[8px] px-2 md:px-3 py-1.5 md:py-2 text-white text-xs md:text-sm outline-none focus:border-gold/50 font-mono"
+                                    className="flex-1 admin-surface-input rounded-[8px] px-2 md:px-3 py-1.5 md:py-2 text-[var(--admin-text)] text-xs md:text-sm outline-none focus:border-gold/50 font-mono"
                                 />
                             </div>
                         </div>
                     </div>
 
                     {/* Features */}
-                    <div className="bg-white/30 dark:bg-white/5 border border-white/20 dark:border-white/10 rounded-[10px] p-3 md:p-6 backdrop-blur-md flex flex-col gap-3 md:gap-4">
-                        <div className="flex items-center justify-between border-b border-white/10 pb-2">
-                            <h3 className="font-bold text-white text-xs md:text-sm">
+                    <div className="admin-surface-primary backdrop-blur-xs rounded-[10px] p-3 md:p-6 flex flex-col gap-3 md:gap-4">
+                        <div className="flex items-center justify-between border-b border-[var(--admin-border)] pb-2">
+                            <h3 className="font-bold text-[var(--admin-text)] text-xs md:text-sm">
                                 Features
                             </h3>
                             <button 
                                 onClick={() => setFeatures([...features, ""])}
-                                className="text-[10px] bg-white/10 hover:bg-white/20 text-white px-2 py-1 rounded-[4px] font-bold transition-all flex items-center gap-1"
+                                className="text-[10px] admin-surface-input hover:bg-[var(--admin-text)]/5 text-[var(--admin-text)] hover:text-gold px-2 py-1 rounded-[4px] font-bold transition-all flex items-center gap-1"
                             >
                                 <Plus size={10} /> Add
                             </button>
@@ -510,25 +514,25 @@ export function ServiceForm({ service }: ServiceFormProps) {
                                             newF[i] = e.target.value;
                                             setFeatures(newF);
                                         }}
-                                        className="flex-1 bg-white/5 border border-white/10 rounded-[6px] px-2 py-1.5 text-white text-xs outline-none focus:border-gold/50"
+                                        className="flex-1 admin-surface-input rounded-[6px] px-2 py-1.5 text-[var(--admin-text)] text-xs outline-none focus:border-gold/50"
                                         placeholder="Feature..."
                                     />
                                     <button 
                                         onClick={() => setFeatures(features.filter((_, idx) => idx !== i))}
-                                        className="text-white/20 hover:text-red-400 transition-colors"
+                                        className="text-[var(--admin-text)] hover:text-red-500 transition-colors"
                                     >
                                         <X size={14} />
                                     </button>
                                 </div>
                             ))}
-                            {features.length === 0 && <p className="text-white/20 text-[10px] italic">No features added.</p>}
+                            {features.length === 0 && <p className="text-[var(--admin-text)] text-[10px] italic">No features added.</p>}
                         </div>
                     </div>
 
                     {/* Process */}
-                    <div className="bg-white/30 dark:bg-white/5 border border-white/20 dark:border-white/10 rounded-[10px] p-3 md:p-6 backdrop-blur-md flex flex-col gap-3 md:gap-4">
-                         <div className="flex items-center justify-between border-b border-white/10 pb-2">
-                            <h3 className="font-bold text-white text-xs md:text-sm">
+                    <div className="admin-surface-primary backdrop-blur-xs rounded-[10px] p-3 md:p-6 flex flex-col gap-3 md:gap-4">
+                         <div className="flex items-center justify-between border-b border-[var(--admin-border)] pb-2">
+                            <h3 className="font-bold text-[var(--admin-text)] text-xs md:text-sm">
                                 Process Steps
                             </h3>
                         </div>
@@ -538,13 +542,13 @@ export function ServiceForm({ service }: ServiceFormProps) {
                                 value={formData.processTitle}
                                 onChange={(e) => setFormData({...formData, processTitle: e.target.value})}
                                 placeholder="Section Title (HOW WE DELIVER)" 
-                                className="w-full bg-white/5 border border-white/10 rounded-[8px] px-2 py-1.5 text-white text-xs outline-none focus:border-gold/50 text-gold font-bold mb-2"
+                                className="w-full admin-surface-input rounded-[8px] px-2 py-1.5 text-[var(--admin-text)] text-xs outline-none focus:border-gold/50 font-bold mb-2"
                             />
                             {processSteps.map((step, i) => (
-                                <div key={i} className="bg-white/5 p-2 rounded-[6px] border border-white/5 relative group">
+                                <div key={i} className="admin-surface-secondary p-2 rounded-[6px] border border-[var(--admin-border)] relative group">
                                      <button 
                                         onClick={() => setProcessSteps(processSteps.filter((_, idx) => idx !== i))}
-                                        className="absolute top-1 right-1 text-white/10 hover:text-red-400 opacity-0 group-hover:opacity-100 transition-all"
+                                        className="absolute top-1 right-1 text-[var(--admin-text)] hover:text-red-500 opacity-0 group-hover:opacity-100 transition-all"
                                     >
                                         <X size={12} />
                                     </button>
@@ -552,20 +556,20 @@ export function ServiceForm({ service }: ServiceFormProps) {
                                         value={step.title}
                                         onChange={(e) => updateProcessStep(i, 'title', e.target.value)}
                                         placeholder="Step Title"
-                                        className="w-full bg-transparent border-0 border-b border-white/5 px-0 py-1 text-white font-bold text-xs focus:ring-0 mb-1 focus:border-gold/50 placeholder:text-white/20"
+                                        className="w-full bg-transparent border-0 border-b border-[var(--admin-border)] px-0 py-1 text-[var(--admin-text)] font-bold text-xs focus:ring-0 mb-1 focus:border-gold/50 placeholder:text-[var(--admin-text)]/70 outline-none"
                                     />
                                      <textarea 
                                         value={step.description}
                                         onChange={(e) => updateProcessStep(i, 'description', e.target.value)}
                                         placeholder="Description..."
                                         rows={2}
-                                        className="w-full bg-transparent border-0 px-0 py-0 text-white/60 text-[10px] focus:ring-0 resize-none placeholder:text-white/10"
+                                        className="w-full bg-transparent border-0 px-0 py-0 text-[var(--admin-text)]/70 text-[10px] focus:ring-0 resize-none placeholder:text-[var(--admin-text)]/60 outline-none"
                                     />
                                 </div>
                             ))}
                              <button 
                                 onClick={() => setProcessSteps([...processSteps, { title: "", description: "" }])}
-                                className="text-[10px] bg-white/5 hover:bg-white/10 text-white/60 hover:text-white px-2 py-1.5 rounded-[4px] font-bold transition-all w-full text-center"
+                                className="text-[10px] admin-surface-input hover:bg-[var(--admin-text)]/5 text-[var(--admin-text)] hover:text-gold px-2 py-1.5 rounded-[4px] font-bold transition-all w-full text-center"
                             >
                                 + Add Process Step
                             </button>
@@ -573,14 +577,14 @@ export function ServiceForm({ service }: ServiceFormProps) {
                     </div>
 
                     {/* Stats */}
-                    <div className="bg-white/30 dark:bg-white/5 border border-white/20 dark:border-white/10 rounded-[10px] p-3 md:p-6 backdrop-blur-md flex flex-col gap-3 md:gap-4">
-                        <div className="flex items-center justify-between border-b border-white/10 pb-2">
-                            <h3 className="font-bold text-white text-xs md:text-sm">
+                    <div className="admin-surface-primary backdrop-blur-xs rounded-[10px] p-3 md:p-6 flex flex-col gap-3 md:gap-4">
+                        <div className="flex items-center justify-between border-b border-[var(--admin-border)] pb-2">
+                            <h3 className="font-bold text-[var(--admin-text)] text-xs md:text-sm">
                                 Key Stats
                             </h3>
                             <button 
                                 onClick={() => setStats([...stats, { label: "", val: "" }])}
-                                className="text-[10px] bg-white/10 hover:bg-white/20 text-white px-2 py-1 rounded-[4px] font-bold transition-all flex items-center gap-1"
+                                className="text-[10px] admin-surface-input hover:bg-[var(--admin-text)]/5 text-[var(--admin-text)] hover:text-gold px-2 py-1 rounded-[4px] font-bold transition-all flex items-center gap-1"
                             >
                                 <Plus size={10} /> Add
                             </button>
@@ -591,30 +595,30 @@ export function ServiceForm({ service }: ServiceFormProps) {
                                     <input 
                                         value={stat.val}
                                         onChange={(e) => updateStat(i, 'val', e.target.value)}
-                                        className="w-16 bg-white/5 border border-white/10 rounded-[6px] px-2 py-1.5 text-white text-xs outline-none focus:border-gold/50 font-mono text-center"
+                                        className="w-16 admin-surface-input rounded-[6px] px-2 py-1.5 text-[var(--admin-text)] text-xs outline-none focus:border-gold/50 font-mono text-center"
                                         placeholder="Value"
                                     />
                                      <input 
                                         value={stat.label}
                                         onChange={(e) => updateStat(i, 'label', e.target.value)}
-                                        className="flex-1 bg-white/5 border border-white/10 rounded-[6px] px-2 py-1.5 text-white text-xs outline-none focus:border-gold/50"
+                                        className="flex-1 admin-surface-input rounded-[6px] px-2 py-1.5 text-[var(--admin-text)] text-xs outline-none focus:border-gold/50"
                                         placeholder="Label"
                                     />
                                     <button 
                                         onClick={() => setStats(stats.filter((_, idx) => idx !== i))}
-                                        className="text-white/20 hover:text-red-400 transition-colors"
+                                        className="text-[var(--admin-text)] hover:text-red-500 transition-colors"
                                     >
                                         <X size={14} />
                                     </button>
                                 </div>
                              ))}
-                              {stats.length === 0 && <p className="text-white/20 text-[10px] italic">No stats added.</p>}
+                              {stats.length === 0 && <p className="text-[var(--admin-text)]/50 text-[10px] italic">No stats added.</p>}
                         </div>
                     </div>
 
                     {/* CTA */}
-                    <div className="bg-white/30 dark:bg-white/5 border border-white/20 dark:border-white/10 rounded-[10px] p-3 md:p-6 backdrop-blur-md flex flex-col gap-3 md:gap-4">
-                        <h3 className="font-bold text-white text-xs md:text-sm border-b border-white/10 pb-2">
+                    <div className="admin-surface-primary backdrop-blur-xs rounded-[10px] p-3 md:p-6 flex flex-col gap-3 md:gap-4">
+                        <h3 className="font-bold text-[var(--admin-text)] text-xs md:text-sm border-b border-[var(--admin-border)] pb-2">
                              Call To Action
                         </h3>
                          <div className="flex flex-col gap-2">
@@ -622,19 +626,19 @@ export function ServiceForm({ service }: ServiceFormProps) {
                                 value={formData.ctaTitle}
                                 onChange={(e) => setFormData({...formData, ctaTitle: e.target.value})}
                                 placeholder="Title (READY?)" 
-                                className="w-full bg-white/5 border border-white/10 rounded-[8px] px-2 py-1.5 text-white text-xs outline-none focus:border-gold/50 placeholder:text-white/20"
+                                className="w-full admin-surface-input rounded-[8px] px-2 py-1.5 text-[var(--admin-text)] text-xs outline-none focus:border-gold/50 placeholder:text-[var(--admin-text)]"
                             />
                             <input 
                                 value={formData.ctaDesc}
                                 onChange={(e) => setFormData({...formData, ctaDesc: e.target.value})}
                                 placeholder="Description" 
-                                className="w-full bg-white/5 border border-white/10 rounded-[8px] px-2 py-1.5 text-white text-xs outline-none focus:border-gold/50 placeholder:text-white/20"
+                                className="w-full admin-surface-input rounded-[8px] px-2 py-1.5 text-[var(--admin-text)] text-xs outline-none focus:border-gold/50 placeholder:text-[var(--admin-text)]"
                             />
                             <input 
                                 value={formData.ctaButton}
                                 onChange={(e) => setFormData({...formData, ctaButton: e.target.value})}
                                 placeholder="Button Label" 
-                                className="w-full bg-white/5 border border-white/10 rounded-[8px] px-2 py-1.5 text-white text-xs outline-none focus:border-gold/50 placeholder:text-white/20"
+                                className="w-full admin-surface-input rounded-[8px] px-2 py-1.5 text-[var(--admin-text)] text-xs outline-none focus:border-gold/50 placeholder:text-[var(--admin-text)]"
                             />
                         </div>
                     </div>

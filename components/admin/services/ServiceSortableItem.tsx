@@ -33,7 +33,7 @@ export function ServiceSortableItem({ service }: ServiceSortableItemProps) {
       ref={setNodeRef}
       style={style}
       className={cn(
-        "relative group bg-white/30 dark:bg-white/5 border border-white/20 dark:border-white/10 rounded-[12px] p-4 md:p-6 transition-all backdrop-blur-xl shadow-sm",
+        "relative backdrop-blur-xs group admin-surface-primary rounded-[12px] p-4 md:p-6 transition-all overflow-hidden",
         isDragging && "border-gold/50 shadow-lg ring-1 ring-gold/20"
       )}
     >
@@ -44,7 +44,7 @@ export function ServiceSortableItem({ service }: ServiceSortableItemProps) {
           <button
             {...attributes}
             {...listeners}
-            className="mt-1 p-1.5 rounded-[6px] text-white/20 hover:text-gold hover:bg-white/5 cursor-grab active:cursor-grabbing transition-colors md:mt-2"
+            className="mt-1 p-1.5 rounded-[6px] text-[var(--admin-text)]/70 hover:text-gold hover:bg-[var(--admin-text)]/5 cursor-grab active:cursor-grabbing transition-colors md:mt-2"
             title="Drag to reorder"
           >
             <GripVertical size={20} />
@@ -52,23 +52,24 @@ export function ServiceSortableItem({ service }: ServiceSortableItemProps) {
 
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2 md:gap-3 mb-1 md:mb-2">
-              <h3 className="text-base md:text-xl font-bold text-white truncate">
+              <h3 className="text-base md:text-xl font-bold text-[var(--admin-text)] truncate">
                 {service.name}
               </h3>
               <span
-                className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider border ${
+                className={cn(
+                  "px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider border",
                   service.isActive
                     ? "bg-green-500/10 text-green-400 border-green-500/20"
-                    : "bg-white/20 text-white/50 border-white/20"
-                }`}
+                    : "admin-surface-input text-[var(--admin-text)]/50 border-[var(--admin-border)]"
+                )}
               >
                 {service.isActive ? "Active" : "Draft"}
               </span>
             </div>
-            <p className="text-white/60 text-xs md:text-sm line-clamp-1 max-w-2xl">
+            <p className="text-[var(--admin-text)]/80 text-xs md:text-sm line-clamp-1 max-w-2xl">
               {service.description}
             </p>
-            <div className="flex items-center gap-2 md:gap-4 mt-2 md:mt-3 text-[10px] md:text-xs text-white/50 font-mono">
+            <div className="flex items-center gap-2 md:gap-4 mt-2 md:mt-3 text-[10px] md:text-xs text-[var(--admin-text)]/80 font-mono">
               <span>/{service.slug}</span>
               <span>•</span>
               <span>Updated {format(service.updatedAt, "MMM d, yyyy")}</span>

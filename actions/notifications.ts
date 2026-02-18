@@ -18,9 +18,13 @@ export async function getNotifications() {
         where: {
             userId: user.id,
             isRead: false,
+            OR: [
+                { expiresAt: null },
+                { expiresAt: { gt: new Date() } }
+            ]
         },
         orderBy: {
-            createdAt: 'desc' // Priority handling can be added here if needed
+            createdAt: 'desc'
         },
         take: 50
     });

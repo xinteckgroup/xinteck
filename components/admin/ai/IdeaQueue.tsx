@@ -65,18 +65,18 @@ export function IdeaQueue() {
         }
     };
 
-    if (loading) return <div className="flex justify-center p-20"><Loader2 className="animate-spin text-white/40" /></div>;
+    if (loading) return <div className="flex justify-center p-20"><Loader2 className="animate-spin text-muted-foreground" /></div>;
 
     if (ideas.length === 0) {
         return (
             <motion.div 
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="flex flex-col items-center justify-center py-20 border border-dashed border-white/20 dark:border-white/10 rounded-[12px] bg-white/5"
+                className="flex flex-col items-center justify-center py-20 border border-dashed border-[var(--admin-border)] rounded-[12px] admin-surface-input"
             >
-                <Wand2 className="text-white/20 mb-4" size={48} />
-                <p className="text-white/40 text-sm font-medium">The editorial queue is empty.</p>
-                <p className="text-white/30 text-xs text-center max-w-xs mt-1">Use the "Newsroom" tab to scout trends and populate this queue.</p>
+                <Wand2 className="text-muted-foreground/50 mb-4" size={48} />
+                <p className="text-muted-foreground text-sm font-medium">The editorial queue is empty.</p>
+                <p className="text-muted-foreground/60 text-xs text-center max-w-xs mt-1">Use the "Newsroom" tab to scout trends and populate this queue.</p>
             </motion.div>
         );
     }
@@ -85,19 +85,19 @@ export function IdeaQueue() {
         <div className="space-y-4">
             {/* Header / Toolbar */}
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-                <h2 className="text-lg md:text-xl font-bold text-white">Editorial Queue ({ideas.length})</h2>
+                <h2 className="text-lg md:text-xl font-bold text-[var(--admin-text)]">Editorial Queue ({ideas.length})</h2>
                 
-                <div className="flex items-center gap-2 bg-white/5 border border-white/10 rounded-[8px] p-1 self-start md:self-auto">
+                <div className="flex items-center gap-2 admin-surface-secondary p-1 self-start md:self-auto rounded-[8px]">
                     <button 
                         onClick={() => setViewMode("grid")}
-                        className={`p-2 rounded-[6px] transition-colors ${viewMode === 'grid' ? 'bg-white/10 text-white' : 'text-white/40 hover:text-white'}`}
+                        className={`p-2 rounded-[6px] transition-colors ${viewMode === 'grid' ? 'bg-background text-[var(--admin-text)] shadow-sm' : 'text-[var(--admin-muted)] hover:text-[var(--admin-text)]'}`}
                         title="Grid View"
                     >
                         <Grid size={16} />
                     </button>
                     <button 
                         onClick={() => setViewMode("list")}
-                        className={`p-2 rounded-[6px] transition-colors ${viewMode === 'list' ? 'bg-white/10 text-white' : 'text-white/40 hover:text-white'}`}
+                        className={`p-2 rounded-[6px] transition-colors ${viewMode === 'list' ? 'bg-background text-[var(--admin-text)] shadow-sm' : 'text-[var(--admin-muted)] hover:text-[var(--admin-text)]'}`}
                         title="List View"
                     >
                         <LayoutList size={16} />
@@ -122,30 +122,30 @@ export function IdeaQueue() {
                                 initial={{ opacity: 0, y: 20 }}
                                 animate={{ opacity: 1, y: 0 }}
                                 transition={{ delay: index * 0.05 }}
-                                className="bg-white/30 dark:bg-white/5 border border-white/20 dark:border-white/10 p-6 rounded-[12px] flex flex-col md:flex-row gap-6 items-start md:items-center group hover:border-gold/30 transition-all backdrop-blur-md"
+                                className="admin-surface-secondary p-6 rounded-[12px] flex flex-col md:flex-row gap-6 items-start md:items-center group hover:border-gold/30 transition-all"
                             >
                                 <div className="flex-1 min-w-0">
                                     <div className="flex items-center gap-3 mb-2">
                                         <span className={`text-[10px] font-bold px-2 py-0.5 rounded border ${
                                             idea.score > 80 
                                                 ? "bg-green-500/10 text-green-400 border-green-500/20" 
-                                                : "bg-yellow-500/10 text-yellow-400 border-yellow-500/20"
+                                                : "bg-yellow-500/10 text-yellow-500 border-yellow-500/20"
                                         }`}>
                                             SCORE: {idea.score}
                                         </span>
-                                        <span className="text-white/40 text-[10px] uppercase tracking-wider font-bold">
+                                        <span className="text-muted-foreground/60 text-[10px] uppercase tracking-wider font-bold">
                                             {new Date(idea.createdAt).toLocaleDateString()}
                                         </span>
                                     </div>
-                                    <h3 className="text-base md:text-lg font-bold text-white mb-1 truncate">{idea.title}</h3>
-                                    <p className="text-white/60 text-xs md:text-sm line-clamp-1">{idea.angle}</p>
+                                    <h3 className="text-base md:text-lg font-bold text-[var(--admin-text)] mb-1 truncate">{idea.title}</h3>
+                                    <p className="text-[var(--admin-muted)] text-xs md:text-sm line-clamp-1">{idea.angle}</p>
                                 </div>
 
                                 <div className="flex items-center gap-3 w-full md:w-auto shrink-0">
                                     <button 
                                         onClick={() => handleGenerate(idea)}
                                         disabled={!!generatingId}
-                                        className="flex-1 md:flex-none flex items-center justify-center gap-2 px-6 py-2.5 bg-white text-black font-bold text-xs md:text-sm rounded-[10px] hover:bg-gold transition-colors disabled:opacity-50 min-w-[140px] shadow-sm transform active:scale-95"
+                                        className="flex-1 md:flex-none flex items-center justify-center gap-2 px-6 py-2.5 bg-[var(--admin-brand)] text-primary-foreground font-bold text-xs md:text-sm rounded-[10px] hover:bg-[var(--admin-brand)]/80 transition-colors disabled:opacity-50 min-w-[140px] shadow-sm transform active:scale-95"
                                     >
                                         {generatingId === idea.id ? (
                                             <><Loader2 className="animate-spin" size={16} /> Writing...</>
@@ -157,7 +157,7 @@ export function IdeaQueue() {
                                     <button 
                                         onClick={() => handleDelete(idea.id)}
                                         disabled={!!generatingId}
-                                        className="p-2.5 text-white/40 hover:text-red-400 hover:bg-red-500/10 rounded-[10px] transition-colors"
+                                        className="p-2.5 text-[var(--admin-muted)] hover:text-red-400 hover:bg-red-500/10 rounded-[10px] transition-colors"
                                     >
                                         <Trash2 size={18} />
                                     </button>
@@ -180,10 +180,10 @@ export function IdeaQueue() {
                                     label: "Concept", 
                                     render: (row: any) => (
                                         <div className="flex flex-col">
-                                            <span className="font-bold text-white max-w-[300px] truncate">{row.title}</span>
-                                            <span className="text-xs text-white/40 max-w-[300px] truncate">{row.angle}</span>
+                                            <span className="font-bold text-[var(--admin-text)] max-w-[300px] truncate">{row.title}</span>
+                                            <span className="text-xs text-[var(--admin-muted)] max-w-[300px] truncate">{row.angle}</span>
                                         </div>
-                                    ) 
+                                    )  
                                 },
                                 { 
                                     key: "score", 
@@ -205,7 +205,7 @@ export function IdeaQueue() {
                                         <button 
                                             onClick={() => handleGenerate(row)}
                                             disabled={!!generatingId}
-                                            className="flex items-center gap-2 px-3 py-1.5 bg-white/10 text-white hover:bg-gold hover:text-black rounded-[6px] text-xs font-bold transition-all disabled:opacity-50"
+                                            className="flex items-center gap-2 px-3 py-1.5 admin-surface-input text-[var(--admin-text)] hover:bg-[var(--admin-brand)] hover:text-primary-foreground rounded-[6px] text-xs font-bold transition-all disabled:opacity-50"
                                         >
                                             {generatingId === row.id ? (
                                                 <Loader2 className="animate-spin" size={12} />

@@ -48,21 +48,24 @@ export default function AdminLoginPage() {
   };
 
   return (
-    <div className="min-h-screen grid lg:grid-cols-2 bg-black text-white">
+    <div className="min-h-screen grid lg:grid-cols-2 bg-background text-foreground">
       {/* Left Side - Visuals */}
       <div className="hidden lg:flex relative items-center justify-center overflow-hidden bg-[#0a0a0a]">
         <div className="absolute inset-0 z-0">
+           {/* IMAGE IMPLEMENTED HALFWAY */}
            <NextImage
              src="/admin-bg/circuit.png"
              alt="Login Background"
              fill
              priority
              quality={100}
-             className="object-cover opacity-60"
+             className="object-cover opacity-80" 
            />
-           <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-black/40" />
+           {/* Subtle gradient to ensure logo contrast if needed */}
+           <div className="absolute inset-0 bg-black/40" />
         </div>
         
+        {/* LOGO CENTERED ON THE IMAGE */}
         <div className="relative z-10 p-12 flex items-center justify-center">
             <motion.div 
               initial={{ opacity: 0, scale: 0.9 }}
@@ -72,9 +75,9 @@ export default function AdminLoginPage() {
                <NextImage 
                  src="/logos/logo-dark-full.png"
                  alt="Xinteck Logo"
-                 width={600}
-                 height={225}
-                 className="w-auto h-auto max-w-[90%] max-h-[300px]"
+                 width={500}
+                 height={180}
+                 className="w-auto h-auto max-w-[80%] drop-shadow-2xl"
                  priority
                />
             </motion.div>
@@ -82,7 +85,7 @@ export default function AdminLoginPage() {
       </div>
 
       {/* Right Side - Login Form */}
-      <div className="flex items-center justify-center p-8 bg-black/50 backdrop-blur-sm">
+      <div className="flex items-center justify-center p-8 bg-background">
         <motion.div 
           initial={{ opacity: 0, x: 20 }}
           animate={{ opacity: 1, x: 0 }}
@@ -90,8 +93,8 @@ export default function AdminLoginPage() {
           className="w-full max-w-md space-y-8"
         >
           <div className="text-center lg:text-left">
-            <h2 className="text-3xl font-bold tracking-tight text-white">Welcome back</h2>
-            <p className="mt-2 text-sm text-white/40">
+            <h2 className="text-3xl font-bold tracking-tight text-foreground">Welcome back</h2>
+            <p className="mt-2 text-sm text-muted-foreground">
               Please enter your credentials to access the dashboard.
             </p>
           </div>
@@ -105,16 +108,16 @@ export default function AdminLoginPage() {
             )}
 
             <div className="space-y-2">
-              <label className="text-sm font-medium text-white/80" htmlFor="email">Email</label>
+              <label className="text-sm font-medium text-foreground/80" htmlFor="email">Email</label>
               <div className="relative">
-                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 text-white/30" size={18} />
+                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" size={18} />
                 <input
                   id="email"
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="admin@xinteck.com"
-                  className="w-full bg-white/5 border border-white/10 rounded-[10px] pl-10 pr-4 py-3 text-white placeholder:text-white/20 focus:border-gold/50 focus:ring-1 focus:ring-gold/50 outline-none transition-all"
+                  className="w-full bg-muted/30 border border-input rounded-[10px] pl-10 pr-4 py-3 text-foreground placeholder:text-muted-foreground focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all"
                   required
                 />
               </div>
@@ -122,8 +125,8 @@ export default function AdminLoginPage() {
 
             <div className="space-y-2">
               <div className="flex items-center justify-between">
-                <label className="text-sm font-medium text-white/80" htmlFor="password">Password</label>
-                <Link href="/admin/forgot-password" className="text-sm text-gold hover:text-white transition-colors">
+                <label className="text-sm font-medium text-foreground/80" htmlFor="password">Password</label>
+                <Link href="/admin/forgot-password" className="text-sm text-primary hover:text-foreground transition-colors">
                   Forgot password?
                 </Link>
               </div>
@@ -132,9 +135,9 @@ export default function AdminLoginPage() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="••••••••"
-                  className="bg-white/5"
+                  className="bg-muted/30 border border-input"
                   required
-                  leftIcon={<Lock size={18} />}
+                  leftIcon={<Lock size={18} className="text-muted-foreground" />}
                 />
             </div>
 
@@ -144,18 +147,18 @@ export default function AdminLoginPage() {
                 id="remember" 
                 checked={rememberMe}
                 onChange={(e) => setRememberMe(e.target.checked)}
-                className="rounded-[4px] w-4 h-4 border-white/10 bg-white/5 text-gold focus:ring-offset-black focus:ring-gold/50 cursor-pointer" 
+                className="rounded-[4px] w-4 h-4 border-input bg-background text-primary focus:ring-offset-background focus:ring-primary cursor-pointer" 
               />
-              <label htmlFor="remember" className="text-sm text-white/60 select-none cursor-pointer hover:text-white transition-colors">Remember me for 30 days</label>
+              <label htmlFor="remember" className="text-sm text-muted-foreground select-none cursor-pointer hover:text-foreground transition-colors">Remember me for 30 days</label>
             </div>
 
             <button
               type="submit"
               disabled={isLoading}
-              className="w-full bg-gold text-black font-bold py-3 rounded-[10px] flex items-center justify-center gap-2 hover:bg-white hover:scale-[1.02] active:scale-[0.98] transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-[0_4px_14px_0_rgba(212,175,55,0.39)]"
+              className="w-full bg-primary text-primary-foreground font-bold py-3 rounded-[10px] flex items-center justify-center gap-2 hover:bg-primary/90 hover:scale-[1.02] active:scale-[0.98] transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-lg"
             >
               {isLoading ? (
-                <div className="w-5 h-5 border-2 border-black/30 border-t-black rounded-full animate-spin" />
+                <div className="w-5 h-5 border-2 border-background/30 border-t-background rounded-full animate-spin" />
               ) : (
                 <>
                   Sign In <ArrowRight size={18} />
@@ -164,9 +167,9 @@ export default function AdminLoginPage() {
             </button>
           </form>
 
-          <p className="text-center text-sm text-white/40">
+          <p className="text-center text-sm text-muted-foreground">
             Don't have an account?{" "}
-            <Link href="/admin/register" className="text-gold hover:text-white transition-colors font-medium">
+            <Link href="/admin/register" className="text-primary hover:text-foreground transition-colors font-medium">
               Create Account
             </Link>
           </p>
@@ -175,4 +178,3 @@ export default function AdminLoginPage() {
     </div>
   );
 }
-

@@ -16,8 +16,8 @@ export function AdminBackground() {
   }, []);
 
   return (
-    <div className="fixed inset-0 z-[-1] overflow-hidden">
-      {/* HD Creative Background (The Quantum Circuit) */}
+    <div className="fixed inset-0 z-[-1] overflow-hidden bg-background transition-colors duration-300">
+      {/* HD Creative Background (The Quantum Circuit) - Both Modes */}
       <div className="absolute inset-0">
         <NextImage
           src="/admin-bg/circuit.png"
@@ -27,12 +27,16 @@ export function AdminBackground() {
           quality={100}
           className="object-cover"
         />
-        <div className="absolute inset-0 bg-black/60 z-[1]" /> {/* Consistent Dark Overlay */}
-        <div className="absolute inset-0 bg-gradient-to-br from-black/90 via-transparent to-black/90 z-[2]" /> {/* Consistent Vignette */}
+        {/* Light Mode: subtle dark overlay */}
+        <div className="absolute inset-0 bg-black/40 z-[1] dark:hidden" />
+        <div className="absolute inset-0 bg-gradient-to-br from-black/60 via-transparent to-black/60 z-[2] dark:hidden" />
+        {/* Dark Mode: subtle white overlay */}
+        <div className="absolute inset-0 bg-white/10 z-[1] hidden dark:block" />
+        <div className="absolute inset-0 bg-gradient-to-br from-black/70 via-transparent to-black/70 z-[2] hidden dark:block" />
       </div>
       
-      {/* Grid overlay */}
-      <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)]" />
+      {/* Grid overlay - Adaptive */}
+      <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)] block" />
     </div>
   );
 }

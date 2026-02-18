@@ -88,19 +88,19 @@ export function AnalyticsProvider({ gaId, children }: AnalyticsProviderProps) {
             animate={{ y: 0, opacity: 1 }}
             exit={{ y: 100, opacity: 0 }}
             transition={{ duration: 0.5, type: "spring" }}
-            className="fixed bottom-4 left-4 right-4 md:left-auto md:right-4 md:max-w-md z-50 p-6 rounded-2xl border border-white/10 bg-[#111]/90 backdrop-blur-xl shadow-2xl flex flex-col gap-4"
+            className="fixed bottom-4 left-4 right-4 md:left-auto md:right-4 md:max-w-md z-50 p-6 rounded-2xl border border-border bg-popover/95 backdrop-blur-xl shadow-2xl flex flex-col gap-4"
           >
             <div className="flex items-start justify-between">
               <div className="flex flex-col gap-2">
-                <h3 className="text-white font-bold text-lg">Cookie Preferences</h3>
-                <p className="text-white/60 text-sm leading-relaxed">
+                <h3 className="text-foreground font-bold text-lg">Cookie Preferences</h3>
+                <p className="text-muted-foreground text-sm leading-relaxed">
                   We use cookies to analyze traffic and improve your experience. 
                   Read our <a href="/privacy" className="text-gold hover:underline">Privacy Policy</a> to learn more.
                 </p>
               </div>
               <button 
                 onClick={() => setShowBanner(false)}
-                className="text-white/40 hover:text-white transition-colors"
+                className="text-muted-foreground hover:text-foreground transition-colors"
                 aria-label="Close"
               >
                 <X size={20} />
@@ -110,13 +110,13 @@ export function AnalyticsProvider({ gaId, children }: AnalyticsProviderProps) {
             <div className="flex gap-3 pt-2">
               <button
                 onClick={handleDecline}
-                className="flex-1 px-4 py-2.5 rounded-lg bg-white/5 hover:bg-white/10 text-white font-semibold text-sm transition-all border border-white/10"
+                className="flex-1 px-4 py-2.5 rounded-lg bg-muted hover:bg-muted/80 text-foreground font-semibold text-sm transition-all border border-border"
               >
                 Decline
               </button>
               <button
                 onClick={handleAccept}
-                className="flex-1 px-4 py-2.5 rounded-lg bg-gold hover:bg-white text-black font-bold text-sm transition-all shadow-lg shadow-gold/20"
+                className="flex-1 px-4 py-2.5 rounded-lg bg-gold hover:bg-gold-hover text-black font-bold text-sm transition-all shadow-lg shadow-gold/20"
               >
                 Accept All
               </button>

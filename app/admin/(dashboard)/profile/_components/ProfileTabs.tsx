@@ -27,8 +27,8 @@ export function ProfileTabs() {
                         className={cn(
                             "flex items-center gap-2 px-3 py-1.5 md:px-4 md:py-2 rounded-full text-[10px] md:text-sm font-bold transition-all whitespace-nowrap border",
                             isActive 
-                                ? "bg-gold text-black border-gold shadow-lg shadow-gold/20" 
-                                : "bg-white/30 dark:bg-white/5 text-white/60 border-white/20 dark:border-white/10 hover:bg-white/40 dark:hover:bg-white/10 hover:text-white"
+                                ? "bg-gold text-primary-foreground border-gold shadow-lg shadow-gold/20" 
+                                : "admin-surface-primary text-[var(--admin-text)] border-[var(--admin-border)] hover:bg-[var(--admin-text)]/5 hover:text-gold backdrop-blur-xs"
                         )}
                     >
                         <tab.icon size={16} />

@@ -26,7 +26,7 @@ export function Modal({ open, onClose, title, subtitle, children, footer, maxWid
         <AnimatePresence>
             {open && (
                 <div
-                    className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm"
+                    className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-[var(--admin-background)]/80 backdrop-blur-sm"
                     onClick={onClose}
                 >
                     <motion.div
@@ -34,18 +34,18 @@ export function Modal({ open, onClose, title, subtitle, children, footer, maxWid
                         animate={{ scale: 1, opacity: 1 }}
                         exit={{ scale: 0.95, opacity: 0 }}
                         transition={{ duration: 0.15 }}
-                        className={`bg-[#111] border border-white/20 dark:border-white/10 rounded-[16px] w-full ${maxWidth} shadow-2xl relative overflow-hidden flex flex-col max-h-[90vh]`}
+                        className={`admin-surface-floating rounded-[16px] w-full ${maxWidth} relative overflow-hidden flex flex-col max-h-[90vh]`}
                         onClick={(e) => e.stopPropagation()}
                     >
                         {/* Header */}
-                        <div className="flex justify-between items-center p-4 md:p-6 border-b border-white/10 bg-white/5 shrink-0">
+                        <div className="flex justify-between items-center p-4 md:p-6 border-b border-[var(--admin-border)] admin-surface-secondary shrink-0 rounded-none">
                             <div className="flex flex-col gap-1 min-w-0">
-                                <h3 className="text-lg md:text-xl font-bold text-white truncate">{title}</h3>
-                                {subtitle && <p className="text-xs text-white/40 font-mono truncate">{subtitle}</p>}
+                                <h3 className="text-lg md:text-xl font-bold text-[var(--admin-text)] truncate">{title}</h3>
+                                {subtitle && <p className="text-xs text-[var(--admin-muted)] font-mono truncate">{subtitle}</p>}
                             </div>
                             <button
                                 onClick={onClose}
-                                className="text-white/40 hover:text-white transition-colors bg-white/5 hover:bg-white/10 p-2 rounded-full shrink-0 ml-3"
+                                className="text-[var(--admin-muted)] hover:text-[var(--admin-text)] transition-colors admin-surface-input p-2 rounded-full shrink-0 ml-3"
                             >
                                 <X size={18} />
                             </button>
@@ -58,7 +58,7 @@ export function Modal({ open, onClose, title, subtitle, children, footer, maxWid
 
                         {/* Footer */}
                         {footer && (
-                            <div className="flex justify-end gap-2 p-4 md:p-6 pt-0 border-t border-white/10 shrink-0">
+                            <div className="flex justify-end gap-2 p-4 md:p-6 pt-0 border-t border-[var(--admin-border)] shrink-0">
                                 {footer}
                             </div>
                         )}

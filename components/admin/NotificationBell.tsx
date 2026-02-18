@@ -110,9 +110,9 @@ export function NotificationBell() {
 
     const getPriorityStyle = (priority: NotificationPriority) => {
         switch (priority) {
-            case "CRITICAL": return "border-l-2 border-red-500 bg-red-500/10 dark:bg-red-500/10 bg-red-50";
-            case "HIGH": return "border-l-2 border-yellow-500 bg-yellow-500/10 dark:bg-yellow-500/10 bg-yellow-50";
-            default: return "border-l-2 border-transparent hover:bg-black/5 dark:hover:bg-white/5";
+            case "CRITICAL": return "border-l-2 border-destructive bg-destructive/10";
+            case "HIGH": return "border-l-2 border-yellow-500 bg-yellow-500/10";
+            default: return "border-l-2 border-transparent hover:bg-muted";
         }
     };
 
@@ -120,12 +120,12 @@ export function NotificationBell() {
         <div className="relative">
             <button 
                 onClick={() => setIsOpen(!isOpen)}
-                className="relative text-primary hover:text-primary/80 transition-colors p-2 rounded-full hover:bg-black/5 dark:hover:bg-white/5"
+                className="relative text-gold hover:text-gold/80 transition-colors p-2 rounded-full hover:bg-[var(--admin-text)]/5"
             >
                 <Bell size={20} />
                 {totalUnread > 0 && (
-                    <span className="absolute top-1.5 right-1.5 w-2.5 h-2.5 bg-red-500 rounded-full border border-background flex items-center justify-center">
-                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+                    <span className="absolute top-1.5 right-1.5 w-2.5 h-2.5 bg-destructive rounded-full border border-background flex items-center justify-center">
+                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-destructive opacity-75"></span>
                     </span>
                 )}
             </button>
@@ -148,18 +148,18 @@ export function NotificationBell() {
                             animate={{ opacity: 1, y: 0, scale: 1 }}
                             exit={{ opacity: 0, y: 10, scale: 0.95 }}
                             transition={{ duration: 0.2 }}
-                            className="absolute right-0 top-full mt-2 w-[90vw] sm:w-96 bg-background/95 dark:bg-black/95 border border-black/5 dark:border-white/10 rounded-xl shadow-2xl backdrop-blur-xl overflow-hidden z-50 origin-top-right"
+                            className="absolute right-0 top-full mt-2 w-[90vw] sm:w-96 admin-surface-floating rounded-xl overflow-hidden z-50 origin-top-right"
                         >
                             {/* Header */}
-                            <div className="flex items-center justify-between p-4 border-b border-black/5 dark:border-white/10 bg-black/5 dark:bg-white/5">
-                                <h3 className="text-sm font-bold text-foreground flex items-center gap-2">
+                            <div className="flex items-center justify-between p-4 border-b border-[var(--admin-border)] admin-surface-input">
+                                <h3 className="text-sm font-bold text-[var(--admin-text)] flex items-center gap-2">
                                     Notifications 
-                                    {totalUnread > 0 && <span className="bg-red-500 text-white text-[10px] px-2 py-0.5 rounded-full">{totalUnread}</span>}
+                                    {totalUnread > 0 && <span className="bg-destructive text-destructive-foreground text-[10px] px-2 py-0.5 rounded-full">{totalUnread}</span>}
                                 </h3>
                                 {totalUnread > 0 && (
                                     <button 
                                         onClick={handleMarkAllRead}
-                                        className="text-[11px] uppercase font-bold text-primary hover:text-primary/80 transition-colors flex items-center gap-1"
+                                        className="text-[11px] uppercase font-bold text-gold hover:text-gold/80 transition-colors flex items-center gap-1"
                                     >
                                         <Check size={14} /> Mark all read
                                     </button>
@@ -167,10 +167,10 @@ export function NotificationBell() {
                             </div>
 
                             {/* List */}
-                            <div className="max-h-[60vh] md:max-h-[400px] overflow-y-auto scrollbar-thin scrollbar-thumb-black/10 dark:scrollbar-thumb-white/10 scrollbar-track-transparent">
+                            <div className="max-h-[60vh] md:max-h-[400px] overflow-y-auto scrollbar-thin scrollbar-thumb-muted-foreground/20 scrollbar-track-transparent">
                                 {unread.length === 0 && read.length === 0 ? (
-                                    <div className="p-12 text-center text-foreground/50 flex flex-col items-center gap-3">
-                                        <div className="w-12 h-12 rounded-full bg-black/5 dark:bg-white/5 flex items-center justify-center mb-1">
+                                    <div className="p-12 text-center text-[var(--admin-muted)] flex flex-col items-center gap-3">
+                                        <div className="w-12 h-12 rounded-full admin-surface-input flex items-center justify-center mb-1">
                                             <Bell size={20} className="opacity-50" />
                                         </div>
                                         <p className="text-sm font-medium">All caught up!</p>
@@ -184,20 +184,20 @@ export function NotificationBell() {
                                                     <div 
                                                         key={n.id}
                                                         onClick={() => handleMarkRead(n.id, n.link)}
-                                                        className={`p-4 border-b border-black/5 dark:border-white/5 cursor-pointer group flex gap-3 items-start transition-colors ${getPriorityStyle(n.priority)}`}
+                                                        className={`p-4 border-b border-[var(--admin-border)] cursor-pointer group flex gap-3 items-start transition-colors ${getPriorityStyle(n.priority)}`}
                                                     >
                                                         <div className="mt-0.5 shrink-0">{getIcon(n.type)}</div>
-                                                        <div className="flex-1 min-w-0">
+                                                    <div className="flex-1 min-w-0">
                                                             <div className="flex items-center justify-between gap-2 mb-1">
-                                                                <h4 className="text-sm font-semibold text-foreground group-hover:text-primary transition-colors truncate pr-2">{n.title}</h4>
-                                                                <span className="text-[10px] text-foreground/40 whitespace-nowrap shrink-0">
+                                                                <h4 className="text-sm font-semibold text-[var(--admin-text)] group-hover:text-gold transition-colors truncate pr-2">{n.title}</h4>
+                                                                <span className="text-[10px] text-[var(--admin-muted)] whitespace-nowrap shrink-0">
                                                                     {new Date(n.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                                                                 </span>
                                                             </div>
-                                                            <p className="text-xs text-foreground/70 line-clamp-2 leading-relaxed">{n.message}</p>
+                                                            <p className="text-xs text-[var(--admin-muted)] line-clamp-2 leading-relaxed">{n.message}</p>
                                                         </div>
                                                         {n.link && (
-                                                            <ChevronRight size={14} className="text-foreground/30 self-center group-hover:text-primary transition-colors shrink-0" />
+                                                            <ChevronRight size={14} className="text-[var(--admin-text)]/30 self-center group-hover:text-gold transition-colors shrink-0" />
                                                         )}
                                                     </div>
                                                 ))}
@@ -208,7 +208,7 @@ export function NotificationBell() {
                                         {read.length > 0 && (
                                             <>
                                                 {unread.length > 0 && (
-                                                    <div className="px-4 py-2 bg-black/5 dark:bg-white/5 text-[10px] font-bold text-foreground/40 uppercase tracking-wider sticky top-0 backdrop-blur-md border-y border-black/5 dark:border-white/5">
+                                                    <div className="px-4 py-2 admin-surface-input text-[10px] font-bold text-muted-foreground uppercase tracking-wider sticky top-0 backdrop-blur-md border-y border-[var(--admin-border)]">
                                                         Recent History
                                                     </div>
                                                 )}
@@ -217,17 +217,17 @@ export function NotificationBell() {
                                                 {read.map(n => (
                                                     <div 
                                                         key={n.id}
-                                                        className="p-4 border-b border-black/5 dark:border-white/5 bg-transparent opacity-60 hover:opacity-100 transition-opacity flex gap-3 group hover:bg-black/5 dark:hover:bg-white/5"
+                                                        className="p-4 border-b border-[var(--admin-border)] bg-transparent opacity-60 hover:opacity-100 transition-opacity flex gap-3 group hover:bg-[var(--admin-text)]/5"
                                                     >
                                                         <div className="mt-0.5 grayscale opacity-50 shrink-0">{getIcon(n.type)}</div>
                                                         <div className="flex-1 min-w-0">
                                                             <div className="flex items-center justify-between gap-2 mb-1">
-                                                                <h4 className="text-sm font-medium text-foreground/80">{n.title}</h4>
-                                                                <span className="text-[10px] text-foreground/30">
+                                                                <h4 className="text-sm font-medium text-[var(--admin-text)]/80">{n.title}</h4>
+                                                                <span className="text-[10px] text-[var(--admin-muted)]">
                                                                     {new Date(n.createdAt).toLocaleDateString()}
                                                                 </span>
                                                             </div>
-                                                            <p className="text-xs text-foreground/50 line-clamp-1">{n.message}</p>
+                                                            <p className="text-xs text-[var(--admin-muted)] line-clamp-1">{n.message}</p>
                                                         </div>
                                                     </div>
                                                 ))}

@@ -71,8 +71,7 @@ export async function createService(data: any) {
 
     const service = await prisma.service.create({
         data: {
-            ...data,
-            ...parsed,
+            ...parsed as any,
             isActive: true,
             sortOrder: 0
         }
@@ -105,13 +104,7 @@ export async function updateService(id: string, data: any) {
                 ...(typeof currentVersion === 'number' ? { version: currentVersion } : {})
             },
             data: {
-                ...data, // This spreads all data, might overwrite version if passed in data... but parsed follows. 
-                // data contains raw input. parsed contains partial schema validation.
-                // We should be careful about spreading ...data if it contains malicious fields.
-                // However, updatedService schema partial parse is used.
-                // The original code spread ...data then ...parsed.
-                // I should stick to original pattern but ensure version is incremented.
-                ...parsed,
+                ...parsed as any,
                 version: { increment: 1 }
             }
         });

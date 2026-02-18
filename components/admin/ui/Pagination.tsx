@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import Link from "next/link";
 
 interface PaginationProps {
@@ -24,20 +25,22 @@ export function Pagination({ currentPage, totalPages, baseUrl, onPageChange }: P
         pages.push(totalPages);
     }
 
+    const activeClass = "bg-gold text-[var(--admin-text)] border-gold shadow-lg shadow-gold/20 font-black";
+    const inactiveClass = "admin-surface-input text-[var(--admin-text)] border-[var(--admin-border)] hover:bg-gold/10 hover:text-gold hover:border-gold/30 font-bold";
+
     return (
-        <div className="flex justify-center gap-1.5">
+        <div className="flex justify-center items-center gap-1.5">
             {pages.map((p, i) =>
                 p === "..." ? (
-                    <span key={`dots-${i}`} className="w-8 h-8 flex items-center justify-center text-white/30 text-xs">…</span>
+                    <span key={`dots-${i}`} className="w-8 h-8 flex items-center justify-center text-[var(--admin-text)] text-xs font-black">…</span>
                 ) : baseUrl ? (
                     <Link
                         key={p}
                         href={`${baseUrl}${baseUrl.includes("?") ? "&" : "?"}page=${p}`}
-                        className={`w-8 h-8 flex items-center justify-center rounded-[8px] text-xs font-bold border transition-all ${
-                            currentPage === p
-                                ? "bg-gold text-black border-gold"
-                                : "bg-white/5 text-white/40 border-white/10 hover:bg-white/10 hover:text-white"
-                        }`}
+                        className={cn(
+                            "w-8 h-8 flex items-center justify-center rounded-[8px] text-xs border transition-all",
+                            currentPage === p ? activeClass : inactiveClass
+                        )}
                     >
                         {p}
                     </Link>
@@ -45,11 +48,10 @@ export function Pagination({ currentPage, totalPages, baseUrl, onPageChange }: P
                     <button
                         key={p}
                         onClick={() => onPageChange?.(p as number)}
-                        className={`w-8 h-8 flex items-center justify-center rounded-[8px] text-xs font-bold border transition-all ${
-                            currentPage === p
-                                ? "bg-gold text-black border-gold"
-                                : "bg-white/5 text-white/40 border-white/10 hover:bg-white/10 hover:text-white"
-                        }`}
+                        className={cn(
+                            "w-8 h-8 flex items-center justify-center rounded-[8px] text-xs border transition-all",
+                            currentPage === p ? activeClass : inactiveClass
+                        )}
                     >
                         {p}
                     </button>

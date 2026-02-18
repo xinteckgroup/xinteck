@@ -94,17 +94,17 @@ export function BlogEditorForm({ initialData, isEditing = false }: BlogEditorFor
               <button 
                  onClick={() => { setFormData({...formData, status: "Draft"}); handleSave(); }}
                  disabled={isPending}
-                 className="flex-1 sm:flex-initial px-3 py-1.5 md:px-4 md:py-2 rounded-[8px] bg-white/30 dark:bg-white/5 ring-1 ring-black/10 dark:ring-white/10 text-black dark:text-white hover:bg-white/50 dark:hover:bg-white/10 transition-all font-bold text-[10px] md:text-sm whitespace-nowrap disabled:opacity-50"
+                 className="backdrop-blur-sm flex-1 sm:flex-initial px-3 py-1.5 md:px-4 md:py-2 rounded-[8px] admin-surface-primary text-[var(--admin-text)] hover:text-gold hover:bg-[var(--admin-text)]/5 transition-all font-bold text-[10px] md:text-sm whitespace-nowrap disabled:opacity-50"
               >
                  Save Draft
               </button>
               <button 
                  onClick={handleSave}
                  disabled={isPending}
-                 className="flex-1 sm:flex-initial px-3 py-1.5 md:px-6 md:py-2 rounded-[8px] bg-gold text-black font-bold text-[10px] md:text-sm hover:bg-white transition-colors flex items-center justify-center gap-1 md:gap-2 whitespace-nowrap disabled:opacity-50"
+                 className="backdrop-blur-sm flex-1 sm:flex-initial px-3 py-1.5 md:px-6 md:py-2 rounded-[8px] admin-surface-primary text-[var(--admin-text)] font-bold text-[10px] md:text-sm hover:text-gold hover:bg-[var(--admin-text)]/5 transition-colors flex items-center justify-center gap-1 md:gap-2 whitespace-nowrap disabled:opacity-50"
               >
                  {isPending ? (
-                     <span className="w-4 h-4 border-2 border-black/30 border-t-black rounded-full animate-spin"/>
+                     <span className="w-4 h-4 border-2 border-primary-foreground/30 border-t-primary-foreground rounded-full animate-spin"/>
                  ) : (
                      <Save size={12} className="md:w-4 md:h-4" />
                  )}
@@ -123,27 +123,27 @@ export function BlogEditorForm({ initialData, isEditing = false }: BlogEditorFor
        <div className="grid lg:grid-cols-3 gap-3 md:gap-6">
           {/* Main Content Column */}
           <div className="lg:col-span-2 flex flex-col gap-3 md:gap-6 min-w-0">
-             <div className="bg-white/30 dark:bg-white/5 border border-white/20 dark:border-white/10 rounded-[10px] p-3 md:p-6 backdrop-blur-md overflow-hidden">
+             <div className="admin-surface-primary rounded-[10px] p-3 md:p-6 overflow-hidden">
                 <div className="flex flex-col gap-4">
                    <div className="flex flex-col gap-2">
-                      <label className="text-[8px] md:text-xs font-bold text-white/60 uppercase">Post Title</label>
+                      <label className="text-[8px] md:text-xs font-bold text-[var(--admin-text)] uppercase">Post Title</label>
                       <input 
                         type="text" 
                         value={formData.title}
                         onChange={handleTitleChange}
                         placeholder="Enter article title..." 
-                        className="bg-white/5 border border-white/10 rounded-[8px] px-3 md:px-4 py-2 md:py-3 text-white text-sm md:text-lg font-bold outline-none focus:border-gold/50 placeholder:font-normal"
+                        className="backdrop-blur-sm admin-surface-input rounded-[8px] px-3 md:px-4 py-2 md:py-3 text-[var(--admin-text)] text-sm md:text-lg font-bold outline-none focus:border-gold/50 placeholder:font-normal"
                       />
                    </div>
                    <div className="flex flex-col gap-2">
-                      <label className="text-[8px] md:text-xs font-bold text-white/60 uppercase">Slug</label>
-                      <div className="flex items-center bg-white/5 border border-white/10 rounded-[8px] px-2 md:px-4 py-1.5 md:py-2 gap-1 md:gap-2 overflow-x-auto">
-                         <span className="text-white/40 text-[10px] md:text-sm whitespace-nowrap">xinteck.com/blog/</span>
+                      <label className="text-[8px] md:text-xs font-bold text-[var(--admin-text)] uppercase">Slug</label>
+                      <div className="flex items-center backdrop-blur-sm admin-surface-input rounded-[8px] px-2 md:px-4 py-1.5 md:py-2 gap-1 md:gap-2 overflow-x-auto">
+                         <span className="text-[var(--admin-text)]/60 text-[10px] md:text-sm whitespace-nowrap">xinteck.com/blog/</span>
                          <input 
                            type="text" 
                            value={formData.slug}
                            onChange={(e) => setFormData({...formData, slug: e.target.value})}
-                           className="bg-transparent border-none text-white text-xs md:text-sm outline-none flex-1 font-mono min-w-0"
+                           className="bg-transparent border-none text-[var(--admin-text)] text-xs md:text-sm outline-none flex-1 font-mono min-w-0"
                         />
                       </div>
                    </div>
@@ -151,7 +151,7 @@ export function BlogEditorForm({ initialData, isEditing = false }: BlogEditorFor
              </div>
 
              <div className="flex flex-col gap-1 md:gap-2 min-w-0 overflow-hidden">
-                <label className="text-[8px] md:text-xs font-bold text-white/60 uppercase ml-1">Content</label>
+                <label className="text-[8px] md:text-xs font-bold text-[var(--admin-text)] uppercase ml-1">Content</label>
                 <MarkdownEditor 
                    value={formData.content} 
                    onChange={(val) => setFormData({...formData, content: val})} 
@@ -162,11 +162,11 @@ export function BlogEditorForm({ initialData, isEditing = false }: BlogEditorFor
           {/* Sidebar Column */}
           <div className="flex flex-col gap-3 md:gap-6 min-w-0">
              {/* Publishing Options */}
-             <div className="bg-white/30 dark:bg-white/5 border border-white/20 dark:border-white/10 rounded-[10px] p-3 md:p-6 backdrop-blur-md flex flex-col gap-3 md:gap-4">
-                <h3 className="font-bold text-white text-xs md:text-sm border-b border-white/10 pb-2">Publishing</h3>
+             <div className="admin-surface-primary rounded-[10px] p-3 md:p-6 flex flex-col gap-3 md:gap-4">
+                <h3 className="font-bold text-[var(--admin-text)] text-xs md:text-sm border-b border-[var(--admin-border)] pb-2">Publishing</h3>
                 
                 <div className="flex flex-col gap-2">
-                   <label className="text-[8px] md:text-xs font-bold text-white/60">Status</label>
+                   <label className="text-[8px] md:text-xs font-bold text-[var(--admin-text)]/70">Status</label>
                    <Select 
                      value={formData.status}
                      onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setFormData({...formData, status: e.target.value})}
@@ -179,7 +179,7 @@ export function BlogEditorForm({ initialData, isEditing = false }: BlogEditorFor
                 </div>
 
                 <div className="flex flex-col gap-2">
-                   <label className="text-[8px] md:text-xs font-bold text-white/60">Category</label>
+                   <label className="text-[8px] md:text-xs font-bold text-[var(--admin-text)]/70">Category</label>
                    <Select 
                      value={formData.category}
                      onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setFormData({...formData, category: e.target.value})}
@@ -195,11 +195,11 @@ export function BlogEditorForm({ initialData, isEditing = false }: BlogEditorFor
              </div>
 
              {/* Featured Image */}
-             <div className="bg-white/30 dark:bg-white/5 border border-white/20 dark:border-white/10 rounded-[10px] p-3 md:p-6 backdrop-blur-md flex flex-col gap-3 md:gap-4">
-                <h3 className="font-bold text-white text-xs md:text-sm border-b border-white/10 pb-2">Featured Image</h3>
+             <div className="admin-surface-primary rounded-[10px] p-3 md:p-6 flex flex-col gap-3 md:gap-4">
+                <h3 className="font-bold text-[var(--admin-text)] text-xs md:text-sm border-b border-[var(--admin-border)] pb-2">Featured Image</h3>
                 
                 {formData.image ? (
-                    <div className="relative aspect-video bg-black/50 rounded-[8px] overflow-hidden border border-white/10 group">
+                    <div className="relative aspect-video admin-surface-input rounded-[8px] overflow-hidden group">
                         <Image 
                             src={formData.image} 
                             alt="Featured" 
@@ -214,7 +214,7 @@ export function BlogEditorForm({ initialData, isEditing = false }: BlogEditorFor
                         </button>
                         <button 
                             onClick={() => setShowMediaPicker(true)}
-                            className="absolute bottom-2 right-2 bg-black/60 hover:bg-gold text-white hover:text-black px-2 py-1 rounded-[4px] text-xs font-bold opacity-0 group-hover:opacity-100 transition-all"
+                            className="absolute bottom-2 right-2 bg-primary text-primary-foreground hover:bg-primary/90 px-2 py-1 rounded-[4px] text-xs font-bold opacity-0 group-hover:opacity-100 transition-all"
                         >
                             Change
                         </button>
@@ -222,10 +222,10 @@ export function BlogEditorForm({ initialData, isEditing = false }: BlogEditorFor
                 ) : (
                     <div 
                        onClick={() => setShowMediaPicker(true)}
-                       className="aspect-video bg-white/5 rounded-[8px] border border-dashed border-white/20 flex flex-col items-center justify-center gap-1 md:gap-2 cursor-pointer hover:border-gold/50 hover:bg-white/10 transition-all group"
+                       className="aspect-video admin-surface-input rounded-[8px] border border-dashed border-[var(--admin-border)] flex flex-col items-center justify-center gap-1 md:gap-2 cursor-pointer hover:border-gold/50 transition-all group"
                     >
-                       <Upload size={18} className="md:w-6 md:h-6 text-white/40 group-hover:text-gold transition-colors" />
-                       <span className="text-[8px] md:text-xs text-white/40 font-medium">Click to upload</span>
+                       <Upload size={18} className="md:w-6 md:h-6 text-[var(--admin-text)] group-hover:text-gold transition-colors" />
+                       <span className="text-[8px] md:text-xs text-[var(--admin-text)] font-medium">Click to upload</span>
                     </div>
                 )}
                 
@@ -235,11 +235,11 @@ export function BlogEditorForm({ initialData, isEditing = false }: BlogEditorFor
                        value={formData.image}
                        onChange={(e) => setFormData({...formData, image: e.target.value})}
                        placeholder="Or paste image URL..." 
-                       className="w-full bg-white/5 border border-white/10 rounded-[8px] px-2 md:px-3 py-1.5 md:py-2 text-white text-[10px] md:text-xs outline-none focus:border-gold/50 pr-8"
+                       className="w-full admin-surface-input rounded-[8px] px-2 md:px-3 py-1.5 md:py-2 text-[var(--admin-text)] text-[10px] md:text-xs outline-none focus:border-gold/50 pr-8"
                     />
                     <button
                         onClick={() => setShowMediaPicker(true)}
-                        className="absolute right-1 top-1/2 -translate-y-1/2 p-1 text-white/40 hover:text-white"
+                        className="absolute right-1 top-1/2 -translate-y-1/2 p-1 text-[var(--admin-text)] hover:text-gold"
                         title="Open Media Library"
                      >
                         <ImageIcon size={14} />
@@ -248,14 +248,14 @@ export function BlogEditorForm({ initialData, isEditing = false }: BlogEditorFor
              </div>
              
              {/* Excerpt */}
-             <div className="bg-white/30 dark:bg-white/5 border border-white/20 dark:border-white/10 rounded-[10px] p-3 md:p-6 backdrop-blur-md flex flex-col gap-3 md:gap-4">
-                <h3 className="font-bold text-white text-xs md:text-sm border-b border-white/10 pb-2">Excerpt</h3>
+             <div className="admin-surface-primary rounded-[10px] p-3 md:p-6 flex flex-col gap-3 md:gap-4">
+                <h3 className="font-bold text-[var(--admin-text)] text-xs md:text-sm border-b border-[var(--admin-border)] pb-2">Excerpt</h3>
                 <textarea 
                    rows={3}
                    value={formData.excerpt}
                    onChange={(e) => setFormData({...formData, excerpt: e.target.value})}
                    placeholder="Short summary for SEO and previews..."
-                   className="bg-white/5 border border-white/10 rounded-[8px] px-2 md:px-3 py-1.5 md:py-2 text-white text-[10px] md:text-xs outline-none focus:border-gold/50 resize-none"
+                   className="admin-surface-input rounded-[8px] px-2 md:px-3 py-1.5 md:py-2 text-[var(--admin-text)] text-[10px] md:text-xs outline-none focus:border-gold/50 resize-none"
                 />
              </div>
           </div>

@@ -192,12 +192,7 @@ export async function forgotPassword(email: string) {
             throw new Error("Failed to send email. Inspect server logs.");
         }
     } else {
-        console.warn("Resend API Key missing. Token generated but email not sent. Token: " + token);
-        // For dev purposes, maybe return token in console or debug? 
-        // User explicitly asked for "FULLY IMPLEMENTED".
-        if (process.env.NODE_ENV === "development") {
-            // Log removed for production
-        }
+        console.warn("Resend API Key missing. Token generated but email not sent. Check System Settings.");
     }
 
     await logAudit({
@@ -360,13 +355,22 @@ export async function revokeSession(sessionId: string) {
     return { success: true };
 }
 
-export async function revokeAllOtherSessions(currentSessionToken: string) {
+export async function revokeAllOtherSessions() {
     const user = await requireRole([Role.SUPER_ADMIN, Role.ADMIN, Role.SUPPORT_STAFF]);
+
+    // Read current session token from cookie server-side
+    const { cookies } = await import("next/headers");
+    const cookieStore = await cookies();
+    const currentSessionToken = cookieStore.get("session_token")?.value;
+
+    if (!currentSessionToken) {
+        throw new Error("No active session found.");
+    }
 
     const result = await prisma.session.deleteMany({
         where: {
             userId: user.id,
-            token: { not: currentSessionToken } // Keep current session
+            token: { not: currentSessionToken }
         }
     });
 

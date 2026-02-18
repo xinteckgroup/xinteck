@@ -23,7 +23,7 @@ export default async function SettingsPage() {
                 <SettingsForm initialSettings={settings} />
                 
                 {/* Divider */}
-                <div className="border-t border-white/10" />
+                <div className="border-t border-[var(--admin-border)]" />
                 
                 <SiteSettingsTab 
                     initialSettings={siteSettings as any}

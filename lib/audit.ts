@@ -50,7 +50,11 @@ export type AuditAction =
     | "team.invite_user"
     | "team.revoke_invitation"
     | "team.resend_invitation"
-    | "user.register_accepted";
+    | "user.register_accepted"
+    | "careers.create"
+    | "careers.update"
+    | "careers.delete"
+    | "careers.toggle";
 
 interface AuditLogParams {
     action: AuditAction;

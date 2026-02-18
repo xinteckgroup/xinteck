@@ -2,6 +2,7 @@
 
 import { exportAuditLogsCsv } from "@/actions/audit";
 import { RoleGate } from "@/components/admin/RoleGate";
+import { cn } from "@/lib/utils";
 import { Role } from "@prisma/client";
 import { format, parseISO } from "date-fns";
 import { Calendar, Download } from "lucide-react";
@@ -23,7 +24,7 @@ interface AuditFiltersProps {
 export function AuditFilters({ entities, currentAction, currentEntity, currentDateFrom, currentDateTo }: AuditFiltersProps) {
   const router = useRouter();
   const { error } = useToast();
-  const [isPending, startTransition] = useTransition();
+  const [isPending, startTransition] = useTransition(); // eslint-disable-line @typescript-eslint/no-unused-vars
   const [isExporting, setIsExporting] = useState(false);
   const [dateFromOpen, setDateFromOpen] = useState(false);
   const [dateToOpen, setDateToOpen] = useState(false);
@@ -71,29 +72,27 @@ export function AuditFilters({ entities, currentAction, currentEntity, currentDa
   return (
     <div className="flex flex-col gap-3">
       {/* Action Filters */}
-      <div className="flex flex-row items-center gap-1 bg-white/30 dark:bg-white/5 border border-white/20 dark:border-white/10 rounded-[10px] p-1.5 backdrop-blur-md overflow-x-auto w-full md:w-fit no-scrollbar">
+      <div className="flex flex-row items-center gap-1 admin-surface-primary backdrop-blur-xs rounded-[10px] p-1.5 overflow-x-auto w-full md:w-fit no-scrollbar border border-[var(--admin-border)]">
         {actionFilters.map((f, i) => (
-          <span key={i}>
-            {i > 0 && <span className="hidden" />}
-            <a
-              href={buildUrl({ action: f.value, page: undefined })}
-              className={`px-2.5 py-1 rounded-[6px] text-[10px] md:text-xs font-bold transition-all whitespace-nowrap flex items-center gap-1.5 ${
-                currentAction === f.value || (!currentAction && !f.value)
-                  ? "bg-white/10 text-white"
-                  : "text-white/50 hover:bg-white/10 hover:text-white"
-              }`}
-            >
-              {f.color && <span className={`w-1.5 h-1.5 rounded-full ${f.color}`} />}
-              {f.label}
-            </a>
-          </span>
+          <a
+            key={i}
+            href={buildUrl({ action: f.value, page: undefined })}
+            className={cn(
+              "px-3 py-1.5 rounded-[6px] text-[10px] md:text-xs font-black uppercase tracking-widest transition-all whitespace-nowrap flex items-center gap-1.5",
+              currentAction === f.value || (!currentAction && !f.value)
+                ? "bg-gold/90 text-[var(--admin-text)] shadow-md border border-[var(--admin-border)]"
+                : "text-[var(--admin-text)]/40 hover:text-[var(--admin-text)] hover:bg-[var(--admin-text)]/10"
+            )}
+          >
+            {f.color && <span className={`w-1.5 h-1.5 rounded-full ${f.color}`} />}
+            {f.label}
+          </a>
         ))}
       </div>
 
       {/* Entity + Date Filters */}
       <div className="flex flex-row items-center gap-2 flex-wrap">
         {/* Entity Dropdown */}
-        <div className="flex items-center gap-1.5 bg-white/30 dark:bg-white/5 border border-white/20 dark:border-white/10 rounded-[10px] p-1.5 backdrop-blur-md">
           <Select 
             value={currentEntity || "all"}
             onChange={(e: React.ChangeEvent<HTMLSelectElement>) => router.push(buildUrl({ entity: e.target.value === "all" ? undefined : e.target.value, page: undefined }))}
@@ -101,70 +100,68 @@ export function AuditFilters({ entities, currentAction, currentEntity, currentDa
                 { value: "all", label: "All Entities" },
                 ...entities.map(e => ({ value: e, label: e }))
             ]}
-            className="w-auto min-w-[120px] bg-transparent border-none p-0 h-auto min-h-0 text-[10px] md:text-xs font-bold shadow-none focus:ring-0 [&_svg]:w-3 [&_svg]:h-3 gap-1.5"
+            className="w-auto min-w-[120px] flex items-center gap-1.5 admin-surface-primary backdrop-blur-xs rounded-[10px] px-3 py-2 border border-[var(--admin-border)] h-auto min-h-0 text-[10px] md:text-xs font-black uppercase tracking-widest shadow-none focus:ring-0 [&_svg]:w-3.5 [&_svg]:h-3.5 [&_svg]:text-[var(--admin-text)]"
           />
-        </div>
 
         {/* Date From */}
-        <div className="flex items-center gap-1.5 bg-white/30 dark:bg-white/5 border border-white/20 dark:border-white/10 rounded-[10px] p-1.5 backdrop-blur-md">
-          <Calendar size={12} className="text-white/40 ml-1" />
-          <Popover open={dateFromOpen} onOpenChange={setDateFromOpen}>
-            <PopoverTrigger asChild>
-              <button
-                type="button"
-                className="text-white text-[10px] md:text-xs font-bold outline-none cursor-pointer bg-transparent min-w-[80px] text-left"
-              >
-                {currentDateFrom ? format(parseISO(currentDateFrom), "MMM d, yyyy") : "Start Date"}
-              </button>
-            </PopoverTrigger>
-            <PopoverContent className="w-auto p-0 rounded-[10px]" align="start">
-              <CalendarComponent
-                mode="single"
-                selected={currentDateFrom ? parseISO(currentDateFrom) : undefined}
-                onSelect={(date: Date | undefined) => {
-                  router.push(buildUrl({ dateFrom: date ? format(date, "yyyy-MM-dd") : undefined, page: undefined }));
-                  setDateFromOpen(false);
-                }}
-                initialFocus
-              />
-            </PopoverContent>
-          </Popover>
-        </div>
+        <Popover open={dateFromOpen} onOpenChange={setDateFromOpen}>
+          <PopoverTrigger asChild>
+            <button
+              type="button"
+              className="flex items-center gap-1.5 admin-surface-primary backdrop-blur-xs rounded-[10px] px-3 py-2 border border-[var(--admin-border)] text-[var(--admin-text)] text-[10px] md:text-xs font-black uppercase tracking-widest outline-none cursor-pointer bg-transparent min-w-[120px] text-left hover:bg-[var(--admin-text)]/5 transition-colors"
+            >
+              <Calendar size={14} className="text-[var(--admin-text)]" />
+              {currentDateFrom ? format(parseISO(currentDateFrom), "MMM d, yyyy") : "Start Date"}
+            </button>
+          </PopoverTrigger>
+          <PopoverContent className="w-auto p-0 rounded-[10px]" align="start">
+            <CalendarComponent
+              mode="single"
+              selected={currentDateFrom ? parseISO(currentDateFrom) : undefined}
+              onSelect={(date: Date | undefined) => {
+                router.push(buildUrl({ dateFrom: date ? format(date, "yyyy-MM-dd") : undefined, page: undefined }));
+                setDateFromOpen(false);
+              }}
+              initialFocus
+            />
+          </PopoverContent>
+        </Popover>
 
         {/* Date To */}
-        <div className="flex items-center gap-1.5 bg-white/30 dark:bg-white/5 border border-white/20 dark:border-white/10 rounded-[10px] p-1.5 backdrop-blur-md">
-          <Calendar size={12} className="text-white/40 ml-1" />
-          <Popover open={dateToOpen} onOpenChange={setDateToOpen}>
-            <PopoverTrigger asChild>
-              <button
-                type="button"
-                className="text-white text-[10px] md:text-xs font-bold outline-none cursor-pointer bg-transparent min-w-[80px] text-left"
-              >
-                {currentDateTo ? format(parseISO(currentDateTo), "MMM d, yyyy") : "End Date"}
-              </button>
-            </PopoverTrigger>
-            <PopoverContent className="w-auto p-0 rounded-[10px]" align="start">
-              <CalendarComponent
-                mode="single"
-                selected={currentDateTo ? parseISO(currentDateTo) : undefined}
-                onSelect={(date: Date | undefined) => {
-                  router.push(buildUrl({ dateTo: date ? format(date, "yyyy-MM-dd") : undefined, page: undefined }));
-                  setDateToOpen(false);
-                }}
-                initialFocus
-              />
-            </PopoverContent>
-          </Popover>
-        </div>
+        <Popover open={dateToOpen} onOpenChange={setDateToOpen}>
+          <PopoverTrigger asChild>
+            <button
+              type="button"
+              className="flex items-center gap-1.5 admin-surface-primary backdrop-blur-xs rounded-[10px] px-3 py-2 border border-[var(--admin-border)] text-[var(--admin-text)] text-[10px] md:text-xs font-black uppercase tracking-widest outline-none cursor-pointer bg-transparent min-w-[120px] text-left hover:bg-[var(--admin-text)]/5 transition-colors"
+            >
+               <Calendar size={14} className="text-[var(--admin-text)]" />
+               {currentDateTo ? format(parseISO(currentDateTo), "MMM d, yyyy") : "End Date"}
+            </button>
+          </PopoverTrigger>
+          <PopoverContent className="w-auto p-0 rounded-[10px]" align="start">
+            <CalendarComponent
+              mode="single"
+              selected={currentDateTo ? parseISO(currentDateTo) : undefined}
+              onSelect={(date: Date | undefined) => {
+                router.push(buildUrl({ dateTo: date ? format(date, "yyyy-MM-dd") : undefined, page: undefined }));
+                setDateToOpen(false);
+              }}
+              initialFocus
+            />
+          </PopoverContent>
+        </Popover>
 
         {/* Export Button */}
         <RoleGate allowedRoles={[Role.SUPER_ADMIN]}>
           <button
             onClick={handleExport}
             disabled={isExporting}
-            className="flex items-center gap-1.5 px-3 py-1.5 bg-gold text-black font-bold text-[10px] md:text-xs rounded-[8px] hover:bg-white transition-colors disabled:opacity-50 whitespace-nowrap"
+            className={cn(
+              "flex items-center gap-1.5 px-4 py-2 bg-primary text-[var(--admin-text)] font-black text-[10px] md:text-xs uppercase tracking-widest rounded-[10px] hover:bg-gold transition-all shadow-lg shadow-primary/20 whitespace-nowrap",
+              isExporting && "opacity-50 cursor-not-allowed grayscale"
+            )}
           >
-            <Download size={12} />
+            <Download size={14} />
             {isExporting ? "Exporting..." : "Export CSV"}
           </button>
         </RoleGate>

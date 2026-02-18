@@ -23,14 +23,14 @@ export default function PrivacyPage() {
             <h1 className="text-sm font-bold tracking-[0.3em] text-gold uppercase">
               Legal & Compliance
             </h1>
-            <h2 className="text-5xl md:text-8xl font-black tracking-tighter text-foreground">
+            <h2 className="text-5xl md:text-7xl font-black tracking-tighter text-foreground">
               PRIVACY <span className="text-gold">POLICY.</span>
             </h2>
-            <p className="text-lg md:text-xl text-foreground/60 leading-relaxed max-w-2xl mx-auto">
+            <p className="text-lg md:text-xl text-foreground leading-relaxed max-w-2xl mx-auto">
               Your privacy is fundamental to our business. This policy explains how Xinteck collects, 
               uses, and protects your personal data in accordance with the <strong>Kenya Data Protection Act 2019</strong>.
             </p>
-            <div className="flex flex-wrap justify-center gap-4 text-xs font-bold uppercase tracking-widest text-foreground/40 mt-4">
+            <div className="flex flex-wrap justify-center gap-4 text-xs font-bold uppercase tracking-widest text-foreground mt-4">
               <span>Effective: {effectiveDate}</span>
               <span className="text-gold">•</span>
               <span>Last Updated: {lastUpdated}</span>
@@ -73,12 +73,12 @@ export default function PrivacyPage() {
                   href={`#section-${parseInt(item.num)}`} 
                   className="group flex items-center gap-3 p-3 rounded-[10px] border border-transparent hover:border-gold/30 hover:bg-gold/5 transition-all duration-300"
                 >
-                  <div className="w-8 h-8 rounded-lg bg-primary/5 group-hover:bg-gold/10 flex items-center justify-center transition-colors">
-                    <item.icon className="text-foreground/40 group-hover:text-gold transition-colors" size={14} />
+                  <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center transition-colors">
+                    <item.icon className="text-gold" size={14} />
                   </div>
                   <div className="flex-1 min-w-0">
-                    <span className="text-[10px] font-bold text-gold/60 group-hover:text-gold transition-colors">{item.num}</span>
-                    <p className="text-sm font-medium text-foreground/70 group-hover:text-foreground transition-colors truncate">{item.title}</p>
+                    <span className="text-[10px] font-bold text-gold">{item.num}</span>
+                    <p className="text-sm font-medium text-foreground truncate">{item.title}</p>
                   </div>
                   <svg className="w-4 h-4 text-foreground/20 group-hover:text-gold group-hover:translate-x-1 transition-all" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
@@ -157,7 +157,7 @@ export default function PrivacyPage() {
                 <div className="w-2 h-2 bg-gold rounded-full mt-2 shrink-0" />
                 <div>
                   <strong className="text-foreground">{item.purpose}:</strong>{" "}
-                  <span className="text-foreground/70">{item.desc}</span>
+                  <span className="text-foreground">{item.desc}</span>
                 </div>
               </div>
             ))}
@@ -401,15 +401,15 @@ export default function PrivacyPage() {
               <Mail size={32} />
             </div>
             <h3 className="text-3xl font-black tracking-tight mb-4 text-foreground">Contact Us</h3>
-            <p className="text-foreground/60 mb-6 max-w-2xl mx-auto">
+            <p className="text-foreground mb-6 max-w-2xl mx-auto">
               If you have any questions, concerns, or requests regarding this Privacy Policy or our 
               data practices, please contact us:
             </p>
-            <div className="space-y-2 text-foreground/70">
+            <div className="space-y-2 text-foreground">
               <p><strong>Email:</strong> <a href="mailto:privacy@xinteck.com" className="text-gold hover:underline">privacy@xinteck.com</a></p>
               <p><strong>Address:</strong> Nairobi, Kenya</p>
             </div>
-            <p className="text-sm text-foreground/40 mt-6">
+            <p className="text-sm text-foreground mt-6">
               We aim to respond to all legitimate requests within <strong>30 days</strong>.
             </p>
           </motion.div>

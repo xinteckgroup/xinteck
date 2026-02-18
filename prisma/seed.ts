@@ -180,6 +180,29 @@ const services = [
     }
 ];
 
+const contactConfig = {
+    services: [
+        "Web Development",
+        "Mobile App Dev",
+        "Custom Software",
+        "UI/UX Design",
+        "Cloud & DevOps"
+    ],
+    budgets: {
+        "Web Development": ["15k - 25k", "25k - 50k", "50k - 100k", "100k+"],
+        "Mobile App Dev": ["80k - 100k", "100k+"],
+        "Custom Software": ["25k - 50k", "50k - 100k", "100k+"],
+        "UI/UX Design": ["15k - 25k", "25k - 50k", "50k - 100k", "100k+"],
+        "Cloud & DevOps": ["15k - 25k", "25k - 50k", "50k - 100k", "100k+"]
+    }
+};
+
+const contactPhones = [
+    { label: "Main", value: "+254 782 063 736" },
+    { label: "Support", value: "+254 795 213 399" },
+    { label: "Sales", value: "+254 110 861 797" }
+];
+
 async function main() {
     console.log('Start seeding ...');
 
@@ -331,6 +354,48 @@ async function main() {
             console.log(`Migrated project: ${slug}`);
         }
     }
+
+    // 5. Seed Site Settings (Contact Options & Phones)
+    console.log('Seeding Site Settings...');
+
+    await prisma.siteSetting.upsert({
+        where: { key: "contact_options" },
+        update: {
+            value: JSON.stringify(contactConfig, null, 2),
+            type: "JSON",
+            category: "forms",
+            isPublic: true,
+            description: "Configuration for Contact Form Services and Budget Ranges (KES)"
+        },
+        create: {
+            key: "contact_options",
+            value: JSON.stringify(contactConfig, null, 2),
+            type: "JSON",
+            category: "forms",
+            isPublic: true,
+            description: "Configuration for Contact Form Services and Budget Ranges (KES)"
+        }
+    });
+
+    await prisma.siteSetting.upsert({
+        where: { key: "contact_phones" },
+        update: {
+            value: JSON.stringify(contactPhones, null, 2),
+            type: "JSON",
+            category: "contact",
+            isPublic: true,
+            description: "List of contact phone numbers displayed on the Contact page."
+        },
+        create: {
+            key: "contact_phones",
+            value: JSON.stringify(contactPhones, null, 2),
+            type: "JSON",
+            category: "contact",
+            isPublic: true,
+            description: "List of contact phone numbers displayed on the Contact page."
+        }
+    });
+    console.log('✅ Site settings seeded.');
 
     console.log('Seeding finished.');
 }

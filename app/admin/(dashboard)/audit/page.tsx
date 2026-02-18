@@ -10,15 +10,16 @@ export const dynamic = "force-dynamic";
 export default async function AuditPage({ 
   searchParams 
 }: { 
-  searchParams: { page?: string; action?: string; entity?: string; dateFrom?: string; dateTo?: string } 
+  searchParams: Promise<{ page?: string; action?: string; entity?: string; dateFrom?: string; dateTo?: string }> 
 }) {
   await requireRole([Role.ADMIN, Role.SUPER_ADMIN]);
 
-  const page = Number(searchParams.page) || 1;
-  const action = searchParams.action;
-  const entity = searchParams.entity;
-  const dateFrom = searchParams.dateFrom;
-  const dateTo = searchParams.dateTo;
+  const params = await searchParams;
+  const page = Number(params.page) || 1;
+  const action = params.action;
+  const entity = params.entity;
+  const dateFrom = params.dateFrom;
+  const dateTo = params.dateTo;
 
   const [{ data, totalPages, currentPage, total }, entities] = await Promise.all([
     getAuditLogs({ page, limit: 15, action, entity, dateFrom, dateTo }),

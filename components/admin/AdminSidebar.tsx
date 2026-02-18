@@ -12,6 +12,7 @@ import {
     FileText,
     FolderCheck,
     FolderOpen,
+    GraduationCap,
     LayoutDashboard,
     LogOut,
     Mail,
@@ -36,18 +37,13 @@ const SIDEBAR_ITEMS = [
   { label: "Files", href: "/admin/files", icon: FolderOpen },
   { label: "Inbox", href: "/admin/inbox", icon: MessageSquare },
   { label: "Newsletter", href: "/admin/newsletter", icon: Mail },
+  { label: "Careers", href: "/admin/careers", icon: GraduationCap },
   { label: "Staff", href: "/admin/staff", icon: Users },
   { label: "Audit Log", href: "/admin/audit", icon: ShieldAlert },
   { label: "Settings", href: "/admin/settings", icon: Settings },
 ];
 
-const pulseAnimation = {
-  animate: {
-    boxShadow: ["0 0 0px rgba(212,175,55,0.2)", "0 0 15px rgba(212,175,55,0.6)", "0 0 0px rgba(212,175,55,0.2)"],
-    borderColor: ["rgba(212,175,55,0.3)", "rgba(212,175,55,1)", "rgba(212,175,55,0.3)"]
-  },
-  transition: { duration: 3, repeat: Infinity, ease: "easeInOut" as const }
-};
+
 
 export function AdminSidebar({ userRole }: { userRole?: string }) {
   const { isMobileOpen, isCollapsed, toggleCollapse } = useAdminSidebar();
@@ -106,7 +102,7 @@ export function AdminSidebar({ userRole }: { userRole?: string }) {
          width: { type: "spring", stiffness: 300, damping: 30 }
       }}
       className={cn(
-        "relative ml-[5px] my-[5px] mr-0 h-[calc(100vh-10px)] sticky top-[5px] flex flex-col border-r-0 border border-white/20 dark:border-white/10 bg-white/30 dark:bg-white/5 backdrop-blur-xl z-50 rounded-[10px]",
+        "relative ml-[5px] my-[5px] mr-0 h-[calc(100vh-10px)] sticky top-[5px] flex flex-col admin-surface-primary backdrop-blur-xs z-50 rounded-[10px]",
         "max-md:w-0", // CSS-only: Hidden on mobile by default until JS hydrates
         isHidden && "border-none bg-transparent pointer-events-none" // Hide border/bg when hidden
       )}
@@ -122,13 +118,11 @@ export function AdminSidebar({ userRole }: { userRole?: string }) {
                   transition={{ duration: 0.2 }}
                   className={cn("absolute inset-0 flex items-center justify-start", isCollapsed && "pointer-events-none")}
               >
-                  <motion.div 
-                      animate={pulseAnimation.animate}
-                      transition={pulseAnimation.transition}
-                      className="relative w-32 h-10 border border-gold/30 rounded-[10px] overflow-hidden bg-black/20"
+                  <div 
+                      className="relative w-32 h-10 border border-gold/30 rounded-[10px] overflow-hidden bg-black/60 dark:bg-white/30 admin-gold-pulse"
                   >
                       <NextImage src="/logos/logo-dark-full.png" alt="Xinteck" fill className="object-cover" priority />
-                  </motion.div>
+                  </div>
               </motion.div>
 
               {/* Collapsed Logo */}
@@ -138,13 +132,11 @@ export function AdminSidebar({ userRole }: { userRole?: string }) {
                   transition={{ duration: 0.2 }}
                   className={cn("absolute inset-0 flex items-center justify-center", !isCollapsed && "pointer-events-none")}
               >
-                  <motion.div 
-                      animate={pulseAnimation.animate}
-                      transition={pulseAnimation.transition}
-                      className="relative w-10 h-10 border border-gold/30 rounded-full overflow-hidden bg-black/20 p-1.5 shrink-0 aspect-square"
+                  <div 
+                      className="relative w-10 h-10 border border-gold/30 rounded-full overflow-hidden bg-black/60 dark:bg-white/30 p-1.5 shrink-0 aspect-square admin-gold-pulse"
                   >
                        <NextImage src="/logos/logo-dark.png" alt="X" fill className="object-contain" />
-                  </motion.div>
+                  </div>
               </motion.div>
           </div>
         </div>
@@ -161,8 +153,8 @@ export function AdminSidebar({ userRole }: { userRole?: string }) {
                   "flex items-center gap-3 px-3 py-3 rounded-[10px] transition-all group relative overflow-hidden",
                   isCollapsed && "justify-center",
                   isActive 
-                    ? "bg-gold text-black font-bold shadow-lg shadow-gold/20" 
-                    : "text-white/60 hover:bg-white/5 hover:text-white"
+                    ? "bg-gold text-primary-foreground font-bold shadow-lg shadow-gold/20" 
+                    : "text-[var(--admin-text)] hover:bg-[var(--admin-text)]/5"
                 )}
               >
                 {isActive && (
@@ -173,7 +165,7 @@ export function AdminSidebar({ userRole }: { userRole?: string }) {
                   />
                 )}
                 
-                <div className={cn("relative z-10", isActive ? "text-black" : "text-white/60 group-hover:text-white")}>
+                <div className={cn("relative z-10", isActive ? "text-primary-foreground" : "text-[var(--admin-text)] group-hover:text-[var(--admin-text)]")}>
                   <item.icon size={20} strokeWidth={isActive ? 2.5 : 2} />
                 </div>
 
@@ -192,17 +184,17 @@ export function AdminSidebar({ userRole }: { userRole?: string }) {
         </div>
         
         {/* Footer / Theme & Logout */}
-        <div className="p-3 border-t border-white/10 mx-2 mb-2 space-y-2">
+        <div className="p-3 border-t border-[var(--admin-border)] mx-2 mb-2 space-y-2">
           <div className={cn("flex items-center", isCollapsed ? "flex-col justify-center gap-2" : "gap-3 pl-3")}>
                <ThemeToggle /> 
-               {!isCollapsed && <span className="text-sm font-medium text-white/60">Theme</span>}
+               {!isCollapsed && <span className="text-sm font-medium text-[var(--admin-text)]">Theme</span>}
           </div>
 
           <button 
             onClick={handleLogout}
             className={cn(
               "flex items-center gap-3 w-full px-3 py-3 rounded-[10px] transition-all font-bold shadow-lg",
-              isCollapsed ? "justify-center bg-gold/10 text-gold hover:bg-gold hover:text-black" : "bg-gold text-black hover:bg-white hover:scale-[1.02] active:scale-[0.98]"
+              isCollapsed ? "justify-center bg-gold/10 text-gold hover:bg-gold hover:text-primary-foreground" : "bg-gold text-primary-foreground hover:bg-gold/90 hover:scale-[1.02] active:scale-[0.98]"
             )}
           >
             <LogOut size={20} />
@@ -215,7 +207,7 @@ export function AdminSidebar({ userRole }: { userRole?: string }) {
       <button 
         onClick={toggleCollapse}
         className={cn(
-           "absolute -right-3 top-10 bg-gold text-black p-1.5 rounded-full shadow-lg hover:scale-110 transition-transform z-[60] border-2 border-black/50 pointer-events-auto",
+           "absolute -right-3 top-10 bg-gold text-primary-foreground p-1.5 rounded-full shadow-lg hover:scale-110 transition-transform z-[60] border-2 border-[var(--admin-border)] pointer-events-auto backdrop-blur-xs",
            "hidden md:flex" 
         )}
       >

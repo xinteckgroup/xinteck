@@ -33,8 +33,9 @@ export default function ForgotPasswordPage() {
     };
 
     return (
-        <div className="min-h-screen grid lg:grid-cols-2 bg-black text-white">
+        <div className="min-h-screen grid lg:grid-cols-2 bg-background text-foreground">
             {/* Left Side - Visuals */}
+            {/* Matching Login Page Style */}
             <div className="hidden lg:flex relative items-center justify-center overflow-hidden bg-[#0a0a0a]">
                 <div className="absolute inset-0 z-0">
                    <Image
@@ -43,9 +44,9 @@ export default function ForgotPasswordPage() {
                      fill
                      priority
                      quality={100}
-                     className="object-cover opacity-60"
+                     className="object-cover opacity-80"
                    />
-                   <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-black/40" />
+                   <div className="absolute inset-0 bg-black/40" />
                 </div>
                 
                 <div className="relative z-10 p-12 flex items-center justify-center">
@@ -57,9 +58,9 @@ export default function ForgotPasswordPage() {
                        <Image 
                          src="/logos/logo-dark-full.png"
                          alt="Xinteck Logo"
-                         width={600}
-                         height={225}
-                         className="w-auto h-auto max-w-[90%] max-h-[300px]"
+                         width={500}
+                         height={180}
+                         className="w-auto h-auto max-w-[80%] drop-shadow-2xl"
                          priority
                        />
                     </motion.div>
@@ -67,15 +68,15 @@ export default function ForgotPasswordPage() {
             </div>
 
             {/* Right Side - Forgot Password Form */}
-            <div className="flex items-center justify-center p-8 bg-black/50 backdrop-blur-sm">
+            <div className="flex items-center justify-center p-8 bg-background">
                 <motion.div 
                     initial={{ opacity: 0, scale: 0.95 }}
                     animate={{ opacity: 1, scale: 1 }}
                     className="w-full max-w-md space-y-6"
                 >
                     <div className="text-center">
-                        <h1 className="text-2xl font-bold tracking-tight text-white">Reset Password</h1>
-                        <p className="mt-2 text-sm text-white/40">Enter your email to receive recovery instructions.</p>
+                        <h1 className="text-2xl font-bold tracking-tight text-foreground">Reset Password</h1>
+                        <p className="mt-2 text-sm text-muted-foreground">Enter your email to receive recovery instructions.</p>
                     </div>
 
                     {!message ? (
@@ -85,14 +86,14 @@ export default function ForgotPasswordPage() {
                                     {error}
                                 </div>
                             )}
-                            <div className="relative">
-                                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 text-white/30" size={18} />
+                                <div className="relative">
+                                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" size={18} />
                                 <input
                                     type="email"
                                     placeholder="Enter your email"
                                     value={email}
                                     onChange={e => setEmail(e.target.value)}
-                                    className="w-full bg-white/5 border border-white/10 rounded-[10px] pl-10 pr-4 py-3 text-white placeholder:text-white/20 focus:border-gold/50 outline-none transition-all"
+                                    className="w-full bg-muted/30 border border-input rounded-[10px] pl-10 pr-4 py-3 text-foreground placeholder:text-muted-foreground focus:border-primary outline-none transition-all"
                                     required
                                 />
                             </div>
@@ -100,7 +101,7 @@ export default function ForgotPasswordPage() {
                             <button
                                 type="submit"
                                 disabled={isLoading}
-                                className="w-full bg-gold text-black font-bold py-3 rounded-[10px] flex items-center justify-center gap-2 hover:bg-white transition-all disabled:opacity-50"
+                                className="w-full bg-primary text-primary-foreground font-bold py-3 rounded-[10px] flex items-center justify-center gap-2 hover:bg-primary/90 transition-all disabled:opacity-50"
                             >
                                 {isLoading ? "Sending..." : <>Send Recovery Email <Send size={16} /></>}
                             </button>
@@ -113,7 +114,7 @@ export default function ForgotPasswordPage() {
                     )}
 
                     <div className="text-center">
-                        <Link href="/admin/login" className="text-sm text-white/40 hover:text-white flex items-center justify-center gap-2 transition-colors">
+                        <Link href="/admin/login" className="text-sm text-muted-foreground hover:text-foreground flex items-center justify-center gap-2 transition-colors">
                             <ArrowLeft size={14} /> Back to Login
                         </Link>
                     </div>

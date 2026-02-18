@@ -2,16 +2,16 @@
 
 import { deleteSubscriber, resubscribeSubscriber, unsubscribeSubscriber } from "@/actions/newsletter";
 import { RoleGate } from "@/components/admin/RoleGate";
-import { Button, ConfirmDialog, EmptyState, PageContainer, PageHeader, useToast } from "@/components/admin/ui";
+import { Button, ConfirmDialog, PageContainer, PageHeader, Pagination, useToast } from "@/components/admin/ui";
 import { Role } from "@prisma/client";
-import { Mail, Search, Trash2, UserMinus, UserPlus, Users } from "lucide-react";
+import { Download, MailOpen, Search, Trash2, UserMinus, UserPlus, Users } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 
 import { NewsletterSubscriber } from "@/types";
 
-import { Pagination } from "@/components/admin/ui/Pagination";
 import { PaginatedResponse } from "@/lib/pagination";
+import { cn } from "@/lib/utils";
 import { usePathname, useSearchParams } from "next/navigation";
 import { useDebouncedCallback } from "use-debounce";
 
@@ -106,152 +106,182 @@ export function NewsletterClient({ initialData, stats }: NewsletterClientProps) 
     <PageContainer>
       <PageHeader 
         title="Newsletter" 
-        subtitle="Manage your newsletter subscribers based on activity."
+        subtitle="Manage subscribers and track audience growth."
+        actions={
+          <Button 
+            variant="outline" 
+            className="gap-2 admin-surface-primary border border-[var(--admin-border)] text-[var(--admin-text)] hover:text-gold hover:bg-[var(--admin-text)]/5 transition-all text-sm font-bold rounded-[10px]" 
+            onClick={() => window.open("/api/newsletter/export", "_blank")}
+          >
+            <Download size={14} /> Export CSV
+          </Button>
+        }
       />
 
-      {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <StatsCard 
-          icon={<Users size={14} />} 
-          label="Total" 
-          value={stats.total} 
-          colorClass="text-blue-400 bg-blue-500/10" 
-          valueClass="text-white"
-        />
-        <StatsCard 
-          icon={<Mail size={14} />} 
-          label="Active" 
-          value={stats.active} 
-          colorClass="text-green-400 bg-green-500/10" 
-          valueClass="text-green-400"
-        />
-        <StatsCard 
-          icon={<UserMinus size={14} />} 
-          label="Unsubscribed" 
-          value={stats.unsubscribed} 
-          colorClass="text-red-400 bg-red-500/10" 
-          valueClass="text-red-400"
-        />
-      </div>
-
-      {/* Search & Filter */}
-      <div className="flex flex-col sm:flex-row gap-3 items-start sm:items-center justify-between">
-          <div className="w-full sm:w-auto bg-white/30 dark:bg-black/20 border border-white/20 dark:border-white/10 p-1.5 rounded-[10px] backdrop-blur-md">
-            <div className="relative">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-white/30 pointer-events-none" size={14} />
-              <input 
-                type="text"
-                placeholder="Search by email..."
-                value={search}
-                onChange={e => handleSearchChange(e.target.value)}
-                className="w-full bg-black/20 dark:bg-white/5 border border-white/5 dark:border-white/10 rounded-[10px] pl-9 pr-4 py-2 text-xs md:text-sm text-white placeholder:text-white/20 dark:placeholder:text-white/30 focus:border-gold/50 focus:outline-none transition-colors"
-              />
-            </div>
-          </div>
-        <div className="flex gap-1 bg-white/30 dark:bg-white/5 border border-white/20 dark:border-white/10 rounded-[8px] p-1 w-full sm:w-auto justify-center sm:justify-end backdrop-blur-md">
-          {(["all", "active", "unsubscribed"] as const).map(f => (
-            <button
-              key={f}
-              onClick={() => handleFilterChange(f)}
-              className={`px-3 py-1.5 text-xs font-bold rounded-[6px] capitalize transition-all ${
-                filter === f 
-                  ? 'bg-gold text-black shadow-sm' 
-                  : 'text-white/60 hover:bg-white/10 hover:text-white'
-              }`}
-            >
-              {f}
-            </button>
-          ))}
+      <div className="flex flex-col gap-6">
+        {/* Stats Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
+          <StatsCard 
+            label="Total Subscribers" 
+            value={stats.total} 
+            icon={<Users size={20} />} 
+            colorClass="bg-gold/10 text-gold" 
+            valueClass="text-[var(--admin-text)]" 
+          />
+          <StatsCard 
+            label="Active Readers" 
+            value={stats.active} 
+            icon={<MailOpen size={20} />} 
+            colorClass="bg-green-500/10 text-green-500" 
+            valueClass="text-green-500" 
+          />
+          <StatsCard 
+            label="Unsubscribed" 
+            value={stats.unsubscribed} 
+            icon={<UserMinus size={20} />} 
+            colorClass="bg-[var(--admin-text)]/10 text-[var(--admin-text)]/40" 
+            valueClass="text-[var(--admin-text)]/40" 
+          />
         </div>
-      </div>
 
-      {/* Subscribers Table */}
-      <div className="bg-white/30 dark:bg-white/5 border border-white/20 dark:border-white/10 rounded-[10px] overflow-hidden shadow-sm backdrop-blur-md">
-        {subscribers.length > 0 ? (
-          <div className="overflow-x-auto">
-            <table className="w-full">
+        {/* Filters */}
+        <div className="flex flex-col md:flex-row gap-4 items-center justify-between admin-surface-primary backdrop-blur-xs p-3 md:p-4 rounded-[12px] border border-[var(--admin-border)] shadow-xl">
+          <div className="relative w-full md:w-64 lg:w-96 bg-black/60 dark:bg-white/30 rounded-[10px]">
+             <div className="relative">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--admin-muted)] pointer-events-none" size={18} />
+                <input
+                  type="text"
+                  placeholder="Search emails..."
+                  value={search}
+                  onChange={e => handleSearchChange(e.target.value)}
+                  className="w-full admin-surface-input border border-[var(--admin-border)] rounded-[10px] pl-10 pr-4 py-2 text-sm text-[var(--admin-text)] placeholder:text-[var(--admin-muted)] focus:border-gold/50 focus:outline-none transition-colors"
+                />
+             </div>
+          </div>
+          <div className="flex gap-1 admin-surface-input/30 p-1 rounded-lg border border-[var(--admin-border)] w-full md:w-auto overflow-x-auto">
+            {(["all", "active", "unsubscribed"] as const).map(f => (
+              <button
+                key={f}
+                onClick={() => handleFilterChange(f)}
+                className={cn(
+                  "px-4 py-1.5 rounded-[6px] text-[10px] md:text-xs font-bold uppercase tracking-wider transition-all whitespace-nowrap flex-1 md:flex-none",
+                  filter === f
+                    ? "bg-gold/90 text-[var(--admin-text)] shadow-md border border-[var(--admin-border)]"
+                    : "text-[var(--admin-text)]/40 hover:text-[var(--admin-text)] hover:bg-[var(--admin-text)]/10"
+                )}
+              >
+                {f}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* Subscribers Table */}
+        <div className="admin-surface-primary backdrop-blur-xs rounded-[12px] border border-[var(--admin-border)] overflow-hidden shadow-2xl flex flex-col min-h-[400px]">
+          <div className="overflow-x-auto custom-scrollbar">
+            <table className="w-full text-left border-collapse min-w-[700px]">
               <thead>
-                <tr className="border-b border-white/10 bg-white/5">
-                  <th className="p-4 text-left text-xs font-bold text-white/40 uppercase tracking-wider">Email</th>
-                  <th className="p-4 text-left text-xs font-bold text-white/40 uppercase tracking-wider">Status</th>
-                  <th className="p-4 text-left text-xs font-bold text-white/40 uppercase tracking-wider hidden md:table-cell">Source</th>
-                  <th className="p-4 text-left text-xs font-bold text-white/40 uppercase tracking-wider hidden md:table-cell">Subscribed</th>
-                  <th className="p-4 text-right text-xs font-bold text-white/40 uppercase tracking-wider">Actions</th>
+                <tr className="bg-black/20 dark:bg-white/10 text-[var(--admin-text)] text-[12px] font-bold uppercase tracking-widest border-b border-[var(--admin-border)]">
+                  <th className="p-4 w-[40%]">Email</th>
+                  <th className="p-4 w-[20%]">Status</th>
+                  <th className="p-4 w-[20%]">Joined</th>
+                  <th className="p-4 w-[20%] text-right">Actions</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-white/5">
-                {subscribers.map(sub => (
-                  <tr key={sub.id} className="hover:bg-white/5 transition-colors group">
-                    <td className="p-4">
-                      <span className="text-sm font-medium text-white">{sub.email}</span>
-                    </td>
-                    <td className="p-4">
-                      <span className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider border ${sub.isActive ? 'bg-green-500/10 text-green-400 border-green-500/20' : 'bg-red-500/10 text-red-400 border-red-500/20'}`}>
-                        {sub.isActive ? "Active" : "Unsubscribed"}
-                      </span>
-                    </td>
-                    <td className="p-4 text-sm text-white/40 hidden md:table-cell">{sub.source}</td>
-                    <td className="p-4 text-sm text-white/40 hidden md:table-cell">{sub.subscribedAt}</td>
-                    <td className="p-4 text-right">
-                      <div className="flex items-center justify-end gap-1 opacity-60 group-hover:opacity-100 transition-opacity">
-                        <RoleGate allowedRoles={[Role.SUPER_ADMIN, Role.ADMIN]}>
-                          {sub.isActive ? (
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              onClick={() => handleUnsubscribe(sub.id)}
-                              loading={isPending}
-                              icon={<UserMinus size={14} />}
-                              className="text-white hover:text-amber-500"
-                              title="Unsubscribe"
-                            />
-                          ) : (
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              onClick={() => handleResubscribe(sub.id)}
-                              loading={isPending}
-                              icon={<UserPlus size={14} />}
-                              className="text-white hover:text-green-500"
-                              title="Resubscribe"
-                            />
-                          )}
-                        </RoleGate>
-                        <RoleGate allowedRoles={[Role.SUPER_ADMIN]}>
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            onClick={() => setDeleteId(sub.id)}
-                            loading={isPending}
-                            icon={<Trash2 size={14} />}
-                            className="text-white hover:text-red-500"
-                            title="Delete permanently"
-                          />
-                        </RoleGate>
+              <tbody>
+                {subscribers.length === 0 ? (
+                  <tr>
+                    <td colSpan={4} className="p-12 text-center text-[var(--admin-text)]/20">
+                      <div className="flex flex-col items-center gap-4">
+                        <Users size={48} className="opacity-20" />
+                        <p className="text-base font-bold text-[var(--admin-text)]/40 uppercase tracking-widest">No subscribers found</p>
                       </div>
                     </td>
                   </tr>
-                ))}
+                ) : (
+                  subscribers.map((sub) => (
+                    <tr key={sub.id} className="border-b border-[var(--admin-border)]/50 hover:bg-[var(--admin-text)]/5 transition-colors group">
+                      <td className="p-4">
+                        <div className="flex items-center gap-3">
+                          <div className="w-10 h-10 rounded-full bg-primary/10 border border-primary/20 flex items-center justify-center text-sm font-black text-gold shadow-sm">
+                            {sub.email.charAt(0).toUpperCase()}
+                          </div>
+                          <span className="text-[14px] font-bold text-[var(--admin-text)] leading-tight">{sub.email}</span>
+                        </div>
+                      </td>
+                      <td className="p-4">
+                        <span className={cn(
+                          "px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest border shadow-sm",
+                          sub.isActive
+                            ? "bg-green-500/10 text-green-400 border-green-500/20"
+                            : "admin-surface-input text-[var(--admin-text)]/40 border-[var(--admin-border)]"
+                        )}>
+                          {sub.isActive ? "ACTIVE" : "UNSUBSCRIBED"}
+                        </span>
+                      </td>
+                      <td className="p-4">
+                        <div className="flex flex-col">
+                           <span className="text-[12px] font-bold text-[var(--admin-text)]">{new Date(sub.subscribedAt).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })}</span>
+                           <span className="text-[10px] text-[var(--admin-text)] font-medium uppercase tracking-tighter">Verified</span>
+                        </div>
+                      </td>
+                      <td className="p-4 text-right">
+                        <div className="flex items-center justify-end gap-1 opacity-0 group-hover:opacity-100 transition-all duration-300">
+                          <RoleGate allowedRoles={[Role.SUPER_ADMIN, Role.ADMIN]}>
+                            {sub.isActive ? (
+                              <button
+                                onClick={() => handleUnsubscribe(sub.id)}
+                                disabled={isPending}
+                                className="p-2 text-[var(--admin-text)] hover:text-red-400 hover:bg-red-500/5 rounded-[8px] transition-all"
+                                title="Unsubscribe"
+                              >
+                                {isPending ? <div className="w-3.5 h-3.5 border-2 border-red-400/30 border-t-red-400 rounded-full animate-spin" /> : <UserMinus size={16} />}
+                              </button>
+                            ) : (
+                              <button
+                                onClick={() => handleResubscribe(sub.id)}
+                                disabled={isPending}
+                                className="p-2 text-[var(--admin-text)] hover:text-green-400 hover:bg-green-500/5 rounded-[8px] transition-all"
+                                title="Resubscribe"
+                              >
+                                {isPending ? <div className="w-3.5 h-3.5 border-2 border-green-400/30 border-t-green-400 rounded-full animate-spin" /> : <UserPlus size={16} />}
+                              </button>
+                            )}
+                          </RoleGate>
+                          <RoleGate allowedRoles={[Role.SUPER_ADMIN]}>
+                            <button
+                              onClick={() => setDeleteId(sub.id)}
+                              disabled={isPending}
+                              className="p-2 text-[var(--admin-text)] hover:text-red-500 hover:bg-red-500/5 rounded-[8px] transition-all"
+                              title="Delete permanently"
+                            >
+                              <Trash2 size={16} />
+                            </button>
+                          </RoleGate>
+                        </div>
+                      </td>
+                    </tr>
+                  ))
+                )}
               </tbody>
             </table>
-            
-            <div className="p-4 border-t border-white/10 flex justify-center">
-                <Pagination 
-                    currentPage={meta.page}
-                    totalPages={meta.totalPages}
-                    onPageChange={handlePageChange}
-                />
+          </div>
+
+          {/* Pagination */}
+          <div className="mt-auto p-4 border-t border-[var(--admin-border)] flex flex-col md:flex-row gap-4 items-center justify-between">
+            <span className="text-[12px] font-black text-[var(--admin-text)] uppercase tracking-widest">
+              Showing Page <span className="text-gold">{meta.page}</span> of <span className="text-gold">{meta.totalPages}</span> (Total <span className="font-black">{meta.total}</span>)
+            </span>
+            <div className="flex gap-2">
+               <Pagination 
+                   currentPage={meta.page}
+                   totalPages={meta.totalPages}
+                   baseUrl="/admin/newsletter"
+               />
             </div>
           </div>
-        ) : (
-            <EmptyState
-                icon={<Mail size={24} />}
-                message={search ? "No subscribers match your search." : "No subscribers found."}
-                action={search ? <Button variant="outline" size="sm" onClick={() => handleSearchChange("")}>Clear Search</Button> : undefined}
-            />
-        )}
+        </div>
       </div>
-
       <ConfirmDialog
         open={!!deleteId}
         onClose={() => setDeleteId(null)}
@@ -260,20 +290,41 @@ export function NewsletterClient({ initialData, stats }: NewsletterClientProps) 
         message="This action cannot be undone. The subscriber will be permanently removed from the database."
         loading={isPending}
       />
+
+       <style jsx global>{`
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: var(--admin-border);
+            border-radius: 10px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: var(--admin-text);
+            opacity: 0.2;
+        }
+      `}</style>
     </PageContainer>
   );
 }
 
 function StatsCard({ icon, label, value, colorClass, valueClass }: { icon: any, label: string, value: number, colorClass: string, valueClass: string }) {
     return (
-        <div className="p-3 md:p-6 bg-white/30 dark:bg-white/5 border border-white/20 dark:border-white/10 rounded-[10px] backdrop-blur-md">
-           <div className="flex items-center gap-3 mb-1">
-             <div className={`w-8 h-8 rounded-full flex items-center justify-center ${colorClass}`}>
+        <div className="p-4 md:p-6 admin-surface-primary backdrop-blur-xs rounded-[12px] border border-[var(--admin-border)] shadow-xl relative overflow-hidden group hover:border-gold/30 transition-all duration-500">
+           <div className="absolute -right-4 -top-4 opacity-[0.03] group-hover:opacity-[0.08] transition-opacity duration-1000 rotate-12 scale-150 transform">
+              {icon}
+           </div>
+           <div className="flex items-center gap-3 mb-3">
+             <div className={cn("w-10 h-10 rounded-full flex items-center justify-center shadow-inner", colorClass)}>
                {icon}
              </div>
-             <span className="text-white/60 text-[10px] md:text-xs font-bold uppercase">{label}</span>
+             <span className="text-[var(--admin-text)]/60 text-[12px] font-black uppercase tracking-widest">{label}</span>
            </div>
-           <p className={`text-2xl md:text-4xl font-black ${valueClass}`}>{value}</p>
+           <p className={cn("text-3xl md:text-4xl font-black tracking-tight", valueClass)}>{value}</p>
         </div>
     );
 }

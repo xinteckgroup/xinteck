@@ -92,7 +92,7 @@ export async function POST(req: Request) {
 
         await resend.emails.send({
           from: fromEmail || "onboarding@resend.dev",
-          to: [toEmail || "admin@xinteck.com"],
+          to: [toEmail || "admin@xinteck.co.ke"],
           subject: `New Inquiry: ${name} (${projectType})`,
           text: `
             Name: ${name}

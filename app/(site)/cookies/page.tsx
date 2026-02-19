@@ -328,7 +328,7 @@ export default function CookiesPage() {
               If you have any questions about our use of cookies or this policy, please contact us:
             </p>
             <p className="text-foreground">
-              <strong>Email:</strong> <a href="mailto:privacy@xinteck.com" className="text-gold hover:underline">privacy@xinteck.com</a>
+              <strong>Email:</strong> <a href="mailto:privacy@xinteck.co.ke" className="text-gold hover:underline">privacy@xinteck.co.ke</a>
             </p>
             <p className="mt-6">
               <Link href="/privacy" className="text-gold hover:underline font-bold">

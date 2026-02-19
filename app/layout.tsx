@@ -12,28 +12,39 @@ const outfit = Outfit({
 
 export const metadata: Metadata = {
   title: {
-    default: "Xinteck | Premium Software Development",
+    default: "Xinteck | Software Development Company in Kenya",
     template: "%s | Xinteck",
   },
-  description: "Xinteck provides high-performing web, mobile, and custom software solutions for modern businesses. Premium design meets engineering excellence.",
-  metadataBase: new URL("https://xinteck.com"),
+  description: "Xinteck is a premium software development company in Nairobi, Kenya. We build high-performing websites, mobile apps, and custom software for businesses across East Africa.",
+  keywords: ["software development Kenya", "web development Nairobi", "mobile app development Kenya", "custom software Kenya", "UI/UX design Nairobi", "Next.js developer Kenya", "software company East Africa", "Xinteck"],
+  metadataBase: new URL("https://xinteck.co.ke"),
   alternates: {
     canonical: "/",
   },
   openGraph: {
-    title: "Xinteck | Premium Software Development",
-    description: "High-performing software solutions for modern businesses.",
-    url: "https://xinteck.com",
+    title: "Xinteck | Software Development Company in Kenya",
+    description: "Premium web, mobile, and custom software solutions for modern businesses in Kenya and East Africa.",
+    url: "https://xinteck.co.ke",
     siteName: "Xinteck",
-    locale: "en_US",
+    locale: "en_KE",
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Xinteck | Premium Software Development",
-    description: "High-performing software solutions for modern businesses.",
+    title: "Xinteck | Software Development Company in Kenya",
+    description: "Premium web, mobile, and custom software solutions for modern businesses in Kenya and East Africa.",
   },
-  // icons: handled by app/icon.png
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
+  },
 };
 
 const gaId = process.env.NEXT_PUBLIC_GA_ID;
@@ -45,7 +56,34 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <head />
+      <head>
+        {/* JSON-LD Structured Data for Google */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "Organization",
+              name: "Xinteck",
+              url: "https://xinteck.co.ke",
+              logo: "https://xinteck.co.ke/icon.png",
+              description: "Premium software development company in Nairobi, Kenya. Web development, mobile apps, custom software, and UI/UX design.",
+              address: {
+                "@type": "PostalAddress",
+                addressLocality: "Nairobi",
+                addressCountry: "KE",
+              },
+              contactPoint: {
+                "@type": "ContactPoint",
+                email: "info@xinteck.co.ke",
+                contactType: "customer service",
+                availableLanguage: ["English", "Swahili"],
+              },
+              sameAs: [],
+            }),
+          }}
+        />
+      </head>
       <body
         className={`${outfit.variable} font-sans antialiased text-foreground transition-colors duration-300`}
       >

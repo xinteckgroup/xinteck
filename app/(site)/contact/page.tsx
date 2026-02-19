@@ -105,7 +105,7 @@ export default function ContactPage() {
       
       setSubmitted(true);
     } catch (err: any) {
-      setError(err.message || "The signal was lost. Please try again or contact hello@xinteck.com");
+      setError(err.message || "The signal was lost. Please try again or contact info@xinteck.co.ke");
     } finally {
       setIsSubmitting(false);
     }
@@ -151,7 +151,7 @@ export default function ContactPage() {
   const infoCards = [
     {
         title: "Email Us",
-        value: "hello@xinteck.com",
+        value: "info@xinteck.co.ke",
         icon: Mail,
         sub: "For general inquiries and partnerships",
     },

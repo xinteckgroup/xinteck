@@ -127,7 +127,7 @@ export function SettingsForm({ initialSettings }: SettingsFormProps) {
                                             label="To Email (Admin)"
                                             value={formData.resendToEmail}
                                             onChange={e => handleChange("resendToEmail", e.target.value)}
-                                            placeholder="admin@xinteck.com"
+                                            placeholder="admin@xinteck.co.ke"
                                         />
                                     </div>
                                 </div>

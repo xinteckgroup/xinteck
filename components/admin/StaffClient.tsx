@@ -300,7 +300,7 @@ export function StaffClient({ initialStaff }: StaffClientProps) {
                         type="email" 
                         value={inviteEmail}
                         onChange={(e) => setInviteEmail(e.target.value)}
-                        placeholder="e.g. john@xinteck.com"
+                        placeholder="e.g. john@xinteck.co.ke"
                         className="w-full admin-surface-input rounded-[12px] border border-[var(--admin-border)] p-4 text-[var(--admin-text)] text-sm md:text-base outline-none focus:border-gold/50 focus:ring-1 focus:ring-gold/20 transition-all font-bold placeholder:text-[var(--admin-text)]"
                      />
                   </div>

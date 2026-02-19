@@ -69,8 +69,8 @@ export function Footer() {
             </Link>
             <div className="flex flex-col gap-1">
               <span className="text-gray-400 text-sm">Or email us at</span>
-              <a href="mailto:hello@xinteck.com" className="text-lg font-bold text-white hover:text-[#D4AF37] transition-colors">
-                hello@xinteck.com
+              <a href="mailto:info@xinteck.co.ke" className="text-lg font-bold text-white hover:text-[#D4AF37] transition-colors">
+                info@xinteck.co.ke
               </a>
             </div>
           </div>
@@ -117,9 +117,9 @@ export function Footer() {
             
             {/* Contact Info */}
             <div className="flex flex-col gap-3 text-sm">
-              <a href="mailto:hello@xinteck.com" className="flex items-center gap-3 text-gray-400 hover:text-[#D4AF37] transition-colors">
+              <a href="mailto:info@xinteck.co.ke" className="flex items-center gap-3 text-gray-400 hover:text-[#D4AF37] transition-colors">
                 <Mail size={16} />
-                hello@xinteck.com
+                info@xinteck.co.ke
               </a>
               <a href="tel:+15550000000" className="flex items-center gap-3 text-gray-400 hover:text-[#D4AF37] transition-colors">
                 <Phone size={16} />

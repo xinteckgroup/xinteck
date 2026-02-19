@@ -138,7 +138,7 @@ export function BlogEditorForm({ initialData, isEditing = false }: BlogEditorFor
                    <div className="flex flex-col gap-2">
                       <label className="text-[8px] md:text-xs font-bold text-[var(--admin-text)] uppercase">Slug</label>
                       <div className="flex items-center backdrop-blur-sm admin-surface-input rounded-[8px] px-2 md:px-4 py-1.5 md:py-2 gap-1 md:gap-2 overflow-x-auto">
-                         <span className="text-[var(--admin-text)]/60 text-[10px] md:text-sm whitespace-nowrap">xinteck.com/blog/</span>
+                         <span className="text-[var(--admin-text)]/60 text-[10px] md:text-sm whitespace-nowrap">xinteck.co.ke/blog/</span>
                          <input 
                            type="text" 
                            value={formData.slug}

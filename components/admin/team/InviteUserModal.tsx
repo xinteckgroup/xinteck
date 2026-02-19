@@ -79,7 +79,7 @@ export function InviteUserModal({ open, onClose }: { open: boolean; onClose: () 
             <div className="flex flex-col gap-4">
                 <Input
                     label="Email Address"
-                    placeholder="colleague@xinteck.com"
+                    placeholder="colleague@xinteck.co.ke"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     icon={<Mail size={16} />}

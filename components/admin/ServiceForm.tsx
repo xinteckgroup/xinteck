@@ -306,7 +306,7 @@ export function ServiceForm({ service }: ServiceFormProps) {
                                 <div className="flex flex-col gap-1 md:gap-2">
                                     <label className="text-[8px] md:text-xs font-bold text-[var(--admin-text)] uppercase">Slug (URL)</label>
                                     <div className="flex items-center admin-surface-input rounded-[8px] px-2 md:px-4 py-1.5 md:py-2 gap-1 md:gap-2 overflow-x-auto">
-                                        <span className="text-[var(--admin-text)] text-[10px] md:text-sm whitespace-nowrap">xinteck.com/services/</span>
+                                        <span className="text-[var(--admin-text)] text-[10px] md:text-sm whitespace-nowrap">xinteck.co.ke/services/</span>
                                         <input 
                                             value={formData.slug}
                                             onChange={(e) => setFormData({...formData, slug: e.target.value})}

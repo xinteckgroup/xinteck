@@ -501,7 +501,7 @@ export default function TermsPage() {
               please contact our legal team:
             </p>
             <div className="space-y-2 text-foreground">
-              <p><strong>Email:</strong> <a href="mailto:legal@xinteck.com" className="text-gold hover:underline">legal@xinteck.com</a></p>
+              <p><strong>Email:</strong> <a href="mailto:legal@xinteck.co.ke" className="text-gold hover:underline">legal@xinteck.co.ke</a></p>
               <p><strong>Address:</strong> Nairobi, Kenya</p>
             </div>
           </motion.div>

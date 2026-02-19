@@ -109,7 +109,7 @@ export default function PrivacyPage() {
           <div className="mt-6 p-4 bg-primary/5 rounded-[10px] border border-primary/10">
             <p className="text-sm text-foreground/70">
               <strong>Registered Address:</strong> Nairobi, Kenya<br />
-              <strong>Contact Email:</strong> <a href="mailto:privacy@xinteck.com" className="text-gold hover:underline">privacy@xinteck.com</a>
+              <strong>Contact Email:</strong> <a href="mailto:privacy@xinteck.co.ke" className="text-gold hover:underline">privacy@xinteck.co.ke</a>
             </p>
           </div>
         </PolicySection>
@@ -336,7 +336,7 @@ export default function PrivacyPage() {
           <div className="mt-6 p-4 bg-primary/5 rounded-[10px] border border-primary/10">
             <p className="text-sm text-foreground/70">
               <strong>To exercise your rights:</strong> Contact us at{" "}
-              <a href="mailto:privacy@xinteck.com" className="text-gold hover:underline">privacy@xinteck.com</a>. 
+              <a href="mailto:privacy@xinteck.co.ke" className="text-gold hover:underline">privacy@xinteck.co.ke</a>. 
               We will respond within <strong>30 days</strong> as required by law.
             </p>
             <p className="text-sm text-foreground/70 mt-2">
@@ -367,7 +367,7 @@ export default function PrivacyPage() {
           </p>
           <p className="mt-4 text-foreground/70">
             If you believe we have inadvertently collected data from a child, please contact us immediately 
-            at <a href="mailto:privacy@xinteck.com" className="text-gold hover:underline">privacy@xinteck.com</a>, 
+            at <a href="mailto:privacy@xinteck.co.ke" className="text-gold hover:underline">privacy@xinteck.co.ke</a>, 
             and we will take steps to delete such information.
           </p>
         </PolicySection>
@@ -406,7 +406,7 @@ export default function PrivacyPage() {
               data practices, please contact us:
             </p>
             <div className="space-y-2 text-foreground">
-              <p><strong>Email:</strong> <a href="mailto:privacy@xinteck.com" className="text-gold hover:underline">privacy@xinteck.com</a></p>
+              <p><strong>Email:</strong> <a href="mailto:privacy@xinteck.co.ke" className="text-gold hover:underline">privacy@xinteck.co.ke</a></p>
               <p><strong>Address:</strong> Nairobi, Kenya</p>
             </div>
             <p className="text-sm text-foreground mt-6">

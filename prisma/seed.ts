@@ -211,7 +211,7 @@ async function main() {
 
     // Hash password "admin123"
     const passwordHash = await bcrypt.hash('admin123', 10);
-    const adminEmail = 'admin@xinteck.com';
+    const adminEmail = 'admin@xinteck.co.ke';
 
     const adminUser = await prisma.user.upsert({
         where: { email: adminEmail },

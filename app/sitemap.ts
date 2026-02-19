@@ -1,28 +1,28 @@
 import { MetadataRoute } from "next";
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const baseUrl = "https://xinteck.com";
+  const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "https://xinteck.co.ke";
 
-  // Define static routes
+  // Static routes with SEO priority
   const routes = [
-    "",
-    "/about",
-    "/services",
-    "/portfolio",
-    "/blog",
-    "/careers",
-    "/contact",
-    "/privacy",
-    "/terms",
-    "/cookies",
+    { path: "", priority: 1.0, changeFreq: "weekly" as const },
+    { path: "/about", priority: 0.9, changeFreq: "monthly" as const },
+    { path: "/services", priority: 0.9, changeFreq: "weekly" as const },
+    { path: "/portfolio", priority: 0.8, changeFreq: "weekly" as const },
+    { path: "/blog", priority: 0.8, changeFreq: "daily" as const },
+    { path: "/careers", priority: 0.7, changeFreq: "weekly" as const },
+    { path: "/contact", priority: 0.8, changeFreq: "monthly" as const },
+    { path: "/privacy", priority: 0.3, changeFreq: "yearly" as const },
+    { path: "/terms", priority: 0.3, changeFreq: "yearly" as const },
+    { path: "/cookies", priority: 0.3, changeFreq: "yearly" as const },
   ].map((route) => ({
-    url: `${baseUrl}${route}`,
+    url: `${baseUrl}${route.path}`,
     lastModified: new Date(),
-    changeFrequency: "weekly" as const,
-    priority: route === "" ? 1 : 0.8,
+    changeFrequency: route.changeFreq,
+    priority: route.priority,
   }));
 
-  // In a real app, you would fetch blog posts and portfolio items here
+  // Service pages
   const serviceRoutes = [
     "web-development",
     "mobile-app-development",

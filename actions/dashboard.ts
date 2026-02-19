@@ -98,12 +98,12 @@ export async function getDashboardStats() {
                         color: "text-cyan-400"
                     },
                     {
-                        title: "Pending Inquiries",
+                        title: "Pending Leads",
                         value: unreadInquiries.toLocaleString(),
                         trend: unreadInquiries > 0 ? "Action Req" : "All Good",
                         isPositive: unreadInquiries === 0,
                         iconName: "messageSquare" as IconName,
-                        href: "/admin/inbox",
+                        href: "/admin/leads",
                         color: unreadInquiries > 0 ? "text-red-400" : "text-green-400"
                     }
                 ];

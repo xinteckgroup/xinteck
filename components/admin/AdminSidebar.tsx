@@ -6,21 +6,21 @@ import { cn } from "@/lib/utils";
 import { Role } from "@prisma/client";
 import { motion } from "framer-motion";
 import {
-    Briefcase,
-    ChevronLeft,
-    ChevronRight,
-    FileText,
-    FolderCheck,
-    FolderOpen,
-    GraduationCap,
-    LayoutDashboard,
-    LogOut,
-    Mail,
-    MessageSquare,
-    Settings,
-    ShieldAlert,
-    User,
-    Users
+  Briefcase,
+  ChevronLeft,
+  ChevronRight,
+  FileText,
+  FolderCheck,
+  FolderOpen,
+  GraduationCap,
+  LayoutDashboard,
+  LogOut,
+  Mail,
+  Settings,
+  ShieldAlert,
+  Target,
+  User,
+  Users
 } from "lucide-react";
 import NextImage from "next/image";
 import Link from "next/link";
@@ -35,7 +35,7 @@ const SIDEBAR_ITEMS = [
   { label: "Projects", icon: FolderCheck, href: "/admin/projects" },
   { label: "Services", icon: Briefcase, href: "/admin/services" },
   { label: "Files", href: "/admin/files", icon: FolderOpen },
-  { label: "Inbox", href: "/admin/inbox", icon: MessageSquare },
+  { label: "Leads", href: "/admin/leads", icon: Target },
   { label: "Newsletter", href: "/admin/newsletter", icon: Mail },
   { label: "Careers", href: "/admin/careers", icon: GraduationCap },
   { label: "Staff", href: "/admin/staff", icon: Users },

@@ -1,11 +1,11 @@
 "use client";
 
-import { archiveMessage, deleteMessage, markAsRead, replyToMessage, toggleStar } from "@/actions/inbox";
+import { archiveMessage, deleteMessage, markAsRead, replyToMessage, toggleStar } from "@/actions/leads";
 import { RoleGate } from "@/components/admin/RoleGate";
 import { PageContainer, PageHeader, Pagination, useToast } from "@/components/admin/ui";
 import { InboxMessage } from "@/types";
 import { Role } from "@prisma/client";
-import { Archive, ArrowLeft, Mail, MailOpen, MoreVertical, Reply, Search, Send, Star, Trash2 } from "lucide-react";
+import { Archive, ArrowLeft, Check, ClipboardCopy, ExternalLink, Mail, MailOpen, MoreVertical, Reply, Search, Send, Star, Target, Trash2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState, useTransition } from "react";
 
@@ -13,18 +13,24 @@ import { PaginatedResponse } from "@/lib/pagination";
 import { cn } from "@/lib/utils";
 import { useSearchParams } from "next/navigation";
 
-interface InboxClientProps {
+interface LeadsClientProps {
   initialData: PaginatedResponse<InboxMessage>;
 }
 
-export function InboxClient({ initialData }: InboxClientProps) {
-  // Client component for Inbox
+// Lead status helper
+function getLeadStatus(msg: InboxMessage): { label: string; color: string; bgColor: string; borderColor: string } {
+  if (msg.archived) return { label: "Archived", color: "text-[var(--admin-muted)]", bgColor: "bg-[var(--admin-text)]/5", borderColor: "border-[var(--admin-border)]" };
+  if (msg.replied) return { label: "Responded", color: "text-green-400", bgColor: "bg-green-500/10", borderColor: "border-green-500/20" };
+  if (!msg.unread) return { label: "Read", color: "text-blue-400", bgColor: "bg-blue-500/10", borderColor: "border-blue-500/20" };
+  return { label: "New", color: "text-gold", bgColor: "bg-gold/10", borderColor: "border-gold/20" };
+}
+
+export function LeadsClient({ initialData }: LeadsClientProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [isPending, startTransition] = useTransition();
   const { toast } = useToast();
 
-  // Sync state with URL params
   const filterParam = searchParams.get("filter");
   type FilterType = "all" | "unread" | "starred" | "archived";
   const activeFilter = (filterParam as FilterType) || "all";
@@ -49,11 +55,12 @@ export function InboxClient({ initialData }: InboxClientProps) {
   const [searchQuery, setSearchQuery] = useState("");
   const [replyText, setReplyText] = useState("");
   const [isReplying, setIsReplying] = useState(false);
+  const [copiedEmail, setCopiedEmail] = useState(false);
   
   const activeMessage = messages.find((m) => m.id === activeMessageId) || null;
 
   const handleTabChange = (newFilter: string) => {
-      router.push(`/admin/inbox?filter=${newFilter}`);
+      router.push(`/admin/leads?filter=${newFilter}`);
   };
 
   const filteredMessages = useMemo(() => {
@@ -92,7 +99,7 @@ export function InboxClient({ initialData }: InboxClientProps) {
   };
 
   const handleDelete = (id: string) => {
-    if (confirm("Delete this message?")) {
+    if (confirm("Delete this lead?")) {
       setMessages(prev => prev.filter((m) => m.id !== id));
       if (activeMessageId === id) setActiveMessageId(null);
       
@@ -122,7 +129,7 @@ export function InboxClient({ initialData }: InboxClientProps) {
         await replyToMessage(activeMessage.id, replyText);
         setReplyText("");
         setMessages(prev => prev.map((m) => m.id === activeMessage.id ? { ...m, replied: true } : m));
-        toast("Reply sent successfully", "success");
+        toast("Reply sent — continue the conversation in Gmail", "success");
       } catch (e: any) {
         toast(`Failed to send: ${e.message}`, "error");
       } finally {
@@ -131,11 +138,22 @@ export function InboxClient({ initialData }: InboxClientProps) {
     });
   };
 
+  const handleCopyEmail = (email: string) => {
+    navigator.clipboard.writeText(email);
+    setCopiedEmail(true);
+    toast("Email copied to clipboard", "success");
+    setTimeout(() => setCopiedEmail(false), 2000);
+  };
+
+  const getGmailSearchUrl = (email: string) => {
+    return `https://mail.google.com/mail/u/0/#search/${encodeURIComponent(email)}`;
+  };
+
   return (
     <PageContainer className="h-[calc(100vh-140px)]">
       <PageHeader 
-        title="Inbox" 
-        subtitle="Manage your messages and inquiries."
+        title="Leads" 
+        subtitle="Capture, respond, and convert."
       />
 
       <div className="flex flex-1 gap-4 md:gap-6 min-h-0">
@@ -147,7 +165,8 @@ export function InboxClient({ initialData }: InboxClientProps) {
           <div className="p-3 md:p-4 border-b border-[var(--admin-border)] flex flex-col gap-3 admin-surface-secondary/50">
             <div className="flex items-center justify-between">
                <div className="flex items-center gap-2">
-                  <h3 className="text-[14px] font-bold text-[var(--admin-text)] uppercase tracking-wider">Messages</h3>
+                  <Target size={16} className="text-gold" />
+                  <h3 className="text-[14px] font-bold text-[var(--admin-text)] uppercase tracking-wider">Leads</h3>
                   <span className="bg-gold/10 text-gold border border-gold/20 px-2 py-0.5 rounded-full text-[10px] md:text-xs font-bold shadow-[0_0_10px_-3px_rgba(255,215,0,0.2)]">
                      {initialData.total}
                   </span>
@@ -175,7 +194,7 @@ export function InboxClient({ initialData }: InboxClientProps) {
                       : "text-[var(--admin-text)]/40 hover:text-[var(--admin-text)]"
                   )}
                >
-                  Unread
+                  New
                </button>
                <button 
                   onClick={() => handleTabChange("starred")} 
@@ -195,7 +214,7 @@ export function InboxClient({ initialData }: InboxClientProps) {
                   <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--admin-muted)] pointer-events-none" size={18} />
                   <input 
                     type="text" 
-                    placeholder="Search messages..." 
+                    placeholder="Search leads..." 
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                     className="w-full admin-surface-input border border-[var(--admin-border)] rounded-[10px] pl-10 pr-4 py-2 text-sm text-[var(--admin-text)] placeholder:text-[var(--admin-muted)] focus:border-gold/50 focus:outline-none transition-colors"
@@ -205,7 +224,9 @@ export function InboxClient({ initialData }: InboxClientProps) {
           </div>
           
           <div className="flex-1 overflow-y-auto custom-scrollbar">
-            {filteredMessages.map((msg) => (
+            {filteredMessages.map((msg) => {
+              const status = getLeadStatus(msg);
+              return (
               <div 
                 key={msg.id} 
                 onClick={() => setActiveMessageId(msg.id)}
@@ -216,11 +237,19 @@ export function InboxClient({ initialData }: InboxClientProps) {
                 )}
               >
                 <div className="flex justify-between items-start mb-1">
-                  <h4 className={cn(
-                    "text-xs md:text-sm",
-                    msg.unread ? "font-bold text-[var(--admin-text)]" : "font-medium text-[var(--admin-text)]/60"
-                  )}>{msg.sender}</h4>
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-2 min-w-0">
+                    <h4 className={cn(
+                      "text-xs md:text-sm truncate",
+                      msg.unread ? "font-bold text-[var(--admin-text)]" : "font-medium text-[var(--admin-text)]/60"
+                    )}>{msg.sender}</h4>
+                    <span className={cn(
+                      "shrink-0 px-1.5 py-0.5 rounded text-[8px] font-bold uppercase tracking-wider border",
+                      status.color, status.bgColor, status.borderColor
+                    )}>
+                      {status.label}
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-2 shrink-0">
                      {msg.starred && <Star size={10} className="text-gold fill-gold" />}
                      <span className="text-[10px] font-bold text-[var(--admin-text)]/40 uppercase tracking-tighter">{msg.date}</span>
                   </div>
@@ -242,13 +271,14 @@ export function InboxClient({ initialData }: InboxClientProps) {
                    </RoleGate>
                 </div>
               </div>
-            ))}
+            )})}
             {filteredMessages.length === 0 && (
                <div className="p-12 text-center flex flex-col items-center gap-4">
                   <div className="w-12 h-12 rounded-full admin-surface-input flex items-center justify-center text-[var(--admin-text)]/20 border border-dashed border-[var(--admin-border)]">
-                    <Mail size={24} />
+                    <Target size={24} />
                   </div>
-                  <p className="text-sm font-bold text-[var(--admin-text)]/40 uppercase tracking-wider">No messages found</p>
+                  <p className="text-sm font-bold text-[var(--admin-text)]/40 uppercase tracking-wider">No leads found</p>
+                  <p className="text-xs text-[var(--admin-text)]/20">Leads from your contact form will appear here.</p>
                </div>
             )}
             
@@ -256,7 +286,7 @@ export function InboxClient({ initialData }: InboxClientProps) {
               <Pagination 
                   currentPage={meta.page}
                   totalPages={meta.totalPages}
-                  baseUrl="/admin/inbox"
+                  baseUrl="/admin/leads"
               />
             </div>
           </div>
@@ -291,6 +321,19 @@ export function InboxClient({ initialData }: InboxClientProps) {
                     )} title="Star">
                         <Star size={18} className={activeMessage.starred ? "fill-gold" : ""} />
                     </button>
+                    
+                    {/* Continue in Gmail — always visible in toolbar */}
+                    <div className="w-[1px] h-6 bg-[var(--admin-border)] mx-1 md:mx-2" />
+                    <a 
+                      href={getGmailSearchUrl(activeMessage.email)}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="p-2 text-[var(--admin-text)]/60 hover:text-gold hover:bg-gold/5 rounded-[8px] transition-colors flex items-center gap-1.5"
+                      title="Open in Gmail"
+                    >
+                      <ExternalLink size={16} />
+                      <span className="text-[10px] font-bold uppercase tracking-wider hidden md:inline">Gmail</span>
+                    </a>
                 </div>
                 <button className="p-2 text-[var(--admin-text)]/60 hover:text-[var(--admin-text)] hover:bg-[var(--admin-text)]/5 rounded-[8px] transition-colors">
                   <MoreVertical size={18} />
@@ -299,7 +342,7 @@ export function InboxClient({ initialData }: InboxClientProps) {
               
               {/* Message Content */}
               <div className="flex-1 p-4 md:p-10 overflow-y-auto custom-scrollbar">
-                  <div className="flex flex-col md:flex-row justify-between items-start gap-4 mb-8 md:mb-12">
+                  <div className="flex flex-col md:flex-row justify-between items-start gap-4 mb-6 md:mb-8">
                     <div className="flex gap-3 md:gap-5">
                         <div className={cn(
                           "w-12 h-12 md:w-16 md:h-16 rounded-full flex items-center justify-center border-2 font-black text-lg md:text-2xl shrink-0 shadow-lg",
@@ -314,11 +357,49 @@ export function InboxClient({ initialData }: InboxClientProps) {
                               <span className="w-1 h-1 rounded-full bg-[var(--admin-text)]/20" />
                               <span className="text-xs md:text-sm font-medium text-[var(--admin-text)]/40 truncate">&lt;{activeMessage.email}&gt;</span>
                           </div>
+
+                          {/* Quick Contact Actions */}
+                          <div className="flex items-center gap-2 mt-3">
+                            <a 
+                              href={`mailto:${activeMessage.email}`}
+                              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-[8px] admin-surface-input text-[10px] md:text-xs font-bold text-[var(--admin-text)]/60 hover:text-gold hover:border-gold/30 transition-all"
+                            >
+                              <Mail size={12} /> Email
+                            </a>
+                            <button
+                              onClick={() => handleCopyEmail(activeMessage.email)}
+                              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-[8px] admin-surface-input text-[10px] md:text-xs font-bold text-[var(--admin-text)]/60 hover:text-gold hover:border-gold/30 transition-all"
+                            >
+                              {copiedEmail ? <Check size={12} className="text-green-400" /> : <ClipboardCopy size={12} />}
+                              {copiedEmail ? "Copied" : "Copy"}
+                            </button>
+                            <a
+                              href={getGmailSearchUrl(activeMessage.email)}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-[8px] admin-surface-input text-[10px] md:text-xs font-bold text-[var(--admin-text)]/60 hover:text-gold hover:border-gold/30 transition-all"
+                            >
+                              <ExternalLink size={12} /> Gmail
+                            </a>
+                          </div>
                         </div>
                     </div>
-                    <span className="text-[12px] font-bold text-[var(--admin-text)]/40 uppercase tracking-widest shrink-0 bg-[var(--admin-text)]/5 px-3 py-1 rounded-full border border-[var(--admin-border)]">
-                      {activeMessage.date}
-                    </span>
+                    <div className="flex items-center gap-2 shrink-0">
+                      {(() => {
+                        const status = getLeadStatus(activeMessage);
+                        return (
+                          <span className={cn(
+                            "px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest border",
+                            status.color, status.bgColor, status.borderColor
+                          )}>
+                            {status.label}
+                          </span>
+                        );
+                      })()}
+                      <span className="text-[12px] font-bold text-[var(--admin-text)]/40 uppercase tracking-widest bg-[var(--admin-text)]/5 px-3 py-1 rounded-full border border-[var(--admin-border)]">
+                        {activeMessage.date}
+                      </span>
+                    </div>
                   </div>
                   
                   <div className="text-[var(--admin-text)] leading-relaxed text-sm md:text-base space-y-6 max-w-4xl border-t border-[var(--admin-border)] pt-8 md:pt-12 font-medium">
@@ -334,11 +415,23 @@ export function InboxClient({ initialData }: InboxClientProps) {
                              <Reply size={16} className="text-gold" /> 
                              Reply to {activeMessage.sender.split(' ')[0]}
                            </h4>
-                           {activeMessage.replied && (
-                             <span className="text-[10px] font-bold text-green-400 uppercase tracking-widest bg-green-500/10 px-2 py-1 rounded-md border border-green-500/20 flex items-center gap-1">
-                               <Send size={10} /> Replied
-                             </span>
-                           )}
+                           <div className="flex items-center gap-2">
+                             {activeMessage.replied && (
+                               <>
+                                 <span className="text-[10px] font-bold text-green-400 uppercase tracking-widest bg-green-500/10 px-2 py-1 rounded-md border border-green-500/20 flex items-center gap-1">
+                                   <Send size={10} /> Responded
+                                 </span>
+                                 <a
+                                   href={getGmailSearchUrl(activeMessage.email)}
+                                   target="_blank"
+                                   rel="noopener noreferrer"
+                                   className="text-[10px] font-bold text-gold uppercase tracking-widest bg-gold/10 px-2 py-1 rounded-md border border-gold/20 flex items-center gap-1 hover:bg-gold/20 transition-colors"
+                                 >
+                                   <ExternalLink size={10} /> Continue in Gmail
+                                 </a>
+                               </>
+                             )}
+                           </div>
                         </div>
                         <textarea 
                            value={replyText}
@@ -346,6 +439,13 @@ export function InboxClient({ initialData }: InboxClientProps) {
                            placeholder="Type your response here..." 
                            className="w-full h-32 md:h-48 admin-surface-input rounded-[12px] border border-[var(--admin-border)] p-4 md:p-6 text-[var(--admin-text)] text-sm md:text-base outline-none focus:border-gold/50 focus:ring-1 focus:ring-gold/20 resize-none shadow-inner transition-all"
                         />
+                        
+                        {/* Reply context info */}
+                        <p className="text-[10px] md:text-xs text-[var(--admin-text)]/30 flex items-center gap-1.5">
+                          <Mail size={10} />
+                          After sending, the client can reply directly to <span className="font-bold text-[var(--admin-text)]/50">info@xinteck.co.ke</span> — continue the conversation in Gmail.
+                        </p>
+
                         <div className="flex justify-end gap-3">
                            <button 
                                onClick={handleSendReply}
@@ -369,10 +469,10 @@ export function InboxClient({ initialData }: InboxClientProps) {
           ) : (
             <div className="flex-1 flex flex-col items-center justify-center text-[var(--admin-text)] p-4 text-center">
               <div className="w-20 h-20 md:w-24 md:h-24 rounded-full admin-surface-input flex items-center justify-center mb-6 border border-dashed border-[var(--admin-border)] animate-pulse">
-                   <Mail size={40} className="text-[var(--admin-text)]/20" />
+                   <Target size={40} className="text-[var(--admin-text)]/20" />
               </div>
-              <p className="text-base md:text-xl font-bold text-[var(--admin-text)]/40 uppercase tracking-widest">Select a message</p>
-              <p className="text-xs md:text-sm text-[var(--admin-text)]/20 mt-2">Pick a communication from the list to view the full details.</p>
+              <p className="text-base md:text-xl font-bold text-[var(--admin-text)]/40 uppercase tracking-widest">Select a lead</p>
+              <p className="text-xs md:text-sm text-[var(--admin-text)]/20 mt-2">Pick an inquiry from the list to view details and respond.</p>
             </div>
           )}
         </div>

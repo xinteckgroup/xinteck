@@ -1,9 +1,9 @@
-import { getMessages } from "@/actions/inbox";
-import { InboxClient } from "@/components/admin/InboxClient";
+import { getMessages } from "@/actions/leads";
+import { LeadsClient } from "@/components/admin/LeadsClient";
 
 export const dynamic = "force-dynamic";
 
-export default async function InboxPage({ 
+export default async function LeadsPage({ 
   searchParams 
 }: { 
   searchParams: Promise<{ filter?: string; search?: string; page?: string; limit?: string }> 
@@ -16,5 +16,5 @@ export default async function InboxPage({
 
   const result = await getMessages({ filter, search, page, pageSize: limit });
 
-  return <InboxClient initialData={result} />;
+  return <LeadsClient initialData={result} />;
 }

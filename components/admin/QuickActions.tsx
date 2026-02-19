@@ -1,14 +1,14 @@
 "use client";
 
 import { TYPOGRAPHY } from "@/lib/typography";
-import { Cloud, Code, FileText, MessageSquare } from "lucide-react";
+import { Cloud, Code, FileText, Target } from "lucide-react";
 import Link from "next/link";
 
 const QUICK_ACTIONS = [
     { label: "New Article", icon: FileText, href: "/admin/blog/new", desc: "Write a blog post" },
     { label: "Add Project", icon: Code, href: "/admin/projects/new", desc: "Showcase work" },
     { label: "Upload File", icon: Cloud, href: "/admin/files", desc: "Media library" },
-    { label: "Check Inbox", icon: MessageSquare, href: "/admin/inbox", desc: "View messages" },
+    { label: "View Leads", icon: Target, href: "/admin/leads", desc: "Client inquiries" },
 ];
 
 export function QuickActions() {

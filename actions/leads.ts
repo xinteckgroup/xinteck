@@ -96,7 +96,7 @@ export async function markAsRead(id: string, isRead: boolean) {
         userId: user.id
     });
 
-    revalidatePath("/admin/inbox");
+    revalidatePath("/admin/leads");
 }
 
 export async function toggleStar(id: string) {
@@ -117,7 +117,7 @@ export async function toggleStar(id: string) {
         userId: user.id
     });
 
-    revalidatePath("/admin/inbox");
+    revalidatePath("/admin/leads");
 }
 
 export async function archiveMessage(id: string) {
@@ -135,7 +135,7 @@ export async function archiveMessage(id: string) {
         userId: user.id
     });
 
-    revalidatePath("/admin/inbox");
+    revalidatePath("/admin/leads");
 }
 
 export async function deleteMessage(id: string) {
@@ -153,7 +153,7 @@ export async function deleteMessage(id: string) {
         userId: user.id
     });
 
-    revalidatePath("/admin/inbox");
+    revalidatePath("/admin/leads");
 }
 
 export async function replyToMessage(id: string, content: string) {
@@ -193,6 +193,7 @@ export async function replyToMessage(id: string, content: string) {
                 body: JSON.stringify({
                     from: fromEmail,
                     to: submission.email,
+                    reply_to: process.env.RESEND_REPLY_TO || "info@xinteck.co.ke",
                     subject: `Re: Your inquiry - ${submission.name}`,
                     html: `<div style="font-family: sans-serif; max-width: 600px;">
                         <p>${content.replace(/\n/g, '<br />')}</p>
@@ -221,12 +222,12 @@ export async function replyToMessage(id: string, content: string) {
             title: "Reply Sent",
             message: `${user.name} replied to ${submission.name}.`,
             type: NotificationType.INFO,
-            link: `/admin/inbox/${id}`,
+            link: `/admin/leads`,
             metadata: { repliedBy: user.name, inquiryId: id }
         });
     } catch (e) { console.error(e); }
 
-    revalidatePath("/admin/inbox");
+    revalidatePath("/admin/leads");
     return { success: true };
 }
 
@@ -256,7 +257,7 @@ export async function restoreMessage(id: string) {
         userId: user.id
     });
 
-    revalidatePath("/admin/inbox");
+    revalidatePath("/admin/leads");
     return { success: true };
 }
 

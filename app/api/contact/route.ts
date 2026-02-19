@@ -74,7 +74,7 @@ export async function POST(req: Request) {
         message: `${name} has sent an inquiry regarding ${projectType} (${industry}).`,
         type: NotificationType.INFO,
         priority: NotificationPriority.HIGH,
-        link: `/admin/inbox?filter=unread`, // Deep link
+        link: `/admin/leads?filter=unread`, // Deep link
         metadata: { submissionId: submission.id, email }
       });
     } catch (e) {
@@ -107,7 +107,7 @@ export async function POST(req: Request) {
             Message:
             ${message}
             
-            Link: https://xinteck.com/admin/inbox/${submission.id}
+            Link: https://xinteck.co.ke/admin/leads
           `,
         });
       } catch (err) {

@@ -71,7 +71,7 @@ export async function searchGlobal(query: string): Promise<SearchGroup[]> {
         { title: "Dashboard", url: "/admin", keywords: ["home", "main", "stats"] },
         { title: "My Profile", url: "/admin/profile", keywords: ["account", "me", "avatar"] },
         { title: "Security Settings", url: "/admin/profile/security", keywords: ["password", "mfa", "2fa"] },
-        { title: "Inbox", url: "/admin/inbox", keywords: ["messages", "contact", "mail"] },
+        { title: "Leads", url: "/admin/leads", keywords: ["messages", "contact", "mail", "leads", "inquiries"] },
         { title: "Newsletter", url: "/admin/newsletter", keywords: ["email", "subscribers"] },
         { title: "File Manager", url: "/admin/files", keywords: ["assets", "images", "upload"] },
         { title: "Audit Log", url: "/admin/audit", role: Role.ADMIN, keywords: ["history", "logs", "tracking"] },

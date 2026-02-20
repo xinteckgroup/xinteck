@@ -197,6 +197,7 @@ model Service {
   detailsSection   Json // { title: "", description: "", imageAlt: "" }
   freshnessSection Json // { title: "", description: "" }
   buyNowSection    Json // { price: "", unit: "", processingParams: [], deliveryPromise: "", returnPolicy: "" }
+  budgetRanges     String[] @default(["$10k - $25k", "$25k - $50k", "$50k - $100k", "$100k+"])
 
   isActive  Boolean @default(true)
   sortOrder Int     @default(0)

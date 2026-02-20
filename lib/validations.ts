@@ -127,6 +127,8 @@ export const serviceSchema = z.object({
         returnPolicy: z.string().optional()
     }).default({}),
 
+    budgetRanges: z.array(z.string().trim()).default(["$10k - $25k", "$25k - $50k", "$50k - $100k", "$100k+"]),
+
     isActive: z.boolean().default(true),
     version: z.number().int().nonnegative().optional(),
 });

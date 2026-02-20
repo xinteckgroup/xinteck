@@ -38,18 +38,36 @@ export const getBusinessContact = unstable_cache(
 export const getContactConfig = unstable_cache(
     async (): Promise<ContactConfig | null> => {
         try {
-            const [optionsSetting, phonesSetting] = await Promise.all([
-                prisma.siteSetting.findUnique({ where: { key: "contact_options" } }),
-                prisma.siteSetting.findUnique({ where: { key: "CONTACT_PHONES" } })
+            // Fetch phones settings and active services in parallel
+            const [phonesSetting, activeServices] = await Promise.all([
+                prisma.siteSetting.findUnique({ where: { key: "CONTACT_PHONES" } }),
+                prisma.service.findMany({
+                    where: { isActive: true },
+                    orderBy: { sortOrder: 'asc' },
+                    select: { name: true, budgetRanges: true }
+                })
             ]);
 
-            if (!optionsSetting?.isPublic) return null;
-
-            const options = JSON.parse(optionsSetting?.value || "{}");
             const phones = phonesSetting?.isPublic ? JSON.parse(phonesSetting.value) : [];
 
+            // Dynamically construct the services and budgets config maps
+            const servicesList: string[] = [];
+            const budgetsMap: Record<string, string[]> = {};
+
+            activeServices.forEach(s => {
+                servicesList.push(s.name);
+                budgetsMap[s.name] = s.budgetRanges && s.budgetRanges.length > 0
+                    ? s.budgetRanges
+                    : ["$10k - $25k", "$25k - $50k", "$50k - $100k", "$100k+"]; // Fallback
+            });
+
+            // Add standard options for edge cases
+            servicesList.push("Other");
+            budgetsMap["Other"] = ["$10k - $25k", "$25k - $50k", "$50k - $100k", "$100k+"];
+
             return {
-                ...options,
+                services: servicesList,
+                budgets: budgetsMap,
                 phones
             };
         } catch (error) {
@@ -57,7 +75,7 @@ export const getContactConfig = unstable_cache(
             return null;
         }
     },
-    ["contact-config"],
-    { tags: ["site-settings"] }
+    ["contact-config", "active-services"],
+    { tags: ["site-settings", "services"] } // Ensure it updates when services change
 );
 

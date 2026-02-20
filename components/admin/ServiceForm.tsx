@@ -57,6 +57,7 @@ export function ServiceForm({ service }: ServiceFormProps) {
     const initialBuyNow = safeCast<ServiceBuyNowSection>(service?.buyNowSection, { title: "", description: "", button: "" });
     const initialStats = safeCast<ServiceStat[]>(service?.stats, [{ label: "", val: "" }]);
     const initialFeatures = service?.features || [];
+    const initialBudgetRanges = (service as any)?.budgetRanges || ["$10k - $25k", "$25k - $50k", "$50k - $100k", "$100k+"];
 
     // Core Form State
     const [formData, setFormData] = useState({
@@ -93,6 +94,7 @@ export function ServiceForm({ service }: ServiceFormProps) {
 
     // Dynamic Arrays
     const [features, setFeatures] = useState<string[]>(initialFeatures);
+    const [budgetRanges, setBudgetRanges] = useState<string[]>(initialBudgetRanges);
     const [stats, setStats] = useState<ServiceStat[]>(initialStats);
     const [processSteps, setProcessSteps] = useState<ServiceProcessStep[]>(
          initialSection4.steps || [{ title: "", description: "" }]
@@ -117,6 +119,7 @@ export function ServiceForm({ service }: ServiceFormProps) {
                     version: formData.version,
 
                     features: features.filter(f => f.trim() !== ""),
+                    budgetRanges: budgetRanges.filter(b => b.trim() !== ""),
                     stats: stats.filter(s => s.label && s.val),
                     
                     section1: {
@@ -526,6 +529,44 @@ export function ServiceForm({ service }: ServiceFormProps) {
                                 </div>
                             ))}
                             {features.length === 0 && <p className="text-[var(--admin-text)] text-[10px] italic">No features added.</p>}
+                        </div>
+                    </div>
+
+                    {/* Budget Tiers */}
+                    <div className="admin-surface-primary backdrop-blur-xs rounded-[10px] p-3 md:p-6 flex flex-col gap-3 md:gap-4">
+                        <div className="flex items-center justify-between border-b border-[var(--admin-border)] pb-2">
+                            <h3 className="font-bold text-[var(--admin-text)] text-xs md:text-sm">
+                                Budget Tiers for Contact Form
+                            </h3>
+                            <button 
+                                onClick={() => setBudgetRanges([...budgetRanges, ""])}
+                                className="text-[10px] admin-surface-input hover:bg-[var(--admin-text)]/5 text-[var(--admin-text)] hover:text-gold px-2 py-1 rounded-[4px] font-bold transition-all flex items-center gap-1"
+                            >
+                                <Plus size={10} /> Add
+                            </button>
+                        </div>
+                        <div className="flex flex-col gap-2">
+                            {budgetRanges.map((budget, i) => (
+                                <div key={i} className="flex gap-2">
+                                    <input 
+                                        value={budget}
+                                        onChange={(e) => {
+                                            const newB = [...budgetRanges];
+                                            newB[i] = e.target.value;
+                                            setBudgetRanges(newB);
+                                        }}
+                                        className="flex-1 admin-surface-input rounded-[6px] px-2 py-1.5 text-[var(--admin-text)] text-xs outline-none focus:border-gold/50"
+                                        placeholder="e.g. $10k - $25k"
+                                    />
+                                    <button 
+                                        onClick={() => setBudgetRanges(budgetRanges.filter((_, idx) => idx !== i))}
+                                        className="text-[var(--admin-text)] hover:text-red-500 transition-colors"
+                                    >
+                                        <X size={14} />
+                                    </button>
+                                </div>
+                            ))}
+                            {budgetRanges.length === 0 && <p className="text-[var(--admin-text)] text-[10px] italic">No budget tiers added. Contact form will use defaults.</p>}
                         </div>
                     </div>
 

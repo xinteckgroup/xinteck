@@ -3,6 +3,7 @@
 import { getMediaFiles, uploadFile } from "@/actions/media";
 import { Button } from "@/components/admin/ui/Button";
 import { useToast } from "@/components/admin/ui/Toast";
+import { convertToWebP } from "@/lib/webp-converter";
 import { Image as ImageIcon, Loader2, Search, UploadCloud, X } from "lucide-react";
 import Image from "next/image";
 import { useCallback, useEffect, useRef, useState, useTransition } from "react";
@@ -59,8 +60,11 @@ export function MediaPicker({ isOpen, onClose, onSelect }: MediaPickerProps) {
         }
 
         setUploading(true);
+        // Automatically convert all images to WebP format before upload perfectly
+        const webpFile = await convertToWebP(file);
+        
         const formData = new FormData();
-        formData.append("file", file);
+        formData.append("file", webpFile);
 
         try {
             const result = await uploadFile(formData);
@@ -117,20 +121,9 @@ export function MediaPicker({ isOpen, onClose, onSelect }: MediaPickerProps) {
 
     // Portal to body to ensure it's on top
     return createPortal(
-        <div className="fixed inset-0 z-[9999] flex items-center justify-center admin-surface-primary backdrop-blur-sm p-4 text-[var(--admin-text)]"
-             style={{
-                 "--admin-text": "#ffffff",
-                 "--admin-muted": "#a1a1aa",
-                 "--admin-border": "rgba(212, 175, 55, 0.15)",
-                 "--admin-gold": "#D4AF37",
-                 "--admin-surface-primary": "rgba(0, 0, 0, 0.72)",
-                 "--admin-surface-secondary": "rgba(0, 0, 0, 0.55)",
-                 "--admin-surface-floating": "rgba(0, 0, 0, 0.85)",
-                 "--admin-surface-input": "rgba(255, 255, 255, 0.06)",
-             } as React.CSSProperties}
-        >
+        <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/50 backdrop-blur-sm p-4 text-[var(--admin-text)]">
             <div 
-                className={`bg-white/50 transition-colors rounded-[16px] w-full max-w-4xl max-h-[80vh] flex flex-col shadow-2xl overflow-hidden animate-in fade-in zoom-in duration-200 relative ${isDragging ? 'border-gold ring-2 ring-gold/20 admin-surface-primary' : 'border-[var(--admin-border)]'}`}
+                className={`admin-surface-primary border border-[var(--admin-border)] transition-colors rounded-[16px] w-full max-w-4xl max-h-[80vh] flex flex-col shadow-2xl overflow-hidden animate-in fade-in zoom-in duration-200 relative ${isDragging ? 'border-gold ring-2 ring-gold/20' : ''}`}
                 onDragOver={onDragOver}
                 onDragLeave={onDragLeave}
                 onDrop={onDrop}

@@ -5,8 +5,7 @@ import { MediaPicker } from "@/components/admin/MediaPicker";
 import { PageContainer, PageHeader, useToast } from "@/components/admin/ui";
 import { Select } from "@/components/admin/ui/Select";
 import { projectSchema } from "@/lib/validations";
-import { Calendar, FileText, Globe, Image as ImageIcon, Save, Upload, X } from "lucide-react";
-import Image from "next/image";
+import { Calendar, Globe, Image as ImageIcon, Save, Upload, X } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 
@@ -218,8 +217,10 @@ export function ProjectEditorForm({ initialData, isEditing = false }: ProjectEdi
                  </div>
 
                  <div className="flex flex-col gap-2">
-                    <label className="text-[8px] md:text-xs font-bold text-[var(--admin-text)]/80">Completion Date</label>
-                    <div className="flex items-center admin-surface-input border border-[var(--admin-border)] rounded-[8px] px-2 md:px-3 py-1.5 md:py-2 gap-1 md:gap-2">
+                    <label className="text-[8px] md:text-xs font-bold text-[var(--admin-text)]/80">
+                        {formData.status === 'Completed' ? 'Completion Date' : 'Estimated Completion'}
+                    </label>
+                    <div className={`flex items-center border rounded-[8px] px-2 md:px-3 py-1.5 md:py-2 gap-1 md:gap-2 transition-colors ${formData.status === 'Completed' ? 'admin-surface-input border-[var(--admin-border)]' : 'bg-[var(--admin-text)]/5 border-transparent opacity-60'}`}>
                        <Calendar size={12} className="md:w-3.5 md:h-3.5 text-[var(--admin-text)] shrink-0" />
                        <input 
                          type="date"
@@ -236,12 +237,14 @@ export function ProjectEditorForm({ initialData, isEditing = false }: ProjectEdi
                  <h3 className="font-bold text-[var(--admin-text)] text-xs md:text-sm border-b border-[var(--admin-border)] pb-2">Cover Image</h3>
                  
                  {formData.image ? (
-                     <div className="relative aspect-video admin-surface-input rounded-[8px] overflow-hidden group">
-                         <Image 
+                     <div className="relative aspect-video admin-surface-input rounded-[8px] overflow-hidden group border border-[var(--admin-border)]">
+                         <img 
                              src={formData.image} 
                              alt="Cover" 
-                             fill 
-                             className="object-cover" 
+                             className="w-full h-full object-cover" 
+                             onError={(e) => {
+                                 (e.target as HTMLImageElement).src = "/images/placeholder.webp";
+                             }}
                          />
                          <button 
                              onClick={() => setFormData({...formData, image: ""})}
@@ -284,18 +287,7 @@ export function ProjectEditorForm({ initialData, isEditing = false }: ProjectEdi
                  </div>
               </div>
              
-             {/* Assets */}
-              <div className="admin-surface-primary backdrop-blur-xs rounded-[10px] p-3 md:p-6 flex flex-col gap-3 md:gap-4">
-                 <h3 className="font-bold text-[var(--admin-text)] text-xs md:text-sm border-b border-[var(--admin-border)] pb-2">Project Assets</h3>
-                 <div className="flex flex-col gap-1 md:gap-2">
-                    <button className="flex items-center gap-1 md:gap-2 text-[10px] md:text-xs font-bold text-gold hover:text-[var(--admin-text)] transition-colors">
-                       <FileText size={12} className="md:w-3.5 md:h-3.5" /> Add Case Study PDF
-                    </button>
-                    <button className="flex items-center gap-1 md:gap-2 text-[10px] md:text-xs font-bold text-gold hover:text-[var(--admin-text)] transition-colors">
-                       <FileText size={12} className="md:w-3.5 md:h-3.5" /> Add Technical Docs
-                    </button>
-                 </div>
-              </div>
+
           </div>
        </div>
     </PageContainer>

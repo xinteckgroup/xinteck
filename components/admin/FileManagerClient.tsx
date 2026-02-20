@@ -5,19 +5,20 @@ import { RoleGate } from "@/components/admin/RoleGate";
 import { PageContainer, PageHeader, Pagination, useToast } from "@/components/admin/ui";
 import { PaginatedResponse } from "@/lib/pagination";
 import { cn } from "@/lib/utils";
+import { convertToWebP } from "@/lib/webp-converter";
 import { Role } from "@prisma/client";
 import {
-   ChevronLeft,
-   CloudUpload,
-   FileText,
-   Folder,
-   Grid,
-   Image as ImageIcon,
-   LayoutList,
-   Plus,
-   Search,
-   Trash2,
-   Video as VideoIcon
+    ChevronLeft,
+    CloudUpload,
+    FileText,
+    Folder,
+    Grid,
+    Image as ImageIcon,
+    LayoutList,
+    Plus,
+    Search,
+    Trash2,
+    Video as VideoIcon
 } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState, useTransition } from "react";
@@ -131,8 +132,11 @@ export function FileManagerClient({ initialData, folders = [], currentFolderId, 
       if (!fileList || fileList.length === 0) return;
       
       setUploading(true);
+      
+      const webpFile = await convertToWebP(fileList[0]);
+
       const formData = new FormData();
-      formData.append("file", fileList[0]);
+      formData.append("file", webpFile);
 
       try {
           await uploadFile(formData, currentFolderId || undefined);

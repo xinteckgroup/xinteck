@@ -35,7 +35,11 @@ export function ServicePageClient({ service }: { service: PublicService }) {
             >
               <div className="flex items-center gap-4">
                 <div className="w-12 h-12 md:w-14 md:h-14 rounded-[10px] bg-primary/10 flex items-center justify-center text-primary">
-                  <HeroIcon size={24} className="md:w-7 md:h-7" />
+                  {service.section1?.image ? (
+                     <img src={service.section1.image} alt={service.title} className="w-8 h-8 md:w-10 md:h-10 object-contain rounded-[4px]" />
+                  ) : (
+                     <HeroIcon size={24} className="md:w-7 md:h-7" />
+                  )}
                 </div>
                 <h1 className={`${TYPOGRAPHY.tableHeader} text-primary`}>
                   {service.subName || "SERVICE"}
@@ -43,11 +47,11 @@ export function ServicePageClient({ service }: { service: PublicService }) {
               </div>
               
               <h2 className={`${TYPOGRAPHY.pageTitle} text-foreground`}>
-                {service.title}
+                {service.section1?.title || service.title}
               </h2>
               
-              <p className={`${TYPOGRAPHY.pageSubtitle} text-foreground`}>
-                {service.description}
+              <p className={`${TYPOGRAPHY.pageSubtitle} text-foreground/80`}>
+                {service.section1?.subtitle || service.description}
               </p>
               
               <div className="flex flex-col gap-3 md:gap-4">
@@ -112,6 +116,103 @@ export function ServicePageClient({ service }: { service: PublicService }) {
             </div>
           </div>
         </section>
+
+        {/* Dynamic Key Stats */}
+        {service.stats && service.stats.length > 0 && (
+          <section className="px-6 py-12 md:py-20 bg-muted/30">
+            <div className="max-w-7xl mx-auto">
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-8">
+                {service.stats.map((stat, i) => (
+                  <motion.div 
+                    key={i}
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    whileInView={{ opacity: 1, scale: 1 }}
+                    viewport={{ once: true }}
+                    transition={{ delay: i * 0.1 }}
+                    className="flex flex-col items-center justify-center p-6 bg-background border border-border rounded-[10px] shadow-sm text-center"
+                  >
+                    <span className="text-3xl md:text-5xl font-black text-primary mb-2 tracking-tight block">
+                      {stat.val}
+                    </span>
+                    <span className={`${TYPOGRAPHY.body} text-foreground/80 font-bold uppercase tracking-wider text-xs md:text-sm`}>
+                      {stat.label}
+                    </span>
+                  </motion.div>
+                ))}
+              </div>
+            </div>
+          </section>
+        )}
+
+        {/* Content Blocks (Section 2 & 3) */}
+        {(service.section2?.title || service.section3?.title) && (
+          <section className="px-6">
+            <div className="max-w-5xl mx-auto flex flex-col gap-12 md:gap-24">
+              
+              {service.section2?.title && (
+                <motion.div 
+                   initial={{ opacity: 0, y: 20 }}
+                   whileInView={{ opacity: 1, y: 0 }}
+                   viewport={{ once: true }}
+                   className="flex flex-col gap-4 md:gap-6"
+                >
+                  <h3 className={`${TYPOGRAPHY.pageTitle} text-foreground`}>
+                    {service.section2.title}
+                  </h3>
+                  {service.section2.description && (
+                    <p className={`${TYPOGRAPHY.pageSubtitle} text-foreground/80 leading-relaxed whitespace-pre-wrap`}>
+                      {service.section2.description}
+                    </p>
+                  )}
+                </motion.div>
+              )}
+
+              {service.section3?.title && (
+                <motion.div 
+                   initial={{ opacity: 0, y: 20 }}
+                   whileInView={{ opacity: 1, y: 0 }}
+                   viewport={{ once: true }}
+                   className="flex flex-col gap-4 md:gap-6 border-t border-border pt-12 md:pt-24"
+                >
+                  <h3 className={`${TYPOGRAPHY.pageTitle} text-foreground`}>
+                    {service.section3.title}
+                  </h3>
+                  {service.section3.description && (
+                    <p className={`${TYPOGRAPHY.pageSubtitle} text-foreground/80 leading-relaxed whitespace-pre-wrap`}>
+                      {service.section3.description}
+                    </p>
+                  )}
+                </motion.div>
+              )}
+
+            </div>
+          </section>
+        )}
+
+        {/* Freshness / Innovation */}
+        {service.freshnessSection?.title && (
+          <section className="px-6 py-6 md:py-12">
+            <div className="max-w-7xl mx-auto">
+               <motion.div 
+                  initial={{ opacity: 0, scale: 0.98 }}
+                  whileInView={{ opacity: 1, scale: 1 }}
+                  viewport={{ once: true }}
+                  className="bg-primary/5 border border-primary/20 rounded-[20px] p-8 md:p-16 flex flex-col md:flex-row gap-8 md:gap-16 items-center"
+               >
+                  <div className="md:w-1/3 shrink-0">
+                    <h3 className={`${TYPOGRAPHY.pageTitle} text-foreground leading-tight`}>
+                      {service.freshnessSection.title}
+                    </h3>
+                  </div>
+                  <div className="md:w-2/3">
+                     <p className={`${TYPOGRAPHY.body} text-foreground/80 md:text-xl leading-relaxed`}>
+                        {service.freshnessSection.description}
+                     </p>
+                  </div>
+               </motion.div>
+            </div>
+          </section>
+        )}
 
         {/* Process Section */}
         {service.process && service.process.length > 0 && (

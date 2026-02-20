@@ -35,11 +35,15 @@ export interface PublicService {
     description: string;
     features: string[];
     iconName?: string;
-    capabilitiesTitle?: string; // Mapped from detailsSection.title or similar
-    stats?: any[];
+    stats?: { label: string; val: string }[];
+    capabilitiesTitle?: string;
     process?: any[]; // Mapped from section4?
     cta?: any;
     image?: string | null;
+    section1?: { title?: string; subtitle?: string; image?: string };
+    section2?: { title?: string; description?: string };
+    section3?: { title?: string; description?: string };
+    freshnessSection?: { title?: string; description?: string };
 }
 
 
@@ -237,6 +241,9 @@ export async function getPublicService(slug: string): Promise<PublicService | nu
         const section4 = s.section4 as any || {};
         const details = s.detailsSection as any || {};
         const buyNow = s.buyNowSection as any || {};
+        const section2 = s.section2 as any || {};
+        const section3 = s.section3 as any || {};
+        const freshness = s.freshnessSection as any || {};
 
         return {
             slug: s.slug,
@@ -247,6 +254,11 @@ export async function getPublicService(slug: string): Promise<PublicService | nu
             features: s.features,
             capabilitiesTitle: details.title || "WHAT WE BUILD.",
             process: section4.steps || [], // Assuming section4 has steps
+            stats: Array.isArray(s.stats) ? (s.stats as any[]) : [],
+            section1: { title: section1.title, subtitle: section1.subtitle, image: section1.image },
+            section2: { title: section2.title, description: section2.description },
+            section3: { title: section3.title, description: section3.description },
+            freshnessSection: { title: freshness.title, description: freshness.description },
             cta: {
                 title: buyNow.title || "READY TO BUILD?",
                 desc: buyNow.description || "Let's discuss your project.",

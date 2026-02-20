@@ -631,18 +631,18 @@ export function ServiceForm({ service }: ServiceFormProps) {
                             </button>
                         </div>
                         <div className="flex flex-col gap-2">
-                             {stats.map((stat, i) => (
-                                <div key={i} className="flex gap-2">
+                            {stats.map((stat, i) => (
+                                <div key={i} className="flex flex-row items-center gap-2 w-full">
                                     <input 
                                         value={stat.val}
                                         onChange={(e) => updateStat(i, 'val', e.target.value)}
-                                        className="w-16 admin-surface-input rounded-[6px] px-2 py-1.5 text-[var(--admin-text)] text-xs outline-none focus:border-gold/50 font-mono text-center"
+                                        className="w-[80px] shrink-0 admin-surface-input rounded-[6px] px-2 py-1.5 text-[var(--admin-text)] text-xs outline-none focus:border-gold/50 font-mono text-center min-w-0"
                                         placeholder="Value"
                                     />
                                      <input 
                                         value={stat.label}
                                         onChange={(e) => updateStat(i, 'label', e.target.value)}
-                                        className="flex-1 admin-surface-input rounded-[6px] px-2 py-1.5 text-[var(--admin-text)] text-xs outline-none focus:border-gold/50"
+                                        className="flex-1 min-w-0 admin-surface-input rounded-[6px] px-2 py-1.5 text-[var(--admin-text)] text-xs outline-none focus:border-gold/50"
                                         placeholder="Label"
                                     />
                                     <button 

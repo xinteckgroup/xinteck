@@ -119,9 +119,9 @@ export function ServicePageClient({ service }: { service: PublicService }) {
 
         {/* Dynamic Key Stats */}
         {service.stats && service.stats.length > 0 && (
-          <section className="px-6 py-12 md:py-20 bg-muted/30">
+          <section className="px-6 py-6 md:py-12">
             <div className="max-w-7xl mx-auto">
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-8">
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-8 text-center max-w-5xl mx-auto">
                 {service.stats.map((stat, i) => (
                   <motion.div 
                     key={i}
@@ -129,7 +129,7 @@ export function ServicePageClient({ service }: { service: PublicService }) {
                     whileInView={{ opacity: 1, scale: 1 }}
                     viewport={{ once: true }}
                     transition={{ delay: i * 0.1 }}
-                    className="flex flex-col items-center justify-center p-6 bg-background border border-border rounded-[10px] shadow-sm text-center"
+                    className="flex flex-col items-center justify-center p-6 md:p-8 bg-white/30 dark:bg-black/80 backdrop-blur-xl rounded-[10px] shadow-lg text-center"
                   >
                     <span className="text-3xl md:text-5xl font-black text-primary mb-2 tracking-tight block">
                       {stat.val}
@@ -154,7 +154,7 @@ export function ServicePageClient({ service }: { service: PublicService }) {
                    initial={{ opacity: 0, y: 20 }}
                    whileInView={{ opacity: 1, y: 0 }}
                    viewport={{ once: true }}
-                   className="flex flex-col gap-4 md:gap-6"
+                   className="flex flex-col gap-4 md:gap-6 bg-white/30 dark:bg-black/80 backdrop-blur-xl rounded-[10px] p-6 md:p-12 shadow-lg"
                 >
                   <h3 className={`${TYPOGRAPHY.pageTitle} text-foreground`}>
                     {service.section2.title}
@@ -172,7 +172,7 @@ export function ServicePageClient({ service }: { service: PublicService }) {
                    initial={{ opacity: 0, y: 20 }}
                    whileInView={{ opacity: 1, y: 0 }}
                    viewport={{ once: true }}
-                   className="flex flex-col gap-4 md:gap-6 border-t border-border pt-12 md:pt-24"
+                   className="flex flex-col gap-4 md:gap-6 bg-white/30 dark:bg-black/80 backdrop-blur-xl rounded-[10px] p-6 md:p-12 shadow-lg"
                 >
                   <h3 className={`${TYPOGRAPHY.pageTitle} text-foreground`}>
                     {service.section3.title}
@@ -197,7 +197,7 @@ export function ServicePageClient({ service }: { service: PublicService }) {
                   initial={{ opacity: 0, scale: 0.98 }}
                   whileInView={{ opacity: 1, scale: 1 }}
                   viewport={{ once: true }}
-                  className="bg-primary/5 border border-primary/20 rounded-[20px] p-8 md:p-16 flex flex-col md:flex-row gap-8 md:gap-16 items-center"
+                  className="bg-white/30 dark:bg-black/80 backdrop-blur-xl border border-primary/20 rounded-[20px] p-8 md:p-16 flex flex-col md:flex-row gap-8 md:gap-16 items-center shadow-lg"
                >
                   <div className="md:w-1/3 shrink-0">
                     <h3 className={`${TYPOGRAPHY.pageTitle} text-foreground leading-tight`}>

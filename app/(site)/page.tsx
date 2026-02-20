@@ -215,7 +215,7 @@ export default async function Home() {
             ].map((testimonial, i) => (
               <div 
                 key={i}
-                className="min-w-[300px] md:min-w-[350px] flex-shrink-0 snap-start p-8 rounded-[10px] bg-white/50 dark:bg-background/50 border border-primary/10 hover:border-primary/30 transition-all flex flex-col gap-6 group"
+                className="w-[280px] md:w-[calc(33.333%-16px)] flex-shrink-0 snap-start p-8 rounded-[10px] bg-white/50 dark:bg-background/50 border border-primary/10 hover:border-primary/30 transition-all flex flex-col gap-6 group"
               >
                 <div className="text-primary/20 group-hover:text-primary transition-colors">
                     <svg width="40" height="40" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">

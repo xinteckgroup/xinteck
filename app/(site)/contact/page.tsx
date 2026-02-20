@@ -153,7 +153,7 @@ export default function ContactPage() {
             {phoneList.map((p, i) => (
                 <div key={i} className="flex items-center gap-3">
                     <span className="text-primary font-bold text-base md:text-lg">{p.value}</span>
-                    <span className="text-xs text-black font-mono uppercase tracking-wider">{p.label}</span>
+                    <span className="text-xs text-foreground font-mono uppercase tracking-wider">{p.label}</span>
                 </div>
             ))}
         </div>
@@ -388,7 +388,7 @@ export default function ContactPage() {
                     }
                   }}
                 />
-                <p className="text-xs text-black dark:text-foreground/40 text-right">Max 300 words</p>
+                <p className="text-xs text-foreground text-right">Max 300 words</p>
               </div>
 
                {/* Human Verification */}

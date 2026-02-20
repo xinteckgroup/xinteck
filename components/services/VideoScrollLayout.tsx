@@ -21,62 +21,50 @@ export function VideoScrollLayout({ children, videoSrc, videoStats, videoClassNa
     setIsMounted(true);
   }, []);
 
+  // Progressive video loading: start loading AFTER mount, not via HTML preload
   useEffect(() => {
     if (!isMounted) return;
     
     const video = videoRef.current;
     if (!video) return;
 
-    // Handle video error - show fallback
     const onError = () => {
       setVideoError(true);
     };
 
-    // Handle video ready
-    const onCanPlay = () => {
+    // Only show video once enough data is buffered for smooth playback
+    const onCanPlayThrough = () => {
       setVideoReady(true);
     };
 
     // INSTANT scroll handler - no delays, no RAF, no throttling
     const onScroll = () => {
-      // Edge case 1: Video not ready yet
       if (!video.duration || isNaN(video.duration)) return;
 
-      // Edge case 2: Handle negative scrollY (iOS bounce)
       const scrollY = Math.max(0, window.scrollY);
       
-      // Edge case 3: Calculate maxScroll safely
       const docHeight = document.documentElement.scrollHeight;
       const viewHeight = window.innerHeight;
-      const maxScroll = Math.max(1, docHeight - viewHeight); // Avoid division by zero
+      const maxScroll = Math.max(1, docHeight - viewHeight);
       
-      // Edge case 4: Clamp progress to valid range
       const progress = Math.max(0, Math.min(1, scrollY / maxScroll));
       
       let targetTime: number;
       
       if (videoStats) {
-        // Frame-accurate: calculate exact frame and convert to time
         const targetFrame = Math.round(progress * (videoStats.totalFrames - 1));
         targetTime = targetFrame * videoStats.frameDuration;
-        
-        // Edge case 5: Clamp to valid video time range
         targetTime = Math.max(0, Math.min(videoStats.duration - 0.001, targetTime));
       } else {
-        // Linear fallback
         targetTime = progress * video.duration;
-        
-        // Edge case 5: Clamp to valid video time range
         targetTime = Math.max(0, Math.min(video.duration - 0.001, targetTime));
       }
       
-      // Edge case 6: Only update if video is seekable
-      if (video.readyState >= 2) { // HAVE_CURRENT_DATA or higher
+      if (video.readyState >= 2) {
         video.currentTime = targetTime;
       }
     };
 
-    // Edge case 7: Handle resize (document height changes)
     const onResize = () => {
       onScroll();
     };
@@ -85,17 +73,24 @@ export function VideoScrollLayout({ children, videoSrc, videoStats, videoClassNa
     window.addEventListener("scroll", onScroll, { passive: true });
     window.addEventListener("resize", onResize, { passive: true });
     video.addEventListener("loadedmetadata", onScroll);
-    video.addEventListener("canplay", onCanPlay);
+    video.addEventListener("canplaythrough", onCanPlayThrough);
     video.addEventListener("error", onError);
     
+    // Start loading the video progressively (delayed to prioritize fallback paint)
+    const loadTimer = setTimeout(() => {
+      video.preload = "auto";
+      video.load();
+    }, 100);
+
     // Sync on mount
     onScroll();
 
     return () => {
+      clearTimeout(loadTimer);
       window.removeEventListener("scroll", onScroll);
       window.removeEventListener("resize", onResize);
       video.removeEventListener("loadedmetadata", onScroll);
-      video.removeEventListener("canplay", onCanPlay);
+      video.removeEventListener("canplaythrough", onCanPlayThrough);
       video.removeEventListener("error", onError);
     };
   }, [isMounted, videoStats]);
@@ -109,31 +104,33 @@ export function VideoScrollLayout({ children, videoSrc, videoStats, videoClassNa
       <div className="fixed inset-0 w-full h-full z-0 bg-black">
         <div className="absolute inset-0 bg-black/30 z-[1]" />
         
-        {/* Fallback Image */}
+        {/* Fallback Image — loads first, stays until video is fully buffered */}
         {fallbackSrc && (
           <img
             src={fallbackSrc}
             alt=""
+            fetchPriority="high"
+            decoding="async"
             className="absolute inset-0 w-full h-full object-cover"
             style={{ 
               opacity: (!videoReady || videoError) ? 0.85 : 0,
-              transition: 'opacity 0.3s ease-out'
+              transition: 'opacity 0.8s ease-out'
             }}
           />
         )}
         
-        {/* Video - Hidden if error */}
+        {/* Video — preload="none", loaded via JS after fallback is painted */}
         {!videoError && (
           <video
             ref={videoRef}
             src={videoSrc}
             muted
             playsInline
-            preload="auto"
+            preload="none"
             className={`absolute inset-0 w-full h-full object-cover ${videoClassName || ''}`}
             style={{ 
               opacity: videoReady ? 0.85 : 0,
-              transition: 'opacity 0.3s ease-out'
+              transition: 'opacity 0.8s ease-out'
             }}
           />
         )}
@@ -146,3 +143,4 @@ export function VideoScrollLayout({ children, videoSrc, videoStats, videoClassNa
     </div>
   );
 }
+

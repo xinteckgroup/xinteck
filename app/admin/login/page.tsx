@@ -54,7 +54,7 @@ export default function AdminLoginPage() {
         <div className="absolute inset-0 z-0">
            {/* IMAGE IMPLEMENTED HALFWAY */}
            <NextImage
-             src="/admin-bg/circuit.png"
+             src="/admin-bg/circuit.webp"
              alt="Login Background"
              fill
              priority

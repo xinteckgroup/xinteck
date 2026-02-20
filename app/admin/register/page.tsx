@@ -127,7 +127,7 @@ function RegisterContent() {
                 <div className="absolute inset-0 z-0">
                    {/* IMAGE IMPLEMENTED HALFWAY */}
                    <Image
-                     src="/admin-bg/circuit.png"
+                     src="/admin-bg/circuit.webp"
                      alt="Register Background"
                      fill
                      priority

@@ -108,7 +108,7 @@ export default function ResetPasswordPage() {
             <div className="hidden lg:flex relative items-center justify-center overflow-hidden bg-muted">
                 <div className="absolute inset-0 z-0">
                    <Image
-                     src="/admin-bg/circuit.png"
+                     src="/admin-bg/circuit.webp"
                      alt="Background"
                      fill
                      priority

@@ -39,7 +39,7 @@ export default function ForgotPasswordPage() {
             <div className="hidden lg:flex relative items-center justify-center overflow-hidden bg-[#0a0a0a]">
                 <div className="absolute inset-0 z-0">
                    <Image
-                     src="/admin-bg/circuit.png"
+                     src="/admin-bg/circuit.webp"
                      alt="Background"
                      fill
                      priority

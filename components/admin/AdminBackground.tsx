@@ -20,7 +20,7 @@ export function AdminBackground() {
       {/* HD Creative Background (The Quantum Circuit) - Both Modes */}
       <div className="absolute inset-0">
         <NextImage
-          src="/admin-bg/circuit.png"
+          src="/admin-bg/circuit.webp"
           alt="Admin Background"
           fill
           priority

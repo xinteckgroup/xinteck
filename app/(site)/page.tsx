@@ -190,27 +190,32 @@ export default async function Home() {
             </div>
           </div>
           
-          <div className="grid md:grid-cols-3 gap-6">
+          <div className="flex gap-6 overflow-x-auto snap-x snap-mandatory pb-4 scrollbar-hide -mx-2 px-2">
             {[
               {
-                text: "Xinteck transformed our legacy infrastructure into a high-speed cloud powerhouse. Their attention to detail is unmatched.",
-                author: "Sarah Jenkins",
-                role: "CTO, Fintech Solutions",
+                text: "Building a healthcare platform that handles sensitive patient data required a developer we could trust completely. Xinteck understood the complexity of the task from day one and translated it into a clean, intuitive product. We recommend their work.",
+                author: "Edwin Lubanga",
+                role: "Co-Founder, Snark Health",
               },
               {
-                text: "The UI/UX design provided by Xinteck isn't just beautiful—it actually increased our conversion rate by 40% in three months.",
-                author: "David Chen",
-                role: "Founder, Aura Health",
+                text: "Absolutely reliable and highly efficient! Not only was our project completed on schedule, but the quality of work delivered surpassed our expectations. Exceptional service from start to finish.",
+                author: "Kimathi I.",
+                role: "Founder, Plutus Capital",
               },
               {
-                text: "Professional, efficient, and technically superior. Xinteck is the only team we trust for our enterprise software needs.",
-                author: "Elena Rodriguez",
-                role: "EVP of Ops, Global Logistics",
+                text: "Xinteck provided unparalleled expertise and support throughout the entire development process. The attention to detail and commitment to delivering high-quality results. Highly recommended for anyone looking for top-notch tech solutions.",
+                author: "Jeremy Omare",
+                role: "Project Manager, Best Energy",
+              },
+              {
+                text: "We needed a platform that could present our products to international buyers while handling quote requests with ease. Xinteck delivered exactly that — a polished, professional solution built with real understanding of our export business. Very impressed with the quality of work.",
+                author: "Francis Salaton",
+                role: "Managing Director, Al-Barka Halali Meats",
               },
             ].map((testimonial, i) => (
               <div 
                 key={i}
-                className="p-8 rounded-[10px] bg-white/50 dark:bg-background/50 border border-primary/10 hover:border-primary/30 transition-all flex flex-col gap-6 group"
+                className="min-w-[300px] md:min-w-[350px] flex-shrink-0 snap-start p-8 rounded-[10px] bg-white/50 dark:bg-background/50 border border-primary/10 hover:border-primary/30 transition-all flex flex-col gap-6 group"
               >
                 <div className="text-primary/20 group-hover:text-primary transition-colors">
                     <svg width="40" height="40" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">

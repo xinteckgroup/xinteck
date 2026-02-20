@@ -19,19 +19,19 @@ const pulseAnimation = {
 
 // Collaboration tools data — split into two rows for the dual-direction marquee
 const toolsRow1 = [
-  { name: "Slack", logo: "/logos/tools/slack.png" },
-  { name: "GitHub", logo: "/logos/tools/github.png" },
-  { name: "Figma", logo: "/logos/tools/figma.png" },
-  { name: "Jira", logo: "/logos/tools/jira.png" },
-  { name: "Notion", logo: "/logos/tools/notion.png" },
+  { name: "Slack", logo: "/logos/tools/slack.webp" },
+  { name: "GitHub", logo: "/logos/tools/github.webp" },
+  { name: "Figma", logo: "/logos/tools/figma.webp" },
+  { name: "Jira", logo: "/logos/tools/jira.webp" },
+  { name: "Notion", logo: "/logos/tools/notion.webp" },
 ];
 
 const toolsRow2 = [
-  { name: "Trello", logo: "/logos/tools/trello.png" },
-  { name: "Zoom", logo: "/logos/tools/zoom.png" },
-  { name: "Teams", logo: "/logos/tools/teams.png" },
-  { name: "Confluence", logo: "/logos/tools/confluence.png" },
-  { name: "Asana", logo: "/logos/tools/asana.png" },
+  { name: "Trello", logo: "/logos/tools/trello.webp" },
+  { name: "Zoom", logo: "/logos/tools/zoom.webp" },
+  { name: "Teams", logo: "/logos/tools/teams.webp" },
+  { name: "Confluence", logo: "/logos/tools/confluence.webp" },
+  { name: "Asana", logo: "/logos/tools/asana.webp" },
 ];
 
 const stats = [
@@ -120,14 +120,14 @@ export default function AboutPage() {
                     className="rounded-full border-2 border-primary p-2 bg-white/30 dark:bg-black/70 shadow-2xl"
                   >
                     <Image
-                      src="/logos/logo-light.png"
+                      src="/logos/logo-light.webp"
                       alt="Xinteck"
                       width={200}
                       height={200}
                       className="dark:hidden rounded-full"
                     />
                     <Image
-                      src="/logos/logo-dark.png"
+                      src="/logos/logo-dark.webp"
                       alt="Xinteck"
                       width={200}
                       height={200}

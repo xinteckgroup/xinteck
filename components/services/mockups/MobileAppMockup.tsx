@@ -40,7 +40,7 @@ export function MobileAppMockup() {
                   <div className="relative w-32 h-32">
                      {/* eslint-disable-next-line @next/next/no-img-element */}
                      <NextImage 
-                        src="/logos/logo-dark.png" 
+                        src="/logos/logo-dark.webp" 
                         alt="App Icon" 
                         width={128}
                         height={128}

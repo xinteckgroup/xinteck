@@ -121,7 +121,7 @@ export function AdminSidebar({ userRole }: { userRole?: string }) {
                   <div 
                       className="relative w-32 h-10 border border-gold/30 rounded-[10px] overflow-hidden bg-black/60 dark:bg-white/30 admin-gold-pulse"
                   >
-                      <NextImage src="/logos/logo-dark-full.png" alt="Xinteck" fill className="object-cover" priority />
+                      <NextImage src="/logos/logo-dark-full.webp" alt="Xinteck" fill className="object-cover" priority />
                   </div>
               </motion.div>
 
@@ -135,7 +135,7 @@ export function AdminSidebar({ userRole }: { userRole?: string }) {
                   <div 
                       className="relative w-10 h-10 border border-gold/30 rounded-full overflow-hidden bg-black/60 dark:bg-white/30 p-1.5 shrink-0 aspect-square admin-gold-pulse"
                   >
-                       <NextImage src="/logos/logo-dark.png" alt="X" fill className="object-contain" />
+                       <NextImage src="/logos/logo-dark.webp" alt="X" fill className="object-contain" />
                   </div>
               </motion.div>
           </div>

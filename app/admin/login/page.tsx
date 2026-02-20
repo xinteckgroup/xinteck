@@ -73,7 +73,7 @@ export default function AdminLoginPage() {
               transition={{ duration: 0.8 }}
             >
                <NextImage 
-                 src="/logos/logo-dark-full.png"
+                 src="/logos/logo-dark-full.webp"
                  alt="Xinteck Logo"
                  width={500}
                  height={180}

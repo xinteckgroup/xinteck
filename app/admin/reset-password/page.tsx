@@ -125,7 +125,7 @@ export default function ResetPasswordPage() {
                       transition={{ duration: 0.8 }}
                     >
                        <Image 
-                         src="/logos/logo-dark-full.png"
+                         src="/logos/logo-dark-full.webp"
                          alt="Xinteck Logo"
                          width={600}
                          height={225}

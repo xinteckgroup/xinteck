@@ -94,7 +94,7 @@ export function Footer() {
                 <div className="absolute inset-0 flex items-center justify-center">
                     <div className="relative w-[100px] h-[100px] transition-opacity duration-300 group-hover:opacity-0">
                         <Image
-                            src="/logos/logo-dark.png"
+                            src="/logos/logo-dark.webp"
                             alt="Xinteck"
                             fill
                             className="object-contain"
@@ -102,7 +102,7 @@ export function Footer() {
                     </div>
                     <div className="absolute inset-0 transition-opacity duration-300 opacity-0 group-hover:opacity-100">
                         <Image
-                            src="/logos/logo-dark-full.png"
+                            src="/logos/logo-dark-full.webp"
                             alt="Xinteck Full"
                             fill
                             className="object-cover"

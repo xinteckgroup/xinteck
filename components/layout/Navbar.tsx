@@ -50,7 +50,7 @@ export function Navbar() {
             <div className="absolute inset-0 flex items-center justify-center dark:hidden">
               <div className="relative w-[44px] h-[44px] transition-opacity duration-300 group-hover:opacity-0">
                   <Image
-                    src="/logos/logo-light.png"
+                    src="/logos/logo-light.webp"
                     alt="Xinteck"
                     fill
                     className="object-contain"
@@ -58,7 +58,7 @@ export function Navbar() {
               </div>
               <div className="absolute inset-0 transition-opacity duration-300 opacity-0 group-hover:opacity-100">
                   <Image
-                    src="/logos/logo-light-full.png"
+                    src="/logos/logo-light-full.webp"
                     alt="Xinteck Full"
                     fill
                     className="object-cover" 
@@ -70,7 +70,7 @@ export function Navbar() {
             <div className="absolute inset-0 flex items-center justify-center hidden dark:flex">
               <div className="relative w-[44px] h-[44px] transition-opacity duration-300 group-hover:opacity-0">
                   <Image
-                    src="/logos/logo-dark.png"
+                    src="/logos/logo-dark.webp"
                     alt="Xinteck"
                     fill
                     className="object-contain"
@@ -78,7 +78,7 @@ export function Navbar() {
               </div>
               <div className="absolute inset-0 transition-opacity duration-300 opacity-0 group-hover:opacity-100">
                   <Image
-                    src="/logos/logo-dark-full.png"
+                    src="/logos/logo-dark-full.webp"
                     alt="Xinteck Full"
                     fill
                     className="object-cover"

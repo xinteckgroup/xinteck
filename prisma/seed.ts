@@ -40,7 +40,7 @@ const services = [
         },
         isActive: true,
         sortOrder: 1,
-        image: "/images/services/web_dev_caricature_1771020665861.png"
+        image: "/images/services/web_dev_caricature_1771020665861.webp"
     },
     {
         slug: "mobile-app-development",
@@ -74,7 +74,7 @@ const services = [
         },
         isActive: true,
         sortOrder: 2,
-        image: "/images/services/mobile_app_caricature_1771020693351.png"
+        image: "/images/services/mobile_app_caricature_1771020693351.webp"
     },
     {
         slug: "custom-software-development",
@@ -108,7 +108,7 @@ const services = [
         },
         isActive: true,
         sortOrder: 3,
-        image: "/images/services/custom_software_caricature_1771020721906.png"
+        image: "/images/services/custom_software_caricature_1771020721906.webp"
     },
     {
         slug: "ui-ux-design",
@@ -142,7 +142,7 @@ const services = [
         },
         isActive: true,
         sortOrder: 4,
-        image: "/images/services/ui_ux_caricature_1771020743886.png"
+        image: "/images/services/ui_ux_caricature_1771020743886.webp"
     },
     {
         slug: "cloud-devops",
@@ -176,7 +176,7 @@ const services = [
         },
         isActive: true,
         sortOrder: 5,
-        image: "/images/services/cloud_devops_caricature_1771021166591.png"
+        image: "/images/services/cloud_devops_caricature_1771021166591.webp"
     }
 ];
 

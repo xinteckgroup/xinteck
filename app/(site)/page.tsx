@@ -190,12 +190,17 @@ export default async function Home() {
             </div>
           </div>
           
-          <div className="flex gap-6 overflow-x-auto snap-x snap-mandatory pb-4 scrollbar-hide -mx-2 px-2">
+          <div className="flex gap-6 overflow-x-auto snap-x snap-mandatory pb-4 gold-scrollbar -mx-2 px-2">
             {[
               {
                 text: "Building a healthcare platform that handles sensitive patient data required a developer we could trust completely. Xinteck understood the complexity of the task from day one and translated it into a clean, intuitive product. We recommend their work.",
                 author: "Edwin Lubanga",
                 role: "Co-Founder, Snark Health",
+              },
+              {
+                text: "We needed a platform that could present our products to international buyers while handling quote requests with ease. Xinteck delivered exactly that — a polished, professional solution built with real understanding of our export business. Very impressed with the quality of work.",
+                author: "Francis Salaton",
+                role: "Managing Director, Al-Barka Halali Meats",
               },
               {
                 text: "Absolutely reliable and highly efficient! Not only was our project completed on schedule, but the quality of work delivered surpassed our expectations. Exceptional service from start to finish.",
@@ -206,11 +211,6 @@ export default async function Home() {
                 text: "Xinteck provided unparalleled expertise and support throughout the entire development process. The attention to detail and commitment to delivering high-quality results. Highly recommended for anyone looking for top-notch tech solutions.",
                 author: "Jeremy Omare",
                 role: "Project Manager, Best Energy",
-              },
-              {
-                text: "We needed a platform that could present our products to international buyers while handling quote requests with ease. Xinteck delivered exactly that — a polished, professional solution built with real understanding of our export business. Very impressed with the quality of work.",
-                author: "Francis Salaton",
-                role: "Managing Director, Al-Barka Halali Meats",
               },
             ].map((testimonial, i) => (
               <div 

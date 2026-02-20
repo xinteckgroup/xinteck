@@ -329,11 +329,21 @@ body {
   color: inherit;
 }
 
-/* Hide scrollbar for horizontal scroll containers */
-.scrollbar-hide {
-  -ms-overflow-style: none;
-  scrollbar-width: none;
+/* Thin gold scrollbar for horizontal scroll containers */
+.gold-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: #D4AF37 transparent;
 }
-.scrollbar-hide::-webkit-scrollbar {
-  display: none;
+.gold-scrollbar::-webkit-scrollbar {
+  height: 4px;
+}
+.gold-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+.gold-scrollbar::-webkit-scrollbar-thumb {
+  background: #D4AF37;
+  border-radius: 4px;
+}
+.gold-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #C5A028;
 }

@@ -1,26 +1,42 @@
 "use client";
 
 import { SettingsState, updateSettings } from "@/actions/settings";
+import { upsertSiteSetting } from "@/actions/site-settings";
 import { SecretCard } from "@/components/admin/settings/SecretCard";
 import { StatusCard } from "@/components/admin/settings/StatusCard";
+import { Button } from "@/components/admin/ui/Button";
 import { Input } from "@/components/admin/ui/Input";
 import { PageContainer } from "@/components/admin/ui/PageContainer";
 import { PageHeader } from "@/components/admin/ui/PageHeader";
 import { useToast } from "@/components/admin/ui/Toast";
 import { settingsStateSchema } from "@/lib/validations";
-import { Key as KeyIcon, Save, Shield } from "lucide-react";
+import { Key as KeyIcon, Mail, Phone, Plus, Save, Shield, Trash2 } from "lucide-react";
 import { useState, useTransition } from "react";
+
+export interface ContactInfo {
+    businessEmail: string;
+    businessPhone: string;
+    contactPhones: { label: string; value: string }[];
+}
 
 interface SettingsFormProps {
     initialSettings: SettingsState;
+    initialContactInfo?: ContactInfo;
 }
 
-export function SettingsForm({ initialSettings }: SettingsFormProps) {
+export function SettingsForm({ initialSettings, initialContactInfo }: SettingsFormProps) {
     const [isPending, startTransition] = useTransition();
     const [formData, setFormData] = useState<SettingsState>(initialSettings);
     const [success, setSuccess] = useState(false);
-    const [activeTab, setActiveTab] = useState<"integrations" | "environment">("integrations");
+    const [activeTab, setActiveTab] = useState<"integrations" | "environment" | "contact">("integrations");
     const { toast } = useToast();
+
+    // Contact Info State
+    const [contactInfo, setContactInfo] = useState<ContactInfo>(initialContactInfo || {
+        businessEmail: "info@xinteck.co.ke",
+        businessPhone: "+254 782 063 736",
+        contactPhones: [],
+    });
 
     const handleChange = (key: keyof SettingsState, value: string) => {
         setFormData(prev => ({ ...prev, [key]: value }));
@@ -28,6 +44,44 @@ export function SettingsForm({ initialSettings }: SettingsFormProps) {
     };
 
     const handleSubmit = () => {
+        if (activeTab === "contact") {
+            // Save contact info to siteSetting table
+            startTransition(async () => {
+                try {
+                    await upsertSiteSetting({
+                        key: "BUSINESS_EMAIL",
+                        value: contactInfo.businessEmail,
+                        type: "STRING",
+                        category: "contact",
+                        isPublic: true,
+                        description: "Primary business email displayed across the site."
+                    });
+                    await upsertSiteSetting({
+                        key: "BUSINESS_PHONE",
+                        value: contactInfo.businessPhone,
+                        type: "STRING",
+                        category: "contact",
+                        isPublic: true,
+                        description: "Primary business phone number displayed across the site."
+                    });
+                    await upsertSiteSetting({
+                        key: "CONTACT_PHONES",
+                        value: JSON.stringify(contactInfo.contactPhones),
+                        type: "JSON",
+                        category: "contact",
+                        isPublic: true,
+                        description: "List of contact phone numbers displayed on the Contact page."
+                    });
+                    setSuccess(true);
+                    toast("Contact info updated successfully", "success");
+                    setTimeout(() => setSuccess(false), 3000);
+                } catch {
+                    toast("Failed to update contact info", "error");
+                }
+            });
+            return;
+        }
+
         // C2: Client-side validation using shared settings schema
         const validation = settingsStateSchema.safeParse(formData);
         if (!validation.success) {
@@ -43,6 +97,27 @@ export function SettingsForm({ initialSettings }: SettingsFormProps) {
         });
     };
 
+    const addContactPhone = () => {
+        setContactInfo(prev => ({
+            ...prev,
+            contactPhones: [...prev.contactPhones, { label: "", value: "" }]
+        }));
+    };
+
+    const removeContactPhone = (index: number) => {
+        setContactInfo(prev => ({
+            ...prev,
+            contactPhones: prev.contactPhones.filter((_, i) => i !== index)
+        }));
+    };
+
+    const updateContactPhone = (index: number, field: "label" | "value", val: string) => {
+        setContactInfo(prev => ({
+            ...prev,
+            contactPhones: prev.contactPhones.map((p, i) => i === index ? { ...p, [field]: val } : p)
+        }));
+    };
+
     return (
     <PageContainer>
             <PageHeader
@@ -56,6 +131,12 @@ export function SettingsForm({ initialSettings }: SettingsFormProps) {
                                 className={`px-3 py-1.5 rounded-[6px] text-xs font-bold uppercase tracking-wider transition-all backdrop-blur-xs ${activeTab === "integrations" ? "bg-gold text-primary-foreground shadow-sm" : "text-[var(--admin-text)]/80 hover:text-[var(--admin-text)] hover:bg-[var(--admin-text)]/5"}`}
                             >
                                 Integrations
+                            </button>
+                            <button
+                                onClick={() => setActiveTab("contact")}
+                                className={`px-3 py-1.5 rounded-[6px] text-xs font-bold uppercase tracking-wider transition-all backdrop-blur-xs ${activeTab === "contact" ? "bg-gold text-primary-foreground shadow-sm" : "text-[var(--admin-text)]/80 hover:text-[var(--admin-text)] hover:bg-[var(--admin-text)]/5"}`}
+                            >
+                                Contact
                             </button>
                             <button
                                 onClick={() => setActiveTab("environment")}
@@ -185,6 +266,103 @@ export function SettingsForm({ initialSettings }: SettingsFormProps) {
                                     isSaved={!!initialSettings.cloudinaryApiSecret}
                                 />
                              </div>
+                        </div>
+                    )}
+
+                    {activeTab === "contact" && (
+                        <div className="flex flex-col gap-6">
+                            {/* Business Contact Section */}
+                            <div className="flex flex-col gap-4">
+                                <h3 className="text-[var(--admin-text)] font-black text-[10px] md:text-xs uppercase tracking-widest pl-2 border-l-2 border-gold/50">Business Contact</h3>
+                                <div className="admin-surface-primary rounded-[10px] p-4 md:p-6 shadow-none border border-[var(--admin-border)] backdrop-blur-xs">
+                                    <div className="grid md:grid-cols-2 gap-4">
+                                        <div className="flex flex-col gap-2">
+                                            <label className="text-[var(--admin-text)] font-bold text-[10px] md:text-xs uppercase tracking-widest flex items-center gap-2">
+                                                <Mail size={14} className="text-gold" />
+                                                Business Email
+                                            </label>
+                                            <input
+                                                type="email"
+                                                value={contactInfo.businessEmail}
+                                                onChange={e => setContactInfo(prev => ({ ...prev, businessEmail: e.target.value }))}
+                                                placeholder="info@xinteck.co.ke"
+                                                className="admin-surface-input rounded-[8px] px-4 py-2.5 text-[var(--admin-text)] text-sm font-bold border border-[var(--admin-border)] outline-none focus:border-gold/50 transition-colors placeholder:text-[var(--admin-text)]/30"
+                                            />
+                                            <p className="text-[10px] text-[var(--admin-text)]/50">Displayed in the footer and contact page.</p>
+                                        </div>
+                                        <div className="flex flex-col gap-2">
+                                            <label className="text-[var(--admin-text)] font-bold text-[10px] md:text-xs uppercase tracking-widest flex items-center gap-2">
+                                                <Phone size={14} className="text-gold" />
+                                                Business Phone
+                                            </label>
+                                            <input
+                                                type="tel"
+                                                value={contactInfo.businessPhone}
+                                                onChange={e => setContactInfo(prev => ({ ...prev, businessPhone: e.target.value }))}
+                                                placeholder="+254 782 063 736"
+                                                className="admin-surface-input rounded-[8px] px-4 py-2.5 text-[var(--admin-text)] text-sm font-bold border border-[var(--admin-border)] outline-none focus:border-gold/50 transition-colors placeholder:text-[var(--admin-text)]/30"
+                                            />
+                                            <p className="text-[10px] text-[var(--admin-text)]/50">Displayed in the footer and contact page.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Contact Phones Section */}
+                            <div className="flex flex-col gap-4">
+                                <div className="flex items-center justify-between">
+                                    <h3 className="text-[var(--admin-text)] font-black text-[10px] md:text-xs uppercase tracking-widest pl-2 border-l-2 border-gold/50">Contact Page Phone Numbers</h3>
+                                    <Button
+                                        variant="primary"
+                                        size="sm"
+                                        icon={<Plus size={12} />}
+                                        onClick={addContactPhone}
+                                    >
+                                        Add Number
+                                    </Button>
+                                </div>
+                                <div className="admin-surface-primary rounded-[10px] p-4 md:p-6 shadow-none border border-[var(--admin-border)] backdrop-blur-xs">
+                                    {contactInfo.contactPhones.length === 0 ? (
+                                        <p className="text-center text-[var(--admin-text)]/40 text-sm py-6">No phone numbers added. Click &quot;Add Number&quot; to add one.</p>
+                                    ) : (
+                                        <div className="flex flex-col gap-3">
+                                            {contactInfo.contactPhones.map((phone, i) => (
+                                                <div key={i} className="grid grid-cols-[1fr_1fr_auto] gap-3 items-end">
+                                                    <div className="flex flex-col gap-1">
+                                                        {i === 0 && <label className="text-[var(--admin-text)]/60 font-bold text-[10px] uppercase tracking-widest">Label</label>}
+                                                        <input
+                                                            type="text"
+                                                            value={phone.label}
+                                                            onChange={e => updateContactPhone(i, "label", e.target.value)}
+                                                            placeholder="Main"
+                                                            className="admin-surface-input rounded-[8px] px-3 py-2 text-[var(--admin-text)] text-sm font-bold border border-[var(--admin-border)] outline-none focus:border-gold/50 transition-colors placeholder:text-[var(--admin-text)]/30"
+                                                        />
+                                                    </div>
+                                                    <div className="flex flex-col gap-1">
+                                                        {i === 0 && <label className="text-[var(--admin-text)]/60 font-bold text-[10px] uppercase tracking-widest">Phone Number</label>}
+                                                        <input
+                                                            type="tel"
+                                                            value={phone.value}
+                                                            onChange={e => updateContactPhone(i, "value", e.target.value)}
+                                                            placeholder="+254 700 000 000"
+                                                            className="admin-surface-input rounded-[8px] px-3 py-2 text-[var(--admin-text)] text-sm font-bold border border-[var(--admin-border)] outline-none focus:border-gold/50 transition-colors placeholder:text-[var(--admin-text)]/30"
+                                                        />
+                                                    </div>
+                                                    <button
+                                                        type="button"
+                                                        onClick={() => removeContactPhone(i)}
+                                                        className="p-2 text-[var(--admin-text)]/40 hover:text-red-400 hover:bg-red-500/10 rounded-[8px] transition-colors"
+                                                        title="Remove"
+                                                    >
+                                                        <Trash2 size={16} />
+                                                    </button>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    )}
+                                </div>
+                                <p className="text-[10px] text-[var(--admin-text)]/50 pl-2">These numbers are shown on the Contact page under &quot;Call Us&quot;.</p>
+                            </div>
                         </div>
                     )}
 

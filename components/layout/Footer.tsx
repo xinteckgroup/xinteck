@@ -1,10 +1,12 @@
 "use client";
 
+import { getBusinessContact, type BusinessContact } from "@/actions/public-config";
 import { useServices } from "@/components/providers/ServicesContext";
 import { motion } from "framer-motion";
 import { ArrowUpRight, Github, Instagram, Linkedin, Mail, MapPin, Phone, Twitter } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import { useEffect, useState } from "react";
 
 const socialLinks = [
   { icon: Twitter, href: "https://twitter.com/xinteck", label: "Twitter" },
@@ -34,6 +36,11 @@ const staticLinks = {
 
 export function Footer() {
   const dynamicServices = useServices();
+  const [contact, setContact] = useState<BusinessContact>({ email: "info@xinteck.co.ke", phone: "+254 782 063 736" });
+
+  useEffect(() => {
+    getBusinessContact().then(setContact);
+  }, []);
 
   // Build service links from context
   const serviceLinks = dynamicServices.map(s => ({
@@ -69,8 +76,8 @@ export function Footer() {
             </Link>
             <div className="flex flex-col gap-1">
               <span className="text-gray-400 text-sm">Or email us at</span>
-              <a href="mailto:info@xinteck.co.ke" className="text-lg font-bold text-white hover:text-[#D4AF37] transition-colors">
-                info@xinteck.co.ke
+              <a href={`mailto:${contact.email}`} className="text-lg font-bold text-white hover:text-[#D4AF37] transition-colors">
+                {contact.email}
               </a>
             </div>
           </div>
@@ -117,13 +124,13 @@ export function Footer() {
             
             {/* Contact Info */}
             <div className="flex flex-col gap-3 text-sm">
-              <a href="mailto:info@xinteck.co.ke" className="flex items-center gap-3 text-gray-400 hover:text-[#D4AF37] transition-colors">
+              <a href={`mailto:${contact.email}`} className="flex items-center gap-3 text-gray-400 hover:text-[#D4AF37] transition-colors">
                 <Mail size={16} />
-                info@xinteck.co.ke
+                {contact.email}
               </a>
-              <a href="tel:+15550000000" className="flex items-center gap-3 text-gray-400 hover:text-[#D4AF37] transition-colors">
+              <a href={`tel:${contact.phone.replace(/[^0-9+]/g, '')}`} className="flex items-center gap-3 text-gray-400 hover:text-[#D4AF37] transition-colors">
                 <Phone size={16} />
-                +1 (555) 000-0000
+                {contact.phone}
               </a>
               <span className="flex items-center gap-3 text-gray-400">
                 <MapPin size={16} />

@@ -1,6 +1,7 @@
 "use client";
 
-import { getContactConfig, type ContactConfig } from "@/actions/public-config";
+import { getBusinessContact, getContactConfig, type BusinessContact, type ContactConfig } from "@/actions/public-config";
+import { getPublicSiteSettings } from "@/actions/site-settings";
 import { VideoScrollLayout } from "@/components/services/VideoScrollLayout";
 import { TYPOGRAPHY } from "@/lib/typography";
 import { VIDEO_STATS } from "@/lib/videoStats";
@@ -15,6 +16,8 @@ export default function ContactPage() {
   
   // Dynamic Config State
   const [config, setConfig] = useState<ContactConfig | null>(null);
+  const [businessContact, setBusinessContact] = useState<BusinessContact>({ email: "info@xinteck.co.ke", phone: "+254 782 063 736" });
+  const [contactPhones, setContactPhones] = useState<{ label: string; value: string }[]>([]);
   const [selectedService, setSelectedService] = useState<string>("");
   const [availableBudgets, setAvailableBudgets] = useState<string[]>([]);
   
@@ -28,22 +31,33 @@ export default function ContactPage() {
   const [userCaptcha, setUserCaptcha] = useState("");
 
   useEffect(() => {
-    // Generate simple math problem
-    const n1 = Math.floor(Math.random() * 10) + 1;
-    const n2 = Math.floor(Math.random() * 10) + 1;
+    // Generate simple math problem with odd numbers only (3-19)
+    const n1 = Math.floor(Math.random() * 9) * 2 + 3; // 3,5,7,9,11,13,15,17,19
+    const n2 = Math.floor(Math.random() * 9) * 2 + 3;
     setCaptcha({ num1: n1, num2: n2, answer: n1 + n2 });
 
     // Fetch dynamic config
     getContactConfig().then((data) => {
             if (data) {
-                console.log("DEBUG: ContactPage received config:", data);
                 setConfig(data);
                 if (data.services.length > 0) {
                     setSelectedService(data.services[0]);
                 }
-            } else {
-                console.warn("DEBUG: ContactPage received NULL config");
             }
+    });
+
+    // Fetch business contact info
+    getBusinessContact().then(setBusinessContact);
+
+    // Fetch contact phones directly
+    getPublicSiteSettings().then((settings) => {
+      const phonesRaw = settings["CONTACT_PHONES"];
+      if (phonesRaw) {
+        try {
+          const parsed = JSON.parse(phonesRaw);
+          if (Array.isArray(parsed) && parsed.length > 0) setContactPhones(parsed);
+        } catch { /* ignore parse errors */ }
+      }
     });
   }, []);
 
@@ -128,18 +142,18 @@ export default function ContactPage() {
   ];
 
   // Construct Info Cards
-  const phoneList = config?.phones?.length ? config.phones : [
-    { label: "Main", value: "+1 (555) 000-0000" }
+  const phoneList = contactPhones.length > 0 ? contactPhones : [
+    { label: "Main", value: businessContact.phone }
   ];
 
   const phoneCard = {
     title: "Call Us",
     value: (
-        <div className="flex flex-col gap-2">
+        <div className="flex flex-col gap-3">
             {phoneList.map((p, i) => (
-                <div key={i} className="flex flex-col">
-                    <span className="text-primary font-bold">{p.value}</span>
-                    {p.label !== "Main" && <span className="text-[10px] text-foreground/40 font-mono uppercase tracking-wider">{p.label}</span>}
+                <div key={i} className="flex items-center gap-3">
+                    <span className="text-primary font-bold text-base md:text-lg">{p.value}</span>
+                    <span className="text-xs text-black font-mono uppercase tracking-wider">{p.label}</span>
                 </div>
             ))}
         </div>
@@ -151,7 +165,7 @@ export default function ContactPage() {
   const infoCards = [
     {
         title: "Email Us",
-        value: "info@xinteck.co.ke",
+        value: businessContact.email,
         icon: Mail,
         sub: "For general inquiries and partnerships",
     },
@@ -286,7 +300,7 @@ export default function ContactPage() {
                     type="tel" 
                     name="phone"
                     required
-                    placeholder="+1 (555) 000-0000"
+                    placeholder="+254 7XX XXX XXX"
                     className={`bg-muted/10 rounded-[10px] px-6 py-4 outline-none transition-all placeholder:text-white/70 text-foreground ${TYPOGRAPHY.input}`}
                   />
                 </div>
@@ -362,11 +376,19 @@ export default function ContactPage() {
                 <label className={`${TYPOGRAPHY.tableHeader} text-foreground font-bold uppercase`}>Project Summary</label>
                 <textarea 
                   name="message"
-                  rows={5}
+                  rows={8}
                   required
-                  placeholder="Tell us about your mission... (at least 10 chars)"
+                  maxLength={2000}
+                  placeholder="Tell us about your mission... (at least 10 chars, max 300 words)"
                   className={`bg-muted/10 rounded-[10px] px-6 py-4 outline-none transition-all placeholder:text-white/70 text-foreground resize-none ${TYPOGRAPHY.input}`}
+                  onChange={(e) => {
+                    const words = e.target.value.trim().split(/\s+/).filter(Boolean);
+                    if (words.length > 300) {
+                      e.target.value = words.slice(0, 300).join(' ');
+                    }
+                  }}
                 />
+                <p className="text-xs text-black dark:text-foreground/40 text-right">Max 300 words</p>
               </div>
 
                {/* Human Verification */}
@@ -410,7 +432,7 @@ export default function ContactPage() {
            </div>
            <div className="flex flex-wrap justify-center gap-4 md:gap-6">
                <a 
-                 href={`https://wa.me/${(config?.phones?.find(p => p.label === "Main")?.value || "254782063736").replace(/[^0-9]/g, '')}`}
+                 href="https://wa.me/254795213399"
                  target="_blank"
                  rel="noopener noreferrer"
                  className={`flex items-center gap-3 px-6 md:px-8 py-3 rounded-[10px] bg-green-600 text-white hover:bg-green-500 transition-all shadow-lg hover:shadow-green-600/20 ${TYPOGRAPHY.button}`}

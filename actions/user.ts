@@ -45,24 +45,42 @@ export async function inviteUser(data: { name: string; email: string; role: stri
         return { error: parsed.error.issues[0].message };
     }
 
+    let newUser;
+
     const existingUser = await prisma.user.findUnique({ where: { email: parsed.data.email } });
-    if (existingUser) {
-        return { error: "User with this email already exists" };
-    }
 
     // Set a predictable default password as advertised in the UI
     const tempPassword = "xinteck123";
     const hashedPassword = await bcrypt.hash(tempPassword, 10);
 
-    const newUser = await prisma.user.create({
-        data: {
-            name: parsed.data.name,
-            email: parsed.data.email,
-            passwordHash: hashedPassword,
-            role: mapLabelToRole(parsed.data.role),
-            status: UserStatus.ACTIVE,
+    if (existingUser) {
+        if (existingUser.deletedAt !== null) {
+            // Revive soft-deleted ghost user
+            newUser = await prisma.user.update({
+                where: { email: parsed.data.email },
+                data: {
+                    name: parsed.data.name,
+                    passwordHash: hashedPassword,
+                    role: mapLabelToRole(parsed.data.role),
+                    status: UserStatus.ACTIVE,
+                    deletedAt: null // Resurrection!
+                }
+            });
+        } else {
+            return { error: "User with this email already exists" };
         }
-    });
+    } else {
+        // Create brand new
+        newUser = await prisma.user.create({
+            data: {
+                name: parsed.data.name,
+                email: parsed.data.email,
+                passwordHash: hashedPassword,
+                role: mapLabelToRole(parsed.data.role),
+                status: UserStatus.ACTIVE,
+            }
+        });
+    }
 
     let warningMessage: string | undefined;
 

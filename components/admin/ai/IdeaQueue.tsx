@@ -2,6 +2,7 @@
 
 import { deleteIdea, generateDraft, getIdeas, updateIdea } from "@/actions/ai";
 import { DataGrid } from "@/components/admin/DataGrid";
+import { ConfirmModal } from "@/components/admin/ui/ConfirmModal";
 import { useToast } from "@/components/admin/ui/Toast";
 import { AnimatePresence, motion } from "framer-motion";
 import { Check, Edit2, Grid, LayoutList, Loader2, Trash2, Wand2, X } from "lucide-react";
@@ -14,7 +15,14 @@ export function IdeaQueue() {
     const [loading, setLoading] = useState(true);
     const [generatingId, setGeneratingId] = useState<string | null>(null);
     const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
-    const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null);
+    const [confirmConfig, setConfirmConfig] = useState<{
+        isOpen: boolean;
+        title: string;
+        description: string;
+        action: () => void;
+    }>({ isOpen: false, title: "", description: "", action: () => {} });
+
+    const closeConfirm = () => setConfirmConfig(prev => ({ ...prev, isOpen: false }));
     
     // Edit State
     const [editingId, setEditingId] = useState<string | null>(null);
@@ -73,33 +81,41 @@ export function IdeaQueue() {
     };
 
     const triggerDelete = (id: string) => {
-        setDeleteConfirmId(id);
-    };
-
-    const confirmDelete = async () => {
-        if (!deleteConfirmId) return;
-        try {
-            await deleteIdea(deleteConfirmId);
-            setIdeas(prev => prev.filter(i => i.id !== deleteConfirmId));
-            success("Idea discarded");
-        } catch (error) {
-            toastError("Failed to delete idea");
-        } finally {
-            setDeleteConfirmId(null);
-        }
+        setConfirmConfig({
+            isOpen: true,
+            title: "Discard Concept?",
+            description: "Are you sure you want to permanently delete this AI-generated idea from the Queue? This action cannot be undone.",
+            action: async () => {
+                closeConfirm();
+                try {
+                    await deleteIdea(id);
+                    setIdeas(prev => prev.filter(i => i.id !== id));
+                    success("Idea discarded");
+                } catch (error) {
+                    toastError("Failed to delete idea");
+                }
+            }
+        });
     };
 
     const handleDeleteBulk = async (ids: string[]) => {
-        if (!confirm("Are you sure you want to discard these ideas?")) return;
-        try {
-            for (const id of ids) {
-                await deleteIdea(id);
+        setConfirmConfig({
+            isOpen: true,
+            title: "Discard Concepts?",
+            description: `Are you sure you want to permanently delete ${ids.length} AI-generated ideas from the Queue? This action cannot be undone.`,
+            action: async () => {
+                closeConfirm();
+                try {
+                    for (const id of ids) {
+                        await deleteIdea(id);
+                    }
+                    setIdeas(prev => prev.filter(i => !ids.includes(i.id)));
+                    success(`${ids.length} Ideas discarded`);
+                } catch (error) {
+                    toastError("Failed to discard ideas");
+                }
             }
-            setIdeas(prev => prev.filter(i => !ids.includes(i.id)));
-            success("Ideas discarded");
-        } catch (error) {
-            toastError("Failed to discard ideas");
-        }
+        });
     };
 
     if (loading) return <div className="flex justify-center p-20"><Loader2 className="animate-spin text-muted-foreground" /></div>;
@@ -334,51 +350,15 @@ export function IdeaQueue() {
                 )}
             </AnimatePresence>
 
-            {/* Custom Delete Confirmation Dialog */}
-            <AnimatePresence>
-                {deleteConfirmId && (
-                    <motion.div 
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        exit={{ opacity: 0 }}
-                        className="fixed inset-0 z-[100] flex items-center justify-center bg-black/50 backdrop-blur-sm p-4 text-white"
-                    >
-                        <motion.div 
-                            initial={{ opacity: 0, scale: 0.95, y: 10 }}
-                            animate={{ opacity: 1, scale: 1, y: 0 }}
-                            exit={{ opacity: 0, scale: 0.95, y: 10 }}
-                            transition={{ duration: 0.2 }}
-                            className="bg-white/30 dark:bg-white/20 backdrop-blur-md transition-colors rounded-[10px] w-full max-w-sm flex flex-col shadow-2xl overflow-hidden relative"
-                        >
-                            <div className="p-4 border-b border-[var(--admin-border)] flex items-center justify-between bg-transparent shrink-0">
-                                <div className="flex flex-col gap-1 min-w-0">
-                                    <h3 className="text-lg font-bold text-red-500 flex items-center gap-2 truncate">Discard Concept?</h3>
-                                </div>
-                                <button onClick={() => setDeleteConfirmId(null)} className="text-[var(--admin-text)] hover:text-gold transition-colors shrink-0 ml-3">
-                                    <X size={24} />
-                                </button>
-                            </div>
-                            <div className="p-4 flex-1 bg-transparent text-[var(--admin-text)]/80 text-sm">
-                                Are you sure you want to permanently delete this AI-generated idea from the Queue? This action cannot be undone.
-                            </div>
-                            <div className="p-4 border-t border-[var(--admin-border)] bg-transparent flex justify-end gap-4 items-center shrink-0">
-                                <button 
-                                    onClick={() => setDeleteConfirmId(null)}
-                                    className="px-4 py-2 text-[var(--admin-text)]/60 hover:text-[var(--admin-text)] text-xs font-bold uppercase tracking-widest transition-colors"
-                                >
-                                    Cancel
-                                </button>
-                                <button 
-                                    onClick={confirmDelete}
-                                    className="bg-red-600 text-white font-black px-6 py-2 rounded-[10px] flex items-center gap-2 hover:bg-red-700 transition-all text-xs uppercase tracking-widest shadow-xl shadow-red-600/20"
-                                >
-                                    Proceed Delete
-                                </button>
-                            </div>
-                        </motion.div>
-                    </motion.div>
-                )}
-            </AnimatePresence>
+            <ConfirmModal
+              isOpen={confirmConfig.isOpen}
+              onClose={closeConfirm}
+              onConfirm={confirmConfig.action}
+              title={confirmConfig.title}
+              description={confirmConfig.description}
+              confirmText="Discard"
+              isDestructive={true}
+            />
         </div>
     );
 }

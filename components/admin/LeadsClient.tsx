@@ -3,6 +3,7 @@
 import { archiveMessage, assignLead, deleteMessage, markAsRead, replyToMessage, toggleStar } from "@/actions/leads";
 import { RoleGate } from "@/components/admin/RoleGate";
 import { PageContainer, PageHeader, Pagination, useToast } from "@/components/admin/ui";
+import { ConfirmModal } from "@/components/admin/ui/ConfirmModal";
 import { InboxMessage } from "@/types";
 import { Role } from "@prisma/client";
 import { Archive, ArrowLeft, Check, ClipboardCopy, ExternalLink, Mail, MailOpen, MoreVertical, Reply, Search, Send, Star, Target, Trash2 } from "lucide-react";
@@ -59,6 +60,7 @@ export function LeadsClient({ initialData, adminUsers, currentUserRole }: LeadsC
   const [isReplying, setIsReplying] = useState(false);
   const [copiedEmail, setCopiedEmail] = useState(false);
   const [isAssigning, setIsAssigning] = useState(false);
+  const [deleteId, setDeleteId] = useState<string | null>(null);
   
   const activeMessage = messages.find((m) => m.id === activeMessageId) || null;
 
@@ -102,15 +104,21 @@ export function LeadsClient({ initialData, adminUsers, currentUserRole }: LeadsC
   };
 
   const handleDelete = (id: string) => {
-    if (confirm("Delete this lead?")) {
-      setMessages(prev => prev.filter((m) => m.id !== id));
-      if (activeMessageId === id) setActiveMessageId(null);
-      
-      startTransition(async () => {
-          await deleteMessage(id);
-          router.refresh();
-      });
-    }
+    setDeleteId(id);
+  };
+
+  const confirmDelete = () => {
+    if (!deleteId) return;
+    const id = deleteId;
+    setDeleteId(null);
+    
+    setMessages(prev => prev.filter((m) => m.id !== id));
+    if (activeMessageId === id) setActiveMessageId(null);
+    
+    startTransition(async () => {
+        await deleteMessage(id);
+        router.refresh();
+    });
   };
 
   const handleArchive = (id: string) => {
@@ -566,6 +574,16 @@ export function LeadsClient({ initialData, adminUsers, currentUserRole }: LeadsC
             opacity: 0.2;
         }
       `}</style>
+
+      <ConfirmModal
+        isOpen={!!deleteId}
+        onClose={() => setDeleteId(null)}
+        onConfirm={confirmDelete}
+        title="Delete Lead"
+        description="Are you absolutely sure you want to permanently delete this lead? This cannot be undone."
+        confirmText="Delete"
+        isDestructive={true}
+      />
     </PageContainer>
   );
 }

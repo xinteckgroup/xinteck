@@ -5,6 +5,7 @@ import { MarkdownEditor } from "@/components/admin/MarkdownEditor";
 import { MediaPicker } from "@/components/admin/MediaPicker";
 import { RoleGate } from "@/components/admin/RoleGate";
 import { PageContainer, PageHeader } from "@/components/admin/ui";
+import { ConfirmModal } from "@/components/admin/ui/ConfirmModal";
 import { Select } from "@/components/admin/ui/Select";
 import { Role } from "@prisma/client";
 import { Image as ImageIcon, Save, Send, Upload, X } from "lucide-react";
@@ -23,6 +24,7 @@ export function BlogEditorForm({ initialData, isEditing = false }: BlogEditorFor
   const [isPending, startTransition] = useTransition();
   const [error, setError] = useState("");
   const [showMediaPicker, setShowMediaPicker] = useState(false);
+  const [isConfirmOpen, setIsConfirmOpen] = useState(false);
   
   const [formData, setFormData] = useState({
     title: initialData?.title || "",
@@ -72,10 +74,8 @@ export function BlogEditorForm({ initialData, isEditing = false }: BlogEditorFor
               if (isRedirectError(e)) throw e; // Allow Next.js to run the Server-Action redirect
 
               if (e.message?.includes("Concurrency conflict")) {
-                  if (confirm("This post has been modified by another user. Reload to get the latest version?")) {
-                      window.location.reload();
-                      return;
-                  }
+                  setIsConfirmOpen(true);
+                  return;
               }
               setError(e.message || "Failed to save post");
           }
@@ -289,6 +289,17 @@ export function BlogEditorForm({ initialData, isEditing = false }: BlogEditorFor
              </div>
           </div>
        </div>
+
+      <ConfirmModal
+        isOpen={isConfirmOpen}
+        onClose={() => setIsConfirmOpen(false)}
+        onConfirm={() => window.location.reload()}
+        title="Concurrency Conflict Detected"
+        description="This post has been modified by another user since you opened it. Reload to get the latest version? (You will lose any unsaved changes)"
+        confirmText="Reload Page"
+        cancelText="Cancel"
+        isDestructive={false}
+      />
     </PageContainer>
   );
 }

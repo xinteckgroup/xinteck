@@ -17,6 +17,7 @@ import {
     Select,
     useToast,
 } from "@/components/admin/ui";
+import { ConfirmModal } from "@/components/admin/ui/ConfirmModal";
 import { Pagination } from "@/components/admin/ui/Pagination";
 import { PaginatedResponse } from "@/lib/pagination";
 import { CareerPosition, Role } from "@prisma/client";
@@ -79,6 +80,14 @@ export function CareersManager({ initialData, departments }: CareersManagerProps
     const [form, setForm] = useState(INITIAL_FORM);
     const [requirementInput, setRequirementInput] = useState("");
     const [saving, setSaving] = useState(false);
+    const [confirmConfig, setConfirmConfig] = useState<{
+        isOpen: boolean;
+        title: string;
+        description: string;
+        action: () => void;
+    }>({ isOpen: false, title: "", description: "", action: () => {} });
+
+    const closeConfirm = () => setConfirmConfig(prev => ({ ...prev, isOpen: false }));
 
     const positions = initialData.data;
     const meta = {
@@ -202,14 +211,21 @@ export function CareersManager({ initialData, departments }: CareersManagerProps
     // ─── Actions ───
 
     const handleDelete = async (id: string) => {
-        if (!confirm("Are you sure you want to delete this position?")) return;
-        startTransition(async () => {
-            try {
-                await deleteCareerPosition(id);
-                toast.success("Position deleted.");
-                router.refresh();
-            } catch {
-                toast.error("Failed to delete position.");
+        setConfirmConfig({
+            isOpen: true,
+            title: "Delete Position",
+            description: "Are you sure you want to permanently delete this job listing? This cannot be undone.",
+            action: async () => {
+                closeConfirm();
+                startTransition(async () => {
+                    try {
+                        await deleteCareerPosition(id);
+                        toast.success("Position deleted.");
+                        router.refresh();
+                    } catch {
+                        toast.error("Failed to delete position.");
+                    }
+                });
             }
         });
     };
@@ -575,6 +591,16 @@ export function CareersManager({ initialData, departments }: CareersManagerProps
                     </div>
                 </div>
             </Modal>
+
+            <ConfirmModal
+              isOpen={confirmConfig.isOpen}
+              onClose={closeConfirm}
+              onConfirm={confirmConfig.action}
+              title={confirmConfig.title}
+              description={confirmConfig.description}
+              confirmText="Delete permanently"
+              isDestructive={true}
+            />
         </PageContainer>
     );
 }

@@ -5,6 +5,7 @@ import { useRole } from "@/components/admin/RoleContext";
 import { RoleGate } from "@/components/admin/RoleGate";
 import { useToast } from "@/components/admin/ui";
 import { Button } from "@/components/admin/ui/Button";
+import { ConfirmModal } from "@/components/admin/ui/ConfirmModal";
 import { Modal } from "@/components/admin/ui/Modal";
 import { Select } from "@/components/admin/ui/Select";
 import { Role } from "@prisma/client";
@@ -44,6 +45,15 @@ export function SiteSettingsTab({ initialSettings, categories }: SiteSettingsTab
     // Editing state
     const [editingKey, setEditingKey] = useState<string | null>(null);
     const [editValue, setEditValue] = useState("");
+    
+    const [confirmConfig, setConfirmConfig] = useState<{
+        isOpen: boolean;
+        title: string;
+        description: string;
+        action: () => void;
+    }>({ isOpen: false, title: "", description: "", action: () => {} });
+
+    const closeConfirm = () => setConfirmConfig(prev => ({ ...prev, isOpen: false }));
 
     const filtered = filterCategory === "all" ? settings : settings.filter(s => s.category === filterCategory);
 
@@ -90,15 +100,22 @@ export function SiteSettingsTab({ initialSettings, categories }: SiteSettingsTab
     };
 
     const handleDelete = (key: string) => {
-        if (!confirm(`Delete setting "${key}"?`)) return;
-        startTransition(async () => {
-            try {
-                await deleteSiteSetting(key);
-                setSettings(prev => prev.filter(s => s.key !== key));
-                router.refresh();
-                success("Setting deleted successfully");
-            } catch (e: any) {
-                error("Failed: " + e.message);
+        setConfirmConfig({
+            isOpen: true,
+            title: "Delete Setting",
+            description: `Are you sure you want to permanently delete the setting "${key}"? This cannot be undone.`,
+            action: async () => {
+                closeConfirm();
+                startTransition(async () => {
+                    try {
+                        await deleteSiteSetting(key);
+                        setSettings(prev => prev.filter(s => s.key !== key));
+                        router.refresh();
+                        success("Setting deleted successfully");
+                    } catch (e: any) {
+                        error("Failed: " + e.message);
+                    }
+                });
             }
         });
     };
@@ -287,6 +304,16 @@ export function SiteSettingsTab({ initialSettings, categories }: SiteSettingsTab
                     </div>
                 </div>
             </Modal>
+
+            <ConfirmModal
+              isOpen={confirmConfig.isOpen}
+              onClose={closeConfirm}
+              onConfirm={confirmConfig.action}
+              title={confirmConfig.title}
+              description={confirmConfig.description}
+              confirmText="Delete Setting"
+              isDestructive={true}
+            />
         </div>
     );
 }

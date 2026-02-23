@@ -2,6 +2,7 @@
 
 import { getSessions, revokeAllOtherSessions, revokeSession } from "@/actions/auth";
 import { Button } from "@/components/admin/ui";
+import { ConfirmModal } from "@/components/admin/ui/ConfirmModal";
 import { Laptop, Phone, TabletSmartphone, Trash2 } from "lucide-react";
 import { useEffect, useState } from "react";
 
@@ -18,6 +19,14 @@ export default function SessionsPage() {
     const [sessions, setSessions] = useState<Session[]>([]);
     const [loading, setLoading] = useState(true);
     const [revoking, setRevoking] = useState(false);
+    const [confirmConfig, setConfirmConfig] = useState<{
+        isOpen: boolean;
+        title: string;
+        description: string;
+        action: () => void;
+    }>({ isOpen: false, title: "", description: "", action: () => {} });
+
+    const closeConfirm = () => setConfirmConfig(prev => ({ ...prev, isOpen: false }));
 
     const fetchSessions = async () => {
         try {
@@ -35,29 +44,43 @@ export default function SessionsPage() {
     }, []);
 
     const handleRevoke = async (id: string) => {
-        if (!confirm("Are you sure you want to revoke this session?")) return;
-        try {
-            const res = await revokeSession(id);
-            if (!res.success) throw new Error(res.message);
-            setSessions(prev => prev.filter(s => s.id !== id));
-        } catch (error: any) {
-            alert(error.message || "Failed to revoke session");
-        }
+        setConfirmConfig({
+            isOpen: true,
+            title: "Revoke Session",
+            description: "Are you sure you want to forcibly logout this device? They will be immediately disconnected.",
+            action: async () => {
+                closeConfirm();
+                try {
+                    const res = await revokeSession(id);
+                    if (!res.success) throw new Error(res.message);
+                    setSessions(prev => prev.filter(s => s.id !== id));
+                } catch (error: any) {
+                    alert(error.message || "Failed to revoke session");
+                }
+            }
+        });
     };
 
     const handleRevokeAllOthers = async () => {
-        if (!confirm("Are you sure? This will log you out of all other devices.")) return;
-        setRevoking(true);
-        try {
-            const result = await revokeAllOtherSessions();
-            if (!result.success) throw new Error(result.message);
-            await fetchSessions();
-        } catch (error: any) {
-            alert(error.message || "Failed to revoke sessions. Please try again.");
-            console.error(error);
-        } finally {
-            setRevoking(false);
-        }
+        setConfirmConfig({
+            isOpen: true,
+            title: "Revoke All Devices",
+            description: "Are you sure? This will log you out of absolutely every other device instantly. You will only remain logged in here.",
+            action: async () => {
+                closeConfirm();
+                setRevoking(true);
+                try {
+                    const result = await revokeAllOtherSessions();
+                    if (!result.success) throw new Error(result.message);
+                    await fetchSessions();
+                } catch (error: any) {
+                    alert(error.message || "Failed to revoke sessions. Please try again.");
+                    console.error(error);
+                } finally {
+                    setRevoking(false);
+                }
+            }
+        });
     };
 
     const getDeviceIcon = (ua: string | null) => {
@@ -125,6 +148,16 @@ export default function SessionsPage() {
                     </Button>
                 </div>
             )}
+
+            <ConfirmModal
+              isOpen={confirmConfig.isOpen}
+              onClose={closeConfirm}
+              onConfirm={confirmConfig.action}
+              title={confirmConfig.title}
+              description={confirmConfig.description}
+              confirmText="Revoke"
+              isDestructive={true}
+            />
         </div>
     );
 }

@@ -2,6 +2,7 @@
 
 import { deleteFile, getMediaFiles, uploadFile } from "@/actions/media";
 import { Button } from "@/components/admin/ui/Button";
+import { ConfirmModal } from "@/components/admin/ui/ConfirmModal";
 import { useToast } from "@/components/admin/ui/Toast";
 import { convertToWebP } from "@/lib/webp-converter";
 import { Image as ImageIcon, Loader2, Search, Trash2, UploadCloud, X } from "lucide-react";
@@ -24,6 +25,14 @@ export function MediaPicker({ isOpen, onClose, onSelect }: MediaPickerProps) {
     const [isPending, startTransition] = useTransition();
     const fileInputRef = useRef<HTMLInputElement>(null);
     const { toast } = useToast();
+    const [confirmConfig, setConfirmConfig] = useState<{
+        isOpen: boolean;
+        title: string;
+        description: string;
+        action: () => void;
+    }>({ isOpen: false, title: "", description: "", action: () => {} });
+
+    const closeConfirm = () => setConfirmConfig(prev => ({ ...prev, isOpen: false }));
 
     const loadFiles = useCallback(() => {
         setLoading(true);
@@ -85,16 +94,22 @@ export function MediaPicker({ isOpen, onClose, onSelect }: MediaPickerProps) {
 
     const handleDeleteFile = async (id: string, e: React.MouseEvent) => {
         e.stopPropagation();
-        if (window.confirm("Permanently delete this file system-wide? This action cannot be undone.")) {
-            try {
-                await deleteFile(id);
-                toast("File deleted successfully", "success");
-                loadFiles();
-            } catch (error) {
-                console.error("Delete failed", error);
-                toast("Failed to delete file", "error");
+        setConfirmConfig({
+            isOpen: true,
+            title: "Delete File System-Wide?",
+            description: "Permanently delete this file system-wide? This action cannot be undone.",
+            action: async () => {
+                closeConfirm();
+                try {
+                    await deleteFile(id);
+                    toast("File deleted successfully", "success");
+                    loadFiles();
+                } catch (error) {
+                    console.error("Delete failed", error);
+                    toast("Failed to delete file", "error");
+                }
             }
-        }
+        });
     };
 
     const onInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -278,6 +293,16 @@ export function MediaPicker({ isOpen, onClose, onSelect }: MediaPickerProps) {
                      <Button variant="ghost" onClick={onClose} className="text-white hover:text-white hover:bg-white/10">Cancel</Button>
                 </div>
             </div>
+            
+            <ConfirmModal
+              isOpen={confirmConfig.isOpen}
+              onClose={closeConfirm}
+              onConfirm={confirmConfig.action}
+              title={confirmConfig.title}
+              description={confirmConfig.description}
+              confirmText="Delete System-Wide"
+              isDestructive={true}
+            />
         </div>,
         document.body
     );

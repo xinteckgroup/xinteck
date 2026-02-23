@@ -20,9 +20,23 @@ export function StaffClient({ initialStaff }: StaffClientProps) {
   const router = useRouter();
   const { error, success } = useToast();
   const [isPending, startTransition] = useTransition();
+  // Confirm Modal State
+  const [confirmConfig, setConfirmConfig] = useState<{
+    isOpen: boolean;
+    title: string;
+    description: string;
+    action: () => void;
+  }>({
+    isOpen: false,
+    title: "",
+    description: "",
+    action: () => {},
+  });
+
+  const closeConfirm = () => setConfirmConfig(prev => ({ ...prev, isOpen: false }));
+  const [selectedStaff, setSelectedStaff] = useState<any>(null);
   const [isInviteOpen, setIsInviteOpen] = useState(false);
   const [isEditOpen, setIsEditOpen] = useState(false);
-  const [selectedStaff, setSelectedStaff] = useState<any>(null);
 
   // Invite Form State
   const [inviteName, setInviteName] = useState("");
@@ -104,28 +118,35 @@ export function StaffClient({ initialStaff }: StaffClientProps) {
   };
 
   const handleDelete = (ids: string | string[]) => {
-       if (confirm("Permanently delete this user? This cannot be undone.")) {
-           startTransition(async () => {
-               try {
-                   if (Array.isArray(ids)) {
-                       await deleteUsers(ids);
-                   } else {
-                       await deleteUser(ids);
+       const idList = Array.isArray(ids) ? ids : [ids];
+       setConfirmConfig({
+           isOpen: true,
+           title: "Delete User(s)",
+           description: `Are you absolutely sure you want to permanently delete ${idList.length} user(s)? This cannot be undone.`,
+           action: () => {
+               closeConfirm();
+               startTransition(async () => {
+                   try {
+                       if (Array.isArray(ids)) {
+                           await deleteUsers(ids);
+                       } else {
+                           await deleteUser(ids);
+                       }
+                       success("User(s) deleted successfully");
+                       
+                       // Optimistic update
+                       mutateOptimisticStaff({
+                          type: "DELETE",
+                          payload: ids
+                       });
+    
+                       router.refresh();
+                   } catch (e: any) {
+                       error("Failed to delete user: " + e.message);
                    }
-                   success("User(s) deleted successfully");
-                   
-                   // Optimistic update
-                   mutateOptimisticStaff({
-                      type: "DELETE",
-                      payload: ids
-                   });
-
-                   router.refresh();
-               } catch (e: any) {
-                   error("Failed to delete user: " + e.message);
-               }
-           });
-       }
+               });
+           }
+       });
   };
 
   const openEdit = (member: any) => {
@@ -141,24 +162,30 @@ export function StaffClient({ initialStaff }: StaffClientProps) {
   };
 
   const handleSuspend = (id: string) => {
-    if (confirm("Suspend this user? They will be logged out immediately.")) {
-      startTransition(async () => {
-        try {
-          await suspendUser(id);
-          success("User suspended");
-          
-          // Optimistic update
-          mutateOptimisticStaff({
-             type: "SUSPEND",
-             payload: id
-          });
-
-          router.refresh();
-        } catch (e: any) {
-          error("Failed to suspend: " + e.message);
+    setConfirmConfig({
+        isOpen: true,
+        title: "Suspend User",
+        description: "Are you sure you want to suspend this user? They will be logged out immediately and denied access until reactivated.",
+        action: () => {
+            closeConfirm();
+            startTransition(async () => {
+              try {
+                await suspendUser(id);
+                success("User suspended");
+                
+                // Optimistic update
+                mutateOptimisticStaff({
+                   type: "SUSPEND",
+                   payload: id
+                });
+      
+                router.refresh();
+              } catch (e: any) {
+                error("Failed to suspend: " + e.message);
+              }
+            });
         }
-      });
-    }
+    });
   };
 
   const handleReactivate = (id: string) => {
@@ -181,23 +208,29 @@ export function StaffClient({ initialStaff }: StaffClientProps) {
   };
 
   const handleRevoke = (id: string) => {
-    if (confirm("Revoke this invitation? The token will immediately become invalid and the slot freed.")) {
-      startTransition(async () => {
-        try {
-          await revokeInvitation(id);
-          success("Invitation permanently revoked.");
-          
-          mutateOptimisticStaff({
-             type: "DELETE",
-             payload: id
-          });
-
-          router.refresh();
-        } catch (e: any) {
-          error("Failed to revoke: " + e.message);
+    setConfirmConfig({
+        isOpen: true,
+        title: "Revoke Invitation",
+        description: "Are you sure you want to revoke this invitation? The token will instantly become invalid.",
+        action: () => {
+            closeConfirm();
+            startTransition(async () => {
+              try {
+                await revokeInvitation(id);
+                success("Invitation permanently revoked.");
+                
+                mutateOptimisticStaff({
+                   type: "DELETE",
+                   payload: id
+                });
+      
+                router.refresh();
+              } catch (e: any) {
+                error("Failed to revoke: " + e.message);
+              }
+            });
         }
-      });
-    }
+    });
   };
 
   const columns = [

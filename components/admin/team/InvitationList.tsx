@@ -1,10 +1,11 @@
 import { resendInvitation, revokeInvitation } from "@/actions/team";
 import { Button } from "@/components/admin/ui/Button";
+import { ConfirmModal } from "@/components/admin/ui/ConfirmModal";
 import { useToast } from "@/components/admin/ui/Toast";
 import { InvitationStatus, Role } from "@prisma/client";
 import { formatDistanceToNow } from "date-fns";
 import { Ban, RefreshCw } from "lucide-react";
-import { useTransition } from "react";
+import { useState, useTransition } from "react";
 
 type InvitationWithInviter = {
     id: string;
@@ -62,13 +63,14 @@ function InvitationRow({ invite }: { invite: InvitationWithInviter }) {
     // Purpose: useTransition allows for non-blocking UI updates while Server Actions execute.
     const [isPending, startTransition] = useTransition();
     const { success, error } = useToast();
+    const [isConfirmOpen, setIsConfirmOpen] = useState(false);
 
     const isExpired = new Date(invite.expiresAt) < new Date() && invite.status === "PENDING";
     const status = isExpired ? "EXPIRED" : invite.status;
 
     // Purpose: Confirm before revoking to prevent accidental access removal.
     const handleRevoke = () => {
-        if (!confirm("Are you sure you want to revoke this invitation?")) return;
+        setIsConfirmOpen(false);
         startTransition(async () => {
             const res = await revokeInvitation(invite.id);
             if (res.success) success("Invitation revoked");
@@ -120,7 +122,7 @@ function InvitationRow({ invite }: { invite: InvitationWithInviter }) {
                         <Button 
                             variant="ghost" 
                             size="sm" 
-                            onClick={handleRevoke}
+                            onClick={() => setIsConfirmOpen(true)}
                             disabled={isPending}
                             className="text-red-400 hover:text-red-300 hover:bg-red-500/10"
                             title="Revoke Invitation"
@@ -135,6 +137,18 @@ function InvitationRow({ invite }: { invite: InvitationWithInviter }) {
                     )}
                 </div>
             </td>
+
+            {isConfirmOpen && (
+                 <ConfirmModal
+                 isOpen={isConfirmOpen}
+                 onClose={() => setIsConfirmOpen(false)}
+                 onConfirm={handleRevoke}
+                 title="Revoke Invitation"
+                 description="Are you sure you want to revoke this invitation? The link will immediately expire."
+                 confirmText="Revoke"
+                 isDestructive={true}
+                 />
+            )}
         </tr>
     );
 }

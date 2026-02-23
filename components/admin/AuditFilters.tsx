@@ -5,10 +5,11 @@ import { RoleGate } from "@/components/admin/RoleGate";
 import { cn } from "@/lib/utils";
 import { Role } from "@prisma/client";
 import { format, parseISO } from "date-fns";
-import { Calendar, Download, Trash2 } from "lucide-react";
+import { Calendar, Download, Trash2, X } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 import { Calendar as CalendarComponent } from "./ui/Calendar";
+import { ConfirmModal } from "./ui/ConfirmModal";
 import { Popover, PopoverContent, PopoverTrigger } from "./ui/Popover";
 import { Select } from "./ui/Select";
 import { useToast } from "./ui/Toast";
@@ -27,6 +28,7 @@ export function AuditFilters({ entities, currentAction, currentEntity, currentDa
   const [isPending, startTransition] = useTransition(); // eslint-disable-line @typescript-eslint/no-unused-vars
   const [isExporting, setIsExporting] = useState(false);
   const [isClearing, setIsClearing] = useState(false);
+  const [isConfirmClearOpen, setIsConfirmClearOpen] = useState(false);
   const [dateFromOpen, setDateFromOpen] = useState(false);
   const [dateToOpen, setDateToOpen] = useState(false);
 
@@ -62,25 +64,28 @@ export function AuditFilters({ entities, currentAction, currentEntity, currentDa
     }
   };
 
-  const handleClearAll = () => {
-    if (confirm("Are you absolutely sure you want to delete EVERY audit log? This is irreversible and will destroy all historical tracking data!")) {
-        setIsClearing(true);
-        startTransition(async () => {
-            try {
-                // We're importing clearAllAuditLogs on the fly to avoid circular dependencies if it's not exported.
-                const { clearAllAuditLogs } = await import("@/actions/audit");
-                const res = await clearAllAuditLogs();
-                if (!res.success) throw new Error("Server rejected request");
-                
-                router.refresh();
-                success("All audit logs have been permanently nuked.");
-            } catch (e: any) {
-                error("Failed to clear logs: " + e.message);
-            } finally {
-                setIsClearing(false);
-            }
-        });
-    }
+  const executeClearAll = () => {
+    setIsClearing(true);
+    setIsConfirmClearOpen(false);
+    startTransition(async () => {
+        try {
+            // We're importing clearAllAuditLogs on the fly to avoid circular dependencies if it's not exported.
+            const { clearAllAuditLogs } = await import("@/actions/audit");
+            const res = await clearAllAuditLogs();
+            if (!res.success) throw new Error("Server rejected request");
+            
+            router.refresh();
+            success("All audit logs have been permanently nuked.");
+        } catch (e: any) {
+            error("Failed to clear logs: " + e.message);
+        } finally {
+            setIsClearing(false);
+        }
+    });
+  };
+
+  const handleClearAllClick = () => {
+      setIsConfirmClearOpen(true);
   };
 
   const actionFilters = [
@@ -130,10 +135,26 @@ export function AuditFilters({ entities, currentAction, currentEntity, currentDa
           <PopoverTrigger asChild>
             <button
               type="button"
-              className="flex items-center gap-1.5 admin-surface-primary backdrop-blur-xs rounded-[10px] px-3 py-2 border border-[var(--admin-border)] text-[var(--admin-text)] text-[10px] md:text-xs font-black uppercase tracking-widest outline-none cursor-pointer bg-transparent min-w-[120px] text-left hover:bg-[var(--admin-text)]/5 transition-colors"
+              className={cn(
+                "flex items-center gap-1.5 admin-surface-primary backdrop-blur-xs rounded-[10px] px-3 py-2 border border-[var(--admin-border)] text-[10px] md:text-xs font-black uppercase tracking-widest outline-none bg-transparent min-w-[120px] text-left transition-colors",
+                currentDateFrom ? "text-gold border-gold/30 shadow-[0_0_10px_rgba(var(--gold-rgb),0.1)]" : "text-[var(--admin-text)] hover:bg-[var(--admin-text)]/5"
+              )}
             >
-              <Calendar size={14} className="text-[var(--admin-text)]" />
-              {currentDateFrom ? format(parseISO(currentDateFrom), "MMM d, yyyy") : "Start Date"}
+              <Calendar size={14} className={currentDateFrom ? "text-gold" : "text-[var(--admin-text)]"} />
+              <span className="flex-1">{currentDateFrom ? format(parseISO(currentDateFrom), "MMM d, yyyy") : "Start Date"}</span>
+              {currentDateFrom && (
+                <div 
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    router.push(buildUrl({ dateFrom: undefined, page: undefined }));
+                  }}
+                  className="hover:text-red-500 ml-1 p-0.5 rounded opacity-60 hover:opacity-100 transition-all hover:bg-red-500/10"
+                  title="Clear Start Date"
+                >
+                  <X size={12} strokeWidth={3} />
+                </div>
+              )}
             </button>
           </PopoverTrigger>
           <PopoverContent className="w-auto p-0 rounded-[10px]" align="start">
@@ -154,10 +175,26 @@ export function AuditFilters({ entities, currentAction, currentEntity, currentDa
           <PopoverTrigger asChild>
             <button
               type="button"
-              className="flex items-center gap-1.5 admin-surface-primary backdrop-blur-xs rounded-[10px] px-3 py-2 border border-[var(--admin-border)] text-[var(--admin-text)] text-[10px] md:text-xs font-black uppercase tracking-widest outline-none cursor-pointer bg-transparent min-w-[120px] text-left hover:bg-[var(--admin-text)]/5 transition-colors"
+              className={cn(
+                "flex items-center gap-1.5 admin-surface-primary backdrop-blur-xs rounded-[10px] px-3 py-2 border border-[var(--admin-border)] text-[10px] md:text-xs font-black uppercase tracking-widest outline-none bg-transparent min-w-[120px] text-left transition-colors",
+                currentDateTo ? "text-gold border-gold/30 shadow-[0_0_10px_rgba(var(--gold-rgb),0.1)]" : "text-[var(--admin-text)] hover:bg-[var(--admin-text)]/5"
+              )}
             >
-               <Calendar size={14} className="text-[var(--admin-text)]" />
-               {currentDateTo ? format(parseISO(currentDateTo), "MMM d, yyyy") : "End Date"}
+               <Calendar size={14} className={currentDateTo ? "text-gold" : "text-[var(--admin-text)]"} />
+               <span className="flex-1">{currentDateTo ? format(parseISO(currentDateTo), "MMM d, yyyy") : "End Date"}</span>
+               {currentDateTo && (
+                <div 
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    router.push(buildUrl({ dateTo: undefined, page: undefined }));
+                  }}
+                  className="hover:text-red-500 ml-1 p-0.5 rounded opacity-60 hover:opacity-100 transition-all hover:bg-red-500/10"
+                  title="Clear End Date"
+                >
+                  <X size={12} strokeWidth={3} />
+                </div>
+              )}
             </button>
           </PopoverTrigger>
           <PopoverContent className="w-auto p-0 rounded-[10px]" align="start">
@@ -188,7 +225,7 @@ export function AuditFilters({ entities, currentAction, currentEntity, currentDa
               {isExporting ? "Exporting..." : "Export CSV"}
             </button>
             <button
-              onClick={handleClearAll}
+              onClick={handleClearAllClick}
               disabled={isExporting || isClearing}
               className={cn(
                 "flex items-center gap-1.5 px-4 py-2 bg-red-500/20 text-red-500 hover:bg-red-500/30 border border-red-500/30 font-black text-[10px] md:text-xs uppercase tracking-widest rounded-[10px] transition-all whitespace-nowrap",
@@ -202,6 +239,16 @@ export function AuditFilters({ entities, currentAction, currentEntity, currentDa
           </div>
         </RoleGate>
       </div>
+
+      <ConfirmModal 
+        isOpen={isConfirmClearOpen}
+        onClose={() => setIsConfirmClearOpen(false)}
+        onConfirm={executeClearAll}
+        title="Nuke All Audit Logs"
+        description="Are you absolutely sure you want to delete EVERY audit log? This is irreversible and will destroy all historical tracking data!"
+        confirmText="Confirm Nuke"
+        isDestructive={true}
+      />
     </div>
   );
 }

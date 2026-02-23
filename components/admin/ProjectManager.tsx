@@ -4,6 +4,7 @@ import { deleteProject } from "@/actions/project";
 import { DataGrid } from "@/components/admin/DataGrid";
 import { RoleGate } from "@/components/admin/RoleGate";
 import { PageContainer, PageHeader } from "@/components/admin/ui";
+import { ConfirmModal } from "@/components/admin/ui/ConfirmModal";
 import { Pagination } from "@/components/admin/ui/Pagination";
 import { Select } from "@/components/admin/ui/Select";
 import { PaginatedResponse } from "@/lib/pagination";
@@ -25,6 +26,19 @@ export function ProjectManager({ initialData }: ProjectManagerProps) {
   const searchParams = useSearchParams();
   const [isPending, startTransition] = useTransition();
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
+
+  const [confirmConfig, setConfirmConfig] = useState<{
+    isOpen: boolean;
+    title: string;
+    description: string;
+    action: () => void;
+  }>({
+    isOpen: false,
+    title: "",
+    description: "",
+    action: () => {},
+  });
+  const closeConfirm = () => setConfirmConfig(prev => ({ ...prev, isOpen: false }));
 
   // Sync state with URL params
   const currentSearch = searchParams.get("search") || "";
@@ -75,13 +89,19 @@ export function ProjectManager({ initialData }: ProjectManagerProps) {
 
   const handleDelete = (ids: string | string[]) => {
      const idList = Array.isArray(ids) ? ids : [ids];
-     if (confirm(`Are you sure you want to delete ${idList.length} project(s)?`)) {
-        startTransition(async () => {
-            for (const id of idList) {
-                await deleteProject(id);
-            }
-        });
-     }
+     setConfirmConfig({
+         isOpen: true,
+         title: "Delete Project(s)",
+         description: `Are you absolutely sure you want to delete ${idList.length} project(s)? This cannot be undone.`,
+         action: () => {
+             closeConfirm();
+             startTransition(async () => {
+                 for (const id of idList) {
+                     await deleteProject(id);
+                 }
+             });
+         }
+     });
   };
 
   return (
@@ -268,6 +288,17 @@ export function ProjectManager({ initialData }: ProjectManagerProps) {
         />
       )}
       </div>
+
+      <ConfirmModal
+        isOpen={confirmConfig.isOpen}
+        onClose={closeConfirm}
+        onConfirm={confirmConfig.action}
+        title={confirmConfig.title}
+        description={confirmConfig.description}
+        confirmText="Delete"
+        isDestructive={true}
+        isLoading={isPending}
+      />
     </PageContainer>
   );
 }

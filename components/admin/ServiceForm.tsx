@@ -3,6 +3,7 @@
 import { createService, updateService } from "@/actions/service";
 import { MediaPicker } from "@/components/admin/MediaPicker";
 import { PageContainer, PageHeader, useToast } from "@/components/admin/ui";
+import { ConfirmModal } from "@/components/admin/ui/ConfirmModal";
 import { serviceSchema } from "@/lib/validations";
 import {
     ServiceBuyNowSection,
@@ -47,6 +48,7 @@ export function ServiceForm({ service }: ServiceFormProps) {
     const [error, setError] = useState("");
     const [showMediaPicker, setShowMediaPicker] = useState(false);
     const [pickerTarget, setPickerTarget] = useState<'main' | 'section1' | null>(null);
+    const [isConfirmOpen, setIsConfirmOpen] = useState(false);
 
     // Initial Values with Safe Casting
     const initialSection1 = safeCast<ServiceSection>(service?.section1, { title: "" });
@@ -173,10 +175,8 @@ export function ServiceForm({ service }: ServiceFormProps) {
                 const msg = error.message || "Something went wrong";
                 
                 if (msg.includes("Concurrency conflict")) {
-                    if (confirm("This service has been modified by another user. Reload to get the latest version?")) {
-                        window.location.reload();
-                        return;
-                    }
+                    setIsConfirmOpen(true);
+                    return;
                 }
 
                 setError(msg);
@@ -662,6 +662,17 @@ export function ServiceForm({ service }: ServiceFormProps) {
 
                 </div>
             </div>
-    </PageContainer>
+
+            <ConfirmModal
+              isOpen={isConfirmOpen}
+              onClose={() => setIsConfirmOpen(false)}
+              onConfirm={() => window.location.reload()}
+              title="Concurrency Conflict Detected"
+              description="This service has been modified by another user since you opened it. Reload to get the latest version? (You will lose any unsaved changes)"
+              confirmText="Reload Page"
+              cancelText="Cancel"
+              isDestructive={false}
+            />
+        </PageContainer>
     );
 }

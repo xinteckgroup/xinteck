@@ -3,6 +3,7 @@
 import { createFolder, deleteFile, deleteFolder, uploadFile } from "@/actions/media";
 import { RoleGate } from "@/components/admin/RoleGate";
 import { PageContainer, PageHeader, Pagination, useToast } from "@/components/admin/ui";
+import { ConfirmModal } from "@/components/admin/ui/ConfirmModal";
 import { PaginatedResponse } from "@/lib/pagination";
 import { cn } from "@/lib/utils";
 import { convertToWebP } from "@/lib/webp-converter";
@@ -46,6 +47,15 @@ export function FileManagerClient({ initialData, folders = [], currentFolderId, 
   // Modal State
   const [showFolderModal, setShowFolderModal] = useState(false);
   const [newFolderName, setNewFolderName] = useState("");
+  
+  const [confirmConfig, setConfirmConfig] = useState<{
+      isOpen: boolean;
+      title: string;
+      description: string;
+      action: () => void;
+  }>({ isOpen: false, title: "", description: "", action: () => {} });
+
+  const closeConfirm = () => setConfirmConfig(prev => ({ ...prev, isOpen: false }));
 
   const files = initialData.data;
   const meta = {
@@ -115,18 +125,24 @@ export function FileManagerClient({ initialData, folders = [], currentFolderId, 
   }, [searchQuery]);
 
   const handleDelete = (id: string, isFolder = false) => {
-    if (confirm(`Permanently delete this ${isFolder ? 'folder' : 'file'}?`)) {
-       startTransition(async () => {
-           try {
-               if (isFolder) await deleteFolder(id);
-               else await deleteFile(id);
-               toast("Deleted successfully", "success");
-               router.refresh();
-           } catch (e: any) {
-               toast("Delete failed: " + e.message, "error");
-           }
-       });
-    }
+      setConfirmConfig({
+          isOpen: true,
+          title: `Delete ${isFolder ? 'Folder' : 'File'}`,
+          description: `Are you absolutely sure you want to permanently delete this ${isFolder ? 'folder and all its contents' : 'file'}?`,
+          action: () => {
+              closeConfirm();
+              startTransition(async () => {
+                   try {
+                       if (isFolder) await deleteFolder(id);
+                       else await deleteFile(id);
+                       toast("Deleted successfully", "success");
+                       router.refresh();
+                   } catch (e: any) {
+                       toast("Delete failed: " + e.message, "error");
+                   }
+              });
+          }
+      });
   };
 
   const handleFileUpload = async (fileList: FileList | null) => {
@@ -517,6 +533,16 @@ export function FileManagerClient({ initialData, folders = [], currentFolderId, 
             opacity: 0.2;
         }
       `}</style>
+
+      <ConfirmModal
+        isOpen={confirmConfig.isOpen}
+        onClose={closeConfirm}
+        onConfirm={confirmConfig.action}
+        title={confirmConfig.title}
+        description={confirmConfig.description}
+        confirmText="Delete Permanently"
+        isDestructive={true}
+      />
     </PageContainer>
   );
 }

@@ -4,6 +4,7 @@ import { createProject, updateProject } from "@/actions/project";
 import { MarkdownEditor } from "@/components/admin/MarkdownEditor";
 import { MediaPicker } from "@/components/admin/MediaPicker";
 import { PageContainer, PageHeader, useToast } from "@/components/admin/ui";
+import { ConfirmModal } from "@/components/admin/ui/ConfirmModal";
 import { Select } from "@/components/admin/ui/Select";
 import { projectSchema } from "@/lib/validations";
 import { Calendar, Globe, Image as ImageIcon, Save, Upload, X } from "lucide-react";
@@ -22,6 +23,7 @@ export function ProjectEditorForm({ initialData, isEditing = false }: ProjectEdi
   const [error, setError] = useState("");
   const { toast } = useToast();
   const [showMediaPicker, setShowMediaPicker] = useState(false);
+  const [isConfirmOpen, setIsConfirmOpen] = useState(false);
 
   const [formData, setFormData] = useState({
     title: initialData?.title || "",
@@ -73,10 +75,8 @@ export function ProjectEditorForm({ initialData, isEditing = false }: ProjectEdi
              const msg = e.message || "Failed to save project";
              
              if (msg.includes("Concurrency conflict")) {
-                 if (confirm("This project has been modified by another user. Reload to get the latest version?")) {
-                     window.location.reload();
-                     return;
-                 }
+                 setIsConfirmOpen(true);
+                 return;
              }
 
              setError(msg);
@@ -333,6 +333,17 @@ export function ProjectEditorForm({ initialData, isEditing = false }: ProjectEdi
 
           </div>
        </div>
+
+      <ConfirmModal
+        isOpen={isConfirmOpen}
+        onClose={() => setIsConfirmOpen(false)}
+        onConfirm={() => window.location.reload()}
+        title="Concurrency Conflict Detected"
+        description="This project has been modified by another user since you opened it. Reload to get the latest version? (You will lose any unsaved changes)"
+        confirmText="Reload Page"
+        cancelText="Cancel"
+        isDestructive={false}
+      />
     </PageContainer>
   );
 }

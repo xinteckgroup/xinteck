@@ -2,10 +2,11 @@
 
 import { deleteService, toggleServiceStatus } from "@/actions/service";
 import { RoleGate } from "@/components/admin/RoleGate";
+import { ConfirmModal } from "@/components/admin/ui/ConfirmModal";
 import { Role } from "@prisma/client";
 import { CheckCircle2, Pencil, Trash2, XCircle } from "lucide-react";
 import Link from "next/link";
-import { useTransition } from "react";
+import { useState, useTransition } from "react";
 
 interface ServiceActionsProps {
   serviceId: string;
@@ -14,6 +15,12 @@ interface ServiceActionsProps {
 
 export function ServiceActions({ serviceId, isActive }: ServiceActionsProps) {
   const [isPending, startTransition] = useTransition();
+  const [isConfirmOpen, setIsConfirmOpen] = useState(false);
+
+  const handleDelete = () => {
+      setIsConfirmOpen(false);
+      startTransition(async () => { await deleteService(serviceId); });
+  };
 
   return (
     <div className="flex items-center gap-3">
@@ -36,11 +43,7 @@ export function ServiceActions({ serviceId, isActive }: ServiceActionsProps) {
         </Link>
 
         <button
-          onClick={() => {
-            if (confirm("Are you sure you want to delete this service?")) {
-              startTransition(async () => { await deleteService(serviceId); });
-            }
-          }}
+          onClick={() => setIsConfirmOpen(true)}
           disabled={isPending}
           className="w-10 h-10 rounded-[8px] bg-red-500/10 border border-red-500/20 flex items-center justify-center text-red-400 hover:bg-red-500/20 transition-all disabled:opacity-50"
           title="Delete"
@@ -48,6 +51,17 @@ export function ServiceActions({ serviceId, isActive }: ServiceActionsProps) {
           <Trash2 size={18} />
         </button>
       </RoleGate>
+
+      <ConfirmModal
+        isOpen={isConfirmOpen}
+        onClose={() => setIsConfirmOpen(false)}
+        onConfirm={handleDelete}
+        title="Delete Service"
+        description="Are you absolutely sure you want to delete this service? This assumes you have already removed it from active projects and clients."
+        confirmText="Delete"
+        isDestructive={true}
+        isLoading={isPending}
+      />
     </div>
   );
 }

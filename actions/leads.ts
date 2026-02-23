@@ -1,12 +1,14 @@
 "use server";
 
 import { INTERNAL_getSecret } from "@/actions/settings";
+import { LeadReplyEmail } from "@/components/emails/LeadReplyEmail";
 import { logAudit } from "@/lib/audit";
 import { requireRole } from "@/lib/auth-check";
 import { prisma } from "@/lib/prisma";
 import { NotificationService } from "@/lib/services/notification-service";
 import { replySchema } from "@/lib/validations";
 import { MessageStatus, NotificationType, Role } from "@prisma/client";
+import { render } from "@react-email/render";
 import { revalidatePath } from "next/cache";
 
 import { createPaginatedResult, getPaginationParams, PaginatedResponse, PaginationParams } from "@/lib/pagination";
@@ -201,6 +203,8 @@ export async function replyToMessage(id: string, content: string) {
         const fromEmail = await INTERNAL_getSecret("RESEND_FROM_EMAIL");
 
         if (apiKey && fromEmail) {
+            const htmlContent = await render(LeadReplyEmail({ content, sentBy: user.name }) as React.ReactElement);
+
             await fetch("https://api.resend.com/emails", {
                 method: "POST",
                 headers: {
@@ -212,11 +216,7 @@ export async function replyToMessage(id: string, content: string) {
                     to: submission.email,
                     reply_to: process.env.RESEND_REPLY_TO || "info@xinteck.co.ke",
                     subject: `Re: Your inquiry - ${submission.name}`,
-                    html: `<div style="font-family: sans-serif; max-width: 600px;">
-                        <p>${content.replace(/\n/g, '<br />')}</p>
-                        <hr style="border: none; border-top: 1px solid #eee; margin: 20px 0;" />
-                        <p style="color: #888; font-size: 12px;">This is a reply to your inquiry submitted via our website.</p>
-                    </div>`
+                    html: htmlContent
                 })
             });
         }

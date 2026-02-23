@@ -1,12 +1,14 @@
 "use server";
 
 import { INTERNAL_getSecret } from "@/actions/settings";
+import { StaffInviteEmail } from "@/components/emails/StaffInviteEmail";
 import { logAudit } from "@/lib/audit";
 import { requireRole } from "@/lib/auth-check";
 import { prisma } from "@/lib/prisma";
 import { NotificationService } from "@/lib/services/notification-service";
 import { inviteStaffSchema, uuidSchema } from "@/lib/validations";
 import { NotificationPriority, NotificationType, Role, UserStatus } from "@prisma/client";
+import { render } from "@react-email/render";
 import bcrypt from "bcrypt";
 import { revalidatePath } from "next/cache";
 import { Resend } from "resend";
@@ -92,23 +94,20 @@ export async function inviteUser(data: { name: string; email: string; role: stri
 
         if (apiKey && fromEmail) {
             const resend = new Resend(apiKey);
+            const htmlContent = await render(
+                StaffInviteEmail({
+                    name: parsed.data.name,
+                    email: parsed.data.email,
+                    role: parsed.data.role,
+                    tempPassword
+                }) as React.ReactElement
+            );
+
             await resend.emails.send({
                 from: fromEmail,
                 to: [parsed.data.email],
                 subject: "You've been invited to Xinteck Admin",
-                html: `<div style="font-family: sans-serif; max-width: 600px; margin: 0 auto;">
-                    <h2 style="color: #D4AF37;">Welcome to Xinteck</h2>
-                    <p>Hi ${parsed.data.name},</p>
-                    <p>You have been invited to join the Xinteck admin panel as <strong>${parsed.data.role}</strong>.</p>
-                    <p>Your temporary login credentials:</p>
-                    <div style="background: #f5f5f5; padding: 16px; border-radius: 8px; margin: 16px 0;">
-                        <p style="margin: 4px 0;"><strong>Email:</strong> ${parsed.data.email}</p>
-                        <p style="margin: 4px 0;"><strong>Password:</strong> ${tempPassword}</p>
-                    </div>
-                    <p>Please log in and change your password immediately.</p>
-                    <hr style="border: none; border-top: 1px solid #eee; margin: 20px 0;" />
-                    <p style="color: #888; font-size: 12px;">This is an automated invitation from the Xinteck admin system.</p>
-                </div>`
+                html: htmlContent
             });
         } else {
             warningMessage = "User created, but email failed: Missing Resend configuration in Settings.";

@@ -1,6 +1,8 @@
 import { INTERNAL_getSecret } from "@/actions/settings";
+import { AdminContactAlertEmail } from "@/components/emails/AdminContactAlertEmail";
 import { logAudit } from "@/lib/audit";
 import { prisma } from "@/lib/prisma";
+import { render } from "@react-email/render";
 import { NextResponse } from "next/server";
 import { Resend } from "resend";
 import { z } from "zod";
@@ -108,26 +110,22 @@ export async function POST(req: Request) {
     if (resendApiKey) {
       try {
         const resend = new Resend(resendApiKey);
+        const htmlContent = await render(AdminContactAlertEmail({
+          name,
+          email,
+          phone,
+          projectType,
+          industry,
+          service: service || "Not specified",
+          budget: budget || "Not specified",
+          message
+        }) as React.ReactElement);
 
         await resend.emails.send({
           from: fromEmail || "onboarding@resend.dev",
           to: [toEmail || "admin@xinteck.co.ke"],
           subject: `New Inquiry: ${name} (${projectType})`,
-          text: `
-            Name: ${name}
-            Email: ${email}
-            Phone: ${phone}
-            
-            I Need To: ${projectType}
-            Industry: ${industry}
-            Service: ${service || "Not specified"}
-            Budget: ${budget || "Not specified"}
-            
-            Message:
-            ${message}
-            
-            Link: https://xinteck.co.ke/admin/leads
-          `,
+          html: htmlContent
         });
       } catch (err) {
         console.error("Resend Error:", err);

@@ -70,7 +70,7 @@ export async function bulkSaveProjectIdeas(ideas: any[]) {
         angle: String(idea.angle).slice(0, 500),
         client: idea.client ? String(idea.client).slice(0, 100) : null,
         score: Number(idea.score) || 0,
-        scoreDebug: idea.scoreDebug ? JSON.stringify(idea.scoreDebug) : null,
+        scoreDebug: idea.scoreDebug ? JSON.stringify(idea.scoreDebug) : undefined,
         status: "NEW" as any
     }));
 

@@ -1,11 +1,13 @@
 "use server";
 
 import { INTERNAL_getSecret } from "@/actions/settings";
+import { PasswordResetEmail } from "@/components/emails/PasswordResetEmail";
 import { logAudit } from "@/lib/audit";
 import { requireRole } from "@/lib/auth-check";
 import { prisma } from "@/lib/prisma";
 import { changePasswordSchema, resetPasswordSchema, updateProfileSchema } from "@/lib/validations";
 import { InvitationStatus, Role, UserStatus } from "@prisma/client";
+import { render } from "@react-email/render";
 import bcrypt from "bcrypt";
 import crypto from "crypto";
 import { Resend } from "resend";
@@ -172,20 +174,13 @@ export async function forgotPassword(email: string) {
         const resetLink = `${effectiveUrl}/admin/reset-password?token=${token}`;
 
         try {
+            const htmlContent = await render(PasswordResetEmail({ resetLink }) as React.ReactElement);
+
             await resend.emails.send({
                 from: fromEmail || "onboarding@resend.dev",
                 to: email,
-                subject: "Reset Your Password - Xinteck",
-                html: `
-                    <div style="font-family: sans-serif; color: #333;">
-                        <h1>Password Reset Request</h1>
-                        <p>You requested to reset your password for Xinteck Admin Dashboard.</p>
-                        <p>Click the link below to set a new password:</p>
-                        <a href="${resetLink}" style="display: inline-block; background: #000; color: #fff; padding: 10px 20px; text-decoration: none; border-radius: 5px;">Reset Password</a>
-                        <p>This link expires in 1 hour.</p>
-                        <p>If you didn't request this, ignore this email.</p>
-                    </div>
-                `
+                subject: "Reset Your Password - Xinteck Admin",
+                html: htmlContent
             });
         } catch (e) {
             console.error("Failed to send reset email", e);

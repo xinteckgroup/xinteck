@@ -1,10 +1,12 @@
 "use server";
 
 import { INTERNAL_getSecret } from "@/actions/settings";
+import { TeamInviteEmail } from "@/components/emails/TeamInviteEmail";
 import { logAudit } from "@/lib/audit";
 import { requireRole } from "@/lib/auth-check";
 import { prisma } from "@/lib/prisma";
 import { InvitationStatus, Role } from "@prisma/client";
+import { render } from "@react-email/render";
 import crypto from "crypto";
 import { revalidatePath } from "next/cache";
 import { Resend } from "resend";
@@ -201,19 +203,13 @@ async function sendInvitationEmail(email: string, token: string) {
     const inviteLink = `${baseUrl}/admin/register?token=${token}`;
 
     try {
+        const htmlContent = await render(TeamInviteEmail({ inviteLink }) as React.ReactElement);
+
         await resend.emails.send({
             from: fromEmail || "onboarding@resend.dev",
             to: email,
             subject: "You've been invited to Xinteck",
-            html: `
-                <div style="font-family: sans-serif; color: #333;">
-                    <h1>You've been invited!</h1>
-                    <p>You have been invited to join the Xinteck Admin Dashboard.</p>
-                    <p>Click the link below to create your account:</p>
-                    <a href="${inviteLink}" style="display: inline-block; background: #000; color: #fff; padding: 10px 20px; text-decoration: none; border-radius: 5px;">Accept Invitation</a>
-                    <p>This link expires in 7 days.</p>
-                </div>
-            `
+            html: htmlContent
         });
     } catch (e) {
         console.error("Failed to send invitation email", e);

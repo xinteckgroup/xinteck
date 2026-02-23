@@ -75,7 +75,13 @@ function RegisterContent() {
             // Redirect to login
             router.push("/admin/login?registered=true");
         } catch (err: any) {
-            setError(err.message || "Registration failed");
+            const msg = err.message || "Registration failed";
+            if (msg.toLowerCase().includes("expired") || msg.toLowerCase().includes("invalid")) {
+                setStatus("invalid");
+                setStatusMessage(msg);
+                return;
+            }
+            setError(msg);
             setIsSubmitting(false);
         }
     };
@@ -173,7 +179,7 @@ function RegisterContent() {
                         <p className="mt-2 text-sm text-muted-foreground">Set up your credentials to join the team.</p>
                     </div>
 
-                    <form onSubmit={handleSubmit} className="space-y-6">
+                    <form onSubmit={handleSubmit} className={`space-y-6 ${isSubmitting ? "pointer-events-none opacity-50 transition-opacity" : "transition-opacity"}`}>
                         {error && (
                             <div className="bg-red-500/10 border border-red-500/20 rounded-[10px] p-4 text-red-500 text-sm flex items-center gap-3">
                                 <span className="font-bold">Error:</span> {error}

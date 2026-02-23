@@ -1,6 +1,6 @@
 "use client";
 
-import { inviteUser } from "@/actions/team";
+import { inviteUser, revokeInvitation } from "@/actions/team";
 import { deleteUser, deleteUsers, reactivateUser, suspendUser, updateUserRole } from "@/actions/user";
 import { DataGrid } from "@/components/admin/DataGrid";
 import { RoleGate } from "@/components/admin/RoleGate";
@@ -180,6 +180,26 @@ export function StaffClient({ initialStaff }: StaffClientProps) {
     });
   };
 
+  const handleRevoke = (id: string) => {
+    if (confirm("Revoke this invitation? The token will immediately become invalid and the slot freed.")) {
+      startTransition(async () => {
+        try {
+          await revokeInvitation(id);
+          success("Invitation permanently revoked.");
+          
+          mutateOptimisticStaff({
+             type: "DELETE",
+             payload: id
+          });
+
+          router.refresh();
+        } catch (e: any) {
+          error("Failed to revoke: " + e.message);
+        }
+      });
+    }
+  };
+
   const columns = [
     {
       key: "name",
@@ -223,6 +243,7 @@ export function StaffClient({ initialStaff }: StaffClientProps) {
              <div className={cn(
                 "w-2 h-2 rounded-full",
                 row.status === 'Active' ? 'bg-green-400 shadow-[0_0_8px_rgba(74,222,128,0.5)]' :
+                row.status === 'Pending' ? 'bg-purple-400 shadow-[0_0_8px_rgba(168,85,247,0.5)]' :
                 row.status === 'Away' ? 'bg-yellow-400 shadow-[0_0_8px_rgba(250,204,21,0.5)]' : 
                 row.status === 'Suspended' ? 'bg-red-400 shadow-[0_0_8px_rgba(248,113,113,0.5)]' : 
                 'bg-[var(--admin-text)]/20'
@@ -246,29 +267,40 @@ export function StaffClient({ initialStaff }: StaffClientProps) {
       label: "",
       align: "right" as const,
       render: (row: any) => (
-        <RoleGate allowedRoles={[Role.SUPER_ADMIN]}>
+        <RoleGate allowedRoles={[Role.SUPER_ADMIN, Role.ADMIN]}>
           <div className="flex items-center justify-end gap-1 opacity-0 group-hover:opacity-100 transition-all duration-300">
-            {row.role !== 'Super Admin' && (
-              row.status === 'Suspended' ? (
-                <button
-                  onClick={() => handleReactivate(row.id)}
-                  disabled={isPending}
-                  className="p-2 text-green-400 hover:bg-green-500/5 rounded-[8px] transition-all"
-                  title="Reactivate"
-                >
-                  <RefreshCw size={16} className={isPending ? "animate-spin" : ""} />
-                </button>
-              ) : row.status === 'Active' ? (
-                <button
-                  onClick={() => handleSuspend(row.id)}
-                  disabled={isPending}
-                  className="p-2 text-red-400 hover:bg-red-500/5 rounded-[8px] transition-all"
-                  title="Suspend"
-                >
-                  <Ban size={16} />
-                </button>
-              ) : null
-            )}
+            {row.isInvite ? (
+               <button
+                 onClick={() => handleRevoke(row.id)}
+                 disabled={isPending}
+                 className="p-2 text-red-500 hover:bg-red-500/10 rounded-[8px] transition-all flex items-center gap-2 text-[10px] font-black uppercase tracking-widest border border-transparent hover:border-red-500/20"
+                 title="Revoke Invite"
+               >
+                 <X size={14} /> Revoke
+               </button>
+            ) : row.role !== 'Super Admin' ? (
+              <RoleGate allowedRoles={[Role.SUPER_ADMIN]}>
+                {row.status === 'Suspended' ? (
+                  <button
+                    onClick={() => handleReactivate(row.id)}
+                    disabled={isPending}
+                    className="p-2 text-green-400 hover:bg-green-500/5 rounded-[8px] transition-all"
+                    title="Reactivate"
+                  >
+                    <RefreshCw size={16} className={isPending ? "animate-spin" : ""} />
+                  </button>
+                ) : row.status === 'Active' ? (
+                  <button
+                    onClick={() => handleSuspend(row.id)}
+                    disabled={isPending}
+                    className="p-2 text-red-400 hover:bg-red-500/5 rounded-[8px] transition-all"
+                    title="Suspend"
+                  >
+                    <Ban size={16} />
+                  </button>
+                ) : null}
+              </RoleGate>
+            ) : null}
           </div>
         </RoleGate>
       )

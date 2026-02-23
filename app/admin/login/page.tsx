@@ -2,19 +2,21 @@
 
 import { PasswordInput } from "@/components/admin/ui/PasswordInput";
 import { motion } from "framer-motion";
-import { AlertCircle, ArrowRight, Lock, Mail } from "lucide-react";
+import { AlertCircle, ArrowRight, CheckCircle2, Lock, Mail } from "lucide-react";
 import NextImage from "next/image";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { Suspense, useState } from "react";
 
-export default function AdminLoginPage() {
+function AdminLoginContent() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [rememberMe, setRememberMe] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const isNewlyRegistered = searchParams.get("registered") === "true";
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -100,6 +102,12 @@ export default function AdminLoginPage() {
           </div>
 
           <form onSubmit={handleLogin} className="space-y-6">
+            {isNewlyRegistered && !error && (
+                <div className="bg-green-500/10 border border-green-500/20 rounded-[10px] p-4 flex items-center gap-3 text-green-500 text-sm">
+                    <CheckCircle2 size={18} />
+                    Registration Complete! You may now securely log in.
+                </div>
+            )}
             {error && (
                 <div className="bg-red-500/10 border border-red-500/20 rounded-[10px] p-4 flex items-center gap-3 text-red-500 text-sm">
                     <AlertCircle size={18} />
@@ -176,5 +184,13 @@ export default function AdminLoginPage() {
         </motion.div>
       </div>
     </div>
+  );
+}
+
+export default function AdminLoginPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen bg-background" />}>
+      <AdminLoginContent />
+    </Suspense>
   );
 }

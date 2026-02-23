@@ -8,7 +8,7 @@ import { cn } from "@/lib/utils";
 import { Role } from "@prisma/client";
 import { Activity, Ban, Check, RefreshCw, Shield, UserMinus, UserPlus, Users, X } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useEffect, useState, useTransition } from "react";
+import { useOptimistic, useState, useTransition } from "react";
 import { useToast } from "./ui/Toast";
 
 interface StaffClientProps {
@@ -28,12 +28,29 @@ export function StaffClient({ initialStaff }: StaffClientProps) {
   const [inviteEmail, setInviteEmail] = useState("");
   const [inviteRole, setInviteRole] = useState("Support Staff");
 
-  // Local state for optimistic updates and router refresh syncing
-  const [localStaff, setLocalStaff] = useState(initialStaff);
-
-  useEffect(() => {
-    setLocalStaff(initialStaff);
-  }, [initialStaff]);
+  // Rock-solid Optimistic UI that survives `router.refresh()` overrides
+  const [optimisticStaff, mutateOptimisticStaff] = useOptimistic(
+     initialStaff,
+     (state, action: { type: string, payload: any }) => {
+        switch (action.type) {
+           case "ADD":
+              return [action.payload, ...state];
+           case "UPDATE_ROLE":
+              return state.map(s => s.id === action.payload.id ? { ...s, role: action.payload.role } : s);
+           case "DELETE":
+              if (Array.isArray(action.payload)) {
+                  return state.filter(s => !action.payload.includes(s.id));
+              }
+              return state.filter(s => s.id !== action.payload);
+           case "SUSPEND":
+              return state.map(s => s.id === action.payload ? { ...s, status: "Suspended" } : s);
+           case "REACTIVATE":
+              return state.map(s => s.id === action.payload ? { ...s, status: "Active" } : s);
+           default:
+              return state;
+        }
+     }
+  );
 
   const handleInvite = () => {
     if (!inviteName || !inviteEmail) return;
@@ -54,15 +71,18 @@ export function StaffClient({ initialStaff }: StaffClientProps) {
             }
             
             // Optimistic update
-            setLocalStaff([{
-                id: `temp-${Date.now()}`,
-                name: inviteName,
-                email: inviteEmail,
-                role: inviteRole,
-                status: "Active",
-                lastActive: "Just now",
-                avatar: inviteName.charAt(0)
-            }, ...localStaff]);
+            mutateOptimisticStaff({
+               type: "ADD",
+               payload: {
+                   id: `temp-${Date.now()}`,
+                   name: inviteName,
+                   email: inviteEmail,
+                   role: inviteRole,
+                   status: "Active",
+                   lastActive: "Just now",
+                   avatar: inviteName.charAt(0)
+               }
+            });
 
             setIsInviteOpen(false);
             resetForm();
@@ -82,9 +102,10 @@ export function StaffClient({ initialStaff }: StaffClientProps) {
             success("Role updated successfully");
 
             // Optimistic update
-            setLocalStaff(localStaff.map((s: any) => 
-                s.id === selectedStaff.id ? { ...s, role: inviteRole } : s
-            ));
+            mutateOptimisticStaff({
+               type: "UPDATE_ROLE",
+               payload: { id: selectedStaff.id, role: inviteRole }
+            });
 
             setIsEditOpen(false);
             setSelectedStaff(null);
@@ -107,11 +128,10 @@ export function StaffClient({ initialStaff }: StaffClientProps) {
                    success("User(s) deleted successfully");
                    
                    // Optimistic update
-                   if (Array.isArray(ids)) {
-                       setLocalStaff(localStaff.filter((s: any) => !ids.includes(s.id)));
-                   } else {
-                       setLocalStaff(localStaff.filter((s: any) => s.id !== ids));
-                   }
+                   mutateOptimisticStaff({
+                      type: "DELETE",
+                      payload: ids
+                   });
 
                    router.refresh();
                } catch (e: any) {
@@ -141,9 +161,10 @@ export function StaffClient({ initialStaff }: StaffClientProps) {
           success("User suspended");
           
           // Optimistic update
-          setLocalStaff(localStaff.map((s: any) => 
-              s.id === id ? { ...s, status: "Suspended" } : s
-          ));
+          mutateOptimisticStaff({
+             type: "SUSPEND",
+             payload: id
+          });
 
           router.refresh();
         } catch (e: any) {
@@ -160,9 +181,10 @@ export function StaffClient({ initialStaff }: StaffClientProps) {
         success("User reactivated");
         
         // Optimistic update
-        setLocalStaff(localStaff.map((s: any) => 
-            s.id === id ? { ...s, status: "Active" } : s
-        ));
+        mutateOptimisticStaff({
+           type: "REACTIVATE",
+           payload: id
+        });
 
         router.refresh();
       } catch (e: any) {
@@ -289,14 +311,14 @@ export function StaffClient({ initialStaff }: StaffClientProps) {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
            <StatsCard 
               label="Total Members" 
-              value={localStaff.length} 
+              value={optimisticStaff.length} 
               icon={<Users size={20} />} 
               colorClass="bg-gold/10 text-gold" 
               valueClass="text-[var(--admin-text)]" 
            />
            <StatsCard 
               label="Active Now" 
-              value={localStaff.filter(s => s.status === 'Active').length} 
+              value={optimisticStaff.filter(s => s.status === 'Active').length} 
               icon={<Activity size={20} />} 
               colorClass="bg-green-500/10 text-green-500" 
               valueClass="text-green-500" 
@@ -304,7 +326,7 @@ export function StaffClient({ initialStaff }: StaffClientProps) {
            />
            <StatsCard 
               label="Suspended" 
-              value={localStaff.filter(s => s.status === 'Suspended').length} 
+              value={optimisticStaff.filter(s => s.status === 'Suspended').length} 
               icon={<UserMinus size={20} />} 
               colorClass="bg-red-500/10 text-red-500" 
               valueClass="text-red-500" 
@@ -315,10 +337,10 @@ export function StaffClient({ initialStaff }: StaffClientProps) {
         <div className="rounded-[12px] overflow-hidden shadow-2xl">
            <DataGrid 
               columns={columns}
-              data={localStaff}
+              data={optimisticStaff}
               hideSearch={false}
               actions={{
-                 onEdit: (id) => openEdit(localStaff.find(s => s.id === id)),
+                 onEdit: (id) => openEdit(optimisticStaff.find(s => s.id === id)),
                  onDelete: (id: any) => handleDelete(id)
               }}
            />

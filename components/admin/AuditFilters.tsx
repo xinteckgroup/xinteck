@@ -5,7 +5,7 @@ import { RoleGate } from "@/components/admin/RoleGate";
 import { cn } from "@/lib/utils";
 import { Role } from "@prisma/client";
 import { format, parseISO } from "date-fns";
-import { Calendar, Download } from "lucide-react";
+import { Calendar, Download, Trash2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 import { Calendar as CalendarComponent } from "./ui/Calendar";
@@ -23,9 +23,10 @@ interface AuditFiltersProps {
 
 export function AuditFilters({ entities, currentAction, currentEntity, currentDateFrom, currentDateTo }: AuditFiltersProps) {
   const router = useRouter();
-  const { error } = useToast();
+  const { error, success } = useToast();
   const [isPending, startTransition] = useTransition(); // eslint-disable-line @typescript-eslint/no-unused-vars
   const [isExporting, setIsExporting] = useState(false);
+  const [isClearing, setIsClearing] = useState(false);
   const [dateFromOpen, setDateFromOpen] = useState(false);
   const [dateToOpen, setDateToOpen] = useState(false);
 
@@ -58,6 +59,27 @@ export function AuditFilters({ entities, currentAction, currentEntity, currentDa
       error("Export failed: " + e.message);
     } finally {
       setIsExporting(false);
+    }
+  };
+
+  const handleClearAll = () => {
+    if (confirm("Are you absolutely sure you want to delete EVERY audit log? This is irreversible and will destroy all historical tracking data!")) {
+        setIsClearing(true);
+        startTransition(async () => {
+            try {
+                // We're importing clearAllAuditLogs on the fly to avoid circular dependencies if it's not exported.
+                const { clearAllAuditLogs } = await import("@/actions/audit");
+                const res = await clearAllAuditLogs();
+                if (!res.success) throw new Error("Server rejected request");
+                
+                router.refresh();
+                success("All audit logs have been permanently nuked.");
+            } catch (e: any) {
+                error("Failed to clear logs: " + e.message);
+            } finally {
+                setIsClearing(false);
+            }
+        });
     }
   };
 
@@ -151,19 +173,33 @@ export function AuditFilters({ entities, currentAction, currentEntity, currentDa
           </PopoverContent>
         </Popover>
 
-        {/* Export Button */}
+        {/* Export & Clear All Buttons */}
         <RoleGate allowedRoles={[Role.SUPER_ADMIN]}>
-          <button
-            onClick={handleExport}
-            disabled={isExporting}
-            className={cn(
-              "flex items-center gap-1.5 px-4 py-2 bg-primary text-[var(--admin-text)] font-black text-[10px] md:text-xs uppercase tracking-widest rounded-[10px] hover:bg-gold transition-all shadow-lg shadow-primary/20 whitespace-nowrap",
-              isExporting && "opacity-50 cursor-not-allowed grayscale"
-            )}
-          >
-            <Download size={14} />
-            {isExporting ? "Exporting..." : "Export CSV"}
-          </button>
+          <div className="flex items-center gap-2">
+            <button
+              onClick={handleExport}
+              disabled={isExporting || isClearing}
+              className={cn(
+                "flex items-center gap-1.5 px-4 py-2 bg-primary text-[var(--admin-text)] font-black text-[10px] md:text-xs uppercase tracking-widest rounded-[10px] hover:bg-gold transition-all shadow-lg shadow-primary/20 whitespace-nowrap",
+                isExporting && "opacity-50 cursor-not-allowed grayscale"
+              )}
+            >
+              <Download size={14} />
+              {isExporting ? "Exporting..." : "Export CSV"}
+            </button>
+            <button
+              onClick={handleClearAll}
+              disabled={isExporting || isClearing}
+              className={cn(
+                "flex items-center gap-1.5 px-4 py-2 bg-red-500/20 text-red-500 hover:bg-red-500/30 border border-red-500/30 font-black text-[10px] md:text-xs uppercase tracking-widest rounded-[10px] transition-all whitespace-nowrap",
+                isClearing && "opacity-50 cursor-not-allowed grayscale"
+              )}
+              title="Delete ALL logs permanently"
+            >
+              <Trash2 size={14} />
+              {isClearing ? "Clearing..." : "Clear All"}
+            </button>
+          </div>
         </RoleGate>
       </div>
     </div>

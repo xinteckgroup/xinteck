@@ -4,6 +4,7 @@ import { requireRole } from "@/lib/auth-check";
 import { parseUtcEnd, parseUtcStart } from "@/lib/date-utils";
 import { prisma } from "@/lib/prisma";
 import { AuditLog, Role } from "@prisma/client";
+import { revalidatePath } from "next/cache";
 
 // Define return type for UI usage
 export type AuditLogWithUser = AuditLog & {
@@ -127,3 +128,39 @@ export async function exportAuditLogsCsv(params: Omit<GetAuditLogsParams, "page"
     return [header, ...rows].join("\n");
 }
 
+export async function deleteAuditLog(id: string) {
+    const currentUser = await requireRole([Role.SUPER_ADMIN]);
+
+    await prisma.auditLog.delete({
+        where: { id }
+    });
+
+    // We shouldn't necessarily audit the deletion of an audit log to prevent infinite loops,
+    // but we can log a generic system event if needed. Currently, omit to prevent noise.
+
+    revalidatePath("/admin/audit");
+    return { success: true };
+}
+
+export async function deleteAuditLogs(ids: string[]) {
+    const currentUser = await requireRole([Role.SUPER_ADMIN]);
+
+    if (!ids || ids.length === 0) return { success: false, message: "No IDs provided" };
+
+    await prisma.auditLog.deleteMany({
+        where: { id: { in: ids } }
+    });
+
+    revalidatePath("/admin/audit");
+    return { success: true };
+}
+
+export async function clearAllAuditLogs() {
+    const currentUser = await requireRole([Role.SUPER_ADMIN]);
+
+    // Nuke the entire table
+    await prisma.auditLog.deleteMany({});
+
+    revalidatePath("/admin/audit");
+    return { success: true };
+}

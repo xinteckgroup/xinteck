@@ -28,6 +28,7 @@ interface DataGridProps<T> {
   hideSearch?: boolean; // Hide internal search bar if parent has its own
   hideBulkActions?: boolean; // Hide bulk action buttons (delete)
   searchPlaceholder?: string; // Customizable placeholder text
+  disableSelection?: (row: T) => boolean; // Hide checkbox for specific rows
 }
 
 export interface PaginationConfig {
@@ -46,6 +47,7 @@ export function DataGrid<T extends { id: string }>({
   hideSearch = false, 
   hideBulkActions = false, 
   searchPlaceholder, 
+  disableSelection,
   selectedIds, 
   onSelectionChange, 
   pagination 
@@ -93,14 +95,16 @@ export function DataGrid<T extends { id: string }>({
   };
 
   const toggleAll = () => {
-    if (selectedItems.length === paginatedData.length) {
+    const selectableData = paginatedData.filter((row: any) => !(disableSelection && disableSelection(row as any)));
+    if (selectedItems.length === selectableData.length) {
       setSelectedItems([]);
     } else {
-      setSelectedItems(paginatedData.map(row => row.id));
+      setSelectedItems(selectableData.map((row: any) => row.id));
     }
   };
 
-  const isAllSelected = paginatedData.length > 0 && selectedItems.length === paginatedData.length;
+  const selectableData = paginatedData.filter((row: any) => !(disableSelection && disableSelection(row as any)));
+  const isAllSelected = selectableData.length > 0 && selectedItems.length === selectableData.length;
   const onDelete = actions?.onDelete;
 
   const showToolbar = !hideSearch || (!hideBulkActions && onDelete);
@@ -179,15 +183,17 @@ export function DataGrid<T extends { id: string }>({
               {paginatedData.map((row: any) => (
                 <tr key={row.id} className="hover:bg-[var(--admin-text)]/5 transition-colors group">
                   <td className="p-4">
-                    <div 
-                      className={cn(
-                        "w-4 h-4 rounded-[4px] border bg-[var(--admin-surface-input)] flex items-center justify-center cursor-pointer",
-                        selectedItems.includes(row.id) ? 'border-primary' : 'border-[var(--admin-border)]'
-                      )}
-                      onClick={() => toggleSelect(row.id)}
-                    >
-                      {selectedItems.includes(row.id) && <div className="w-2 h-2 bg-[var(--admin-brand)] rounded-[2px]" />}
-                    </div>
+                    {!(disableSelection && disableSelection(row)) && (
+                      <div 
+                        className={cn(
+                          "w-4 h-4 rounded-[4px] border bg-[var(--admin-surface-input)] flex items-center justify-center cursor-pointer",
+                          selectedItems.includes(row.id) ? 'border-primary' : 'border-[var(--admin-border)]'
+                        )}
+                        onClick={() => toggleSelect(row.id)}
+                      >
+                        {selectedItems.includes(row.id) && <div className="w-2 h-2 bg-[var(--admin-brand)] rounded-[2px]" />}
+                      </div>
+                    )}
                   </td>
                   {columns.map((col) => (
                     <td key={col.key} className="p-4 text-xs md:text-sm text-[var(--admin-text)] font-bold whitespace-nowrap">

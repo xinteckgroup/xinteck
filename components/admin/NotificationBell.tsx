@@ -199,7 +199,7 @@ export function NotificationBell() {
                             animate={{ opacity: 1, y: 0, scale: 1 }}
                             exit={{ opacity: 0, y: 10, scale: 0.95 }}
                             transition={{ duration: 0.2 }}
-                            className="absolute right-0 top-full mt-2 w-[90vw] sm:w-96 bg-white dark:bg-black border border-[var(--admin-border)] shadow-2xl rounded-xl overflow-hidden z-50 origin-top-right"
+                            className="fixed left-4 right-4 top-20 sm:absolute sm:left-auto sm:right-0 sm:top-full sm:mt-2 w-auto sm:w-96 bg-white dark:bg-black border border-[var(--admin-border)] shadow-2xl rounded-xl overflow-hidden z-50 sm:origin-top-right flex flex-col max-h-[calc(100vh-6rem)]"
                         >
                             {/* Header */}
                             <div className="flex items-center justify-between p-4 border-b border-[var(--admin-border)] bg-gray-50 dark:bg-[#0a0a0a]">
@@ -228,7 +228,7 @@ export function NotificationBell() {
                             </div>
 
                             {/* List */}
-                            <div className="max-h-[60vh] md:max-h-[400px] overflow-y-auto scrollbar-thin scrollbar-thumb-muted-foreground/20 scrollbar-track-transparent">
+                            <div className="flex-1 overflow-y-auto scrollbar-thin scrollbar-thumb-muted-foreground/20 scrollbar-track-transparent min-h-[50vh] sm:min-h-[auto] sm:max-h-[400px]">
                                 {unread.length === 0 && read.length === 0 ? (
                                     <div className="p-12 text-center text-zinc-500 dark:text-[var(--admin-muted)] flex flex-col items-center gap-3">
                                         <div className="w-12 h-12 rounded-full bg-gray-100 dark:bg-zinc-900 flex items-center justify-center mb-1">

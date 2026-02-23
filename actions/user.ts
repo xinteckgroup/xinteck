@@ -87,7 +87,7 @@ export async function deleteUser(id: string) {
     if (!targetUser) throw new Error("User not found");
     // CRITICAL SECURITY CONSTRAINT: Protect SUPER_ADMIN
     if (targetUser.role === Role.SUPER_ADMIN) {
-        throw new Error("Action Forbidden: SUPER_ADMIN accounts cannot be deleted. You must demote them to another role first.");
+        throw new Error("Action Forbidden: SUPER_ADMIN accounts can never be deleted.");
     }
 
     // Soft delete
@@ -123,7 +123,7 @@ export async function deleteUsers(ids: string[]) {
     const targetUsers = await prisma.user.findMany({ where: { id: { in: validatedIds } } });
     const containsSuperAdmin = targetUsers.some(user => user.role === Role.SUPER_ADMIN);
     if (containsSuperAdmin) {
-        throw new Error("Action Forbidden: Bulk deletion aborted because one or more selected users are SUPER_ADMINs. Please unselect them to proceed.");
+        throw new Error("Action Forbidden: Bulk deletion aborted because one or more selected users are SUPER_ADMINs. They can never be deleted.");
     }
 
     // Soft delete

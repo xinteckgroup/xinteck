@@ -358,6 +358,7 @@ export function StaffClient({ initialStaff }: StaffClientProps) {
               columns={columns}
               data={optimisticStaff}
               hideSearch={false}
+              disableSelection={(row: any) => row.role === 'Super Admin'}
               actions={{
                  onEdit: (id) => openEdit(optimisticStaff.find(s => s.id === id)),
                  onDelete: (id: any) => handleDelete(id)

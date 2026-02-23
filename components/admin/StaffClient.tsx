@@ -33,7 +33,11 @@ export function StaffClient({ initialStaff }: StaffClientProps) {
     
     startTransition(async () => {
         try {
-            await inviteUser({ name: inviteName, email: inviteEmail, role: inviteRole });
+            const result = await inviteUser({ name: inviteName, email: inviteEmail, role: inviteRole });
+            if (result?.error) {
+                error(result.error);
+                return;
+            }
             success("Invitation sent successfully");
             setIsInviteOpen(false);
             resetForm();

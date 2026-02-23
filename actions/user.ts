@@ -40,11 +40,14 @@ export async function getUsers() {
 
 export async function inviteUser(data: { name: string; email: string; role: string }) {
     const currentUser = await requireRole([Role.SUPER_ADMIN]);
-    const parsed = inviteStaffSchema.parse(data);
+    const parsed = inviteStaffSchema.safeParse(data);
+    if (!parsed.success) {
+        return { error: parsed.error.issues[0].message };
+    }
 
-    const existingUser = await prisma.user.findUnique({ where: { email: parsed.email } });
+    const existingUser = await prisma.user.findUnique({ where: { email: parsed.data.email } });
     if (existingUser) {
-        throw new Error("User with this email already exists");
+        return { error: "User with this email already exists" };
     }
 
     // Set a predictable default password as advertised in the UI
@@ -53,10 +56,10 @@ export async function inviteUser(data: { name: string; email: string; role: stri
 
     const newUser = await prisma.user.create({
         data: {
-            name: parsed.name,
-            email: parsed.email,
+            name: parsed.data.name,
+            email: parsed.data.email,
             passwordHash: hashedPassword,
-            role: mapLabelToRole(parsed.role),
+            role: mapLabelToRole(parsed.data.role),
             status: UserStatus.ACTIVE,
         }
     });
@@ -75,15 +78,15 @@ export async function inviteUser(data: { name: string; email: string; role: stri
                 },
                 body: JSON.stringify({
                     from: fromEmail,
-                    to: parsed.email,
+                    to: parsed.data.email,
                     subject: "You've been invited to Xinteck Admin",
                     html: `<div style="font-family: sans-serif; max-width: 600px; margin: 0 auto;">
                         <h2 style="color: #D4AF37;">Welcome to Xinteck</h2>
-                        <p>Hi ${parsed.name},</p>
-                        <p>You have been invited to join the Xinteck admin panel as <strong>${parsed.role}</strong>.</p>
+                        <p>Hi ${parsed.data.name},</p>
+                        <p>You have been invited to join the Xinteck admin panel as <strong>${parsed.data.role}</strong>.</p>
                         <p>Your temporary login credentials:</p>
                         <div style="background: #f5f5f5; padding: 16px; border-radius: 8px; margin: 16px 0;">
-                            <p style="margin: 4px 0;"><strong>Email:</strong> ${parsed.email}</p>
+                            <p style="margin: 4px 0;"><strong>Email:</strong> ${parsed.data.email}</p>
                             <p style="margin: 4px 0;"><strong>Password:</strong> ${tempPassword}</p>
                         </div>
                         <p>Please log in and change your password immediately.</p>
@@ -102,7 +105,7 @@ export async function inviteUser(data: { name: string; email: string; role: stri
         entity: "User",
         entityId: newUser.id,
         userId: currentUser.id,
-        metadata: { email: newUser.email, role: parsed.role }
+        metadata: { email: newUser.email, role: parsed.data.role }
     });
 
     // Notification
@@ -110,8 +113,9 @@ export async function inviteUser(data: { name: string; email: string; role: stri
         await NotificationService.broadcastToRoles({
             roles: [Role.SUPER_ADMIN],
             title: "Staff Invited",
-            message: `${currentUser.name} invited ${parsed.name} as ${parsed.role}.`,
+            message: `${currentUser.name} invited ${parsed.data.name} as ${parsed.data.role}.`,
             type: NotificationType.INFO,
+
             priority: NotificationPriority.NORMAL,
             link: "/admin/staff",
             metadata: { invitedBy: currentUser.name, newUserId: newUser.id }

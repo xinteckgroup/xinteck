@@ -45,7 +45,13 @@ export function StaffClient({ initialStaff }: StaffClientProps) {
                 error(result.error);
                 return;
             }
-            success("Invitation sent successfully");
+            if (result?.warning) {
+                // Warning is passed as an error toast so the admin clearly knows the Email Delivery failed,
+                // but we DO NOT return here, so the Optimistic UI successfully updates the table!
+                error(result.warning);
+            } else {
+                success("Invitation sent successfully");
+            }
             
             // Optimistic update
             setLocalStaff([{

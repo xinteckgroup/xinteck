@@ -64,6 +64,8 @@ export async function inviteUser(data: { name: string; email: string; role: stri
         }
     });
 
+    let warningMessage: string | undefined;
+
     // Send invite email via Resend
     try {
         const apiKey = await INTERNAL_getSecret("RESEND_API_KEY");
@@ -99,15 +101,14 @@ export async function inviteUser(data: { name: string; email: string; role: stri
             if (!res.ok) {
                 const errorData = await res.json();
                 console.error("Resend API Error:", errorData);
-                // We don't block user creation, but we warn the admin that the email failed.
-                return { error: `User created, but email failed: ${errorData.message || "Invalid Resend Configuration"}` };
+                warningMessage = `User created, but email failed: ${errorData.message || "Invalid Resend Configuration"}`;
             }
         } else {
-            return { error: "User created, but email failed: Missing Resend API Key or From Email in Settings." };
+            warningMessage = "User created, but email failed: Missing Resend API Key or From Email in Settings.";
         }
     } catch (e: any) {
         console.error("Failed to send invite email:", e);
-        return { error: `User created, but email failed: ${e.message}` };
+        warningMessage = `User created, but email failed: ${e.message}`;
     }
 
     await logAudit({
@@ -135,7 +136,7 @@ export async function inviteUser(data: { name: string; email: string; role: stri
     }
 
     revalidatePath("/admin/staff");
-    return { success: true };
+    return warningMessage ? { success: true, warning: warningMessage } : { success: true };
 }
 
 export async function updateUserRole(id: string, newRoleLabel: string) {

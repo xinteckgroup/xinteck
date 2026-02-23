@@ -6,7 +6,7 @@ import { logAudit } from "@/lib/audit";
 import { requireRole } from "@/lib/auth-check";
 import { prisma } from "@/lib/prisma";
 import { changePasswordSchema, resetPasswordSchema, updateProfileSchema } from "@/lib/validations";
-import { InvitationStatus, Role } from "@prisma/client";
+import { InvitationStatus, Role, UserStatus } from "@prisma/client";
 import { render } from "@react-email/render";
 import bcrypt from "bcrypt";
 import crypto from "crypto";
@@ -111,13 +111,13 @@ export async function registerUser(data: { name: string; password: string; token
                 email,
                 passwordHash: hashedPassword,
                 role,
-                status: 'ACTIVE',
+                status: UserStatus.ACTIVE,
             },
             update: {
                 name: data.name,
                 passwordHash: hashedPassword,
                 role,
-                status: 'ACTIVE',
+                status: UserStatus.ACTIVE,
                 deletedAt: null // Resurrection!
             }
         }),

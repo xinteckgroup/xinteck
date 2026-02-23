@@ -135,7 +135,7 @@ export async function inviteUser(data: { name: string; email: string; role: stri
         console.error("Notification failed", e);
     }
 
-    revalidatePath("/admin/staff");
+    revalidatePath("/admin/staff", "page");
     return warningMessage ? { success: true, warning: warningMessage } : { success: true };
 }
 
@@ -173,7 +173,7 @@ export async function updateUserRole(id: string, newRoleLabel: string) {
         });
     } catch (e) { console.error(e); }
 
-    revalidatePath("/admin/staff");
+    revalidatePath("/admin/staff", "page");
     return { success: true };
 }
 
@@ -246,7 +246,7 @@ export async function deleteUsers(ids: string[]) {
         metadata: { count: ids.length, ids }
     });
 
-    revalidatePath("/admin/staff");
+    revalidatePath("/admin/staff", "page");
     return { success: true };
 }
 
@@ -290,7 +290,7 @@ export async function suspendUser(id: string) {
         });
     } catch (e) { console.error(e); }
 
-    revalidatePath("/admin/staff");
+    revalidatePath("/admin/staff", "page");
     return { success: true };
 }
 
@@ -311,7 +311,7 @@ export async function reactivateUser(id: string) {
         metadata: { action: "reactivate" }
     });
 
-    revalidatePath("/admin/staff");
+    revalidatePath("/admin/staff", "page");
     return { success: true };
 }
 

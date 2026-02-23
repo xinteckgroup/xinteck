@@ -12,7 +12,8 @@ export const PasswordResetEmail = ({
     <XinteckEmailLayout previewText="Reset your Xinteck password">
       <Section className="text-left mb-[40px]">
         <Img
-          src="https://xinteck.co.ke/logos/logo-dark-full.webp"
+          src="https://xinteck.co.ke/logos/logo-dark-full.png"
+          width="200"
           height="200"
           alt="Xinteck Logo"
           className="mx-auto block"

@@ -26,7 +26,7 @@ export function StaffClient({ initialStaff }: StaffClientProps) {
   // Invite Form State
   const [inviteName, setInviteName] = useState("");
   const [inviteEmail, setInviteEmail] = useState("");
-  const [inviteRole, setInviteRole] = useState("Viewer");
+  const [inviteRole, setInviteRole] = useState("Support Staff");
 
   const handleInvite = () => {
     if (!inviteName || !inviteEmail) return;
@@ -87,7 +87,7 @@ export function StaffClient({ initialStaff }: StaffClientProps) {
   const resetForm = () => {
      setInviteName("");
      setInviteEmail("");
-     setInviteRole("Viewer");
+     setInviteRole("Support Staff");
   };
 
   const handleSuspend = (id: string) => {
@@ -143,7 +143,7 @@ export function StaffClient({ initialStaff }: StaffClientProps) {
          <span className={cn(
             "inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest border shadow-sm",
             row.role === 'Super Admin' ? 'bg-primary/10 text-gold border-gold/20' : 
-            row.role === 'Editor' ? 'bg-blue-500/10 text-blue-400 border-blue-500/20' :
+            row.role === 'Admin' ? 'bg-blue-500/10 text-blue-400 border-blue-500/20' :
             'admin-surface-input text-[var(--admin-text)]/40 border-[var(--admin-border)]'
          )}>
             <Shield size={10} />
@@ -220,7 +220,7 @@ export function StaffClient({ initialStaff }: StaffClientProps) {
           <RoleGate allowedRoles={[Role.SUPER_ADMIN]}>
             <button 
               onClick={() => setIsInviteOpen(true)} 
-              className="bg-primary text-primary-foreground font-black px-6 py-2 md:px-10 md:py-3 rounded-[10px] flex items-center gap-2 hover:bg-gold transition-all text-xs md:text-sm shadow-xl shadow-primary/20"
+              className="bg-primary text-[var(--admin-text)] px-6 py-2 md:px-10 md:py-3 rounded-[10px] flex items-center gap-2 hover:bg-gold transition-all text-xs md:text-sm shadow-xl shadow-primary/20"
             >
               <UserPlus size={16} />
               Invite Member
@@ -273,8 +273,8 @@ export function StaffClient({ initialStaff }: StaffClientProps) {
       {/* Invite Modal */}
       {isInviteOpen && (
          <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
-            <div className="bg-white/30 dark:bg-white/20 backdrop-blur-md transition-colors rounded-[10px] w-full max-w-md max-h-[80vh] flex flex-col shadow-2xl overflow-hidden animate-in fade-in zoom-in duration-200 relative text-black dark:text-white border border-black/10 dark:border-white/10">
-               <div className="p-4 border-b border-black/10 dark:border-white/10 flex items-center justify-between bg-transparent shrink-0">
+            <div className="bg-white/30 dark:bg-white/20 backdrop-blur-md transition-colors rounded-[10px] w-full max-w-md max-h-[80vh] flex flex-col shadow-2xl overflow-hidden animate-in fade-in zoom-in duration-200 relative text-[var(--admin-text)] border border-[var(--admin-border)]">
+               <div className="p-4 border-b border-[var(--admin-text)/10] flex items-center justify-between bg-transparent shrink-0">
                   <div className="flex flex-col gap-1 min-w-0">
                     <h3 className="text-lg font-bold flex items-center gap-2 truncate">Invite Member</h3>
                     <p className="text-[12px] opacity-80 truncate">Team Authorization</p>
@@ -291,7 +291,7 @@ export function StaffClient({ initialStaff }: StaffClientProps) {
                         value={inviteName}
                         onChange={(e) => setInviteName(e.target.value)}
                         placeholder="e.g. John Doe"
-                        className="w-full bg-white/50 dark:bg-black/50 rounded-[12px] border border-black/10 dark:border-white/10 p-4 text-sm md:text-base outline-none focus:border-gold/50 focus:ring-1 focus:ring-gold/20 transition-all font-bold placeholder:text-black/40 dark:placeholder:text-white/40"
+                        className="w-full bg-white/50 dark:bg-black/50 rounded-[12px] border border-black/10 dark:border-white/10 p-4 text-sm md:text-base outline-none focus:border-gold/50 focus:ring-1 focus:ring-gold/20 transition-all font-bold placeholder:text-[var(--admin-text)/60] dark:placeholder:text-[var(--admin-text)/60]"
                      />
                   </div>
                   <div className="space-y-2">
@@ -301,20 +301,20 @@ export function StaffClient({ initialStaff }: StaffClientProps) {
                         value={inviteEmail}
                         onChange={(e) => setInviteEmail(e.target.value)}
                         placeholder="e.g. john@xinteck.co.ke"
-                        className="w-full bg-white/50 dark:bg-black/50 rounded-[12px] border border-black/10 dark:border-white/10 p-4 text-sm md:text-base outline-none focus:border-gold/50 focus:ring-1 focus:ring-gold/20 transition-all font-bold placeholder:text-black/40 dark:placeholder:text-white/40"
+                        className="w-full bg-white/50 dark:bg-black/50 rounded-[12px] border border-black/10 dark:border-white/10 p-4 text-sm md:text-base outline-none focus:border-gold/50 focus:ring-1 focus:ring-gold/20 transition-all font-bold placeholder:text-[var(--admin-text)/60] dark:placeholder:text-[var(--admin-text)/60]"
                      />
                   </div>
                   <div className="space-y-3">
                      <label className="text-[12px] font-black uppercase tracking-widest ml-1 opacity-90">Access Tier</label>
                      <div className="grid grid-cols-3 gap-2">
-                        {["Super Admin", "Editor", "Viewer"].map(role => (
+                        {["Super Admin", "Admin", "Support Staff"].map(role => (
                            <button 
                               key={role}
                               onClick={() => setInviteRole(role)}
                               className={cn(
                                  "py-2 rounded-[10px] text-[12px] font-bold uppercase tracking-widest border transition-all shadow-sm",
                                  inviteRole === role 
-                                  ? "bg-primary text-primary-foreground border-primary shadow-lg shadow-primary/20 scale-105 z-10" 
+                                  ? "bg-primary text-[var(--admin-text)] border-primary shadow-lg shadow-primary/20 scale-105 z-10" 
                                   : "bg-white/50 dark:bg-black/50 border-black/10 dark:border-white/10 opacity-70 hover:opacity-100 hover:border-gold/50"
                               )}
                            >
@@ -336,7 +336,7 @@ export function StaffClient({ initialStaff }: StaffClientProps) {
                      onClick={handleInvite}
                      disabled={!inviteName || !inviteEmail || isPending}
                      className={cn(
-                       "bg-primary text-primary-foreground font-black px-8 py-2.5 rounded-[12px] flex items-center gap-2 hover:bg-gold transition-all text-xs uppercase tracking-widest shadow-xl shadow-primary/20",
+                       "bg-primary text-[var(--admin-text)] font-black px-8 py-2.5 rounded-[12px] flex items-center gap-2 hover:bg-gold transition-all text-xs uppercase tracking-widest shadow-xl shadow-primary/20",
                        (!inviteName || !inviteEmail || isPending) && "opacity-50 cursor-not-allowed grayscale"
                      )}
                   >
@@ -350,7 +350,7 @@ export function StaffClient({ initialStaff }: StaffClientProps) {
       {/* Edit Role Modal */}
       {isEditOpen && selectedStaff && (
          <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
-            <div className="bg-white/30 dark:bg-white/20 backdrop-blur-md transition-colors rounded-[10px] w-full max-w-sm max-h-[80vh] flex flex-col shadow-2xl overflow-hidden animate-in fade-in zoom-in duration-200 relative text-black dark:text-white border border-black/10 dark:border-white/10">
+            <div className="bg-white/30 dark:bg-white/20 backdrop-blur-md transition-colors rounded-[10px] w-full max-w-sm max-h-[80vh] flex flex-col shadow-2xl overflow-hidden animate-in fade-in zoom-in duration-200 relative text-[var(--admin-text)] border border-black/10 dark:border-white/10">
                <div className="p-4 border-b border-black/10 dark:border-white/10 flex items-center justify-between bg-transparent shrink-0">
                   <div className="flex flex-col gap-1 min-w-0">
                     <h3 className="text-lg font-bold flex items-center gap-2 truncate">Edit Permissions</h3>
@@ -363,14 +363,14 @@ export function StaffClient({ initialStaff }: StaffClientProps) {
                <div className="p-4 overflow-y-auto flex-1 bg-transparent">
                   <label className="text-[10px] font-black opacity-60 uppercase tracking-widest ml-1 mb-4 block">Select Access Tier</label>
                   <div className="flex flex-col gap-3">
-                     {["Super Admin", "Editor", "Viewer"].map(role => (
+                     {["Super Admin", "Admin", "Support Staff"].map(role => (
                         <button 
                            key={role}
                            onClick={() => setInviteRole(role)}
                            className={cn(
                               "p-4 rounded-[12px] text-xs font-black uppercase tracking-widest border text-left flex justify-between items-center transition-all shadow-sm",
                               inviteRole === role 
-                                ? "bg-primary text-primary-foreground border-primary shadow-lg shadow-primary/20 scale-[1.02]" 
+                                ? "bg-primary text-[var(--admin-text)] border-primary shadow-lg shadow-primary/20 scale-[1.02]" 
                                 : "bg-white/50 dark:bg-black/50 border-black/10 dark:border-white/10 opacity-70 hover:opacity-100 hover:border-gold/50 hover:text-gold"
                            )}
                         >
@@ -386,7 +386,7 @@ export function StaffClient({ initialStaff }: StaffClientProps) {
                      onClick={handleUpdateRole}
                      disabled={isPending}
                      className={cn(
-                       "bg-primary text-primary-foreground font-black px-8 py-2.5 rounded-[12px] flex items-center gap-2 hover:bg-gold transition-all text-xs uppercase tracking-widest shadow-xl shadow-primary/20",
+                       "bg-primary text-[var(--admin-text)] font-black px-8 py-2.5 rounded-[12px] flex items-center gap-2 hover:bg-gold transition-all text-xs uppercase tracking-widest shadow-xl shadow-primary/20",
                        isPending && "opacity-50 cursor-not-allowed grayscale"
                      )}
                   >

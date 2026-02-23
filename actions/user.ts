@@ -8,7 +8,6 @@ import { NotificationService } from "@/lib/services/notification-service";
 import { inviteStaffSchema, uuidSchema } from "@/lib/validations";
 import { NotificationPriority, NotificationType, Role, UserStatus } from "@prisma/client";
 import bcrypt from "bcrypt";
-import crypto from "crypto";
 import { revalidatePath } from "next/cache";
 
 export async function getUsers() {
@@ -48,8 +47,8 @@ export async function inviteUser(data: { name: string; email: string; role: stri
         throw new Error("User with this email already exists");
     }
 
-    // Generate a random temporary password
-    const tempPassword = crypto.randomBytes(12).toString("base64url");
+    // Set a predictable default password as advertised in the UI
+    const tempPassword = "xinteck123";
     const hashedPassword = await bcrypt.hash(tempPassword, 10);
 
     const newUser = await prisma.user.create({

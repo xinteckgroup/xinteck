@@ -152,7 +152,7 @@ export const replySchema = z.object({
 export const inviteStaffSchema = z.object({
     email: z.string().trim().email("Valid email required"),
     name: z.string().trim().min(2, "Name must be at least 2 characters").max(100, "Name too long"),
-    role: z.enum(["ADMIN", "SUPPORT_STAFF"]),
+    role: z.enum(["Super Admin", "Admin", "Support Staff"]),
 });
 
 // Purpose: Settings schemas validate environment configuration and public/private key-value pairs.

@@ -70,7 +70,7 @@ export async function inviteUser(data: { name: string; email: string; role: stri
         const fromEmail = await INTERNAL_getSecret("RESEND_FROM_EMAIL");
 
         if (apiKey && fromEmail) {
-            await fetch("https://api.resend.com/emails", {
+            const res = await fetch("https://api.resend.com/emails", {
                 method: "POST",
                 headers: {
                     "Authorization": `Bearer ${apiKey}`,
@@ -95,9 +95,19 @@ export async function inviteUser(data: { name: string; email: string; role: stri
                     </div>`
                 })
             });
+
+            if (!res.ok) {
+                const errorData = await res.json();
+                console.error("Resend API Error:", errorData);
+                // We don't block user creation, but we warn the admin that the email failed.
+                return { error: `User created, but email failed: ${errorData.message || "Invalid Resend Configuration"}` };
+            }
+        } else {
+            return { error: "User created, but email failed: Missing Resend API Key or From Email in Settings." };
         }
-    } catch (e) {
+    } catch (e: any) {
         console.error("Failed to send invite email:", e);
+        return { error: `User created, but email failed: ${e.message}` };
     }
 
     await logAudit({

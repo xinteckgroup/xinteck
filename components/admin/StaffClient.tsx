@@ -8,7 +8,7 @@ import { cn } from "@/lib/utils";
 import { Role } from "@prisma/client";
 import { Activity, Ban, Check, RefreshCw, Shield, UserMinus, UserPlus, Users, X } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useState, useTransition } from "react";
+import { useEffect, useState, useTransition } from "react";
 import { useToast } from "./ui/Toast";
 
 interface StaffClientProps {
@@ -28,6 +28,13 @@ export function StaffClient({ initialStaff }: StaffClientProps) {
   const [inviteEmail, setInviteEmail] = useState("");
   const [inviteRole, setInviteRole] = useState("Support Staff");
 
+  // Local state for optimistic updates and router refresh syncing
+  const [localStaff, setLocalStaff] = useState(initialStaff);
+
+  useEffect(() => {
+    setLocalStaff(initialStaff);
+  }, [initialStaff]);
+
   const handleInvite = () => {
     if (!inviteName || !inviteEmail) return;
     
@@ -39,6 +46,18 @@ export function StaffClient({ initialStaff }: StaffClientProps) {
                 return;
             }
             success("Invitation sent successfully");
+            
+            // Optimistic update
+            setLocalStaff([{
+                id: `temp-${Date.now()}`,
+                name: inviteName,
+                email: inviteEmail,
+                role: inviteRole,
+                status: "Active",
+                lastActive: "Just now",
+                avatar: inviteName.charAt(0)
+            }, ...localStaff]);
+
             setIsInviteOpen(false);
             resetForm();
             router.refresh();
@@ -55,6 +74,12 @@ export function StaffClient({ initialStaff }: StaffClientProps) {
         try {
             await updateUserRole(selectedStaff.id, inviteRole);
             success("Role updated successfully");
+
+            // Optimistic update
+            setLocalStaff(localStaff.map((s: any) => 
+                s.id === selectedStaff.id ? { ...s, role: inviteRole } : s
+            ));
+
             setIsEditOpen(false);
             setSelectedStaff(null);
             router.refresh();
@@ -74,6 +99,14 @@ export function StaffClient({ initialStaff }: StaffClientProps) {
                        await deleteUser(ids);
                    }
                    success("User(s) deleted successfully");
+                   
+                   // Optimistic update
+                   if (Array.isArray(ids)) {
+                       setLocalStaff(localStaff.filter((s: any) => !ids.includes(s.id)));
+                   } else {
+                       setLocalStaff(localStaff.filter((s: any) => s.id !== ids));
+                   }
+
                    router.refresh();
                } catch (e: any) {
                    error("Failed to delete user: " + e.message);
@@ -100,6 +133,12 @@ export function StaffClient({ initialStaff }: StaffClientProps) {
         try {
           await suspendUser(id);
           success("User suspended");
+          
+          // Optimistic update
+          setLocalStaff(localStaff.map((s: any) => 
+              s.id === id ? { ...s, status: "Suspended" } : s
+          ));
+
           router.refresh();
         } catch (e: any) {
           error("Failed to suspend: " + e.message);
@@ -113,6 +152,12 @@ export function StaffClient({ initialStaff }: StaffClientProps) {
       try {
         await reactivateUser(id);
         success("User reactivated");
+        
+        // Optimistic update
+        setLocalStaff(localStaff.map((s: any) => 
+            s.id === id ? { ...s, status: "Active" } : s
+        ));
+
         router.refresh();
       } catch (e: any) {
         error("Failed to reactivate: " + e.message);
@@ -238,14 +283,14 @@ export function StaffClient({ initialStaff }: StaffClientProps) {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
            <StatsCard 
               label="Total Members" 
-              value={initialStaff.length} 
+              value={localStaff.length} 
               icon={<Users size={20} />} 
               colorClass="bg-gold/10 text-gold" 
               valueClass="text-[var(--admin-text)]" 
            />
            <StatsCard 
               label="Active Now" 
-              value={initialStaff.filter(s => s.status === 'Active').length} 
+              value={localStaff.filter(s => s.status === 'Active').length} 
               icon={<Activity size={20} />} 
               colorClass="bg-green-500/10 text-green-500" 
               valueClass="text-green-500" 
@@ -253,7 +298,7 @@ export function StaffClient({ initialStaff }: StaffClientProps) {
            />
            <StatsCard 
               label="Suspended" 
-              value={initialStaff.filter(s => s.status === 'Suspended').length} 
+              value={localStaff.filter(s => s.status === 'Suspended').length} 
               icon={<UserMinus size={20} />} 
               colorClass="bg-red-500/10 text-red-500" 
               valueClass="text-red-500" 
@@ -264,10 +309,10 @@ export function StaffClient({ initialStaff }: StaffClientProps) {
         <div className="rounded-[12px] overflow-hidden shadow-2xl">
            <DataGrid 
               columns={columns}
-              data={initialStaff}
+              data={localStaff}
               hideSearch={false}
               actions={{
-                 onEdit: (id) => openEdit(initialStaff.find(s => s.id === id)),
+                 onEdit: (id) => openEdit(localStaff.find(s => s.id === id)),
                  onDelete: (id: any) => handleDelete(id)
               }}
            />

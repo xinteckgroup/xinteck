@@ -76,3 +76,37 @@ export async function markAllNotificationsRead() {
     revalidatePath("/admin");
     return { success: true };
 }
+
+export async function deleteNotification(id: string) {
+    const user = await requireRole([Role.SUPER_ADMIN, Role.ADMIN, Role.SUPPORT_STAFF]);
+
+    // Verify ownership
+    const notification = await prisma.notification.findUnique({
+        where: { id }
+    });
+
+    if (!notification || notification.userId !== user.id) {
+        throw new Error("Unauthorized");
+    }
+
+    await prisma.notification.delete({
+        where: { id }
+    });
+
+    revalidatePath("/admin");
+    return { success: true };
+}
+
+export async function deleteAllReadNotifications() {
+    const user = await requireRole([Role.SUPER_ADMIN, Role.ADMIN, Role.SUPPORT_STAFF]);
+
+    await prisma.notification.deleteMany({
+        where: {
+            userId: user.id,
+            isRead: true
+        }
+    });
+
+    revalidatePath("/admin");
+    return { success: true };
+}

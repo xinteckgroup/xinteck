@@ -1,24 +1,38 @@
-import { Button, Heading, Hr, Section, Text } from '@react-email/components';
+import { Button, Heading, Hr, Img, Section, Text } from '@react-email/components';
 import { XinteckEmailLayout } from './XinteckEmailLayout';
 
 export interface TeamInviteEmailProps {
   inviteLink: string;
+  role: string;
+  invitedBy: string;
 }
 
 export const TeamInviteEmail = ({
   inviteLink = "https://xinteck.co.ke/admin/register",
+  role = "SUPPORT_STAFF",
+  invitedBy = "SUPER_ADMIN",
 }: TeamInviteEmailProps) => {
   return (
     <XinteckEmailLayout previewText="You have been invited to Xinteck">
+      <Section className="text-left mb-[40px]">
+        <Img
+          src="https://xinteck.co.ke/logos/logo-dark-full.webp"
+          height="200"
+          alt="Xinteck Logo"
+          className="mx-auto block"
+          style={{ objectFit: 'contain' }}
+        />
+      </Section>
       <Heading className="text-[24px] font-black tracking-tight text-center text-white m-0 mb-[24px]">
         You've Been Invited!
       </Heading>
       
       <Text className="text-[16px] leading-[26px] text-text m-0 mb-[16px]">
-        You have been formally invited to join the Xinteck Administration Dashboard.
+        You have been formally invited by {invitedBy === 'ADMIN' ? 'an' : 'a'} <strong>{invitedBy.replace('_', ' ')}</strong> to join the Xinteck Administration Dashboard.
       </Text>
       
       <Text className="text-[16px] leading-[26px] text-text m-0 mb-[32px]">
+        You have been assigned the role of <strong className="text-brand uppercase tracking-wider text-[14px]">{role.replace('_', ' ')}</strong>. 
         Click the button below to complete your registration and create your secure account credentials. This exclusive invitation will expire in 7 days.
       </Text>
 
@@ -39,3 +53,5 @@ export const TeamInviteEmail = ({
     </XinteckEmailLayout>
   );
 };
+
+export default TeamInviteEmail;

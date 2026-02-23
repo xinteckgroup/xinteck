@@ -1,10 +1,10 @@
 "use client";
 
-import { getNotifications, markAllNotificationsRead, markNotificationRead } from "@/actions/notifications";
+import { deleteAllReadNotifications, deleteNotification, getNotifications, markAllNotificationsRead, markNotificationRead } from "@/actions/notifications";
 import { useToast } from "@/components/admin/ui/Toast";
 import { Notification, NotificationPriority, NotificationType } from "@prisma/client";
 import { AnimatePresence, motion } from "framer-motion";
-import { Bell, Check, CheckCircle2, ChevronRight, Info, ShieldAlert, XCircle } from "lucide-react";
+import { Bell, Check, CheckCircle2, ChevronRight, Info, ShieldAlert, Trash2, XCircle } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 
@@ -122,6 +122,34 @@ export function NotificationBell() {
         }
     };
 
+    const handleDelete = async (e: React.MouseEvent, id: string, isRead: boolean) => {
+        e.stopPropagation();
+        // Optimistic delete
+        if (isRead) {
+            setRead(prev => prev.filter(n => n.id !== id));
+        } else {
+            setUnread(prev => prev.filter(n => n.id !== id));
+            setTotalUnread(prev => Math.max(0, prev - 1));
+        }
+
+        try {
+            await deleteNotification(id);
+        } catch (err) {
+            fetchData();
+        }
+    };
+
+    const handleClearRead = async () => {
+        // Optimistic clear
+        setRead([]);
+
+        try {
+            await deleteAllReadNotifications();
+        } catch (err) {
+            fetchData();
+        }
+    };
+
     const getIcon = (type: NotificationType) => {
         switch (type) {
             case "SUCCESS": return <CheckCircle2 size={16} className="text-green-500" />;
@@ -179,14 +207,24 @@ export function NotificationBell() {
                                     Notifications 
                                     {totalUnread > 0 && <span className="bg-destructive text-destructive-foreground text-[10px] px-2 py-0.5 rounded-full">{totalUnread}</span>}
                                 </h3>
-                                {totalUnread > 0 && (
-                                    <button 
-                                        onClick={handleMarkAllRead}
-                                        className="text-[11px] uppercase font-bold text-gold hover:text-gold/80 transition-colors flex items-center gap-1"
-                                    >
-                                        <Check size={14} /> Mark all read
-                                    </button>
-                                )}
+                                <div className="flex gap-3">
+                                    {read.length > 0 && (
+                                        <button 
+                                            onClick={handleClearRead}
+                                            className="text-[11px] uppercase font-bold text-zinc-500 hover:text-destructive transition-colors flex items-center gap-1"
+                                        >
+                                            <Trash2 size={12} /> Clear read
+                                        </button>
+                                    )}
+                                    {totalUnread > 0 && (
+                                        <button 
+                                            onClick={handleMarkAllRead}
+                                            className="text-[11px] uppercase font-bold text-gold hover:text-gold/80 transition-colors flex items-center gap-1"
+                                        >
+                                            <Check size={14} /> Mark all read
+                                        </button>
+                                    )}
+                                </div>
                             </div>
 
                             {/* List */}
@@ -220,8 +258,15 @@ export function NotificationBell() {
                                                             <p className="text-xs text-zinc-500 dark:text-[var(--admin-muted)] line-clamp-2 leading-relaxed">{n.message}</p>
                                                         </div>
                                                         {n.link && (
-                                                            <ChevronRight size={14} className="text-zinc-900/40 dark:text-[var(--admin-text)]/30 self-center group-hover:text-gold transition-colors shrink-0" />
+                                                            <ChevronRight size={14} className="text-zinc-900/40 dark:text-[var(--admin-text)]/30 self-center group-hover:text-gold transition-colors shrink-0 mx-1" />
                                                         )}
+                                                        <button 
+                                                            onClick={(e) => handleDelete(e, n.id, false)}
+                                                            className="text-zinc-400 hover:text-destructive transition-colors self-center p-1 rounded hover:bg-destructive/10 shrink-0 opacity-0 group-hover:opacity-100"
+                                                            title="Delete Notification"
+                                                        >
+                                                            <Trash2 size={14} />
+                                                        </button>
                                                     </div>
                                                 ))}
                                             </div>
@@ -252,6 +297,13 @@ export function NotificationBell() {
                                                             </div>
                                                             <p className="text-xs text-zinc-500 dark:text-[var(--admin-muted)] line-clamp-1">{n.message}</p>
                                                         </div>
+                                                        <button 
+                                                            onClick={(e) => handleDelete(e, n.id, true)}
+                                                            className="text-zinc-400 hover:text-destructive transition-colors self-center p-1 rounded hover:bg-destructive/10 shrink-0 opacity-0 group-hover:opacity-100"
+                                                            title="Delete Notification"
+                                                        >
+                                                            <Trash2 size={14} />
+                                                        </button>
                                                     </div>
                                                 ))}
                                             </>

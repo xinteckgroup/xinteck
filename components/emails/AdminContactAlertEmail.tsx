@@ -1,4 +1,4 @@
-import { Button, Column, Heading, Hr, Row, Section, Text } from '@react-email/components';
+import { Button, Column, Heading, Hr, Img, Row, Section, Text } from '@react-email/components';
 import { XinteckEmailLayout } from './XinteckEmailLayout';
 
 export interface AdminContactAlertEmailProps {
@@ -24,6 +24,15 @@ export const AdminContactAlertEmail = ({
 }: AdminContactAlertEmailProps) => {
   return (
     <XinteckEmailLayout previewText={`New Lead: ${name} (${projectType})`}>
+      <Section className="text-left mb-[40px]">
+        <Img
+          src="https://xinteck.co.ke/logos/logo-dark-full.webp"
+          height="200"
+          alt="Xinteck Logo"
+          className="mx-auto block"
+          style={{ objectFit: 'contain' }}
+        />
+      </Section>
       <Heading className="text-[20px] font-black tracking-tight text-brand m-0 mb-[24px]">
         New Incoming Lead Alert
       </Heading>
@@ -64,9 +73,13 @@ export const AdminContactAlertEmail = ({
           <Column style={{ width: '100px' }}><Text className="text-dimText text-[14px] m-0">Service:</Text></Column>
           <Column><Text className="text-white font-medium text-[14px] m-0">{service}</Text></Column>
         </Row>
-        <Row className="mb-[16px]">
+        <Row className="mb-[8px]">
           <Column style={{ width: '100px' }}><Text className="text-dimText text-[14px] m-0">Budget:</Text></Column>
           <Column><Text className="text-brand font-black text-[14px] m-0">{budget}</Text></Column>
+        </Row>
+        <Row className="mb-[16px]">
+          <Column style={{ width: '100px' }}><Text className="text-dimText text-[14px] m-0">Received:</Text></Column>
+          <Column><Text className="text-white font-medium text-[14px] m-0">{new Date().toLocaleString()}</Text></Column>
         </Row>
 
         <Hr className="border border-[#222222] my-[16px]" />
@@ -78,13 +91,27 @@ export const AdminContactAlertEmail = ({
       </Section>
 
       <Section className="text-center mb-[24px]">
-        <Button
-          href="https://xinteck.co.ke/admin/leads"
-          className="bg-brand text-[#0A0A0A] font-black uppercase tracking-widest text-[14px] rounded-[6px] px-[32px] py-[16px] text-center inline-block"
-        >
-          View in CRM
-        </Button>
+        <Row>
+          <Column style={{ paddingRight: '12px' }}>
+            <Button
+              href="https://xinteck.co.ke/admin/leads"
+              className="bg-brand text-[#0A0A0A] font-black uppercase tracking-widest text-[14px] rounded-[6px] px-[24px] py-[16px] text-center inline-block w-[50%]"
+            >
+              View inside CRM
+            </Button>
+          </Column>
+          <Column style={{ paddingLeft: '12px' }}>
+            <Button
+              href={`mailto:${email}`}
+              className="bg-[#222222] text-white border border-[#333333] font-black uppercase tracking-widest text-[14px] rounded-[6px] px-[24px] py-[16px] text-center inline-block w-[50%]"
+            >
+              Reply to Client
+            </Button>
+          </Column>
+        </Row>
       </Section>
     </XinteckEmailLayout>
   );
 };
+
+export default AdminContactAlertEmail;

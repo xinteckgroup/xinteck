@@ -8,7 +8,8 @@
     "start": "next start",
     "lint": "eslint",
     "postinstall": "prisma generate --no-engine",
-    "audit:theme": "tsx scripts/audit-theme.ts"
+    "audit:theme": "tsx scripts/audit-theme.ts",
+    "email": "email dev --dir ./components/emails -p 3005"
   },
   "prisma": {
     "seed": "tsx prisma/seed.ts"
@@ -53,6 +54,7 @@
     "zod": "^4.3.6"
   },
   "devDependencies": {
+    "@react-email/preview-server": "^5.2.8",
     "@tailwindcss/postcss": "^4",
     "@types/node": "20.19.30",
     "@types/react": "19.2.10",

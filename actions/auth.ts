@@ -142,7 +142,7 @@ export async function forgotPassword(email: string) {
 
     // Purpose: Generate a high-entropy token for the reset link.
     const token = crypto.randomBytes(32).toString("hex");
-    const expiresAt = new Date(Date.now() + 60 * 60 * 1000); // 1 hour
+    const expiresAt = new Date(Date.now() + 30 * 60 * 1000); // 30 minutes
 
     // Purpose: Invalidate any previous reset tokens for this user to prevent clutter and replay.
     await prisma.passwordResetToken.deleteMany({ where: { email } }); // Clear old tokens

@@ -75,7 +75,7 @@ export async function inviteUser(data: { email: string; role: Role }) {
     });
 
     // Send Email
-    await sendInvitationEmail(parsed.email, token);
+    await sendInvitationEmail(parsed.email, token, parsed.role, admin.role);
 
     await logAudit({
         action: "team.invite_user",
@@ -139,7 +139,7 @@ export async function resendInvitation(id: string) {
         }
     });
 
-    await sendInvitationEmail(invitation.email, token);
+    await sendInvitationEmail(invitation.email, token, invitation.role, admin.role);
 
     await logAudit({
         action: "team.resend_invitation",
@@ -188,7 +188,7 @@ export async function getInvitations() {
 }
 
 // Purpose: Helper to abstract email delivery logic and ensure consistent formatting.
-async function sendInvitationEmail(email: string, token: string) {
+async function sendInvitationEmail(email: string, token: string, role: string, invitedBy: string) {
     const resendApiKey = await INTERNAL_getSecret("RESEND_API_KEY");
     const fromEmail = await INTERNAL_getSecret("RESEND_FROM_EMAIL");
 
@@ -203,7 +203,7 @@ async function sendInvitationEmail(email: string, token: string) {
     const inviteLink = `${baseUrl}/admin/register?token=${token}`;
 
     try {
-        const htmlContent = await render(TeamInviteEmail({ inviteLink }) as React.ReactElement);
+        const htmlContent = await render(TeamInviteEmail({ inviteLink, role, invitedBy }) as React.ReactElement);
 
         await resend.emails.send({
             from: fromEmail || "onboarding@resend.dev",

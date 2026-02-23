@@ -1,17 +1,12 @@
 "use server";
 
-import { INTERNAL_getSecret } from "@/actions/settings";
-import { StaffInviteEmail } from "@/components/emails/StaffInviteEmail";
 import { logAudit } from "@/lib/audit";
 import { requireRole } from "@/lib/auth-check";
 import { prisma } from "@/lib/prisma";
 import { NotificationService } from "@/lib/services/notification-service";
-import { inviteStaffSchema, uuidSchema } from "@/lib/validations";
+import { uuidSchema } from "@/lib/validations";
 import { NotificationPriority, NotificationType, Role, UserStatus } from "@prisma/client";
-import { render } from "@react-email/render";
-import bcrypt from "bcrypt";
 import { revalidatePath } from "next/cache";
-import { Resend } from "resend";
 
 export async function getUsers() {
     await requireRole([Role.ADMIN, Role.SUPER_ADMIN, Role.SUPPORT_STAFF]);
@@ -41,109 +36,6 @@ export async function getUsers() {
     }));
 }
 
-export async function inviteUser(data: { name: string; email: string; role: string }) {
-    const currentUser = await requireRole([Role.SUPER_ADMIN]);
-    const parsed = inviteStaffSchema.safeParse(data);
-    if (!parsed.success) {
-        return { error: parsed.error.issues[0].message };
-    }
-
-    let newUser;
-
-    const existingUser = await prisma.user.findUnique({ where: { email: parsed.data.email } });
-
-    // Set a predictable default password as advertised in the UI
-    const tempPassword = "xinteck123";
-    const hashedPassword = await bcrypt.hash(tempPassword, 10);
-
-    if (existingUser) {
-        if (existingUser.deletedAt !== null) {
-            // Revive soft-deleted ghost user
-            newUser = await prisma.user.update({
-                where: { email: parsed.data.email },
-                data: {
-                    name: parsed.data.name,
-                    passwordHash: hashedPassword,
-                    role: mapLabelToRole(parsed.data.role),
-                    status: UserStatus.ACTIVE,
-                    deletedAt: null // Resurrection!
-                }
-            });
-        } else {
-            return { error: "User with this email already exists" };
-        }
-    } else {
-        // Create brand new
-        newUser = await prisma.user.create({
-            data: {
-                name: parsed.data.name,
-                email: parsed.data.email,
-                passwordHash: hashedPassword,
-                role: mapLabelToRole(parsed.data.role),
-                status: UserStatus.ACTIVE,
-            }
-        });
-    }
-
-    let warningMessage: string | undefined;
-
-    // Send invite email via Resend
-    try {
-        const apiKey = await INTERNAL_getSecret("RESEND_API_KEY");
-        const fromEmail = await INTERNAL_getSecret("RESEND_FROM_EMAIL");
-
-        if (apiKey && fromEmail) {
-            const resend = new Resend(apiKey);
-            const htmlContent = await render(
-                StaffInviteEmail({
-                    name: parsed.data.name,
-                    email: parsed.data.email,
-                    role: parsed.data.role,
-                    tempPassword
-                }) as React.ReactElement
-            );
-
-            await resend.emails.send({
-                from: fromEmail,
-                to: [parsed.data.email],
-                subject: "You've been invited to Xinteck Admin",
-                html: htmlContent
-            });
-        } else {
-            warningMessage = "User created, but email failed: Missing Resend configuration in Settings.";
-        }
-    } catch (e: any) {
-        console.error("Failed to send invite email:", e);
-        warningMessage = `User created, but email failed: ${e.message}`;
-    }
-
-    await logAudit({
-        action: "user.invite",
-        entity: "User",
-        entityId: newUser.id,
-        userId: currentUser.id,
-        metadata: { email: newUser.email, role: parsed.data.role }
-    });
-
-    // Notification
-    try {
-        await NotificationService.broadcastToRoles({
-            roles: [Role.SUPER_ADMIN],
-            title: "Staff Invited",
-            message: `${currentUser.name} invited ${parsed.data.name} as ${parsed.data.role}.`,
-            type: NotificationType.INFO,
-
-            priority: NotificationPriority.NORMAL,
-            link: "/admin/staff",
-            metadata: { invitedBy: currentUser.name, newUserId: newUser.id }
-        });
-    } catch (e) {
-        console.error("Notification failed", e);
-    }
-
-    revalidatePath("/admin/staff", "page");
-    return warningMessage ? { success: true, warning: warningMessage } : { success: true };
-}
 
 export async function updateUserRole(id: string, newRoleLabel: string) {
     const currentUser = await requireRole([Role.SUPER_ADMIN]);

@@ -1,6 +1,7 @@
 "use client";
 
-import { deleteUser, deleteUsers, inviteUser, reactivateUser, suspendUser, updateUserRole } from "@/actions/user";
+import { inviteUser } from "@/actions/team";
+import { deleteUser, deleteUsers, reactivateUser, suspendUser, updateUserRole } from "@/actions/user";
 import { DataGrid } from "@/components/admin/DataGrid";
 import { RoleGate } from "@/components/admin/RoleGate";
 import { PageContainer, PageHeader } from "@/components/admin/ui";
@@ -57,32 +58,18 @@ export function StaffClient({ initialStaff }: StaffClientProps) {
     
     startTransition(async () => {
         try {
-            const result = await inviteUser({ name: inviteName, email: inviteEmail, role: inviteRole });
-            if (result?.error) {
-                error(result.error);
+            const mappedRole = inviteRole === "Admin" ? Role.ADMIN : Role.SUPPORT_STAFF;
+            const result = await inviteUser({ email: inviteEmail, role: mappedRole });
+            
+            if (result?.success === false) {
+                // Return server message directly to admin toast
+                error(result.message || "Failed to invite user");
                 return;
             }
-            if (result?.warning) {
-                // Warning is passed as an error toast so the admin clearly knows the Email Delivery failed,
-                // but we DO NOT return here, so the Optimistic UI successfully updates the table!
-                error(result.warning);
-            } else {
-                success("Invitation sent successfully");
-            }
             
-            // Optimistic update
-            mutateOptimisticStaff({
-               type: "ADD",
-               payload: {
-                   id: `temp-${Date.now()}`,
-                   name: inviteName,
-                   email: inviteEmail,
-                   role: inviteRole,
-                   status: "Active",
-                   lastActive: "Just now",
-                   avatar: inviteName.charAt(0)
-               }
-            });
+            success("Invitation sent successfully. They will appear here once registered.");
+            
+            // Note: Optimistic UI removed for 'ADD' because the user is not actively created until they register.
 
             setIsInviteOpen(false);
             resetForm();

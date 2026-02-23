@@ -1,4 +1,4 @@
-import { Button, Heading, Hr, Section, Text } from '@react-email/components';
+import { Button, Heading, Hr, Img, Section, Text } from '@react-email/components';
 import { XinteckEmailLayout } from './XinteckEmailLayout';
 
 export interface PasswordResetEmailProps {
@@ -10,6 +10,15 @@ export const PasswordResetEmail = ({
 }: PasswordResetEmailProps) => {
   return (
     <XinteckEmailLayout previewText="Reset your Xinteck password">
+      <Section className="text-left mb-[40px]">
+        <Img
+          src="https://xinteck.co.ke/logos/logo-dark-full.webp"
+          height="200"
+          alt="Xinteck Logo"
+          className="mx-auto block"
+          style={{ objectFit: 'contain' }}
+        />
+      </Section>
       <Heading className="text-[24px] font-black tracking-tight text-center text-white m-0 mb-[24px]">
         Password Reset Request
       </Heading>
@@ -19,7 +28,7 @@ export const PasswordResetEmail = ({
       </Text>
       
       <Text className="text-[16px] leading-[26px] text-text m-0 mb-[32px]">
-        Click the button below to securely set a new password. This link will safely expire in exactly 1 hour.
+        Click the button below to securely set a new password. This link will safely expire in exactly 30 minutes.
       </Text>
 
       <Section className="text-center mb-[40px]">
@@ -39,3 +48,5 @@ export const PasswordResetEmail = ({
     </XinteckEmailLayout>
   );
 };
+
+export default PasswordResetEmail;

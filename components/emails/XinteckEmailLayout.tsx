@@ -3,7 +3,6 @@ import {
     Container,
     Head,
     Html,
-    Img,
     Preview,
     Section,
     Tailwind,
@@ -45,17 +44,6 @@ export const XinteckEmailLayout = ({
       >
         <Body className="bg-white m-0 py-[40px] px-[20px] font-sans">
           <Container className="bg-bg mx-auto py-[40px] px-[32px] max-w-[600px] border border-border shadow-2xl rounded-[16px]">
-            {/* Header / Logo */}
-            <Section className="text-center mb-[40px]">
-              <Img
-                src="https://xinteck.co.ke/logos/logo-dark-full.webp"
-                height="48"
-                alt="Xinteck Logo"
-                className="mx-auto block"
-                style={{ objectFit: 'contain' }}
-              />
-            </Section>
-            
             {/* Main Content Area */}
             <Section className="bg-surface border border-border rounded-[12px] p-[32px] mb-[40px]">
               {children}

@@ -28,7 +28,11 @@ export async function inviteUser(data: { email: string; role: Role }) {
     // Check existing user
     const existingUser = await prisma.user.findUnique({ where: { email: parsed.email } });
     if (existingUser) {
-        return { success: false, message: "User with this email already exists." };
+        if (existingUser.deletedAt !== null) {
+            // User is soft-deleted. We allow re-invitation to resurrect the account.
+        } else {
+            return { success: false, message: "User with this email already exists." };
+        }
     }
 
     // Check pending invite

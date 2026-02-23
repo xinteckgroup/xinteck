@@ -6,7 +6,7 @@ import { logAudit } from "@/lib/audit";
 import { requireRole } from "@/lib/auth-check";
 import { prisma } from "@/lib/prisma";
 import { changePasswordSchema, resetPasswordSchema, updateProfileSchema } from "@/lib/validations";
-import { InvitationStatus, Role, UserStatus } from "@prisma/client";
+import { InvitationStatus, Role } from "@prisma/client";
 import { render } from "@react-email/render";
 import bcrypt from "bcrypt";
 import crypto from "crypto";
@@ -99,18 +99,26 @@ export async function registerUser(data: { name: string; password: string; token
     const hashedPassword = await bcrypt.hash(data.password, 10);
 
     /*
-    Purpose: Atomically create the user and consume the invitation.
+    Purpose: Atomically create or resurrect the user and consume the invitation.
     Decision: Using a transaction ensures that an invitation cannot be used twice if requests are sent in parallel (race condition protection).
+    Using upsert safely revives soft-deleted users ("ghost collision" prevention).
     */
     await prisma.$transaction([
-        prisma.user.create({
-            data: {
+        prisma.user.upsert({
+            where: { email },
+            create: {
                 name: data.name,
                 email,
                 passwordHash: hashedPassword,
                 role,
-                status: UserStatus.ACTIVE,
-                // Linked invitation? No, invitation links to user via email loosely or we can add userId to invitation
+                status: 'ACTIVE',
+            },
+            update: {
+                name: data.name,
+                passwordHash: hashedPassword,
+                role,
+                status: 'ACTIVE',
+                deletedAt: null // Resurrection!
             }
         }),
         prisma.invitation.update({

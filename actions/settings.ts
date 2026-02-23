@@ -166,12 +166,20 @@ export async function INTERNAL_getSecret(key: string): Promise<string | null> {
     // Check Env first? Or DB first?
     // Plan: DB overrides Env.
 
-    const config = await prisma.secretConfig.findUnique({ where: { key } });
+    const config = await prisma.siteSetting.findUnique({ where: { key } });
     if (config) {
         try {
-            return decrypt(config.encryptedValue);
+            // Note: resend keys are actually plain text in site settings currently, but let's try to decrypt, 
+            // and if it fails, just return the raw value if it starts with 're_' for resilience.
+            const rawValue = config.value;
+            if (rawValue.startsWith("re_") || !rawValue.includes(":")) {
+                return rawValue;
+            }
+            return decrypt(rawValue);
         } catch (e) {
             console.error(`Decryption failed for ${key}`, e);
+            // Fallback for unencrypted migration keys
+            return config.value;
         }
     }
 

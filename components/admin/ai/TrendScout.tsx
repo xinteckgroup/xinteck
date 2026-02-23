@@ -1,12 +1,13 @@
 "use client";
 
 import { bulkSaveIdeas, saveIdea, scoutTrends } from "@/actions/ai";
+import { useToast } from "@/components/admin/ui/Toast";
 import { AnimatePresence, motion } from "framer-motion";
 import { Check, CheckCheck, ExternalLink, Loader2, Sparkles, X } from "lucide-react";
 import { useState } from "react";
-import { toast } from "sonner";
 
 export function TrendScout() {
+    const { success, error, info } = useToast();
     const [scouting, setScouting] = useState(false);
     const [saving, setSaving] = useState(false);
     const [ideas, setIdeas] = useState<any[]>([]);
@@ -16,9 +17,9 @@ export function TrendScout() {
         try {
             const newIdeas = await scoutTrends();
             setIdeas(newIdeas);
-            toast.success("Intelligence gathering complete.");
-        } catch (error: any) {
-            toast.error(error.message);
+            success("Intelligence gathering complete.");
+        } catch (err: any) {
+            error(err.message);
         } finally {
             setScouting(false);
         }
@@ -28,9 +29,9 @@ export function TrendScout() {
         try {
             await saveIdea(idea);
             setIdeas(ideas.filter(i => i.title !== idea.title));
-            toast.success("Idea approved and queued.");
-        } catch (error: any) {
-            toast.error("Failed to approve idea.");
+            success("Idea approved and queued.");
+        } catch (err: any) {
+            error("Failed to approve idea.");
         }
     };
 
@@ -40,11 +41,11 @@ export function TrendScout() {
         try {
             const res = await bulkSaveIdeas(ideas);
             if (res.success) {
-                toast.success(`Approved ${ideas.length} ideas.`);
+                success(`Approved ${ideas.length} ideas.`);
                 setIdeas([]);
             }
-        } catch (error: any) {
-            toast.error("Failed to bulk approve.");
+        } catch (err: any) {
+            error("Failed to bulk approve.");
         } finally {
             setSaving(false);
         }
@@ -56,7 +57,7 @@ export function TrendScout() {
 
     const handleDiscardAll = () => {
         setIdeas([]);
-        toast.info("All trends discarded.");
+        info("All trends discarded.");
     };
 
     return (

@@ -2,12 +2,12 @@
 
 import { uploadFile } from "@/actions/media";
 import { MediaPicker } from "@/components/admin/MediaPicker";
+import { useToast } from "@/components/admin/ui/Toast";
 import { convertToWebP } from "@/lib/webp-converter";
 import { Bold as BoldIcon, FileCode2, Heading1, Heading2, Heading3, ImageIcon, Italic as ItalicIcon, Link as LinkIcon, List, Loader2, Quote, Redo2, Undo2, X } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
-import { toast } from "sonner";
 
 interface MarkdownEditorProps {
   value: string;
@@ -15,6 +15,7 @@ interface MarkdownEditorProps {
 }
 
 export function MarkdownEditor({ value, onChange }: MarkdownEditorProps) {
+  const { success, error, info } = useToast();
   const [activeTab, setActiveTab] = useState<"write" | "preview">("write");
   const [isUploading, setIsUploading] = useState(false);
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
@@ -180,23 +181,24 @@ export function MarkdownEditor({ value, onChange }: MarkdownEditorProps) {
     onChange(tempValue); // Temp update without pushing to history stack yet bridging the upload gap
     
     setIsUploading(true);
-    const toastId = toast.loading("Processing pasted image...");
+    info("Processing pasted image...");
 
     try {
         const webpFile = await convertToWebP(imageFile);
         const formData = new FormData();
         formData.append('file', webpFile);
+        info("Uploading image...");
         const result = await uploadFile(formData);
 
         if (result && result.url) {
             const finalValue = value.substring(0, start) + `\n![Pasted Image#center](${result.url})\n` + value.substring(end);
             updateValueAndHistory(finalValue, start + `\n![Pasted Image#center](${result.url})\n`.length, start + `\n![Pasted Image#center](${result.url})\n`.length);
-            toast.success("Pasted image processed!", { id: toastId });
+            success("Pasted image processed!");
         } else {
             throw new Error("Failed");
         }
-    } catch (error) {
-        toast.error("Failed to paste image.", { id: toastId });
+    } catch (error: any) {
+        error("Failed to paste image.");
         onChange(value); // Revert to original
     } finally {
         setIsUploading(false);

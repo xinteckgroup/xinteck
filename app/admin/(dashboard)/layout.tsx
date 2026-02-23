@@ -6,7 +6,6 @@ import { RoleProvider } from "@/components/admin/RoleContext";
 import { ToastProvider } from "@/components/admin/ui/Toast";
 import { getCurrentUser } from "@/lib/auth-check";
 import { Role } from "@prisma/client";
-import { Toaster } from "sonner";
 
 export const dynamic = "force-dynamic";
 
@@ -32,7 +31,6 @@ export default async function AdminLayout({ children }: { children: React.ReactN
             <AdminTopbar />
             <div className="flex-1 overflow-y-auto overflow-x-hidden">
                 <main className="min-h-full p-2 md:p-8">
-                  <Toaster richColors position="top-right" theme="dark" />
                   <ToastProvider>
                     {children}
                   </ToastProvider>

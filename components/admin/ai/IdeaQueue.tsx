@@ -2,13 +2,14 @@
 
 import { deleteIdea, generateDraft, getIdeas, updateIdea } from "@/actions/ai";
 import { DataGrid } from "@/components/admin/DataGrid";
+import { useToast } from "@/components/admin/ui/Toast";
 import { AnimatePresence, motion } from "framer-motion";
 import { Check, Edit2, Grid, LayoutList, Loader2, Trash2, Wand2, X } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { toast } from "sonner";
 
 export function IdeaQueue() {
+    const { success, error: toastError, info } = useToast();
     const [ideas, setIdeas] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
     const [generatingId, setGeneratingId] = useState<string | null>(null);
@@ -29,7 +30,7 @@ export function IdeaQueue() {
             const data = await getIdeas();
             setIdeas(data);
         } catch (error) {
-            toast.error("Failed to load ideas");
+            toastError("Failed to load ideas");
         } finally {
             setLoading(false);
         }
@@ -37,16 +38,16 @@ export function IdeaQueue() {
 
     const handleGenerate = async (idea: any) => {
         setGeneratingId(idea.id);
-        toast.info("Initializing Writer Agent...");
+        info("Initializing Writer Agent...");
         
         try {
             const result = await generateDraft(idea.id);
             if (result.success) {
-                toast.success("Draft Generated! Redirecting to editor...");
+                success("Draft Generated! Redirecting to editor...");
                 router.push(`/admin/blog/${result.postId}`);
             }
         } catch (error: any) {
-            toast.error(error.message);
+            toastError(error.message);
             setGeneratingId(null);
         }
     };
@@ -64,10 +65,10 @@ export function IdeaQueue() {
         try {
             await updateIdea(id, editForm);
             setIdeas(prev => prev.map(i => i.id === id ? { ...i, ...editForm } : i));
-            toast.success("AI Concept updated successfully");
+            success("AI Concept updated successfully");
             setEditingId(null);
         } catch (error) {
-            toast.error("Failed to update concept");
+            toastError("Failed to update concept");
         }
     };
 
@@ -80,9 +81,9 @@ export function IdeaQueue() {
         try {
             await deleteIdea(deleteConfirmId);
             setIdeas(prev => prev.filter(i => i.id !== deleteConfirmId));
-            toast.success("Idea discarded");
+            success("Idea discarded");
         } catch (error) {
-            toast.error("Failed to delete idea");
+            toastError("Failed to delete idea");
         } finally {
             setDeleteConfirmId(null);
         }
@@ -95,9 +96,9 @@ export function IdeaQueue() {
                 await deleteIdea(id);
             }
             setIdeas(prev => prev.filter(i => !ids.includes(i.id)));
-            toast.success("Ideas discarded");
+            success("Ideas discarded");
         } catch (error) {
-            toast.error("Failed to discard ideas");
+            toastError("Failed to discard ideas");
         }
     };
 

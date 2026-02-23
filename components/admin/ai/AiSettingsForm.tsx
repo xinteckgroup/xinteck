@@ -1,16 +1,17 @@
 "use client";
 
 import { generateExclusions, updateAiSettings } from "@/actions/ai";
+import { useToast } from "@/components/admin/ui/Toast";
 import { CORE_NICHES, SECONDARY_NICHES } from "@/lib/ai/config";
 import { Info, Loader2, Plus, Save, Sparkles, X } from "lucide-react";
 import { useState } from "react";
-import { toast } from "sonner";
 
 interface SettingsProps {
     initialSettings: any;
 }
 
 export function AiSettingsForm({ initialSettings }: SettingsProps) {
+    const { success, error, info } = useToast();
     const [loading, setLoading] = useState(false);
     const [settings, setSettings] = useState({
         targetNiches: initialSettings?.targetNiches || [],
@@ -54,9 +55,9 @@ export function AiSettingsForm({ initialSettings }: SettingsProps) {
         setLoading(true);
         try {
             await updateAiSettings(settings);
-            toast.success("AI Configuration Saved");
-        } catch (error) {
-            toast.error("Failed to save settings");
+            success("AI Configuration Saved");
+        } catch (err) {
+            error("Failed to save settings");
         } finally {
             setLoading(false);
         }
@@ -64,20 +65,20 @@ export function AiSettingsForm({ initialSettings }: SettingsProps) {
 
     const handleGenerateExclusions = async () => {
         if (settings.targetNiches.length === 0) {
-            toast.error("Please add target niches and save config first.");
+            error("Please add target niches and save config first.");
             return;
         }
         setGeneratingSuggestions(true);
-        toast.info("AI is analyzing your business profile...");
+        info("AI is analyzing your business profile...");
         try {
             const result = await generateExclusions();
             // Filter out ones already excluded
             const filtered = result.filter(r => !settings.excludedKeywords.includes(r.keyword));
             setSuggestions(filtered);
-            if (filtered.length === 0) toast.info("No new exclusions suggested.");
-            else toast.success("AI generated targeted exclusions.");
-        } catch (error: any) {
-            toast.error(error.message || "Failed to generate suggestions.");
+            if (filtered.length === 0) info("No new exclusions suggested.");
+            else success("AI generated targeted exclusions.");
+        } catch (err: any) {
+            error(err.message || "Failed to generate suggestions.");
         } finally {
             setGeneratingSuggestions(false);
         }

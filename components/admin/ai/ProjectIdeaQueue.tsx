@@ -2,13 +2,14 @@
 
 import { bulkSaveProjectIdeas, deleteProjectIdeaBulk, generateProjectDraft, getProjectIdeas, scoutProjectIdeas, updateProjectIdea } from "@/actions/project-ai";
 import { DataGrid } from "@/components/admin/DataGrid";
+import { useToast } from "@/components/admin/ui/Toast";
 import { AnimatePresence, motion } from "framer-motion";
 import { Check, Edit2, Grid, LayoutList, Loader2, RefreshCw, Trash2, Wand2, X } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { toast } from "sonner";
 
 export function ProjectIdeaQueue() {
+    const { success, error, info } = useToast();
     const [ideas, setIdeas] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
     const [scouting, setScouting] = useState(false);
@@ -29,8 +30,8 @@ export function ProjectIdeaQueue() {
         try {
             const data = await getProjectIdeas();
             setIdeas(data);
-        } catch (error) {
-            toast.error("Failed to load project ideas");
+        } catch (err) {
+            error("Failed to load project ideas");
         } finally {
             setLoading(false);
         }
@@ -38,14 +39,14 @@ export function ProjectIdeaQueue() {
 
     const handleScout = async () => {
         setScouting(true);
-        toast.info("Scouting for Case Study concepts...");
+        info("Scouting for Case Study concepts...");
         try {
             const newIdeas = await scoutProjectIdeas();
             await bulkSaveProjectIdeas(newIdeas);
             await loadIdeas();
-            toast.success("Found new Case Study concepts!");
-        } catch (error: any) {
-            toast.error(error.message || "Failed to scout ideas");
+            success("Found new Case Study concepts!");
+        } catch (err: any) {
+            error(err.message || "Failed to scout ideas");
         } finally {
             setScouting(false);
         }
@@ -53,16 +54,16 @@ export function ProjectIdeaQueue() {
 
     const handleGenerate = async (idea: any) => {
         setGeneratingId(idea.id);
-        toast.info("Initializing Engineering AI Writer...");
+        info("Initializing Engineering AI Writer...");
         
         try {
             const result = await generateProjectDraft(idea.id);
             if (result.projectId) {
-                toast.success("Draft Generated! Redirecting to editor...");
+                success("Draft Generated! Redirecting to editor...");
                 router.push(`/admin/projects/${result.projectId}`);
             }
-        } catch (error: any) {
-            toast.error(error.message);
+        } catch (err: any) {
+            error(err.message);
             setGeneratingId(null);
         }
     };
@@ -80,10 +81,10 @@ export function ProjectIdeaQueue() {
         try {
             await updateProjectIdea(id, editForm);
             setIdeas(prev => prev.map(i => i.id === id ? { ...i, ...editForm } : i));
-            toast.success("Case Study Concept updated successfully");
+            success("Case Study Concept updated successfully");
             setEditingId(null);
-        } catch (error) {
-            toast.error("Failed to update concept");
+        } catch (err) {
+            error("Failed to update concept");
         }
     };
 
@@ -96,9 +97,9 @@ export function ProjectIdeaQueue() {
         try {
             await deleteProjectIdeaBulk([deleteConfirmId]);
             setIdeas(prev => prev.filter(i => i.id !== deleteConfirmId));
-            toast.success("Idea discarded");
-        } catch (error) {
-            toast.error("Failed to delete idea");
+            success("Idea discarded");
+        } catch (err) {
+            error("Failed to delete idea");
         } finally {
             setDeleteConfirmId(null);
         }
@@ -109,9 +110,9 @@ export function ProjectIdeaQueue() {
         try {
             await deleteProjectIdeaBulk(ids);
             setIdeas(prev => prev.filter(i => !ids.includes(i.id)));
-            toast.success("Ideas discarded");
-        } catch (error) {
-            toast.error("Failed to discard ideas");
+            success("Ideas discarded");
+        } catch (err) {
+            error("Failed to discard ideas");
         }
     };
 

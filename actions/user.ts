@@ -9,6 +9,7 @@ import { inviteStaffSchema, uuidSchema } from "@/lib/validations";
 import { NotificationPriority, NotificationType, Role, UserStatus } from "@prisma/client";
 import bcrypt from "bcrypt";
 import { revalidatePath } from "next/cache";
+import { Resend } from "resend";
 
 export async function getUsers() {
     await requireRole([Role.ADMIN, Role.SUPER_ADMIN, Role.SUPPORT_STAFF]);
@@ -90,39 +91,27 @@ export async function inviteUser(data: { name: string; email: string; role: stri
         const fromEmail = await INTERNAL_getSecret("RESEND_FROM_EMAIL");
 
         if (apiKey && fromEmail) {
-            const res = await fetch("https://api.resend.com/emails", {
-                method: "POST",
-                headers: {
-                    "Authorization": `Bearer ${apiKey}`,
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({
-                    from: fromEmail,
-                    to: parsed.data.email,
-                    subject: "You've been invited to Xinteck Admin",
-                    html: `<div style="font-family: sans-serif; max-width: 600px; margin: 0 auto;">
-                        <h2 style="color: #D4AF37;">Welcome to Xinteck</h2>
-                        <p>Hi ${parsed.data.name},</p>
-                        <p>You have been invited to join the Xinteck admin panel as <strong>${parsed.data.role}</strong>.</p>
-                        <p>Your temporary login credentials:</p>
-                        <div style="background: #f5f5f5; padding: 16px; border-radius: 8px; margin: 16px 0;">
-                            <p style="margin: 4px 0;"><strong>Email:</strong> ${parsed.data.email}</p>
-                            <p style="margin: 4px 0;"><strong>Password:</strong> ${tempPassword}</p>
-                        </div>
-                        <p>Please log in and change your password immediately.</p>
-                        <hr style="border: none; border-top: 1px solid #eee; margin: 20px 0;" />
-                        <p style="color: #888; font-size: 12px;">This is an automated invitation from the Xinteck admin system.</p>
-                    </div>`
-                })
+            const resend = new Resend(apiKey);
+            await resend.emails.send({
+                from: fromEmail,
+                to: [parsed.data.email],
+                subject: "You've been invited to Xinteck Admin",
+                html: `<div style="font-family: sans-serif; max-width: 600px; margin: 0 auto;">
+                    <h2 style="color: #D4AF37;">Welcome to Xinteck</h2>
+                    <p>Hi ${parsed.data.name},</p>
+                    <p>You have been invited to join the Xinteck admin panel as <strong>${parsed.data.role}</strong>.</p>
+                    <p>Your temporary login credentials:</p>
+                    <div style="background: #f5f5f5; padding: 16px; border-radius: 8px; margin: 16px 0;">
+                        <p style="margin: 4px 0;"><strong>Email:</strong> ${parsed.data.email}</p>
+                        <p style="margin: 4px 0;"><strong>Password:</strong> ${tempPassword}</p>
+                    </div>
+                    <p>Please log in and change your password immediately.</p>
+                    <hr style="border: none; border-top: 1px solid #eee; margin: 20px 0;" />
+                    <p style="color: #888; font-size: 12px;">This is an automated invitation from the Xinteck admin system.</p>
+                </div>`
             });
-
-            if (!res.ok) {
-                const errorData = await res.json();
-                console.error("Resend API Error:", errorData);
-                warningMessage = `User created, but email failed: ${errorData.message || "Invalid Resend Configuration"}`;
-            }
         } else {
-            warningMessage = "User created, but email failed: Missing Resend API Key or From Email in Settings.";
+            warningMessage = "User created, but email failed: Missing Resend configuration in Settings.";
         }
     } catch (e: any) {
         console.error("Failed to send invite email:", e);

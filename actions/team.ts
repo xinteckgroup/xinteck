@@ -63,10 +63,17 @@ export async function inviteUser(data: { email: string; role: Role }) {
         return { success: false, message: "Capacity Reached: Maximum of 5 SUPPORT_STAFF accounts allowed." };
     }
 
+    // Verify email config BEFORE creating the DB record
+    const resendApiKey = await INTERNAL_getSecret("RESEND_API_KEY");
+    if (!resendApiKey) {
+        return { success: false, message: "Email Service is not configured. Ask a Super Admin to set the Resend API Key in Settings." };
+    }
+
     // Generate Token
     const token = crypto.randomBytes(32).toString("hex");
     const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000); // 7 Days
 
+    // Create Invitation
     const invitation = await prisma.invitation.create({
         data: {
             email: parsed.email,
@@ -79,7 +86,14 @@ export async function inviteUser(data: { email: string; role: Role }) {
     });
 
     // Send Email
-    await sendInvitationEmail(parsed.email, token, parsed.role, admin.role);
+    try {
+        await sendInvitationEmail(parsed.email, token, parsed.role, admin.role);
+    } catch (e: any) {
+        // If the email fails to deliver, rollback the invitation to prevent an orphaned pending state
+        await prisma.invitation.delete({ where: { id: invitation.id } });
+        console.error("Email Delivery Failed:", e.message);
+        return { success: false, message: "Failed to deliver the invitation email. Please check your Resend configuration and sender domain." };
+    }
 
     await logAudit({
         action: "team.invite_user",
@@ -143,7 +157,20 @@ export async function resendInvitation(id: string) {
         }
     });
 
-    await sendInvitationEmail(invitation.email, token, invitation.role, admin.role);
+    try {
+        await sendInvitationEmail(invitation.email, token, invitation.role, admin.role);
+    } catch (e: any) {
+        // Rollback update status
+        await prisma.invitation.update({
+            where: { id },
+            data: {
+                token: oldInvite.token, // restore
+                expiresAt: oldInvite.expiresAt,
+                status: oldInvite.status
+            }
+        });
+        return { success: false, message: "Failed to dispatch email. Please check the Resend API configuration." };
+    }
 
     await logAudit({
         action: "team.resend_invitation",

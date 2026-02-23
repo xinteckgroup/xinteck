@@ -37,10 +37,11 @@ export default function SessionsPage() {
     const handleRevoke = async (id: string) => {
         if (!confirm("Are you sure you want to revoke this session?")) return;
         try {
-            await revokeSession(id);
+            const res = await revokeSession(id);
+            if (!res.success) throw new Error(res.message);
             setSessions(prev => prev.filter(s => s.id !== id));
-        } catch (error) {
-            alert("Failed to revoke session");
+        } catch (error: any) {
+            alert(error.message || "Failed to revoke session");
         }
     };
 
@@ -49,11 +50,10 @@ export default function SessionsPage() {
         setRevoking(true);
         try {
             const result = await revokeAllOtherSessions();
-            if (result.success) {
-                await fetchSessions();
-            }
-        } catch (error) {
-            alert("Failed to revoke sessions. Please try again.");
+            if (!result.success) throw new Error(result.message);
+            await fetchSessions();
+        } catch (error: any) {
+            alert(error.message || "Failed to revoke sessions. Please try again.");
             console.error(error);
         } finally {
             setRevoking(false);

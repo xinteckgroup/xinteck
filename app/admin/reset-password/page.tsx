@@ -38,7 +38,8 @@ function ResetPasswordForm() {
         setErrorMsg("");
 
         try {
-            await resetPassword(token, password);
+            const res = await resetPassword(token, password);
+            if (!res.success) throw new Error(res.message);
             setStatus("success");
             setTimeout(() => router.push("/admin/login"), 3000);
         } catch (err: any) {

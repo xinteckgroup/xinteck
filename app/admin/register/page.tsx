@@ -67,11 +67,15 @@ function RegisterContent() {
         setError("");
 
         try {
-            await registerUser({ 
+            const res = await registerUser({ 
                 name: formData.name, 
                 password: formData.password,
                 token: token! 
             });
+            
+            if (!res.success) {
+                throw new Error(res.message);
+            }
             // Redirect to login
             router.push("/admin/login?registered=true");
         } catch (err: any) {

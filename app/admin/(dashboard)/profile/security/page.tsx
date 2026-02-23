@@ -24,7 +24,8 @@ export default function SecurityPage() {
 
         setPassLoading(true);
         try {
-            await changePassword(passData.old, passData.new);
+            const res = await changePassword(passData.old, passData.new);
+            if (!res.success) throw new Error(res.message);
             setPassMsg("Success: Password updated successfully.");
             setPassData({ old: "", new: "", confirm: "" });
         } catch (e: any) {

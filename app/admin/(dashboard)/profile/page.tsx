@@ -41,7 +41,8 @@ export default function ProfilePage() {
         setProfileMsg("");
         setProfileLoading(true);
         try {
-            await updateProfile(profileData);
+            const res = await updateProfile(profileData);
+            if (!res.success) throw new Error(res.message);
             setUserName(profileData.name);
             if (profileData.avatar) setUserAvatar(profileData.avatar);
             setProfileMsg("Success: Profile updated successfully.");

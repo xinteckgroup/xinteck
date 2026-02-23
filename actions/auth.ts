@@ -77,16 +77,16 @@ export async function registerUser(data: { name: string; password: string; token
             // So we must rely on token.
             // IF isFirstUser, we could allow a bypass, but let's stick to strict Token Gating.
             // If DB is empty, user should use "prisma db seed".
-            throw new Error("Registration is by invitation only.");
+            return { success: false, message: "Registration is by invitation only." };
         }
-        throw new Error("Registration is by invitation only.");
+        return { success: false, message: "Registration is by invitation only." };
     }
 
     // Logic WITH Token
     const invitation = await prisma.invitation.findUnique({ where: { token: data.token } });
 
     if (!invitation || invitation.status !== InvitationStatus.PENDING || invitation.expiresAt < new Date()) {
-        throw new Error("Invalid or expired invitation.");
+        return { success: false, message: "Invalid or expired invitation." };
     }
 
     email = invitation.email;
@@ -94,7 +94,9 @@ export async function registerUser(data: { name: string; password: string; token
 
     // Purpose: Pre-check for existing user to fail early before expensive hashing.
     const existing = await prisma.user.findUnique({ where: { email } });
-    if (existing) throw new Error("User already exists.");
+    if (existing && existing.deletedAt === null) {
+        return { success: false, message: "User already exists." };
+    }
 
     const hashedPassword = await bcrypt.hash(data.password, 10);
 
@@ -217,12 +219,12 @@ export async function resetPassword(token: string, newPassword: string) {
     const resetRecord = await prisma.passwordResetToken.findUnique({ where: { token: parsed.token } });
 
     if (!resetRecord || resetRecord.expiresAt < new Date()) {
-        throw new Error("Invalid or expired token");
+        return { success: false, message: "Invalid or expired token" };
     }
 
     const user = await prisma.user.findUnique({ where: { email: resetRecord.email } });
     if (!user) {
-        throw new Error("User not found");
+        return { success: false, message: "User not found" };
     }
 
     const passwordHash = await bcrypt.hash(parsed.newPassword, 10);
@@ -257,11 +259,11 @@ export async function changePassword(oldPassword: string, newPassword: string) {
     const user = await requireRole([Role.SUPER_ADMIN, Role.ADMIN, Role.SUPPORT_STAFF]);
 
     const dbUser = await prisma.user.findUnique({ where: { id: user.id } });
-    if (!dbUser) throw new Error("User not found");
+    if (!dbUser) return { success: false, message: "User not found" };
 
     const valid = await bcrypt.compare(parsed.oldPassword, dbUser.passwordHash);
     if (!valid) {
-        throw new Error("Incorrect current password.");
+        return { success: false, message: "Incorrect current password." };
     }
 
     const passwordHash = await bcrypt.hash(parsed.newPassword, 10);
@@ -291,7 +293,7 @@ export async function updateProfile(data: { name: string; email: string; avatar?
 
     if (parsed.email !== user.email) {
         const existing = await prisma.user.findUnique({ where: { email: parsed.email } });
-        if (existing) throw new Error("Email already taken");
+        if (existing) return { success: false, message: "Email already taken" };
     }
 
     await prisma.user.update({
@@ -343,7 +345,7 @@ export async function revokeSession(sessionId: string) {
     // Ensure session belongs to user
     const session = await prisma.session.findUnique({ where: { id: sessionId } });
     if (!session || session.userId !== user.id) {
-        throw new Error("Session not found or access denied");
+        return { success: false, message: "Session not found or access denied" };
     }
 
     await prisma.session.delete({ where: { id: sessionId } });
@@ -367,7 +369,7 @@ export async function revokeAllOtherSessions() {
     const currentSessionToken = cookieStore.get("session_token")?.value;
 
     if (!currentSessionToken) {
-        throw new Error("No active session found.");
+        return { success: false, message: "No active session found." };
     }
 
     const result = await prisma.session.deleteMany({

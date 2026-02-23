@@ -233,12 +233,14 @@ export function SettingsForm({ initialSettings, initialContactInfo }: SettingsFo
                                     <div className="grid md:grid-cols-2 gap-4">
                                         <Input 
                                             label="From Email"
+                                            tooltip="Sender identity for outgoing system emails (e.g. invites). Use onboarding@resend.dev for local testing. Best Practice for Production: system@yourdomain.com."
                                             value={formData.resendFromEmail}
                                             onChange={e => handleChange("resendFromEmail", e.target.value)}
                                             placeholder="onboarding@resend.dev"
                                         />
                                         <Input 
                                             label="To Email (Admin)"
+                                            tooltip="The actual admin inbox that receives notifications when clients fill out the contact form (e.g. your personal email or admin@yourdomain.com)."
                                             value={formData.resendToEmail}
                                             onChange={e => handleChange("resendToEmail", e.target.value)}
                                             placeholder="admin@xinteck.co.ke"

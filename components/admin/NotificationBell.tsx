@@ -171,11 +171,11 @@ export function NotificationBell() {
                             animate={{ opacity: 1, y: 0, scale: 1 }}
                             exit={{ opacity: 0, y: 10, scale: 0.95 }}
                             transition={{ duration: 0.2 }}
-                            className="absolute right-0 top-full mt-2 w-[90vw] sm:w-96 admin-surface-floating rounded-xl overflow-hidden z-50 origin-top-right"
+                            className="absolute right-0 top-full mt-2 w-[90vw] sm:w-96 bg-white dark:bg-black border border-[var(--admin-border)] shadow-2xl rounded-xl overflow-hidden z-50 origin-top-right"
                         >
                             {/* Header */}
-                            <div className="flex items-center justify-between p-4 border-b border-[var(--admin-border)] admin-surface-input">
-                                <h3 className="text-sm font-bold text-[var(--admin-text)] flex items-center gap-2">
+                            <div className="flex items-center justify-between p-4 border-b border-[var(--admin-border)] bg-gray-50 dark:bg-[#0a0a0a]">
+                                <h3 className="text-sm font-bold text-zinc-900 dark:text-[var(--admin-text)] flex items-center gap-2">
                                     Notifications 
                                     {totalUnread > 0 && <span className="bg-destructive text-destructive-foreground text-[10px] px-2 py-0.5 rounded-full">{totalUnread}</span>}
                                 </h3>
@@ -192,8 +192,8 @@ export function NotificationBell() {
                             {/* List */}
                             <div className="max-h-[60vh] md:max-h-[400px] overflow-y-auto scrollbar-thin scrollbar-thumb-muted-foreground/20 scrollbar-track-transparent">
                                 {unread.length === 0 && read.length === 0 ? (
-                                    <div className="p-12 text-center text-[var(--admin-muted)] flex flex-col items-center gap-3">
-                                        <div className="w-12 h-12 rounded-full admin-surface-input flex items-center justify-center mb-1">
+                                    <div className="p-12 text-center text-zinc-500 dark:text-[var(--admin-muted)] flex flex-col items-center gap-3">
+                                        <div className="w-12 h-12 rounded-full bg-gray-100 dark:bg-zinc-900 flex items-center justify-center mb-1">
                                             <Bell size={20} className="opacity-50" />
                                         </div>
                                         <p className="text-sm font-medium">All caught up!</p>
@@ -212,15 +212,15 @@ export function NotificationBell() {
                                                         <div className="mt-0.5 shrink-0">{getIcon(n.type)}</div>
                                                     <div className="flex-1 min-w-0">
                                                             <div className="flex items-center justify-between gap-2 mb-1">
-                                                                <h4 className="text-sm font-semibold text-[var(--admin-text)] group-hover:text-gold transition-colors truncate pr-2">{n.title}</h4>
-                                                                <span className="text-[10px] text-[var(--admin-muted)] whitespace-nowrap shrink-0">
+                                                                <h4 className="text-sm font-semibold text-zinc-900 dark:text-[var(--admin-text)] group-hover:text-gold transition-colors truncate pr-2">{n.title}</h4>
+                                                                <span className="text-[10px] text-zinc-500 dark:text-[var(--admin-muted)] whitespace-nowrap shrink-0">
                                                                     {new Date(n.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                                                                 </span>
                                                             </div>
-                                                            <p className="text-xs text-[var(--admin-muted)] line-clamp-2 leading-relaxed">{n.message}</p>
+                                                            <p className="text-xs text-zinc-500 dark:text-[var(--admin-muted)] line-clamp-2 leading-relaxed">{n.message}</p>
                                                         </div>
                                                         {n.link && (
-                                                            <ChevronRight size={14} className="text-[var(--admin-text)]/30 self-center group-hover:text-gold transition-colors shrink-0" />
+                                                            <ChevronRight size={14} className="text-zinc-900/40 dark:text-[var(--admin-text)]/30 self-center group-hover:text-gold transition-colors shrink-0" />
                                                         )}
                                                     </div>
                                                 ))}
@@ -231,7 +231,7 @@ export function NotificationBell() {
                                         {read.length > 0 && (
                                             <>
                                                 {unread.length > 0 && (
-                                                    <div className="px-4 py-2 admin-surface-input text-[10px] font-bold text-muted-foreground uppercase tracking-wider sticky top-0 backdrop-blur-md border-y border-[var(--admin-border)]">
+                                                    <div className="px-4 py-2 bg-gray-50 dark:bg-[#0a0a0a] text-[10px] font-bold text-zinc-500 dark:text-muted-foreground uppercase tracking-wider sticky top-0 border-y border-[var(--admin-border)]">
                                                         Recent History
                                                     </div>
                                                 )}
@@ -240,17 +240,17 @@ export function NotificationBell() {
                                                 {read.map(n => (
                                                     <div 
                                                         key={n.id}
-                                                        className="p-4 border-b border-[var(--admin-border)] bg-transparent opacity-60 hover:opacity-100 transition-opacity flex gap-3 group hover:bg-[var(--admin-text)]/5"
+                                                        className="p-4 border-b border-[var(--admin-border)] bg-transparent opacity-60 hover:opacity-100 transition-opacity flex gap-3 group hover:bg-zinc-900/5 dark:hover:bg-[var(--admin-text)]/5"
                                                     >
                                                         <div className="mt-0.5 grayscale opacity-50 shrink-0">{getIcon(n.type)}</div>
                                                         <div className="flex-1 min-w-0">
                                                             <div className="flex items-center justify-between gap-2 mb-1">
-                                                                <h4 className="text-sm font-medium text-[var(--admin-text)]/80">{n.title}</h4>
-                                                                <span className="text-[10px] text-[var(--admin-muted)]">
+                                                                <h4 className="text-sm font-medium text-zinc-900/80 dark:text-[var(--admin-text)]/80">{n.title}</h4>
+                                                                <span className="text-[10px] text-zinc-500 dark:text-[var(--admin-muted)]">
                                                                     {new Date(n.createdAt).toLocaleDateString()}
                                                                 </span>
                                                             </div>
-                                                            <p className="text-xs text-[var(--admin-muted)] line-clamp-1">{n.message}</p>
+                                                            <p className="text-xs text-zinc-500 dark:text-[var(--admin-muted)] line-clamp-1">{n.message}</p>
                                                         </div>
                                                     </div>
                                                 ))}

@@ -145,7 +145,7 @@ export function NewsletterClient({ initialData, stats }: NewsletterClientProps) 
         </div>
 
         {/* Filters */}
-        <div className="flex flex-col md:flex-row gap-4 items-center justify-between admin-surface-primary backdrop-blur-xs p-3 md:p-4 rounded-[12px] border border-[var(--admin-border)] shadow-xl">
+        <div className="flex flex-col md:flex-row gap-4 items-center justify-between admin-surface-primary backdrop-blur-sm p-3 md:p-4 rounded-[12px] border border-[var(--admin-border)] shadow-xl">
           <div className="relative w-full md:w-64 lg:w-96 bg-black/60 dark:bg-white/30 rounded-[10px]">
              <div className="relative">
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--admin-muted)] pointer-events-none" size={18} />
@@ -177,7 +177,7 @@ export function NewsletterClient({ initialData, stats }: NewsletterClientProps) 
         </div>
 
         {/* Subscribers Table */}
-        <div className="admin-surface-primary backdrop-blur-xs rounded-[12px] border border-[var(--admin-border)] overflow-hidden shadow-2xl flex flex-col min-h-[400px]">
+        <div className="admin-surface-primary backdrop-blur-sm rounded-[12px] border border-[var(--admin-border)] overflow-hidden shadow-2xl flex flex-col min-h-[400px]">
           <div className="overflow-x-auto custom-scrollbar">
             <table className="w-full text-left border-collapse min-w-[700px]">
               <thead>
@@ -202,11 +202,21 @@ export function NewsletterClient({ initialData, stats }: NewsletterClientProps) 
                   subscribers.map((sub) => (
                     <tr key={sub.id} className="border-b border-[var(--admin-border)]/50 hover:bg-[var(--admin-text)]/5 transition-colors group">
                       <td className="p-4">
-                        <div className="flex items-center gap-3">
-                          <div className="w-10 h-10 rounded-full bg-primary/10 border border-primary/20 flex items-center justify-center text-sm font-black text-gold shadow-sm">
-                            {sub.email.charAt(0).toUpperCase()}
+                        <div className="flex flex-col gap-1.5 min-w-0">
+                          <div className="flex items-center gap-2">
+                             <a 
+                                 href={`mailto:${sub.email}`} 
+                                 className="text-[14px] font-bold text-[var(--admin-text)] hover:text-gold transition-colors truncate"
+                                 title="Click to email subscriber directly"
+                             >
+                                 {sub.email}
+                             </a>
                           </div>
-                          <span className="text-[14px] font-bold text-[var(--admin-text)] leading-tight">{sub.email}</span>
+                          <div className="flex items-center gap-1.5">
+                             <span className="bg-gold/10 text-gold border border-gold/20 px-2 py-0.5 rounded-[4px] text-[9px] font-bold uppercase tracking-wider backdrop-blur-sm max-w-max">
+                                 Source: {sub.source}
+                             </span>
+                          </div>
                         </div>
                       </td>
                       <td className="p-4">

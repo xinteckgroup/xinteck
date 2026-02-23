@@ -19,7 +19,7 @@ export function AiDashboardClient({ initialSettings }: AiDashboardProps) {
         <PageContainer>
             <PageHeader 
                 title="AI Editorial Assistant" 
-                subtitle="Automated trend discovery and drafting engine powered by Gemini 1.5 Flash."
+                subtitle="Automated trend discovery and drafting engine powered by Gemini 2.5 Flash."
                 actions={
                     <div className="admin-surface-secondary p-1 rounded-[8px] flex gap-1">
                         <button

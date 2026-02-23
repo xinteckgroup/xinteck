@@ -176,5 +176,14 @@ export async function INTERNAL_getSecret(key: string): Promise<string | null> {
     }
 
     // Fallback to Env
+    if (key === "CLOUDINARY_CLOUD_NAME" && process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME) {
+        return process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME;
+    }
+    if (key === "CLOUDINARY_API_KEY" && process.env.NEXT_PUBLIC_CLOUDINARY_API_KEY) {
+        return process.env.NEXT_PUBLIC_CLOUDINARY_API_KEY;
+    }
+    if (key === "CLOUDINARY_API_SECRET" && process.env.NEXT_PUBLIC_CLOUDINARY_API_SECRET) {
+        return process.env.NEXT_PUBLIC_CLOUDINARY_API_SECRET;
+    }
     return process.env[key] || null;
 }

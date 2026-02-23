@@ -18,17 +18,21 @@ export default async function SettingsPage() {
         getSiteSettingCategories(),
     ]);
 
-    // Fetch contact info for the Contact tab
-    const [emailSetting, phoneSetting, phonesSetting] = await Promise.all([
+    // Fetch contact info & social links for the Contact tab
+    const [emailSetting, phoneSetting, phonesSetting, socialsSetting] = await Promise.all([
         prisma.siteSetting.findUnique({ where: { key: "BUSINESS_EMAIL" } }),
         prisma.siteSetting.findUnique({ where: { key: "BUSINESS_PHONE" } }),
         prisma.siteSetting.findUnique({ where: { key: "CONTACT_PHONES" } }),
+        prisma.siteSetting.findUnique({ where: { key: "SOCIAL_LINKS" } }),
     ]);
 
     const contactInfo: ContactInfo = {
         businessEmail: emailSetting?.value || "info@xinteck.co.ke",
         businessPhone: phoneSetting?.value || "+254 782 063 736",
         contactPhones: phonesSetting?.value ? (() => { try { return JSON.parse(phonesSetting.value); } catch { return []; }})() : [],
+        socialLinks: socialsSetting?.value ? (() => { try { return JSON.parse(socialsSetting.value); } catch { return []; }})() : [
+            { platform: "WhatsApp", url: "", icon: "MessageCircle" }
+        ],
     };
 
     return (

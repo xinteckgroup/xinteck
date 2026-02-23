@@ -1,23 +1,24 @@
 "use client";
 
-import { deleteIdea, generateDraft, getIdeas, updateIdea } from "@/actions/ai";
+import { bulkSaveProjectIdeas, deleteProjectIdeaBulk, generateProjectDraft, getProjectIdeas, scoutProjectIdeas, updateProjectIdea } from "@/actions/project-ai";
 import { DataGrid } from "@/components/admin/DataGrid";
 import { AnimatePresence, motion } from "framer-motion";
-import { Check, Edit2, Grid, LayoutList, Loader2, Trash2, Wand2, X } from "lucide-react";
+import { Check, Edit2, Grid, LayoutList, Loader2, RefreshCw, Trash2, Wand2, X } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 
-export function IdeaQueue() {
+export function ProjectIdeaQueue() {
     const [ideas, setIdeas] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
+    const [scouting, setScouting] = useState(false);
     const [generatingId, setGeneratingId] = useState<string | null>(null);
     const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
     const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null);
     
     // Edit State
     const [editingId, setEditingId] = useState<string | null>(null);
-    const [editForm, setEditForm] = useState({ title: "", angle: "" });
+    const [editForm, setEditForm] = useState({ title: "", angle: "", client: "" });
     const router = useRouter();
 
     useEffect(() => {
@@ -26,24 +27,39 @@ export function IdeaQueue() {
 
     const loadIdeas = async () => {
         try {
-            const data = await getIdeas();
+            const data = await getProjectIdeas();
             setIdeas(data);
         } catch (error) {
-            toast.error("Failed to load ideas");
+            toast.error("Failed to load project ideas");
         } finally {
             setLoading(false);
         }
     };
 
+    const handleScout = async () => {
+        setScouting(true);
+        toast.info("Scouting for Case Study concepts...");
+        try {
+            const newIdeas = await scoutProjectIdeas();
+            await bulkSaveProjectIdeas(newIdeas);
+            await loadIdeas();
+            toast.success("Found new Case Study concepts!");
+        } catch (error: any) {
+            toast.error(error.message || "Failed to scout ideas");
+        } finally {
+            setScouting(false);
+        }
+    };
+
     const handleGenerate = async (idea: any) => {
         setGeneratingId(idea.id);
-        toast.info("Initializing Writer Agent...");
+        toast.info("Initializing Engineering AI Writer...");
         
         try {
-            const result = await generateDraft(idea.id);
-            if (result.success) {
+            const result = await generateProjectDraft(idea.id);
+            if (result.projectId) {
                 toast.success("Draft Generated! Redirecting to editor...");
-                router.push(`/admin/blog/${result.postId}`);
+                router.push(`/admin/projects/${result.projectId}`);
             }
         } catch (error: any) {
             toast.error(error.message);
@@ -53,7 +69,7 @@ export function IdeaQueue() {
 
     const handleEditStart = (idea: any) => {
         setEditingId(idea.id);
-        setEditForm({ title: idea.title, angle: idea.angle });
+        setEditForm({ title: idea.title, angle: idea.angle, client: idea.client || "" });
     };
 
     const handleEditCancel = () => {
@@ -62,9 +78,9 @@ export function IdeaQueue() {
 
     const handleEditSave = async (id: string) => {
         try {
-            await updateIdea(id, editForm);
+            await updateProjectIdea(id, editForm);
             setIdeas(prev => prev.map(i => i.id === id ? { ...i, ...editForm } : i));
-            toast.success("AI Concept updated successfully");
+            toast.success("Case Study Concept updated successfully");
             setEditingId(null);
         } catch (error) {
             toast.error("Failed to update concept");
@@ -78,7 +94,7 @@ export function IdeaQueue() {
     const confirmDelete = async () => {
         if (!deleteConfirmId) return;
         try {
-            await deleteIdea(deleteConfirmId);
+            await deleteProjectIdeaBulk([deleteConfirmId]);
             setIdeas(prev => prev.filter(i => i.id !== deleteConfirmId));
             toast.success("Idea discarded");
         } catch (error) {
@@ -91,9 +107,7 @@ export function IdeaQueue() {
     const handleDeleteBulk = async (ids: string[]) => {
         if (!confirm("Are you sure you want to discard these ideas?")) return;
         try {
-            for (const id of ids) {
-                await deleteIdea(id);
-            }
+            await deleteProjectIdeaBulk(ids);
             setIdeas(prev => prev.filter(i => !ids.includes(i.id)));
             toast.success("Ideas discarded");
         } catch (error) {
@@ -111,8 +125,17 @@ export function IdeaQueue() {
                 className="flex flex-col items-center justify-center py-20 border border-dashed border-[var(--admin-border)] rounded-[12px] admin-surface-primary backdrop-blur-xs"
             >
                 <Wand2 className="text-muted-foreground/50 mb-4" size={48} />
-                <p className="text-[var(--admin-text)] text-sm font-bold">The editorial queue is empty.</p>
-                <p className="text-[var(--admin-text)]/80 text-xs text-center max-w-xs mt-1">Use the "Newsroom" tab to scout trends and populate this queue.</p>
+                <p className="text-[var(--admin-text)] text-sm font-bold">The case study queue is empty.</p>
+                <p className="text-[var(--admin-text)]/80 text-xs text-center max-w-xs mt-1 mb-6">Click below to command Gemini to ideate high-value engineering case studies.</p>
+                
+                <button 
+                    onClick={handleScout}
+                    disabled={scouting}
+                    className="flex items-center gap-2 bg-gold/20 text-gold border border-gold/50 px-6 py-3 rounded-[8px] font-bold text-sm hover:bg-gold/30 transition-all disabled:opacity-50"
+                >
+                    {scouting ? <Loader2 className="animate-spin" size={16} /> : <Wand2 size={16} />}
+                    {scouting ? "Ideating Concepts..." : "Scout for Case Studies"}
+                </button>
             </motion.div>
         );
     }
@@ -121,7 +144,17 @@ export function IdeaQueue() {
         <div className="space-y-4">
             {/* Header / Toolbar */}
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-                <h2 className="text-lg md:text-xl font-bold text-[var(--admin-text)]">Editorial Queue ({ideas.length})</h2>
+                <div className="flex items-center gap-4">
+                    <h2 className="text-lg md:text-xl font-bold text-[var(--admin-text)]">Case Study Concepts ({ideas.length})</h2>
+                    <button 
+                        onClick={handleScout}
+                        disabled={scouting}
+                        className="flex items-center gap-2 bg-gold/10 text-gold border border-gold/30 px-3 py-1.5 rounded-[6px] font-bold text-[10px] md:text-xs hover:bg-gold/20 transition-all disabled:opacity-50"
+                    >
+                        {scouting ? <Loader2 className="animate-spin" size={12} /> : <RefreshCw size={12} />}
+                        {scouting ? "Ideating..." : "Scout More"}
+                    </button>
+                </div>
                 
                 <div className="flex items-center gap-2 admin-surface-primary backdrop-blur-xs border border-[var(--admin-border)] p-1 self-start md:self-auto rounded-[8px]">
                     <button 
@@ -163,6 +196,12 @@ export function IdeaQueue() {
                                 {editingId === idea.id ? (
                                     <div className="flex-1 min-w-0 space-y-3 w-full">
                                         <input 
+                                            value={editForm.client}
+                                            onChange={e => setEditForm({...editForm, client: e.target.value})}
+                                            placeholder="Hypothetical Client (Optional)"
+                                            className="w-full admin-surface-input border border-[var(--admin-border)] rounded-[6px] px-3 py-2 text-[var(--admin-text)] text-xs outline-none focus:border-gold/50"
+                                        />
+                                        <input 
                                             value={editForm.title}
                                             onChange={e => setEditForm({...editForm, title: e.target.value})}
                                             className="w-full admin-surface-input border border-[var(--admin-border)] rounded-[6px] px-3 py-2 text-[var(--admin-text)] text-sm outline-none focus:border-gold/50 font-bold"
@@ -199,7 +238,7 @@ export function IdeaQueue() {
                                                     SCORE: {idea.score}
                                                 </span>
                                                 <span className="text-[var(--admin-text)]/80 text-[10px] uppercase tracking-wider font-bold">
-                                                    {new Date(idea.createdAt).toLocaleDateString()}
+                                                    {idea.client || "Generic Client"}
                                                 </span>
                                             </div>
                                             <h3 className="text-base md:text-lg font-bold text-[var(--admin-text)] mb-1 truncate">{idea.title}</h3>
@@ -213,7 +252,7 @@ export function IdeaQueue() {
                                                 className="flex-1 flex items-center justify-center gap-2 px-6 py-2.5 bg-gold/50 text-[var(--admin-background)] font-bold text-xs md:text-sm rounded-[10px] hover:bg-gold transition-colors disabled:opacity-50 shadow-sm border border-[var(--admin-border)]"
                                             >
                                                 {generatingId === idea.id ? (
-                                                    <><Loader2 className="animate-spin" size={16} /> Writing...</>
+                                                    <><Loader2 className="animate-spin" size={16} /> Drafting...</>
                                                 ) : (
                                                     <><Wand2 size={16} /> Generate Draft</>
                                                 )}
@@ -251,6 +290,7 @@ export function IdeaQueue() {
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
                         transition={{ duration: 0.2 }}
+                        className="overflow-hidden"
                     >
                         <DataGrid 
                             columns={[
@@ -258,11 +298,20 @@ export function IdeaQueue() {
                                     key: "title", 
                                     label: "Concept", 
                                     render: (row: any) => (
-                                        <div className="flex flex-col">
+                                        <div className="flex flex-col py-1">
                                             <span className="font-bold text-[var(--admin-text)] max-w-[300px] truncate">{row.title}</span>
-                                            <span className="text-xs text-[var(--admin-text)]/80 max-w-[300px] truncate">{row.angle}</span>
+                                            <span className="text-xs text-[var(--admin-text)]/80 max-w-[300px] truncate">{row.client || "Generic Client"}</span>
                                         </div>
                                     )  
+                                },
+                                { 
+                                    key: "angle", 
+                                    label: "Angle", 
+                                    render: (row: any) => (
+                                        <span className="text-xs text-[var(--admin-text)]/80 max-w-[300px] truncate block">
+                                            {row.angle}
+                                        </span>
+                                    ) 
                                 },
                                 { 
                                     key: "score", 
@@ -271,17 +320,17 @@ export function IdeaQueue() {
                                         <span className={`text-[10px] font-bold px-2 py-0.5 rounded border ${
                                             row.score > 80 
                                                 ? "bg-green-500/10 text-green-400 border-green-500/20" 
-                                                : "bg-yellow-500/10 text-yellow-400 border-yellow-500/20"
+                                                : "bg-yellow-500/10 text-yellow-500 border-yellow-500/20"
                                         }`}>
                                             {row.score}
                                         </span>
                                     ) 
                                 },
                                 {
-                                    key: "generate",
+                                    key: "actions",
                                     label: "Actions",
                                     render: (row: any) => (
-                                        <div className="flex items-center gap-2 w-full justify-end pr-2">
+                                        <div className="flex justify-end items-center gap-2 w-full pr-2">
                                             <button 
                                                 onClick={() => handleGenerate(row)}
                                                 disabled={!!generatingId}
@@ -308,6 +357,7 @@ export function IdeaQueue() {
                                             </button>
                                             <button 
                                                 onClick={() => triggerDelete(row.id)}
+                                                disabled={!!generatingId}
                                                 className="p-2 admin-surface-input text-[var(--admin-text)] rounded-[6px] hover:bg-red-600 hover:text-white transition-all font-bold"
                                                 title="Delete Concept"
                                             >
@@ -320,7 +370,7 @@ export function IdeaQueue() {
                             data={ideas}
                             pagination={{
                                 page: 1,
-                                totalPages: 1, // Client side mostly
+                                totalPages: 1,
                                 onPageChange: () => {},
                                 total: ideas.length
                             }}

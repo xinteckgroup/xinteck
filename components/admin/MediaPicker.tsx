@@ -1,10 +1,10 @@
 "use client";
 
-import { getMediaFiles, uploadFile } from "@/actions/media";
+import { deleteFile, getMediaFiles, uploadFile } from "@/actions/media";
 import { Button } from "@/components/admin/ui/Button";
 import { useToast } from "@/components/admin/ui/Toast";
 import { convertToWebP } from "@/lib/webp-converter";
-import { Image as ImageIcon, Loader2, Search, UploadCloud, X } from "lucide-react";
+import { Image as ImageIcon, Loader2, Search, Trash2, UploadCloud, X } from "lucide-react";
 import Image from "next/image";
 import { useCallback, useEffect, useRef, useState, useTransition } from "react";
 import { createPortal } from "react-dom";
@@ -83,6 +83,20 @@ export function MediaPicker({ isOpen, onClose, onSelect }: MediaPickerProps) {
         }
     };
 
+    const handleDeleteFile = async (id: string, e: React.MouseEvent) => {
+        e.stopPropagation();
+        if (window.confirm("Permanently delete this file system-wide? This action cannot be undone.")) {
+            try {
+                await deleteFile(id);
+                toast("File deleted successfully", "success");
+                loadFiles();
+            } catch (error) {
+                console.error("Delete failed", error);
+                toast("Failed to delete file", "error");
+            }
+        }
+    };
+
     const onInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
         if (file) handleUploadFile(file);
@@ -121,54 +135,52 @@ export function MediaPicker({ isOpen, onClose, onSelect }: MediaPickerProps) {
 
     // Portal to body to ensure it's on top
     return createPortal(
-        <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/50 backdrop-blur-sm p-4 text-[var(--admin-text)]">
+        <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/50 backdrop-blur-sm p-4 text-white">
             <div 
-                className={`admin-surface-primary border border-[var(--admin-border)] transition-colors rounded-[16px] w-full max-w-4xl max-h-[80vh] flex flex-col shadow-2xl overflow-hidden animate-in fade-in zoom-in duration-200 relative ${isDragging ? 'border-gold ring-2 ring-gold/20' : ''}`}
+                className={`bg-white/30 dark:bg-white/20 backdrop-blur-md transition-colors rounded-[10px] w-full max-w-4xl max-h-[80vh] flex flex-col shadow-2xl overflow-hidden animate-in fade-in zoom-in duration-200 relative ${isDragging ? 'border-gold ring-2 ring-gold/20' : ''}`}
                 onDragOver={onDragOver}
                 onDragLeave={onDragLeave}
                 onDrop={onDrop}
             >
                 {/* Drag Overlay */}
                 {isDragging && (
-                    <div className="absolute inset-0 bg-primary/10 z-50 flex items-center justify-center pointer-events-none">
-                        <div className="bg-popover p-6 rounded-[12px] border border-primary text-primary flex flex-col items-center animate-bounce">
+                    <div className="absolute inset-0 bg-black/80 z-50 flex items-center justify-center pointer-events-none">
+                        <div className="bg-black/90 p-6 rounded-[12px] border border-gold text-gold flex flex-col items-center animate-bounce">
                             <UploadCloud size={48} className="mb-2" />
-                            <span className="font-bold text-lg">Drop image to upload</span>
+                            <span className="font-bold text-lg text-[var(--admin-text)]">Drop image to upload</span>
                         </div>
                     </div>
                 )}
                 
                 {/* Header */}
-                <div className="p-4 border-b border-[var(--admin-border)] flex items-center justify-between admin-surface-primary">
+                <div className="p-4 border-b border-[var(--admin-border)] flex items-center justify-between bg-transparent">
                     <h3 className="text-lg font-bold text-[var(--admin-text)] flex items-center gap-2">
                         <ImageIcon size={20} className="text-gold" />
                         Select Media
                     </h3>
-                    <button onClick={onClose} className="text-[var(--admin-text)]/40 hover:text-[var(--admin-text)] transition-colors">
+                    <button onClick={onClose} className="text-[var(--admin-text)] hover:text-gold transition-colors">
                         <X size={24} />
                     </button>
                 </div>
 
                 {/* Toolbar */}
-                <div className="p-4 border-b border-[var(--admin-border)] flex gap-4 flex-wrap admin-surface-input">
-                    <div className="relative flex-1 min-w-[200px] md:w-64 lg:w-96 bg-black/60 dark:bg-white/30 rounded-[10px]">
+                <div className="p-4 border-b border-[var(--admin-border)] flex gap-4 flex-wrap bg-transparent">
+                    <div className="relative flex-1 min-w-[200px] md:w-64 lg:w-96 bg-black/60 rounded-[10px]">
                         <div className="relative">
-                            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--admin-muted)] pointer-events-none" size={18} />
+                            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-white/50 pointer-events-none" size={18} />
                             <input 
                                 value={searchQuery}
                                 onChange={(e) => setSearchQuery(e.target.value)}
                                 onKeyDown={(e) => e.key === 'Enter' && loadFiles()}
                                 placeholder="Search images... (Press Enter)" 
-                                className="w-full admin-surface-input border border-[var(--admin-border)] rounded-[10px] pl-10 pr-4 py-2 text-sm text-[var(--admin-text)] placeholder:text-[var(--admin-muted)] focus:border-gold/50 focus:outline-none transition-colors"
+                                className="w-full bg-transparent rounded-[10px] pl-10 pr-4 py-2 text-sm text-[var(--admin-text)] placeholder:text-[var(--admin-text)] focus:border-gold/50 focus:outline-none transition-colors"
                             />
                         </div>
                     </div>
-                    <Button variant="outline" onClick={loadFiles} disabled={loading || uploading}>
+                    <Button onClick={loadFiles} disabled={loading || uploading} className="text-[var(--admin-text)] border-white/20 hover:bg-white/10 hover:text-white">
                         Search
                     </Button>
                     
-                    <div className="w-px bg-[var(--admin-border)] mx-2 hidden md:block" />
-
                     <input 
                         type="file" 
                         ref={fileInputRef}
@@ -179,7 +191,7 @@ export function MediaPicker({ isOpen, onClose, onSelect }: MediaPickerProps) {
                     <Button 
                         onClick={() => fileInputRef.current?.click()} 
                         disabled={uploading}
-                        className="bg-gold text-primary-foreground hover:bg-gold/90"
+                        className="bg-gold text-[var(--admin-text)] hover:bg-gold/90 font-bold"
                     >
                         {uploading ? (
                             <><Loader2 className="animate-spin mr-2" size={16} /> Uploading...</>
@@ -192,12 +204,12 @@ export function MediaPicker({ isOpen, onClose, onSelect }: MediaPickerProps) {
                 {/* Grid */}
                 <div className="flex-1 overflow-y-auto p-4 bg-transparent">
                     {loading && !uploading ? (
-                        <div className="flex items-center justify-center h-40 text-[var(--admin-muted)]">
+                        <div className="flex items-center justify-center h-40 text-white/50">
                             <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gold mr-2" />
                             Loading library...
                         </div>
                     ) : files.length === 0 && !loading ? (
-                        <div className="flex flex-col items-center justify-center h-40 text-[var(--admin-muted)]">
+                        <div className="flex flex-col items-center justify-center h-40 text-white/50">
                             <ImageIcon size={32} className="mb-2 opacity-50" />
                             <p>No images found.</p>
                             <button 
@@ -210,46 +222,60 @@ export function MediaPicker({ isOpen, onClose, onSelect }: MediaPickerProps) {
                     ) : (
                         <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-3">
                             {uploading && (
-                                <div className="aspect-square bg-[var(--admin-text)]/5 rounded-[8px] border border-[var(--admin-border)] border-dashed flex items-center justify-center animate-pulse">
-                                    <div className="flex flex-col items-center text-[var(--admin-muted)]">
+                                <div className="aspect-square bg-white/5 rounded-[8px] border border-[var(--admin-border)] border-dashed flex items-center justify-center animate-pulse">
+                                    <div className="flex flex-col items-center text-white/50">
                                         <Loader2 className="animate-spin mb-2" size={24} />
                                         <span className="text-xs">Uploading...</span>
                                     </div>
                                 </div>
                             )}
                             {files.map((file) => (
-                                <button
+                                <div
                                     key={file.id}
-                                    onClick={() => {
-                                        onSelect(file.url);
-                                        onClose();
-                                    }}
-                                    className="group relative aspect-square admin-surface-secondary rounded-[8px] overflow-hidden border border-[var(--admin-border)] hover:border-gold/50 transition-all focus:outline-none focus:ring-2 focus:ring-gold/50"
+                                    className="group relative aspect-square bg-black/40 rounded-[10px] overflow-hidden hover:border-gold/50 transition-all focus-within:ring-2 focus-within:ring-gold/50"
                                 >
                                     <Image 
                                         src={file.url} 
                                         alt={file.name} 
                                         fill 
-                                        className="object-cover transition-transform group-hover:scale-110" 
+                                        className="object-cover transition-transform group-hover:scale-110 pointer-events-none" 
                                     />
-                                    <div className="absolute inset-0 bg-gold/20 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                                        <span className="bg-gold text-primary-foreground text-xs font-bold px-3 py-1 rounded-[4px]">Select</span>
-                                    </div>
-                                    <div className="absolute bottom-0 left-0 right-0 bg-popover/90 p-1 text-[10px] text-popover-foreground truncate px-2">
+                                    
+                                    {/* Select Overlay */}
+                                    <button
+                                        onClick={() => {
+                                            onSelect(file.url);
+                                            onClose();
+                                        }}
+                                        className="absolute inset-0 bg-gold/20 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center w-full h-full cursor-pointer focus:outline-none"
+                                    >
+                                        <span className="bg-gold text-[var(--admin-text)] text-xs font-bold px-3 py-1 rounded-[4px]">Select</span>
+                                    </button>
+
+                                    {/* Delete Button */}
+                                    <button 
+                                        onClick={(e) => handleDeleteFile(file.id, e)}
+                                        className="absolute top-2 right-2 bg-red-600 hover:bg-red-700 text-white p-1.5 rounded-[6px] opacity-0 group-hover:opacity-100 transition-opacity z-10 shadow-lg"
+                                        title="Permanently Delete System-Wide"
+                                    >
+                                        <Trash2 size={14} />
+                                    </button>
+
+                                    <div className="absolute bottom-0 left-0 right-0 bg-black/90 p-1 text-[12px] text-[var(--admin-text)] truncate px-2 pointer-events-none">
                                         {file.name}
                                     </div>
-                                </button>
+                                </div>
                             ))}
                         </div>
                     )}
                 </div>
 
                 {/* Footer */}
-                <div className="p-4 border-t border-[var(--admin-border)] admin-surface-input flex justify-between items-center">
-                     <p className="text-[10px] text-[var(--admin-muted)]">
+                <div className="p-4 border-t border-[var(--admin-border)] bg-transparent flex justify-between items-center">
+                     <p className="text-[12px] text-[var(--admin-text)]">
                         Drag & Drop an image anywhere, or use the button.
                      </p>
-                     <Button variant="ghost" onClick={onClose}>Cancel</Button>
+                     <Button variant="ghost" onClick={onClose} className="text-white hover:text-white hover:bg-white/10">Cancel</Button>
                 </div>
             </div>
         </div>,

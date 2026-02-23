@@ -9,26 +9,35 @@ export type ContactConfig = {
     phones?: { label: string; value: string }[];
 }
 
+export type SocialLink = { platform: string; url: string; icon: string };
+
 export type BusinessContact = {
     email: string;
     phone: string;
+    socialLinks: SocialLink[];
 }
 
 export const getBusinessContact = unstable_cache(
     async (): Promise<BusinessContact> => {
         try {
-            const [emailSetting, phoneSetting] = await Promise.all([
+            const [emailSetting, phoneSetting, socialSetting] = await Promise.all([
                 prisma.siteSetting.findUnique({ where: { key: "BUSINESS_EMAIL" } }),
                 prisma.siteSetting.findUnique({ where: { key: "BUSINESS_PHONE" } }),
+                prisma.siteSetting.findUnique({ where: { key: "SOCIAL_LINKS" } }),
             ]);
+
+            const parsedSocials = socialSetting?.isPublic && socialSetting.value
+                ? (() => { try { return JSON.parse(socialSetting.value); } catch { return []; } })()
+                : [];
 
             return {
                 email: emailSetting?.isPublic ? emailSetting.value : "info@xinteck.co.ke",
                 phone: phoneSetting?.isPublic ? phoneSetting.value : "+254 782 063 736",
+                socialLinks: parsedSocials,
             };
         } catch (error) {
             console.error("Failed to fetch business contact:", error);
-            return { email: "info@xinteck.co.ke", phone: "+254 782 063 736" };
+            return { email: "info@xinteck.co.ke", phone: "+254 782 063 736", socialLinks: [] };
         }
     },
     ["business-contact"],

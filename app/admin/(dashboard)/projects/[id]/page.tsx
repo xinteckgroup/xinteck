@@ -6,8 +6,10 @@ import { notFound } from "next/navigation";
 
 export const dynamic = "force-dynamic";
 
-export default async function EditProjectPage({ params }: { params: { id: string } }) {
+export default async function EditProjectPage(props: { params: Promise<{ id: string }> }) {
   await requireRole([Role.ADMIN, Role.SUPER_ADMIN]);
+
+  const params = await props.params;
 
   if (params.id === 'new') {
       return <ProjectEditorForm />; // New Project

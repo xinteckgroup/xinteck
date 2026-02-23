@@ -16,7 +16,7 @@ export default function ContactPage() {
   
   // Dynamic Config State
   const [config, setConfig] = useState<ContactConfig | null>(null);
-  const [businessContact, setBusinessContact] = useState<BusinessContact>({ email: "info@xinteck.co.ke", phone: "+254 782 063 736" });
+  const [businessContact, setBusinessContact] = useState<BusinessContact>({ email: "info@xinteck.co.ke", phone: "+254 782 063 736", socialLinks: [] });
   const [contactPhones, setContactPhones] = useState<{ label: string; value: string }[]>([]);
   const [selectedService, setSelectedService] = useState<string>("");
   const [availableBudgets, setAvailableBudgets] = useState<string[]>([]);
@@ -171,6 +171,9 @@ export default function ContactPage() {
     },
     phoneCard,
   ];
+
+  const whatsappLink = businessContact.socialLinks?.find(link => link.platform === "WhatsApp")?.url || `https://wa.me/${businessContact.phone.replace(/[^0-9]/g, '')}`;
+  const linkedinLink = businessContact.socialLinks?.find(link => link.platform === "LinkedIn")?.url || "https://linkedin.com/company/xinteck";
 
   if (submitted) {
     return (
@@ -432,16 +435,21 @@ export default function ContactPage() {
            </div>
            <div className="flex flex-wrap justify-center gap-4 md:gap-6">
                <a 
-                 href="https://wa.me/254795213399"
+                 href={whatsappLink}
                  target="_blank"
                  rel="noopener noreferrer"
                  className={`flex items-center gap-3 px-6 md:px-8 py-3 rounded-[10px] bg-green-600 text-white hover:bg-green-500 transition-all shadow-lg hover:shadow-green-600/20 ${TYPOGRAPHY.button}`}
                >
                   <MessageCircle size={24} /> WhatsApp Business
                </a>
-               <button className={`flex items-center gap-3 px-6 md:px-8 py-3 rounded-[10px] bg-blue-600 text-white hover:bg-blue-500 transition-all shadow-lg hover:shadow-blue-600/20 ${TYPOGRAPHY.button}`}>
+               <a 
+                 href={linkedinLink}
+                 target="_blank"
+                 rel="noopener noreferrer"
+                 className={`flex items-center gap-3 px-6 md:px-8 py-3 rounded-[10px] bg-blue-600 text-white hover:bg-blue-500 transition-all shadow-lg hover:shadow-blue-600/20 ${TYPOGRAPHY.button}`}
+               >
                   <Globe size={24} /> LinkedIn Career
-               </button>
+               </a>
            </div>
         </section>
       </div>

@@ -85,6 +85,8 @@ export async function getProject(id: string) {
         category: mapEnumToCategory(project.category),
         status: mapEnumToStatus(project.status),
         image: project.coverImage,
+        role: project.role || "",
+        tags: project.tags || [],
         completionDate: project.completionDate ? project.completionDate.toISOString().split('T')[0] : ""
     };
 }
@@ -96,6 +98,13 @@ export async function createProject(data: any) {
     // Auto slug
     const slug = parsed.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '');
 
+    let finalStatus = mapStatusToEnum(data.status) || ProjectStatus.IN_REVIEW;
+
+    // Enforce Approval Workflow: Only SUPER_ADMIN can directly Publish (ACTIVE or COMPLETED)
+    if ((finalStatus === ProjectStatus.ACTIVE || finalStatus === ProjectStatus.COMPLETED) && user.role !== Role.SUPER_ADMIN) {
+        finalStatus = ProjectStatus.IN_REVIEW;
+    }
+
     const project = await prisma.project.create({
         data: {
             title: data.title,
@@ -103,9 +112,12 @@ export async function createProject(data: any) {
             client: data.client,
             url: data.url,
             description: data.description,
+            content: data.content,
             coverImage: data.image,
+            role: data.role || "Development",
+            tags: data.tags || [],
             category: mapCategoryToEnum(data.category) || ProjectCategory.WEB_DEV,
-            status: mapStatusToEnum(data.status) || ProjectStatus.IN_REVIEW,
+            status: finalStatus,
             completionDate: data.completionDate ? new Date(data.completionDate) : null,
             authorId: user.id
         }
@@ -132,10 +144,17 @@ export async function updateProject(id: string, data: any) {
     // For now keep slug stable or update if explicitly needed?
     // Let's keep simple.
 
-    const { category, status, completionDate, ...rest } = parsed;
+    const { category, status, completionDate, image, role, tags, ...rest } = parsed;
 
     // Optimistic locking (Phase 3)
     const currentVersion = data.version;
+
+    let finalStatus = status ? mapStatusToEnum(status) : undefined;
+
+    // Enforce Approval Workflow: Only SUPER_ADMIN can directly Publish (ACTIVE or COMPLETED)
+    if (finalStatus && (finalStatus === ProjectStatus.ACTIVE || finalStatus === ProjectStatus.COMPLETED) && user.role !== Role.SUPER_ADMIN) {
+        finalStatus = ProjectStatus.IN_REVIEW;
+    }
 
     try {
         const project = await prisma.project.update({
@@ -145,8 +164,11 @@ export async function updateProject(id: string, data: any) {
             },
             data: {
                 ...rest,
+                ...(image !== undefined ? { coverImage: image } : {}),
+                ...(role !== undefined ? { role } : {}),
+                ...(tags !== undefined ? { tags } : {}),
                 ...(category && mapCategoryToEnum(category) ? { category: mapCategoryToEnum(category) } : {}),
-                ...(status && mapStatusToEnum(status) ? { status: mapStatusToEnum(status) } : {}),
+                ...(finalStatus ? { status: finalStatus } : {}),
                 completionDate: completionDate ? new Date(completionDate) : (completionDate === null ? null : undefined),
                 version: { increment: 1 }
             }

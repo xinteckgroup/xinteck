@@ -13,6 +13,7 @@ import {
 } from "@/types/service";
 import { Service } from "@prisma/client";
 import { Image as ImageIcon, Plus, Save, X } from "lucide-react";
+import { isRedirectError } from "next/dist/client/components/redirect-error";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
@@ -66,7 +67,6 @@ export function ServiceForm({ service }: ServiceFormProps) {
         slug: service?.slug || "",
         description: service?.description || "",
         image: (service as any)?.image || "",
-        themeColor: service?.themeColor || "#B8860B",
         
         // Flattened JSON Sections
         section1Title: initialSection1.title || "",
@@ -115,7 +115,6 @@ export function ServiceForm({ service }: ServiceFormProps) {
                     slug: formData.slug,
                     description: formData.description,
                     image: formData.image,
-                    themeColor: formData.themeColor,
                     version: formData.version,
 
                     features: features.filter(f => f.trim() !== ""),
@@ -168,6 +167,8 @@ export function ServiceForm({ service }: ServiceFormProps) {
                 router.push("/admin/services");
                 router.refresh();
             } catch (error: any) {
+                if (isRedirectError(error)) throw error; // Allow Next.js to run the Server-Action redirect
+
                 console.error(error);
                 const msg = error.message || "Something went wrong";
                 
@@ -248,7 +249,7 @@ export function ServiceForm({ service }: ServiceFormProps) {
                 <div className="lg:col-span-2 flex flex-col gap-3 md:gap-6 min-w-0">
                      
                      {/* Core Details */}
-                     <div className="admin-surface-primary backdrop-blur-xs rounded-[10px] p-3 md:p-6 overflow-hidden">
+                     <div className="bg-white/30 dark:bg-black/60 backdrop-blur-xl shadow-lg border border-[var(--admin-border)] rounded-[10px] p-3 md:p-6 overflow-hidden">
 
                         <div className="flex flex-col gap-3 md:gap-4">
                             <div className="flex flex-col gap-1 md:gap-2">
@@ -334,7 +335,7 @@ export function ServiceForm({ service }: ServiceFormProps) {
                      </div>
 
                      {/* Content Blocks */}
-                     <div className="admin-surface-primary backdrop-blur-xs rounded-[10px] p-3 md:p-6 overflow-hidden">
+                     <div className="bg-white/30 dark:bg-black/60 backdrop-blur-xl shadow-lg border border-[var(--admin-border)] rounded-[10px] p-3 md:p-6 overflow-hidden">
                         <h3 className="font-bold text-[var(--admin-text)] text-xs md:text-sm border-b border-[var(--admin-border)] pb-2 mb-3 md:mb-4">
                             Content Sections
                         </h3>
@@ -469,33 +470,8 @@ export function ServiceForm({ service }: ServiceFormProps) {
 
                 {/* Sidebar Column */}
                 <div className="flex flex-col gap-3 md:gap-6 min-w-0">
-                    
-                    {/* Theme */}
-                    <div className="admin-surface-primary backdrop-blur-xs rounded-[10px] p-3 md:p-6 flex flex-col gap-3 md:gap-4">
-                        <h3 className="font-bold text-[var(--admin-text)] text-xs md:text-sm border-b border-[var(--admin-border)] pb-2">
-                            Branding
-                        </h3>
-                        <div className="flex flex-col gap-1 md:gap-2">
-                            <label className="text-[8px] md:text-xs font-bold text-[var(--admin-text)]">Theme Color</label>
-                            <div className="flex gap-2">
-                                <input 
-                                    type="color" 
-                                    value={formData.themeColor} 
-                                    onChange={(e) => setFormData({...formData, themeColor: e.target.value})}
-                                    className="h-9 w-12 bg-transparent border border-[var(--admin-border)] rounded-full p-0 cursor-pointer" 
-                                />
-                                <input 
-                                    value={formData.themeColor} 
-                                    onChange={(e) => setFormData({...formData, themeColor: e.target.value})}
-                                    placeholder="#000000" 
-                                    className="flex-1 admin-surface-input rounded-[8px] px-2 md:px-3 py-1.5 md:py-2 text-[var(--admin-text)] text-xs md:text-sm outline-none focus:border-gold/50 font-mono"
-                                />
-                            </div>
-                        </div>
-                    </div>
-
                     {/* Features */}
-                    <div className="admin-surface-primary backdrop-blur-xs rounded-[10px] p-3 md:p-6 flex flex-col gap-3 md:gap-4">
+                    <div className="bg-white/30 dark:bg-black/60 backdrop-blur-xl shadow-lg border border-[var(--admin-border)] rounded-[10px] p-3 md:p-6 flex flex-col gap-3 md:gap-4">
                         <div className="flex items-center justify-between border-b border-[var(--admin-border)] pb-2">
                             <h3 className="font-bold text-[var(--admin-text)] text-xs md:text-sm">
                                 Features
@@ -533,7 +509,7 @@ export function ServiceForm({ service }: ServiceFormProps) {
                     </div>
 
                     {/* Budget Tiers */}
-                    <div className="admin-surface-primary backdrop-blur-xs rounded-[10px] p-3 md:p-6 flex flex-col gap-3 md:gap-4">
+                    <div className="bg-white/30 dark:bg-black/60 backdrop-blur-xl shadow-lg border border-[var(--admin-border)] rounded-[10px] p-3 md:p-6 flex flex-col gap-3 md:gap-4">
                         <div className="flex items-center justify-between border-b border-[var(--admin-border)] pb-2">
                             <h3 className="font-bold text-[var(--admin-text)] text-xs md:text-sm">
                                 Budget Tiers for Contact Form
@@ -571,7 +547,7 @@ export function ServiceForm({ service }: ServiceFormProps) {
                     </div>
 
                     {/* Process */}
-                    <div className="admin-surface-primary backdrop-blur-xs rounded-[10px] p-3 md:p-6 flex flex-col gap-3 md:gap-4">
+                    <div className="bg-white/30 dark:bg-black/60 backdrop-blur-xl shadow-lg border border-[var(--admin-border)] rounded-[10px] p-3 md:p-6 flex flex-col gap-3 md:gap-4">
                          <div className="flex items-center justify-between border-b border-[var(--admin-border)] pb-2">
                             <h3 className="font-bold text-[var(--admin-text)] text-xs md:text-sm">
                                 Process Steps

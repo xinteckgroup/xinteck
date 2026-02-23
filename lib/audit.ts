@@ -11,6 +11,7 @@ export type AuditAction =
     | "contact.star"
     | "contact.unstar"
     | "contact.reply"
+    | "contact.assign"
     | "newsletter.subscribe"
     | "newsletter.unsubscribe"
     | "newsletter.delete"

@@ -239,7 +239,8 @@ body {
    ADMIN — DARK MODE
 ========================= */
 
-.dark .admin-background-root {
+.dark .admin-background-root,
+.admin-modal-root {
   --admin-text: #ffffff;
   --admin-muted: #a1a1aa;
 
@@ -249,6 +250,32 @@ body {
   --admin-surface-input: rgba(255, 255, 255, 0.06);
 
   color: var(--admin-text);
+}
+
+/* =========================
+   CLIENT MODAL ROOT
+========================= */
+
+.client-modal-root {
+  --background: #000000;
+  --foreground: #ffffff;
+  --card: #09090b;
+  --card-foreground: #ffffff;
+  --popover: #09090b;
+  --popover-foreground: #ffffff;
+  --primary: #D4AF37;
+  --primary-foreground: #000000;
+  --secondary: #27272a;
+  --secondary-foreground: #ffffff;
+  --muted: #27272a;
+  --muted-foreground: #a1a1aa;
+  --accent: #27272a;
+  --accent-foreground: #ffffff;
+  --destructive: #7f1d1d;
+  --destructive-foreground: #ffffff;
+  --border: #27272a;
+  --input: #27272a;
+  --ring: #D4AF37;
 }
 
 /* =========================

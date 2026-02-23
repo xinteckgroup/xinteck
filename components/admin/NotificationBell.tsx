@@ -1,6 +1,7 @@
 "use client";
 
 import { getNotifications, markAllNotificationsRead, markNotificationRead } from "@/actions/notifications";
+import { useToast } from "@/components/admin/ui/Toast";
 import { Notification, NotificationPriority, NotificationType } from "@prisma/client";
 import { AnimatePresence, motion } from "framer-motion";
 import { Bell, Check, CheckCircle2, ChevronRight, Info, ShieldAlert, XCircle } from "lucide-react";
@@ -12,6 +13,7 @@ type NotificationItem = Notification;
 
 export function NotificationBell() {
     const router = useRouter();
+    const { toast } = useToast();
     const [isOpen, setIsOpen] = useState(false);
     const [unread, setUnread] = useState<NotificationItem[]>([]);
     const [read, setRead] = useState<NotificationItem[]>([]);
@@ -63,6 +65,27 @@ export function NotificationBell() {
             document.removeEventListener("visibilitychange", handleVisibilityChange);
         };
     }, [totalUnread]); // Re-run effect when priority changes (adaptive)
+
+    // Watcher for New Proactive Notifications
+    const prevUnreadCountRef = useRef(totalUnread);
+    useEffect(() => {
+        if (totalUnread > prevUnreadCountRef.current && unread.length > 0) {
+             // A new notification arrived! Fire toast for the newest item.
+             const newest = unread[0]; // Since it returns ordered by desc
+             
+             // Map Prisma severity to Toast severity
+             let toastType: "info" | "success" | "warning" | "error" = "info";
+             if (newest.type === "SUCCESS") toastType = "success";
+             if (newest.type === "ERROR") toastType = "error";
+             if (newest.priority === "HIGH" || newest.priority === "CRITICAL" || newest.type === "WARNING") toastType = "info";
+
+             toast(
+                 `${newest.title}: ${newest.message.substring(0, 50)}${newest.message.length > 50 ? '...' : ''}`,
+                 toastType
+             );
+        }
+        prevUnreadCountRef.current = totalUnread;
+    }, [totalUnread, unread, toast]);
 
     // Handlers
     const handleMarkRead = async (id: string, link: string | null) => {

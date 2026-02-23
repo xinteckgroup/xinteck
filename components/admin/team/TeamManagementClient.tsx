@@ -134,9 +134,9 @@ export function TeamManagementClient({ users, invitations }: { users: User[]; in
 
 function RoleBadge({ role }: { role: Role }) {
     const styles = {
-        SUPER_ADMIN: "bg-purple-500/10 text-purple-400 border-purple-500/20",
-        ADMIN: "bg-blue-500/10 text-blue-400 border-blue-500/20",
-        SUPPORT_STAFF: "bg-[var(--admin-text)]/10 text-[var(--admin-muted)] border-[var(--admin-border)]",
+        SUPER_ADMIN: "bg-gold/10 text-gold border-gold/30",
+        ADMIN: "bg-[var(--admin-text)]/10 text-[var(--admin-text)] border-[var(--admin-border)]",
+        SUPPORT_STAFF: "bg-[var(--admin-text)]/5 text-[var(--admin-muted)] border-[var(--admin-border)]/50",
     };
     return (
         <span className={`px-2 py-0.5 rounded-[4px] text-[10px] font-black uppercase tracking-wider border ${styles[role]}`}>

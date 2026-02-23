@@ -1,6 +1,8 @@
 import { INTERNAL_getSecret } from "@/actions/settings";
 import { logAudit } from "@/lib/audit";
 import { prisma } from "@/lib/prisma";
+import { NotificationService } from "@/lib/services/notification-service";
+import { NotificationPriority, NotificationType, Role } from "@prisma/client";
 import { NextResponse } from "next/server";
 import { z } from "zod";
 
@@ -37,12 +39,21 @@ export async function POST(req: Request) {
       }
     });
 
-    // 3. Audit Log
+    // 3. Audit Log & Notifications
     await logAudit({
       action: "newsletter.subscribe",
       entity: "NewsletterSubscriber",
       entityId: subscriber.id,
       metadata: { email }
+    });
+
+    await NotificationService.broadcastToRoles({
+      roles: [Role.SUPER_ADMIN, Role.ADMIN],
+      title: "New Newsletter Subscriber",
+      message: `${email} has joined the laboratory frequency.`,
+      type: NotificationType.SUCCESS,
+      priority: NotificationPriority.NORMAL,
+      link: "/admin/newsletter"
     });
 
     // 4. Resend Audience Integration (using encrypted secrets)

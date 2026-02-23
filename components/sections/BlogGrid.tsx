@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 import { Calendar, ChevronRight, Clock } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
 
 interface Post {
@@ -12,6 +13,7 @@ interface Post {
   readTime: string;
   tag: string;
   slug: string;
+  image?: string;
 }
 
 export function BlogGrid({ initialPosts }: { initialPosts: Post[] }) {
@@ -34,8 +36,22 @@ export function BlogGrid({ initialPosts }: { initialPosts: Post[] }) {
           <div className={`aspect-[4/3] rounded-[10px] bg-primary/10 backdrop-blur-xl flex items-center justify-center relative overflow-hidden ${
              i === 0 ? "md:flex-[0.6]" : "w-full"
           }`}>
-             <div className="absolute inset-0 bg-gradient-to-tr from-gold/10 to-transparent group-hover:scale-110 transition-transform duration-700" />
-             <span className="text-gold/20 font-black text-7xl md:text-9xl">POST</span>
+             {post.image ? (
+               <Image
+                 src={post.image}
+                 alt={post.title}
+                 fill
+                 className="object-cover group-hover:scale-110 transition-transform duration-700"
+                 sizes={i === 0 ? "(max-width: 768px) 100vw, 60vw" : "(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"}
+               />
+             ) : (
+               <>
+                 <div className="absolute inset-0 bg-gradient-to-tr from-gold/10 to-transparent group-hover:scale-110 transition-transform duration-700" />
+                 <span className="text-gold/20 font-black text-7xl md:text-9xl">POST</span>
+               </>
+             )}
+             {/* Gradient overlay to ensure text readability if needed, though card text is below image */}
+             <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
           </div>
 
           <div className={`flex flex-col gap-4 ${i === 0 ? "flex-1" : ""}`}>

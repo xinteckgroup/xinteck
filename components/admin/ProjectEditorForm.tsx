@@ -1,11 +1,13 @@
 "use client";
 
 import { createProject, updateProject } from "@/actions/project";
+import { MarkdownEditor } from "@/components/admin/MarkdownEditor";
 import { MediaPicker } from "@/components/admin/MediaPicker";
 import { PageContainer, PageHeader, useToast } from "@/components/admin/ui";
 import { Select } from "@/components/admin/ui/Select";
 import { projectSchema } from "@/lib/validations";
 import { Calendar, Globe, Image as ImageIcon, Save, Upload, X } from "lucide-react";
+import { isRedirectError } from "next/dist/client/components/redirect-error";
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 
@@ -29,7 +31,10 @@ export function ProjectEditorForm({ initialData, isEditing = false }: ProjectEdi
     url: initialData?.url || "",
     completionDate: initialData?.completionDate || "",
     description: initialData?.description || "",
+    content: initialData?.content || "",
     image: initialData?.image || "",
+    role: initialData?.role || "",
+    tags: initialData?.tags ? (Array.isArray(initialData.tags) ? initialData.tags.join(', ') : initialData.tags) : "",
     version: initialData?.version
   });
 
@@ -37,8 +42,11 @@ export function ProjectEditorForm({ initialData, isEditing = false }: ProjectEdi
      setError("");
      
      // C2: Client-side validation using shared schema
-     // Note: we don't validate version here as it's not in the base schema input, it's optional
-     const validation = projectSchema.safeParse(formData);
+     const payload = {
+         ...formData,
+         tags: formData.tags.split(',').map((t: string) => t.trim()).filter(Boolean)
+     };
+     const validation = projectSchema.safeParse(payload);
      if (!validation.success) {
          const firstError = validation.error.issues[0].message;
          setError(firstError);
@@ -49,9 +57,9 @@ export function ProjectEditorForm({ initialData, isEditing = false }: ProjectEdi
          try {
              let result;
              if (isEditing && initialData?.id) {
-                 result = await updateProject(initialData.id, formData);
+                 result = await updateProject(initialData.id, payload);
              } else {
-                 result = await createProject(formData);
+                 result = await createProject(payload);
              }
 
              if (result && (result.success || result.id)) {
@@ -60,6 +68,8 @@ export function ProjectEditorForm({ initialData, isEditing = false }: ProjectEdi
                  router.refresh();
              }
          } catch (e: any) {
+             if (isRedirectError(e)) throw e; // Allow Next.js to run the Server-Action redirect
+             
              const msg = e.message || "Failed to save project";
              
              if (msg.includes("Concurrency conflict")) {
@@ -90,17 +100,17 @@ export function ProjectEditorForm({ initialData, isEditing = false }: ProjectEdi
          backLabel="Back to Projects"
          actions={
            <div className="flex gap-2 md:gap-3 w-full sm:w-auto">
-              <button 
+               <button 
                  onClick={() => { setFormData({...formData, status: "In Review"}); handleSave(); }}
                  disabled={isPending}
-                  className="backdrop-blur-xs flex-1 sm:flex-initial px-3 py-1.5 md:px-4 md:py-2 rounded-[8px] admin-surface-primary text-[var(--admin-text)] hover:text-gold hover:bg-[var(--admin-text)]/5 transition-all font-bold text-[10px] md:text-sm whitespace-nowrap disabled:opacity-50"
+                  className="backdrop-blur-sm flex-1 sm:flex-initial px-3 py-1.5 md:px-4 md:py-2 rounded-[8px] admin-surface-primary text-[var(--admin-text)] hover:text-gold hover:bg-[var(--admin-text)]/5 transition-all font-bold text-[10px] md:text-sm whitespace-nowrap disabled:opacity-50 border border-[var(--admin-border)] shadow-sm"
                >
                   Save Draft
                </button>
                <button 
                   onClick={handleSave}
                   disabled={isPending}
-                  className="backdrop-blur-xs flex-1 sm:flex-initial px-3 py-1.5 md:px-6 md:py-2 rounded-[8px] admin-surface-primary text-[var(--admin-text)] font-bold text-[10px] md:text-sm hover:text-gold hover:bg-[var(--admin-text)]/5 transition-colors flex items-center justify-center gap-1 md:gap-2 whitespace-nowrap disabled:opacity-50"
+                  className="backdrop-blur-sm flex-1 sm:flex-initial px-3 py-1.5 md:px-6 md:py-2 rounded-[8px] bg-gold text-primary-foreground font-bold text-[10px] md:text-sm hover:bg-gold/90 transition-colors flex items-center justify-center gap-1 md:gap-2 whitespace-nowrap disabled:opacity-50 shadow-[0_4px_14px_0_rgba(212,175,55,0.39)]"
                >
                   {isPending ? (
                       <span className="w-4 h-4 border-2 border-primary-foreground/30 border-t-primary-foreground rounded-full animate-spin"/>
@@ -124,7 +134,7 @@ export function ProjectEditorForm({ initialData, isEditing = false }: ProjectEdi
        <div className="grid lg:grid-cols-3 gap-3 md:gap-6">
           {/* Main Content Column */}
            <div className="lg:col-span-2 flex flex-col gap-3 md:gap-6 min-w-0">
-              <div className="admin-surface-primary backdrop-blur-xs rounded-[10px] p-3 md:p-6 overflow-hidden">
+              <div className="admin-surface-primary backdrop-blur-sm rounded-[10px] p-3 md:p-6 overflow-hidden">
                  <h3 className="font-bold text-[var(--admin-text)] text-xs md:text-sm border-b border-[var(--admin-border)] pb-2 mb-3 md:mb-4">Core Details</h3>
                  <div className="flex flex-col gap-4">
                     <div className="flex flex-col gap-2">
@@ -134,7 +144,7 @@ export function ProjectEditorForm({ initialData, isEditing = false }: ProjectEdi
                          value={formData.title}
                          onChange={(e) => setFormData({...formData, title: e.target.value})}
                          placeholder="e.g. Global Fintech Rebrand" 
-                         className="backdrop-blur-sm admin-surface-input rounded-[8px] px-3 md:px-4 py-2 md:py-3 text-[var(--admin-text)] text-sm md:text-lg font-bold outline-none focus:border-gold/50 placeholder:font-normal"
+                         className="admin-surface-input rounded-[8px] px-3 md:px-4 py-2 md:py-3 text-[var(--admin-text)] text-sm md:text-lg font-bold outline-none focus:border-gold/50 placeholder:font-normal"
                        />
                     </div>
                     
@@ -146,12 +156,12 @@ export function ProjectEditorForm({ initialData, isEditing = false }: ProjectEdi
                             value={formData.client}
                             onChange={(e) => setFormData({...formData, client: e.target.value})}
                             placeholder="Client Name" 
-                            className="backdrop-blur-sm admin-surface-input rounded-[8px] px-2 md:px-4 py-1.5 md:py-2 text-[var(--admin-text)] text-xs md:text-sm outline-none focus:border-gold/50"
+                            className="admin-surface-input rounded-[8px] px-2 md:px-4 py-1.5 md:py-2 text-[var(--admin-text)] text-xs md:text-sm outline-none focus:border-gold/50"
                           />
                        </div>
                        <div className="flex flex-col gap-2">
                           <label className="text-[8px] md:text-xs font-bold text-[var(--admin-text)] uppercase">Live URL</label>
-                          <div className="flex items-center backdrop-blur-sm admin-surface-input rounded-[8px] px-2 md:px-4 py-1.5 md:py-2 gap-1 md:gap-2 overflow-x-auto">
+                          <div className="flex items-center admin-surface-input rounded-[8px] px-2 md:px-4 py-1.5 md:py-2 gap-1 md:gap-2 overflow-x-auto">
                              <Globe size={12} className="md:w-3.5 md:h-3.5 text-[var(--admin-text)]/60 shrink-0" />
                              <input 
                                type="url" 
@@ -163,28 +173,46 @@ export function ProjectEditorForm({ initialData, isEditing = false }: ProjectEdi
                           </div>
                        </div>
                     </div>
+
+                    {/* New Role & Tags Row */}
+                    <div className="grid md:grid-cols-2 gap-3 md:gap-4 mt-1">
+                       <div className="flex flex-col gap-2">
+                          <label className="text-[8px] md:text-xs font-bold text-[var(--admin-text)] uppercase">Project Role</label>
+                          <input 
+                            type="text" 
+                            value={formData.role}
+                            onChange={(e) => setFormData({...formData, role: e.target.value})}
+                            placeholder="e.g. Lead Development, UX Design" 
+                            className="admin-surface-input rounded-[8px] px-2 md:px-4 py-1.5 md:py-2 text-[var(--admin-text)] text-xs md:text-sm outline-none focus:border-gold/50"
+                          />
+                       </div>
+                       <div className="flex flex-col gap-2">
+                          <label className="text-[8px] md:text-xs font-bold text-[var(--admin-text)] uppercase">Tags (Comma Separated)</label>
+                          <input 
+                            type="text" 
+                            value={formData.tags}
+                            onChange={(e) => setFormData({...formData, tags: e.target.value})}
+                            placeholder="e.g. React, Next.js, Stripe" 
+                            className="admin-surface-input rounded-[8px] px-2 md:px-4 py-1.5 md:py-2 text-[var(--admin-text)] text-xs md:text-sm outline-none focus:border-gold/50"
+                          />
+                       </div>
+                    </div>
                  </div>
               </div>
 
-              <div className="admin-surface-primary backdrop-blur-xs rounded-[10px] p-3 md:p-6">
-                  <h3 className="font-bold text-[var(--admin-text)] text-xs md:text-sm border-b border-[var(--admin-border)] pb-2 mb-3 md:mb-4">Case Study Content</h3>
-                  <div className="flex flex-col gap-1 md:gap-2">
-                     <label className="text-[8px] md:text-xs font-bold text-[var(--admin-text)] uppercase ml-1">Description / Outcome</label>
-                     <textarea 
-                        rows={12}
-                        value={formData.description}
-                        onChange={(e) => setFormData({...formData, description: e.target.value})}
-                        placeholder="Describe the challenges, solutions, and results..."
-                        className="admin-surface-input rounded-[8px] px-2 md:px-4 py-2 md:py-3 text-[var(--admin-text)] text-xs md:text-sm outline-none focus:border-gold/50 resize-y font-mono leading-relaxed placeholder:font-sans"
-                     />
-                  </div>
-              </div>
+             <div className="flex flex-col gap-1 md:gap-2 min-w-0 overflow-hidden">
+                <label className="text-[8px] md:text-xs font-bold text-[var(--admin-text)] uppercase ml-1">Full Markdown Case Study</label>
+                <MarkdownEditor 
+                   value={formData.content}
+                   onChange={(content) => setFormData({...formData, content})}
+                />
+             </div>
           </div>
 
           {/* Sidebar Column */}
           <div className="flex flex-col gap-3 md:gap-6 min-w-0">
              {/* Publishing Options */}
-              <div className="admin-surface-primary backdrop-blur-xs rounded-[10px] p-3 md:p-6 flex flex-col gap-3 md:gap-4">
+              <div className="admin-surface-primary backdrop-blur-sm rounded-[10px] p-3 md:p-6 flex flex-col gap-3 md:gap-4">
                  <h3 className="font-bold text-[var(--admin-text)] text-xs md:text-sm border-b border-[var(--admin-border)] pb-2">Project Settings</h3>
                  
                  <div className="flex flex-col gap-2">
@@ -233,7 +261,7 @@ export function ProjectEditorForm({ initialData, isEditing = false }: ProjectEdi
               </div>
 
              {/* Featured Image */}
-              <div className="admin-surface-primary backdrop-blur-xs rounded-[10px] p-3 md:p-6 flex flex-col gap-3 md:gap-4">
+              <div className="admin-surface-primary backdrop-blur-sm rounded-[10px] p-3 md:p-6 flex flex-col gap-3 md:gap-4">
                  <h3 className="font-bold text-[var(--admin-text)] text-xs md:text-sm border-b border-[var(--admin-border)] pb-2">Cover Image</h3>
                  
                  {formData.image ? (
@@ -275,7 +303,7 @@ export function ProjectEditorForm({ initialData, isEditing = false }: ProjectEdi
                         value={formData.image}
                         onChange={(e) => setFormData({...formData, image: e.target.value})}
                         placeholder="Or paste URL..." 
-                        className="w-full admin-surface-input rounded-[8px] px-2 md:px-3 py-1.5 md:py-2 text-[var(--admin-text)] text-[10px] md:text-xs outline-none focus:border-gold/50 pr-8"
+                        className="w-full admin-surface-input border border-[var(--admin-border)] rounded-[8px] px-2 md:px-3 py-1.5 md:py-2 text-[var(--admin-text)] text-[10px] md:text-xs outline-none focus:border-gold/50 pr-8 truncate focus:min-w-0"
                      />
                       <button
                          onClick={() => setShowMediaPicker(true)}
@@ -287,6 +315,21 @@ export function ProjectEditorForm({ initialData, isEditing = false }: ProjectEdi
                  </div>
               </div>
              
+             {/* Excerpt */}
+              <div className="admin-surface-primary backdrop-blur-sm rounded-[10px] p-3 md:p-6 flex flex-col gap-3 md:gap-4">
+                 <h3 className="font-bold text-[var(--admin-text)] text-xs md:text-sm border-b border-[var(--admin-border)] pb-2">Excerpt</h3>
+                <textarea 
+                   rows={6}
+                   value={formData.description}
+                   onChange={(e) => {
+                       setFormData({...formData, description: e.target.value});
+                       e.target.style.height = 'auto';
+                       e.target.style.height = e.target.scrollHeight + 'px';
+                   }}
+                   placeholder="Briefly describe the outcome in 1-2 sentences..."
+                   className="admin-surface-input rounded-[8px] px-2 md:px-3 py-1.5 md:py-2 text-[var(--admin-text)] text-[10px] md:text-xs outline-none focus:border-gold/50 resize-y min-h-[120px]"
+                />
+             </div>
 
           </div>
        </div>

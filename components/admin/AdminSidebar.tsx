@@ -6,21 +6,22 @@ import { cn } from "@/lib/utils";
 import { Role } from "@prisma/client";
 import { motion } from "framer-motion";
 import {
-  Briefcase,
-  ChevronLeft,
-  ChevronRight,
-  FileText,
-  FolderCheck,
-  FolderOpen,
-  GraduationCap,
-  LayoutDashboard,
-  LogOut,
-  Mail,
-  Settings,
-  ShieldAlert,
-  Target,
-  User,
-  Users
+    Briefcase,
+    ChevronLeft,
+    ChevronRight,
+    FileText,
+    FolderCheck,
+    FolderOpen,
+    GraduationCap,
+    LayoutDashboard,
+    LogOut,
+    Mail,
+    Settings,
+    Shield,
+    ShieldAlert,
+    Target,
+    User,
+    Users
 } from "lucide-react";
 import NextImage from "next/image";
 import Link from "next/link";
@@ -39,6 +40,7 @@ const SIDEBAR_ITEMS = [
   { label: "Newsletter", href: "/admin/newsletter", icon: Mail },
   { label: "Careers", href: "/admin/careers", icon: GraduationCap },
   { label: "Staff", href: "/admin/staff", icon: Users },
+  { label: "Team Access", href: "/admin/settings/team", icon: Shield },
   { label: "Audit Log", href: "/admin/audit", icon: ShieldAlert },
   { label: "Settings", href: "/admin/settings", icon: Settings },
 ];
@@ -73,7 +75,7 @@ export function AdminSidebar({ userRole }: { userRole?: string }) {
     }
     
     // Admin & Super Admin Only
-    if (item.label === "Staff") {
+    if (item.label === "Staff" || item.label === "Team Access") {
        return [Role.SUPER_ADMIN, Role.ADMIN].includes(userRole as any);
     }
 
@@ -144,7 +146,10 @@ export function AdminSidebar({ userRole }: { userRole?: string }) {
         {/* Navigation */}
         <div className="flex-1 overflow-y-auto py-6 px-3 space-y-1 scrollbar-none">
           {filteredItems.map((item) => {
-            const isActive = pathname === item.href || (item.href !== "/admin" && pathname?.startsWith(item.href));
+            const isActive = 
+               pathname === item.href || 
+               (item.href !== "/admin" && item.href !== "/admin/settings" && pathname?.startsWith(item.href)) ||
+               (item.href === "/admin/settings" && pathname === "/admin/settings");
             return (
               <Link 
                 key={item.href} 

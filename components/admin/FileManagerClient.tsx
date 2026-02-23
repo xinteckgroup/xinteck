@@ -18,7 +18,8 @@ import {
     Plus,
     Search,
     Trash2,
-    Video as VideoIcon
+    Video as VideoIcon,
+    X
 } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState, useTransition } from "react";
@@ -170,24 +171,33 @@ export function FileManagerClient({ initialData, folders = [], currentFolderId, 
 
       {/* New Folder Modal */}
       {showFolderModal && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm animate-in fade-in">
-              <div className="admin-surface-floating border border-[var(--admin-border)] p-6 rounded-xl shadow-2xl w-80 max-w-[90vw]">
-                  <h3 className="text-lg font-bold text-[var(--admin-text)] mb-4">New Folder</h3>
-                  <input 
-                    autoFocus
-                    type="text" 
-                    placeholder="Folder Name" 
-                    className="w-full admin-surface-input rounded-lg border border-[var(--admin-border)] px-4 py-2 text-[var(--admin-text)] outline-none focus:border-gold mb-4"
-                    value={newFolderName}
-                    onChange={e => setNewFolderName(e.target.value)}
-                    onKeyDown={e => e.key === 'Enter' && handleCreateFolder()}
-                  />
-                  <div className="flex justify-end gap-2">
-                      <button onClick={() => setShowFolderModal(false)} className="px-4 py-2 text-[var(--admin-text)]/60 hover:text-[var(--admin-text)] text-sm font-medium transition-colors">Cancel</button>
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4 text-white">
+              <div className="bg-white/30 dark:bg-white/20 backdrop-blur-md transition-colors rounded-[10px] w-full max-w-sm max-h-[80vh] flex flex-col shadow-2xl overflow-hidden animate-in fade-in zoom-in duration-200 relative">
+                  <div className="p-4 border-b border-[var(--admin-border)] flex items-center justify-between bg-transparent shrink-0">
+                      <div className="flex flex-col gap-1 min-w-0">
+                          <h3 className="text-lg font-bold text-[var(--admin-text)] flex items-center gap-2 truncate">New Folder</h3>
+                      </div>
+                      <button onClick={() => setShowFolderModal(false)} className="text-[var(--admin-text)] hover:text-gold transition-colors shrink-0 ml-3">
+                          <X size={24} />
+                      </button>
+                  </div>
+                  <div className="p-4 overflow-y-auto flex-1 bg-transparent text-[var(--admin-text)]">
+                      <input 
+                        autoFocus
+                        type="text" 
+                        placeholder="Folder Name" 
+                        className="w-full bg-transparent rounded-[10px] px-4 py-3 text-sm text-[var(--admin-text)] placeholder:text-[var(--admin-text)]/50 border border-[var(--admin-border)] outline-none focus:border-gold/50 focus:ring-1 focus:ring-gold/20 transition-colors"
+                        value={newFolderName}
+                        onChange={e => setNewFolderName(e.target.value)}
+                        onKeyDown={e => e.key === 'Enter' && handleCreateFolder()}
+                      />
+                  </div>
+                  <div className="p-4 border-t border-[var(--admin-border)] bg-transparent flex justify-end items-center gap-4 shrink-0">
+                      <button onClick={() => setShowFolderModal(false)} className="px-4 py-2 text-[var(--admin-text)]/60 hover:text-[var(--admin-text)] text-xs font-bold uppercase tracking-widest transition-colors">Cancel</button>
                       <button 
                          onClick={handleCreateFolder} 
                          disabled={isPending}
-                         className="px-4 py-2 bg-primary text-primary-foreground font-bold rounded-lg text-sm hover:bg-primary/90 transition-colors shadow-lg shadow-primary/20 disabled:opacity-50"
+                         className="bg-primary text-[var(--admin-text)] font-black px-6 py-2 rounded-[10px] flex items-center gap-2 hover:bg-gold transition-all text-xs uppercase tracking-widest shadow-xl shadow-primary/20 disabled:opacity-50"
                       >
                          {isPending ? "Creating..." : "Create"}
                       </button>

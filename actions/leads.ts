@@ -17,7 +17,7 @@ export type InboxFilter = PaginationParams & {
 };
 
 export async function getMessages(params: InboxFilter = {}): Promise<PaginatedResponse<any>> {
-    await requireRole([Role.ADMIN, Role.SUPER_ADMIN, Role.SUPPORT_STAFF]);
+    const user = await requireRole([Role.ADMIN, Role.SUPER_ADMIN, Role.SUPPORT_STAFF]);
 
     const { page, pageSize: limit, skip } = getPaginationParams(params);
     const { filter, search } = params;
@@ -25,6 +25,10 @@ export async function getMessages(params: InboxFilter = {}): Promise<PaginatedRe
     const where: any = {
         deletedAt: null
     };
+
+    if (user.role !== Role.SUPER_ADMIN) {
+        where.assignedToId = user.id;
+    }
 
     if (filter === "unread") {
         where.status = "UNREAD";
@@ -56,6 +60,13 @@ export async function getMessages(params: InboxFilter = {}): Promise<PaginatedRe
                 replies: {
                     orderBy: { sentAt: 'desc' },
                     take: 1
+                },
+                assignedTo: {
+                    select: {
+                        id: true,
+                        name: true,
+                        avatar: true
+                    }
                 }
             }
         }),
@@ -75,7 +86,13 @@ export async function getMessages(params: InboxFilter = {}): Promise<PaginatedRe
         archived: m.isArchived,
         replied: m.status === MessageStatus.REPLIED,
         color: "bg-blue-500",
-        avatar: m.name.charAt(0).toUpperCase()
+        avatar: m.name.charAt(0).toUpperCase(),
+        phone: m.phone,
+        service: m.service,
+        projectType: m.projectType,
+        industry: m.industry,
+        budget: m.budget,
+        assignedTo: m.assignedTo
     }));
 
     return createPaginatedResult(data, total, page, limit);
@@ -242,20 +259,61 @@ function formatDate(date: Date) {
     }
 }
 
-export async function restoreMessage(id: string) {
-    const user = await requireRole([Role.SUPER_ADMIN]);
+
+export async function getAdminUsers() {
+    await requireRole([Role.SUPER_ADMIN, Role.ADMIN]);
+
+    const users = await prisma.user.findMany({
+        where: {
+            role: { in: [Role.ADMIN, Role.SUPPORT_STAFF, Role.SUPER_ADMIN] },
+            status: "ACTIVE",
+            deletedAt: null
+        },
+        select: {
+            id: true,
+            name: true,
+            email: true,
+            role: true,
+            avatar: true
+        }
+    });
+
+    return users;
+}
+
+export async function assignLead(leadId: string, assignedToId: string | null) {
+    const user = await requireRole([Role.SUPER_ADMIN]); // ONLY SUPER_ADMIN CAN ASSIGN
+
+    const lead = await prisma.contactSubmission.findUnique({ where: { id: leadId } });
+    if (!lead) throw new Error("Lead not found");
 
     await prisma.contactSubmission.update({
-        where: { id },
-        data: { deletedAt: null }
+        where: { id: leadId },
+        data: { assignedToId } // Types will pick this up on restart or build
     });
 
     await logAudit({
-        action: "contact.restore",
+        action: "contact.assign",
         entity: "ContactSubmission",
-        entityId: id,
-        userId: user.id
+        entityId: leadId,
+        userId: user.id,
+        metadata: { assignedToId, previousAssignedToId: (lead as any).assignedToId }
     });
+
+    // Notify the assignee
+    if (assignedToId) {
+        try {
+            await NotificationService.create({
+                userId: assignedToId,
+                title: "New Lead Assigned",
+                message: `You have been assigned the lead from ${lead.name} regarding ${lead.projectType}.`,
+                type: NotificationType.INFO,
+                link: `/admin/leads?search=${lead.email}`
+            });
+        } catch (e) {
+            console.error("Failed to notify user about lead assignment", e);
+        }
+    }
 
     revalidatePath("/admin/leads");
     return { success: true };

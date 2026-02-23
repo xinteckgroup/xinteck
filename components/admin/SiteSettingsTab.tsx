@@ -145,7 +145,7 @@ export function SiteSettingsTab({ initialSettings, categories }: SiteSettingsTab
             </div>
 
             {/* Settings List */}
-            <div className="admin-surface-primary rounded-[10px] overflow-hidden border border-[var(--admin-border)] backdrop-blur-xs">
+            <div className="bg-white/30 dark:bg-black/60 shadow-lg backdrop-blur-xl rounded-[10px] overflow-hidden border border-[var(--admin-border)]">
                 {filtered.length === 0 ? (
                     <div className="p-8 text-center text-[var(--admin-text)]/60 italic text-xs">
                         No site settings found. Add one to get started.

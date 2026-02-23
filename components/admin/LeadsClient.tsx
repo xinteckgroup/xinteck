@@ -1,6 +1,6 @@
 "use client";
 
-import { archiveMessage, deleteMessage, markAsRead, replyToMessage, toggleStar } from "@/actions/leads";
+import { archiveMessage, assignLead, deleteMessage, markAsRead, replyToMessage, toggleStar } from "@/actions/leads";
 import { RoleGate } from "@/components/admin/RoleGate";
 import { PageContainer, PageHeader, Pagination, useToast } from "@/components/admin/ui";
 import { InboxMessage } from "@/types";
@@ -15,6 +15,8 @@ import { useSearchParams } from "next/navigation";
 
 interface LeadsClientProps {
   initialData: PaginatedResponse<InboxMessage>;
+  adminUsers: { id: string; name: string; email: string; avatar: string | null; role: Role }[];
+  currentUserRole: Role;
 }
 
 // Lead status helper
@@ -25,7 +27,7 @@ function getLeadStatus(msg: InboxMessage): { label: string; color: string; bgCol
   return { label: "New", color: "text-gold", bgColor: "bg-gold/10", borderColor: "border-gold/20" };
 }
 
-export function LeadsClient({ initialData }: LeadsClientProps) {
+export function LeadsClient({ initialData, adminUsers, currentUserRole }: LeadsClientProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [isPending, startTransition] = useTransition();
@@ -56,6 +58,7 @@ export function LeadsClient({ initialData }: LeadsClientProps) {
   const [replyText, setReplyText] = useState("");
   const [isReplying, setIsReplying] = useState(false);
   const [copiedEmail, setCopiedEmail] = useState(false);
+  const [isAssigning, setIsAssigning] = useState(false);
   
   const activeMessage = messages.find((m) => m.id === activeMessageId) || null;
 
@@ -143,6 +146,25 @@ export function LeadsClient({ initialData }: LeadsClientProps) {
     setCopiedEmail(true);
     toast("Email copied to clipboard", "success");
     setTimeout(() => setCopiedEmail(false), 2000);
+  };
+
+  const handleAssignLead = (userId: string | null) => {
+    if (!activeMessage) return;
+    setIsAssigning(true);
+    startTransition(async () => {
+        try {
+            await assignLead(activeMessage.id, userId);
+            setMessages(prev => prev.map(m => m.id === activeMessage.id ? { 
+                ...m, 
+                assignedTo: userId ? adminUsers.find(u => u.id === userId) : null
+            } : m));
+            toast(userId ? "Lead assigned successfully" : "Lead unassigned", "success");
+        } catch (e: any) {
+            toast(`Failed to assign lead: ${e.message}`, "error");
+        } finally {
+            setIsAssigning(false);
+        }
+    });
   };
 
   const getGmailSearchUrl = (email: string) => {
@@ -335,9 +357,26 @@ export function LeadsClient({ initialData }: LeadsClientProps) {
                       <span className="text-[10px] font-bold uppercase tracking-wider hidden md:inline">Gmail</span>
                     </a>
                 </div>
-                <button className="p-2 text-[var(--admin-text)]/60 hover:text-[var(--admin-text)] hover:bg-[var(--admin-text)]/5 rounded-[8px] transition-colors">
-                  <MoreVertical size={18} />
-                </button>
+                <div className="flex items-center gap-2">
+                  <RoleGate allowedRoles={[Role.SUPER_ADMIN]}>
+                     <select 
+                        disabled={isAssigning}
+                        className="p-2 text-xs font-bold text-[var(--admin-text)] uppercase tracking-wider bg-[var(--admin-text)]/5 rounded-[8px] outline-none hover:bg-[var(--admin-text)]/10 cursor-pointer transition-colors border border-[var(--admin-border)]"
+                        value={activeMessage.assignedTo?.id || ""}
+                        onChange={(e) => handleAssignLead(e.target.value || null)}
+                     >
+                        <option value="">Unassigned</option>
+                        {adminUsers.filter(u => u.role !== Role.SUPER_ADMIN).map(u => (
+                           <option key={u.id} value={u.id}>
+                              Assign: {u.name.split(' ')[0]}
+                           </option>
+                        ))}
+                     </select>
+                  </RoleGate>
+                  <button className="p-2 text-[var(--admin-text)]/60 hover:text-[var(--admin-text)] hover:bg-[var(--admin-text)]/5 rounded-[8px] transition-colors">
+                    <MoreVertical size={18} />
+                  </button>
+                </div>
               </div>
               
               {/* Message Content */}
@@ -402,7 +441,40 @@ export function LeadsClient({ initialData }: LeadsClientProps) {
                     </div>
                   </div>
                   
-                  <div className="text-[var(--admin-text)] leading-relaxed text-sm md:text-base space-y-6 max-w-4xl border-t border-[var(--admin-border)] pt-8 md:pt-12 font-medium">
+                  {activeMessage.assignedTo && (
+                    <div className="mt-4 flex items-center gap-2">
+                      <span className="text-[10px] font-bold uppercase tracking-wider text-[var(--admin-text)]/40">Delegated To:</span>
+                      <span className="flex items-center gap-1.5 px-2 py-1 bg-[var(--admin-text)]/5 border border-[var(--admin-border)] rounded-md text-[10px] md:text-xs font-bold text-gold">
+                         {activeMessage.assignedTo.name}
+                      </span>
+                    </div>
+                  )}
+                  
+                  {/* Lead Metadata Grid */}
+                  <div className="grid grid-cols-2 md:grid-cols-3 gap-4 border-t border-[var(--admin-border)] pt-8 mt-8">
+                      <div className="flex flex-col gap-1">
+                          <span className="text-[10px] font-bold uppercase tracking-wider text-[var(--admin-text)]/40">Phone Number</span>
+                          <span className="text-sm font-semibold text-[var(--admin-text)]/80">{activeMessage.phone || "Not Provided"}</span>
+                      </div>
+                      <div className="flex flex-col gap-1">
+                          <span className="text-[10px] font-bold uppercase tracking-wider text-[var(--admin-text)]/40">Intent</span>
+                          <span className="text-sm font-semibold text-[var(--admin-text)]/80">{activeMessage.projectType || "General Inquiry"}</span>
+                      </div>
+                      <div className="flex flex-col gap-1">
+                          <span className="text-[10px] font-bold uppercase tracking-wider text-[var(--admin-text)]/40">Industry</span>
+                          <span className="text-sm font-semibold text-[var(--admin-text)]/80">{activeMessage.industry || "Unspecified"}</span>
+                      </div>
+                      <div className="flex flex-col gap-1">
+                          <span className="text-[10px] font-bold uppercase tracking-wider text-[var(--admin-text)]/40">Related Service</span>
+                          <span className="text-sm font-semibold text-[var(--admin-text)]/80">{activeMessage.service || "None"}</span>
+                      </div>
+                      <div className="flex flex-col gap-1">
+                          <span className="text-[10px] font-bold uppercase tracking-wider text-[var(--admin-text)]/40">Budget Range</span>
+                          <span className="text-sm font-semibold text-[var(--admin-text)]/80">{activeMessage.budget || "Unspecified"}</span>
+                      </div>
+                  </div>
+                  
+                  <div className="text-[var(--admin-text)] leading-relaxed text-sm md:text-base space-y-6 max-w-4xl border-t border-[var(--admin-border)] pt-8 md:pt-12 font-medium mt-8 md:mt-12">
                     <p className="text-[var(--admin-text)]/60 italic">Message Content:</p>
                     <p className="whitespace-pre-wrap text-[var(--admin-text)]/90">{activeMessage.message}</p>
                   </div>

@@ -1,5 +1,7 @@
-import { getMessages } from "@/actions/leads";
+import { getAdminUsers, getMessages } from "@/actions/leads";
 import { LeadsClient } from "@/components/admin/LeadsClient";
+import { requireRole } from "@/lib/auth-check";
+import { Role } from "@prisma/client";
 
 export const dynamic = "force-dynamic";
 
@@ -14,7 +16,12 @@ export default async function LeadsPage({
   const page = Number(params.page) || 1;
   const limit = Number(params.limit) || 12;
 
-  const result = await getMessages({ filter, search, page, pageSize: limit });
+  const user = await requireRole([Role.ADMIN, Role.SUPER_ADMIN, Role.SUPPORT_STAFF]);
+  
+  const [result, adminUsers] = await Promise.all([
+    getMessages({ filter, search, page, pageSize: limit }),
+    user.role === Role.SUPER_ADMIN ? getAdminUsers() : Promise.resolve([])
+  ]);
 
-  return <LeadsClient initialData={result} />;
+  return <LeadsClient initialData={result} adminUsers={adminUsers} currentUserRole={user.role} />;
 }

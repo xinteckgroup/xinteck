@@ -130,22 +130,4 @@ export async function deleteSubscriber(id: string) {
     return { success: true };
 }
 
-export async function restoreSubscriber(id: string) {
-    const user = await requireRole([Role.SUPER_ADMIN]);
-    const validatedId = uuidSchema.parse(id);
 
-    await prisma.newsletterSubscriber.update({
-        where: { id: validatedId },
-        data: { deletedAt: null }
-    });
-
-    await logAudit({
-        action: "newsletter.restore",
-        entity: "NewsletterSubscriber",
-        entityId: validatedId,
-        userId: user.id
-    });
-
-    revalidatePath("/admin/newsletter");
-    return { success: true };
-}

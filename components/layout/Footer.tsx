@@ -3,17 +3,19 @@
 import { getBusinessContact, type BusinessContact } from "@/actions/public-config";
 import { useServices } from "@/components/providers/ServicesContext";
 import { motion } from "framer-motion";
-import { ArrowUpRight, Github, Instagram, Linkedin, Mail, MapPin, Phone, Twitter } from "lucide-react";
+import { ArrowUpRight, Mail, MapPin, Phone } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 
-const socialLinks = [
-  { icon: Twitter, href: "https://twitter.com/xinteck", label: "Twitter" },
-  { icon: Linkedin, href: "https://linkedin.com/company/xinteck", label: "LinkedIn" },
-  { icon: Github, href: "https://github.com/xinteck", label: "GitHub" },
-  { icon: Instagram, href: "https://instagram.com/xinteck", label: "Instagram" },
-];
+import * as LucideIcons from "lucide-react";
+
+// Safe dynamic icon renderer
+const DynamicIcon = ({ name, ...props }: { name: string; size?: number; className?: string }) => {
+    // @ts-ignore
+    const IconComponent = LucideIcons[name] || LucideIcons.Link;
+    return <IconComponent {...props} />;
+};
 
 const staticLinks = {
   company: [
@@ -36,7 +38,7 @@ const staticLinks = {
 
 export function Footer() {
   const dynamicServices = useServices();
-  const [contact, setContact] = useState<BusinessContact>({ email: "info@xinteck.co.ke", phone: "+254 782 063 736" });
+  const [contact, setContact] = useState<BusinessContact>({ email: "info@xinteck.co.ke", phone: "+254 782 063 736", socialLinks: [] });
 
   useEffect(() => {
     getBusinessContact().then(setContact);
@@ -140,16 +142,16 @@ export function Footer() {
 
             {/* Social Links */}
             <div className="flex gap-3 mt-2">
-              {socialLinks.map((social) => (
+              {contact.socialLinks.map((social, i) => (
                 <a
-                  key={social.label}
-                  href={social.href}
-                  aria-label={social.label}
+                  key={i}
+                  href={social.url}
+                  aria-label={social.platform}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="w-10 h-10 rounded-[10px] bg-white/5 flex items-center justify-center text-gray-400 hover:bg-[#D4AF37] hover:text-black transition-all"
                 >
-                  <social.icon size={18} />
+                  <DynamicIcon name={social.icon} size={18} />
                 </a>
               ))}
             </div>

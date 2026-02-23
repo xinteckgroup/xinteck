@@ -9,7 +9,7 @@ import { Select } from "@/components/admin/ui/Select";
 import { PaginatedResponse } from "@/lib/pagination";
 import { ProjectSummary } from "@/types";
 import { Role } from "@prisma/client";
-import { Edit, Eye, Grid, LayoutList, Plus, Search, Trash2 } from "lucide-react";
+import { Edit, Eye, Grid, LayoutList, Plus, Search, Sparkles, Trash2 } from "lucide-react";
 import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useState, useTransition } from "react";
@@ -91,10 +91,16 @@ export function ProjectManager({ initialData }: ProjectManagerProps) {
         subtitle={`Manage your portfolio case studies. Total: ${meta.total}`}
         actions={
           <RoleGate allowedRoles={[Role.SUPER_ADMIN, Role.ADMIN]}>
-              <Link href="/admin/projects/new" className="bg-gold text-primary-foreground font-bold px-3 py-1.5 md:px-6 md:py-3 text-[10px] md:text-sm rounded-[10px] flex items-center gap-1 md:gap-2 hover:bg-gold/90 transition-colors shadow-[0_4px_14px_0_rgba(212,175,55,0.39)] whitespace-nowrap">
-                <Plus size={14} className="md:w-[18px] md:h-[18px]" />
-                Add Project
-              </Link>
+              <div className="flex gap-2">
+                <Link href="/admin/projects/ai" className="admin-surface-primary text-[var(--admin-text)] font-bold px-3 py-1.5 md:px-6 md:py-3 text-[10px] md:text-sm rounded-[10px] flex items-center gap-1 md:gap-2 hover:bg-gold transition-colors whitespace-nowrap border border-[var(--admin-border)]">
+                    <Sparkles size={14} className="md:w-[18px] md:h-[18px] text-purple-400" />
+                    AI Assistant
+                </Link>
+                <Link href="/admin/projects/new" className="bg-gold text-primary-foreground font-bold px-3 py-1.5 md:px-6 md:py-3 text-[10px] md:text-sm rounded-[10px] flex items-center gap-1 md:gap-2 hover:bg-gold/90 transition-colors shadow-[0_4px_14px_0_rgba(212,175,55,0.39)] whitespace-nowrap">
+                  <Plus size={14} className="md:w-[18px] md:h-[18px]" />
+                  Add Project
+                </Link>
+              </div>
           </RoleGate>
         }
       />
@@ -102,8 +108,8 @@ export function ProjectManager({ initialData }: ProjectManagerProps) {
       {/* Content Area */}
       <div className="flex flex-col gap-3">
         {/* Toolbar */}
-        <div className="flex flex-row items-center gap-2 justify-between admin-surface-primary backdrop-blur-xs rounded-[10px] p-2">
-        <div className="relative flex-1 min-w-0 md:w-64 lg:w-96 bg-black/60 dark:bg-white/30 rounded-[10px]">
+        <div className="flex flex-row items-center gap-2 justify-between bg-[var(--admin-surface-primary)] backdrop-blur-xl border border-[var(--admin-border)] rounded-[10px] p-2 shadow-xl">
+        <div className="relative flex-1 min-w-0 md:w-64 lg:w-96 bg-[var(--admin-surface-input)] rounded-[10px]">
           <div className="relative">
              <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--admin-muted)] pointer-events-none" size={18} />
              <input 
@@ -111,7 +117,7 @@ export function ProjectManager({ initialData }: ProjectManagerProps) {
                placeholder="Search projects..." 
                value={searchQuery}
                onChange={(e) => handleSearchChange(e.target.value)}
-               className="w-full admin-surface-input border border-[var(--admin-border)] rounded-[10px] pl-10 pr-4 py-2 text-sm text-[var(--admin-text)] placeholder:text-[var(--admin-muted)] focus:border-gold/50 focus:outline-none transition-colors"
+               className="w-full bg-transparent border border-transparent rounded-[10px] pl-10 pr-4 py-2 text-sm text-[var(--admin-text)] placeholder:text-[var(--admin-muted)] focus:border-gold/50 focus:outline-none transition-colors"
              />
           </div>
         </div>
@@ -154,8 +160,8 @@ export function ProjectManager({ initialData }: ProjectManagerProps) {
              onClick={() => handleCategoryChange(filter)}
              className={`px-4 py-1.5 rounded-full border text-xs font-medium whitespace-nowrap transition-colors ${
                 categoryFilter === filter 
-                ? "bg-gold text-[var(--admin-text)] border-gold font-bold shadow-sm" 
-                : "admin-surface-primary border-[var(--admin-border)] text-[var(--admin-text)] hover:bg-[var(--admin-text)]/5 hover:text-gold backdrop-blur-sm"
+                ? "bg-gold text-[var(--admin-text)] border-gold font-bold shadow-xl" 
+                : "bg-[var(--admin-surface-primary)] backdrop-blur-xl border-[var(--admin-border)] text-[var(--admin-text)] hover:bg-[var(--admin-text)]/5 hover:text-gold shadow-xl"
              }`}
            >
              {filter}
@@ -174,11 +180,11 @@ export function ProjectManager({ initialData }: ProjectManagerProps) {
 
                  {/* Grid View */}
       {viewMode === "grid" ? (
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 md:gap-6">
+                 <div className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 md:gap-6">
           {projects.map((project) => (
-            <div key={project.id} className="group admin-surface-primary backdrop-blur-xs rounded-[10px] overflow-hidden hover:border-primary/50 transition-all flex flex-col">
+            <div key={project.id} className="group bg-[var(--admin-surface-primary)] backdrop-blur-xl border border-[var(--admin-border)] shadow-xl rounded-[10px] overflow-hidden hover:border-gold/50 transition-all flex flex-col">
               {/* Image Area */}
-              <div className="aspect-video admin-surface-input relative overflow-hidden">
+              <div className="aspect-video bg-[var(--admin-surface-input)] relative overflow-hidden">
                  {/* Placeholder Gradient if image fails or for mock */}
                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-60" />
                  
@@ -189,9 +195,9 @@ export function ProjectManager({ initialData }: ProjectManagerProps) {
 
                  {/* Status Badge */}
                   <div className="absolute top-3 left-3">
-                     <span className={`px-2 py-0.5 rounded-[4px] text-[10px] font-bold uppercase tracking-wider ${
+                     <span className={`px-2 py-0.5 rounded-[4px] text-[10px] font-bold uppercase tracking-wider shadow-sm ${
                        project.status === "Active" ? "bg-green-500 text-primary-foreground" : 
-                       project.status === "Completed" ? "bg-gold text-primary-foreground" : "admin-surface-input text-[var(--admin-text)]"
+                       project.status === "Completed" ? "bg-gold text-primary-foreground" : "bg-[var(--admin-surface-input)] text-[var(--admin-text)] border border-[var(--admin-border)]"
                      }`}>
                        {project.status}
                      </span>
@@ -199,28 +205,28 @@ export function ProjectManager({ initialData }: ProjectManagerProps) {
 
                  {/* Actions Overlay */}
                  <div className="absolute inset-0 bg-[var(--admin-background)]/80 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2 backdrop-blur-sm">
-                    <button onClick={() => router.push(`/portfolio/${project.id}`)} className="p-2 bg-secondary hover:bg-[var(--admin-background)] text-secondary-foreground hover:text-[var(--admin-text)] rounded-full transition-colors" title="View in Portfolio">
+                    <button onClick={() => router.push(`/portfolio/${project.id}`)} className="p-2 bg-[var(--admin-surface-primary)] border border-white/10 hover:border-gold hover:text-gold text-white rounded-full transition-all shadow-xl" title="View in Portfolio">
                        <Eye size={18} />
                     </button>
-                    <button onClick={() => router.push(`/admin/projects/${project.id}`)} className="p-2 bg-secondary hover:bg-[var(--admin-background)] text-secondary-foreground hover:text-[var(--admin-text)] rounded-full transition-colors" title="Edit">
+                    <button onClick={() => router.push(`/admin/projects/${project.id}`)} className="p-2 bg-[var(--admin-surface-primary)] border border-white/10 hover:border-gold hover:text-gold text-white rounded-full transition-all shadow-xl" title="Edit">
                        <Edit size={18} />
                     </button>
                  </div>
               </div>
 
               {/* Content */}
-                  <div className="p-4 flex flex-col flex-1">
+                  <div className="p-4 flex flex-col flex-1 relative z-10">
                  <div className="flex justify-between items-start mb-2">
                     <div>
                       <h3 className="text-sm md:text-base font-bold text-[var(--admin-text)] leading-tight line-clamp-1">{project.title}</h3>
-                      <p className="text-xs text-[var(--admin-text)]">{project.client}</p>
+                      <p className="text-xs text-[var(--admin-text)]/70">{project.client}</p>
                     </div>
                  </div>
                  
                  <div className="mt-auto pt-4 border-t border-[var(--admin-border)] flex items-center justify-between">
-                    <span className="text-xs font-bold text-gold px-2 py-1 bg-gold/10 rounded-[4px]">{project.category}</span>
+                    <span className="text-xs font-bold text-gold px-2 py-1 bg-gold/10 rounded-[4px] border border-gold/20">{project.category}</span>
                     <RoleGate allowedRoles={[Role.SUPER_ADMIN, Role.ADMIN]}>
-                      <button onClick={() => handleDelete(project.id)} className="text-[var(--admin-text)]/60 hover:text-red-400 transition-colors">
+                      <button onClick={() => handleDelete(project.id)} className="text-[var(--admin-text)]/60 hover:text-red-400 transition-colors bg-[var(--admin-surface-input)] p-1.5 rounded-[6px]">
                          <Trash2 size={16} />
                       </button>
                     </RoleGate>
@@ -230,8 +236,8 @@ export function ProjectManager({ initialData }: ProjectManagerProps) {
           ))}
           
            {/* Add New Placeholer */}
-          <Link href="/admin/projects/new" className="border border-dashed border-[var(--admin-muted)] bg-[var(--admin-surface-primary)] backdrop-blur-xs hover:bg-[var(--admin-surface-primary)] rounded-[10px] flex flex-col items-center justify-center gap-4 text-[var(--admin-text)] hover:text-gold hover:border-gold/100 hover:bg-gold/5 transition-all min-h-[200px]">
-             <div className="w-12 h-12 rounded-full admin-surface-input flex items-center justify-center">
+          <Link href="/admin/projects/new" className="border border-dashed border-[var(--admin-border)] bg-[var(--admin-surface-primary)] backdrop-blur-xl hover:bg-[var(--admin-surface-primary)] shadow-xl rounded-[10px] flex flex-col items-center justify-center gap-4 text-[var(--admin-text)] hover:text-gold hover:border-gold/100 hover:bg-gold/5 transition-all min-h-[200px]">
+             <div className="w-12 h-12 rounded-full bg-[var(--admin-surface-input)] border border-[var(--admin-border)] flex items-center justify-center">
                 <Plus size={24} />
              </div>
              <span className="font-bold text-sm">Create New Project</span>

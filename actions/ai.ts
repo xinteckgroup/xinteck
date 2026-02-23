@@ -6,7 +6,7 @@ import { Role } from "@prisma/client";
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
 
-import { DRAFT_PROMPT_TEMPLATE, SCOUT_PROMPT_TEMPLATE } from "@/lib/ai/config";
+import { DRAFT_PROMPT_TEMPLATE, EXCLUSIONS_PROMPT_TEMPLATE, SCOUT_PROMPT_TEMPLATE } from "@/lib/ai/config";
 import { injectContext, validateInput, validateOutput } from "@/lib/ai/guard";
 import { generateJSON, generateText } from "@/lib/ai/provider";
 import { checkRateLimit } from "@/lib/ai/ratelimit";
@@ -18,7 +18,13 @@ const ScoutResponseSchema = z.array(z.object({
     title: z.string(),
     angle: z.string(),
     keywords: z.array(z.string()).optional().default([]),
-    reasoning: z.string().optional()
+    reasoning: z.string().optional(),
+    sources: z.array(z.string()).optional().default([])
+}));
+
+const ExclusionSuggestionSchema = z.array(z.object({
+    keyword: z.string(),
+    reasoning: z.string()
 }));
 
 // ─── SETTINGS MANAGEMENT ───
@@ -92,8 +98,8 @@ export async function scoutTrends() {
     const validIdeas = validation.data;
 
     // 5. Process & Score
-    const processedIdeas = validIdeas.map((idea) => {
-        const scoreResult = calculateScore({
+    const processedIdeas = await Promise.all(validIdeas.map(async (idea) => {
+        const scoreResult = await calculateScore({
             title: idea.title,
             angle: idea.angle,
             keywords: idea.keywords
@@ -102,11 +108,39 @@ export async function scoutTrends() {
         return {
             ...idea,
             score: scoreResult.total,
-            scoreDebug: scoreResult.breakdown
+            scoreDebug: { ...scoreResult.breakdown, sources: idea.sources }
         };
-    });
+    }));
 
     return processedIdeas.sort((a, b) => b.score - a.score);
+}
+
+// ─── AI CONFIGURATION SUGGESTIONS ───
+
+export async function generateExclusions() {
+    const user = await requireRole([Role.SUPER_ADMIN]);
+
+    await checkRateLimit(user.id);
+
+    const settings = await getAiSettings();
+    if (!settings) throw new Error("AI not configured. Please set up niches first.");
+
+    const prompt = EXCLUSIONS_PROMPT_TEMPLATE
+        .replace("{niches}", settings.targetNiches.join(", "))
+        .replace("{brandVoice}", settings.brandVoice || "Professional");
+
+    const inputCheck = validateInput(prompt);
+    if (!inputCheck.valid) throw new Error(inputCheck.error);
+
+    const rawOutput = await generateJSON(prompt);
+    const validation = ExclusionSuggestionSchema.safeParse(rawOutput);
+
+    if (!validation.success) {
+        console.error("AI Exclusion Schema Validation Failed:", validation.error);
+        throw new Error("AI returned invalid data structure. Please try again.");
+    }
+
+    return validation.data;
 }
 
 // ─── IDEA MANAGEMENT ───
@@ -163,6 +197,17 @@ export async function getIdeas() {
 export async function deleteIdea(id: string) {
     await requireRole([Role.ADMIN, Role.SUPER_ADMIN]);
     await prisma.blogIdea.delete({ where: { id } });
+    revalidatePath("/admin/blog/ai");
+}
+
+export async function updateIdea(id: string, data: { title: string; angle: string }) {
+    await requireRole([Role.ADMIN, Role.SUPER_ADMIN]);
+    if (!data.title || !data.angle) throw new Error("Title and angle are required");
+
+    await prisma.blogIdea.update({
+        where: { id },
+        data: { title: data.title, angle: data.angle }
+    });
     revalidatePath("/admin/blog/ai");
 }
 

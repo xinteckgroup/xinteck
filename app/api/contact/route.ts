@@ -39,8 +39,27 @@ export async function POST(req: Request) {
     }
 
     const { name, email, phone, service, projectType, industry, budget, message } = validation.data;
+    const ip = req.headers.get("x-forwarded-for") || "unknown";
 
-    // 2. Database Transaction (Primary Source of Truth)
+    // 2. IP Rate Limiting (Prevent Spam Flooding)
+    if (ip !== "unknown") {
+      const recentSubmissions = await prisma.contactSubmission.count({
+        where: {
+          ipAddress: ip,
+          createdAt: {
+            gte: new Date(Date.now() - 60000) // 1 minute window
+          }
+        }
+      });
+      if (recentSubmissions >= 3) {
+        return NextResponse.json(
+          { error: "Rate limit exceeded. Please wait a minute before sending another signal." },
+          { status: 429 }
+        );
+      }
+    }
+
+    // 3. Database Transaction (Primary Source of Truth)
     const submission = await prisma.contactSubmission.create({
       data: {
         name,
@@ -51,12 +70,12 @@ export async function POST(req: Request) {
         industry,
         budget,
         message,
-        ipAddress: req.headers.get("x-forwarded-for") || "unknown",
+        ipAddress: ip,
         userAgent: req.headers.get("user-agent") || "unknown",
       }
     });
 
-    // 3. Audit Log
+    // 4. Audit Log
     // Fail-safe (won't block response if fails inside logAudit)
     await logAudit({
       action: "contact.submission",
@@ -65,7 +84,7 @@ export async function POST(req: Request) {
       metadata: { email, service, projectType, industry }
     });
 
-    // 4. Notification Broadcast (NEW)
+    // 5. Notification Broadcast (NEW)
     // Alert Admins and Super Admins
     try {
       await NotificationService.broadcastToRoles({
@@ -81,7 +100,7 @@ export async function POST(req: Request) {
       console.error("Failed to broadcast notification:", e);
     }
 
-    // 5. Resend Integration (Side Effect)
+    // 6. Resend Integration (Side Effect)
     const resendApiKey = await INTERNAL_getSecret("RESEND_API_KEY");
     const fromEmail = await INTERNAL_getSecret("RESEND_FROM_EMAIL");
     const toEmail = await INTERNAL_getSecret("RESEND_TO_EMAIL");

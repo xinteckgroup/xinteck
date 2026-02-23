@@ -97,9 +97,9 @@ export function InviteUserModal({ open, onClose }: { open: boolean; onClose: () 
                     error={errors.role}
                 />
                 
-                <div className="p-3 bg-blue-500/5 border border-blue-500/20 rounded-[10px] text-xs text-blue-400 flex gap-2 items-start mt-2">
+                <div className="p-3 bg-gold/5 border border-gold/20 rounded-[10px] text-xs text-gold flex gap-2 items-start mt-2">
                     <UserCog size={14} className="mt-0.5 shrink-0" />
-                    <p className="font-medium">
+                    <p className="font-medium text-[var(--admin-text)]/80">
                         The user will receive an email with a secure link to create their account. 
                         The link expires in 7 days.
                     </p>

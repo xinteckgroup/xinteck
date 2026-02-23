@@ -5,6 +5,8 @@ import { VIDEO_STATS } from "@/lib/videoStats";
 import { ArrowRight, ChevronLeft, ExternalLink, Github } from "lucide-react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 
 export async function generateMetadata({ params }: { params: { slug: string } }) {
     const { slug } = await params;
@@ -118,7 +120,7 @@ export default async function ProjectPage({ params }: { params: { slug: string }
             <div className="max-w-7xl mx-auto">
               <div className="bg-white/30 dark:bg-black/80 backdrop-blur-xl rounded-[10px] border border-primary/10 p-6 md:p-12 lg:p-16 shadow-[0_10px_40px_-10px_rgba(0,0,0,0.1)]">
                 <div
-                  className="prose dark:prose-invert max-w-none
+                  className="prose dark:prose-invert max-w-none break-words prose-p:break-words prose-a:break-all
                     prose-headings:text-foreground prose-headings:font-black prose-headings:tracking-tight
                     prose-h2:text-lg prose-h2:md:text-2xl prose-h2:mt-10 prose-h2:mb-4 prose-h2:text-primary
                     prose-h3:text-base prose-h3:md:text-lg prose-h3:mt-6 prose-h3:mb-3
@@ -128,8 +130,11 @@ export default async function ProjectPage({ params }: { params: { slug: string }
                     prose-li:text-foreground/70 prose-li:!text-sm prose-li:md:!text-base
                     prose-img:rounded-[10px] prose-img:border prose-img:border-primary/10
                     prose-ul:my-4 prose-ol:my-4"
-                  dangerouslySetInnerHTML={{ __html: project.content }}
-                />
+                >
+                  <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                    {project.content}
+                  </ReactMarkdown>
+                </div>
               </div>
             </div>
           </section>

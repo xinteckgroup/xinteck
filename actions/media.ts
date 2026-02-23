@@ -189,6 +189,11 @@ export async function uploadFile(formData: FormData, folderId?: string) {
     const api_secret = await INTERNAL_getSecret("CLOUDINARY_API_SECRET");
 
     if (!cloud_name || !api_key || !api_secret) {
+        console.error("Cloudinary Configuration Error details: ", {
+            cloud_name: cloud_name ? "Set" : "Missing",
+            api_key: api_key ? "Set" : "Missing",
+            api_secret: api_secret ? "Set" : "Missing"
+        });
         throw new Error("Cloudinary configuration missing. Please check System Settings.");
     }
 

@@ -4,7 +4,7 @@ import { logAudit } from "@/lib/audit";
 import { requireRole } from "@/lib/auth-check";
 import { prisma } from "@/lib/prisma";
 import { Role } from "@prisma/client";
-import { revalidatePath, revalidateTag } from "next/cache";
+import { revalidatePath } from "next/cache";
 
 export async function getSiteSettings(category?: string) {
     await requireRole([Role.SUPER_ADMIN, Role.ADMIN]);
@@ -76,8 +76,7 @@ export async function upsertSiteSetting(data: {
         metadata: { key: data.key },
     });
 
-    revalidateTag("site-settings");
-    revalidatePath("/admin/settings");
+    revalidatePath("/admin/settings", "page");
     return { success: true };
 }
 
@@ -96,8 +95,7 @@ export async function deleteSiteSetting(key: string) {
         metadata: { key },
     });
 
-    revalidateTag("site-settings");
-    revalidatePath("/admin/settings");
+    revalidatePath("/admin/settings", "page");
     return { success: true };
 }
 

@@ -74,16 +74,6 @@ export async function getCareerPositions(params?: {
     return createPaginatedResult(items, total, params?.page || 1, params?.pageSize || 12);
 }
 
-export async function getCareerPosition(id: string) {
-    await requireRole([Role.SUPER_ADMIN, Role.ADMIN]);
-
-    const position = await prisma.careerPosition.findUnique({ where: { id } });
-    if (!position || position.deletedAt) {
-        throw new Error("Position not found");
-    }
-
-    return position;
-}
 
 export async function createCareerPosition(data: CareerPositionInput) {
     const admin = await requireRole([Role.SUPER_ADMIN, Role.ADMIN]);

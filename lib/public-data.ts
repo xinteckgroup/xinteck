@@ -12,6 +12,7 @@ export interface PublicPost {
     tag: string;
     content?: string;
     image?: string;
+    featuredImage?: string;
 }
 
 export interface PublicProject {
@@ -37,15 +38,26 @@ export interface PublicService {
     iconName?: string;
     stats?: { label: string; val: string }[];
     capabilitiesTitle?: string;
-    process?: any[]; // Mapped from section4?
-    cta?: any;
+    process?: any[]; // Legacy, removing
+    cta?: any; // Legacy, removing
     image?: string | null;
     section1?: { title?: string; subtitle?: string; image?: string };
     section2?: { title?: string; description?: string };
     section3?: { title?: string; description?: string };
+    section4?: { title?: string; steps?: any[] };
+    buyNowSection?: { title?: string; description?: string; button?: string };
     freshnessSection?: { title?: string; description?: string };
 }
 
+
+/* Helper for dynamic read time calculation */
+function calculateReadTime(content: string = ""): string {
+    const rawText = content.replace(/<[^>]*>?/gm, ''); // Strip HTML if present
+    const cleanStr = rawText.replace(/[^a-zA-Z ]/g, ""); // Strip markdown chars implicitly
+    const words = cleanStr.trim().split(/\s+/).filter(w => w.length > 0).length;
+    const minutes = Math.ceil((words > 0 ? words : 1) / 200); // Avg reading speed: 200wpm
+    return `${Math.max(1, minutes)} min read`;
+}
 
 /*
 Purpose: Fetch published blog posts for the public feed.
@@ -65,7 +77,7 @@ export async function getPublicPosts(): Promise<PublicPost[]> {
             excerpt: post.excerpt || "",
             date: post.publishedAt ? format(post.publishedAt, "MMM dd, yyyy") : "",
             author: post.author.name || "Team Xinteck",
-            readTime: "5 min read",
+            readTime: calculateReadTime(post.content || ""),
             tag: post.category?.name || "Tech",
             image: post.featuredImage || ""
         }));
@@ -91,10 +103,11 @@ export async function getPublicPost(slug: string): Promise<PublicPost | null> {
             excerpt: post.excerpt || "",
             date: post.publishedAt ? format(post.publishedAt, "MMM dd, yyyy") : "",
             author: post.author.name || "Team Xinteck",
-            readTime: "5 min read",
+            readTime: calculateReadTime(post.content || ""),
             tag: post.category?.name || "Tech",
             content: post.content,
-            image: post.featuredImage || ""
+            image: post.featuredImage || "",
+            featuredImage: post.featuredImage || ""
         };
     } catch (error) {
         console.error(`Failed to fetch public post ${slug}:`, error);
@@ -114,10 +127,10 @@ export async function getPublicProjects(): Promise<PublicProject[]> {
             title: p.title,
             category: p.category.replace(/_/g, ' '),
             description: p.description || "",
-            tags: [],
+            tags: p.tags || [],
             year: p.completionDate ? p.completionDate.getFullYear().toString() : new Date().getFullYear().toString(),
             client: p.client || "",
-            role: "Development",
+            role: p.role || "Development",
             image: p.coverImage || "/images/placeholder.jpg"
         }));
     } catch (error) {
@@ -151,12 +164,12 @@ export async function getPublicProject(slug: string): Promise<PublicProject | nu
             title: p.title,
             category: p.category.replace(/_/g, ' '),
             description: p.description || "",
-            tags: [], // Tags not in DB
+            tags: p.tags || [],
             year: p.completionDate ? p.completionDate.getFullYear().toString() : new Date().getFullYear().toString(),
             client: p.client || "",
-            role: "Development",
+            role: p.role || "Development",
             image: p.coverImage || "/images/placeholder.jpg",
-            content: p.description || ""
+            content: p.content || ""
         };
     } catch (error) {
         console.error(`Failed to fetch public project ${slug}:`, error);
@@ -177,12 +190,12 @@ export async function getFeaturedProject(): Promise<PublicProject | null> {
                 title: p.title,
                 category: p.category.replace(/_/g, ' '),
                 description: p.description || "",
-                tags: [],
+                tags: p.tags || [],
                 year: p.completionDate ? p.completionDate.getFullYear().toString() : new Date().getFullYear().toString(),
                 client: p.client || "",
-                role: "Development",
+                role: p.role || "Development",
                 image: p.coverImage || "/images/placeholder.jpg",
-                content: p.description || ""
+                content: p.content || ""
             };
         }
     } catch (error) {
@@ -253,16 +266,16 @@ export async function getPublicService(slug: string): Promise<PublicService | nu
             image: (s as any).image,
             features: s.features,
             capabilitiesTitle: details.title || "WHAT WE BUILD.",
-            process: section4.steps || [], // Assuming section4 has steps
             stats: Array.isArray(s.stats) ? (s.stats as any[]) : [],
             section1: { title: section1.title, subtitle: section1.subtitle, image: section1.image },
             section2: { title: section2.title, description: section2.description },
             section3: { title: section3.title, description: section3.description },
+            section4: { title: section4.title || "HOW WE DELIVER.", steps: section4.steps || [] },
             freshnessSection: { title: freshness.title, description: freshness.description },
-            cta: {
+            buyNowSection: {
                 title: buyNow.title || "READY TO BUILD?",
-                desc: buyNow.description || "Let's discuss your project.",
-                button: "Start Now"
+                description: buyNow.description || "Let's discuss your project.",
+                button: buyNow.button || "Start Now"
             }
         };
     } catch (error) {

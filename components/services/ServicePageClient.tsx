@@ -11,7 +11,7 @@ import Link from "next/link";
 
 export function ServicePageClient({ service }: { service: PublicService }) {
   
-  const ui = SERVICE_UI_MAP[service.slug] || SERVICE_UI_MAP["default"];
+  const ui = SERVICE_UI_MAP[service.slug as keyof typeof SERVICE_UI_MAP] || SERVICE_UI_MAP["default"];
   const HeroIcon = ui.icon;
   const MockupComponent = ui.mockup;
 
@@ -81,7 +81,7 @@ export function ServicePageClient({ service }: { service: PublicService }) {
             </motion.div>
 
             {/* Injected Mockup Component */}
-            <MockupComponent imageSrc={service.image} />
+            <MockupComponent imageSrc={service.image} service={service} />
           </div>
         </section>
 
@@ -147,7 +147,7 @@ export function ServicePageClient({ service }: { service: PublicService }) {
         {/* Content Blocks (Section 2 & 3) */}
         {(service.section2?.title || service.section3?.title) && (
           <section className="px-6">
-            <div className="max-w-5xl mx-auto flex flex-col gap-12 md:gap-24">
+            <div className="max-w-7xl mx-auto grid md:grid-cols-2 gap-6">
               
               {service.section2?.title && (
                 <motion.div 
@@ -215,7 +215,7 @@ export function ServicePageClient({ service }: { service: PublicService }) {
         )}
 
         {/* Process Section */}
-        {service.process && service.process.length > 0 && (
+        {service.section4?.steps && service.section4.steps.length > 0 && (
         <section className="px-6">
           <div className="max-w-7xl mx-auto">
             <div className="text-center max-w-3xl mx-auto mb-12 md:mb-16 flex flex-col gap-4 md:gap-6 bg-white/30 dark:bg-black/80 backdrop-blur-xl rounded-[10px] p-6 md:p-8 shadow-lg">
@@ -223,12 +223,12 @@ export function ServicePageClient({ service }: { service: PublicService }) {
                 The Process
               </h2>
               <h3 className={`${TYPOGRAPHY.pageTitle} text-foreground`}>
-                 HOW WE DELIVER.
+                 {service.section4?.title || "HOW WE DELIVER."}
               </h3>
             </div>
             
             <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-              {service.process.map((step: any, i: number) => (
+              {service.section4?.steps?.map((step: any, i: number) => (
                 <motion.div
                   key={step.title || i}
                   initial={{ opacity: 0, y: 20 }}
@@ -239,7 +239,7 @@ export function ServicePageClient({ service }: { service: PublicService }) {
                 >
                   <span className={`${TYPOGRAPHY.pageTitle} text-primary/10 absolute top-4 right-6`}>{i + 1}</span>
                   <h4 className={`${TYPOGRAPHY.cardTitle} text-foreground z-10`}>{step.title}</h4>
-                  <p className={`${TYPOGRAPHY.body} text-foreground z-10`}>{step.description || step.desc}</p>
+                  <p className={`${TYPOGRAPHY.body} text-foreground/80 z-10 mt-2 text-sm leading-relaxed`}>{step.description || step.desc}</p>
                 </motion.div>
               ))}
             </div>
@@ -251,16 +251,16 @@ export function ServicePageClient({ service }: { service: PublicService }) {
         <section className="px-6 mb-12 md:mb-20">
           <div className="max-w-7xl mx-auto bg-white/30 dark:bg-black/80 backdrop-blur-xl rounded-[10px] p-8 md:p-24 text-center shadow-lg">
             <h3 className={`${TYPOGRAPHY.pageTitle} mb-6 md:mb-8 max-w-4xl mx-auto text-foreground`}>
-               {service.cta?.title || "READY TO BUILD?"}
+               {service.buyNowSection?.title || "READY TO BUILD?"}
             </h3>
-            <p className={`${TYPOGRAPHY.pageSubtitle} text-foreground max-w-2xl mx-auto mb-8 md:mb-10`}>
-              {service.cta?.desc || "Let's discuss your project."}
+            <p className={`${TYPOGRAPHY.pageSubtitle} text-foreground/80 max-w-2xl mx-auto mb-8 md:mb-10`}>
+              {service.buyNowSection?.description || "Let's discuss your project."}
             </p>
             <Link 
               href="/contact"
               className={`${TYPOGRAPHY.button} inline-flex items-center gap-2 px-8 md:px-12 py-4 md:py-5 bg-primary text-primary-foreground rounded-[10px] hover:bg-primary/90 transition-all`}
             >
-              {service.cta?.button || "Start Now"}
+              {service.buyNowSection?.button || "Start Now"}
               <ArrowRight size={20} />
             </Link>
           </div>

@@ -43,6 +43,7 @@ export async function getBlogPosts(params: BlogFilter = {}): Promise<PaginatedRe
         // Map UI "Draft" to ContentStatus.DRAFT
         const statusMap: Record<string, ContentStatus> = {
             "Draft": ContentStatus.DRAFT,
+            "In Review": ContentStatus.IN_REVIEW,
             "Published": ContentStatus.PUBLISHED,
             "Archived": ContentStatus.ARCHIVED
         };
@@ -100,8 +101,14 @@ export async function getBlogPost(id: string) {
 }
 
 export async function createBlogPost(data: any) {
-    const user = await requireRole([Role.ADMIN, Role.SUPER_ADMIN]);
+    const user = await requireRole([Role.ADMIN, Role.SUPER_ADMIN, Role.SUPPORT_STAFF]);
     const parsed = blogPostSchema.parse(data);
+
+    let finalStatus = parseStatus(data.status);
+    // Enforce Approval Workflow: Only SUPER_ADMIN can directly Publish
+    if (finalStatus === ContentStatus.PUBLISHED && user.role !== Role.SUPER_ADMIN) {
+        finalStatus = ContentStatus.IN_REVIEW;
+    }
 
     const post = await prisma.blogPost.create({
         data: {
@@ -110,7 +117,8 @@ export async function createBlogPost(data: any) {
             excerpt: data.excerpt,
             content: data.content,
             featuredImage: data.image,
-            status: parseStatus(data.status),
+            status: finalStatus,
+            publishedAt: finalStatus === ContentStatus.PUBLISHED ? new Date() : null,
             author: { connect: { id: user.id } },
             category: data.category ? {
                 connectOrCreate: {
@@ -137,12 +145,18 @@ export async function createBlogPost(data: any) {
 }
 
 export async function updateBlogPost(id: string, data: any) {
-    const user = await requireRole([Role.ADMIN, Role.SUPER_ADMIN]);
+    const user = await requireRole([Role.ADMIN, Role.SUPER_ADMIN, Role.SUPPORT_STAFF]);
     const validatedId = uuidSchema.parse(id);
     const parsed = blogPostSchema.partial().parse(data);
 
     // Optimistic locking (Phase 3)
     const currentVersion = data.version;
+
+    let finalStatus = parseStatus(data.status);
+    // Enforce Approval Workflow: Only SUPER_ADMIN can directly Publish
+    if (finalStatus === ContentStatus.PUBLISHED && user.role !== Role.SUPER_ADMIN) {
+        finalStatus = ContentStatus.IN_REVIEW;
+    }
 
     try {
         const post = await prisma.blogPost.update({
@@ -156,7 +170,8 @@ export async function updateBlogPost(id: string, data: any) {
                 excerpt: data.excerpt,
                 content: data.content,
                 featuredImage: data.image,
-                status: parseStatus(data.status),
+                status: finalStatus,
+                ...(finalStatus === ContentStatus.PUBLISHED ? { publishedAt: new Date() } : {}),
                 category: data.category ? {
                     connectOrCreate: {
                         where: { name: data.category },
@@ -214,6 +229,7 @@ export async function deleteBlogPost(id: string) {
 function formatStatus(status: ContentStatus): string {
     if (status === "PUBLISHED") return "Published";
     if (status === "DRAFT") return "Draft";
+    if (status === "IN_REVIEW") return "In Review";
     if (status === "ARCHIVED") return "Archived";
     return status;
 }
@@ -221,6 +237,7 @@ function formatStatus(status: ContentStatus): string {
 function parseStatus(status: string): ContentStatus {
     if (status === "Published") return ContentStatus.PUBLISHED;
     if (status === "Draft") return ContentStatus.DRAFT;
+    if (status === "In Review") return ContentStatus.IN_REVIEW;
     if (status === "Archived") return ContentStatus.ARCHIVED;
     return ContentStatus.DRAFT;
 }

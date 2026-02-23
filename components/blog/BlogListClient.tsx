@@ -1,13 +1,13 @@
 "use client";
 
 import { BlogGrid } from "@/components/sections/BlogGrid";
-import { BlogMeta } from "@/lib/mdx";
+import { PublicPost } from "@/lib/public-data";
 import { Search } from "lucide-react";
 import { useState } from "react";
 
 const ITEMS_PER_PAGE = 6;
 
-export function BlogListClient({ allPosts }: { allPosts: (BlogMeta & { slug: string })[] }) {
+export function BlogListClient({ allPosts }: { allPosts: PublicPost[] }) {
   const [searchQuery, setSearchQuery] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
 

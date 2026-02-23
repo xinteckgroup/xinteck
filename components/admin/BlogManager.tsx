@@ -103,9 +103,11 @@ export function BlogManager({ initialData }: BlogManagerProps) {
       label: "Status",
       render: (row: BlogPostSummary) => (
         <span className={`px-3 py-1 rounded-full text-xs font-bold inline-flex items-center gap-1.5 ${
-          row.status === "Published" ? "bg-green-500/10 text-green-400 border border-green-500/20" : "admin-surface-secondary text-[var(--admin-muted)] border border-[var(--admin-border)]"
+          row.status === "Published" ? "bg-green-500/10 text-green-400 border border-green-500/20" : 
+          row.status === "In Review" ? "bg-purple-500/10 text-purple-400 border border-purple-500/20" :
+          "admin-surface-secondary text-[var(--admin-muted)] border border-[var(--admin-border)]"
         }`}>
-          <span className={`w-1.5 h-1.5 rounded-full ${row.status === "Published" ? "bg-green-400" : "bg-[var(--admin-muted)]"}`} />
+          <span className={`w-1.5 h-1.5 rounded-full ${row.status === "Published" ? "bg-green-400" : row.status === "In Review" ? "bg-purple-400" : "bg-[var(--admin-muted)]"}`} />
           {row.status}
         </span>
       )
@@ -169,6 +171,7 @@ export function BlogManager({ initialData }: BlogManagerProps) {
                options={[
                  { value: "All Status", label: "All Status" },
                  { value: "Published", label: "Published" },
+                 { value: "In Review", label: "In Review" },
                  { value: "Draft", label: "Draft" },
                  { value: "Archived", label: "Archived" }
                ]}
@@ -245,7 +248,9 @@ export function BlogManager({ initialData }: BlogManagerProps) {
                         <FileText size={48} />
                         <div className="absolute top-3 left-3">
                             <span className={`px-2 py-0.5 rounded-[4px] text-[10px] font-bold uppercase tracking-wider border ${
-                                post.status === "Published" ? "bg-green-500/20 text-[var(--admin-text)] border-green-500/20" : "admin-surface-input text-[var(--admin-text)]/50 border-[var(--admin-border)]"
+                                post.status === "Published" ? "bg-green-500/20 text-[var(--admin-text)] border-green-500/20" : 
+                                post.status === "In Review" ? "bg-purple-500/20 text-[var(--admin-text)] border-purple-500/20" :
+                                "admin-surface-input text-[var(--admin-text)]/50 border-[var(--admin-border)]"
                             }`}>
                                 {post.status}
                             </span>

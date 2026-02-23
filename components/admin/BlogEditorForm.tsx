@@ -3,9 +3,12 @@
 import { createBlogPost, updateBlogPost } from "@/actions/blog";
 import { MarkdownEditor } from "@/components/admin/MarkdownEditor";
 import { MediaPicker } from "@/components/admin/MediaPicker";
+import { RoleGate } from "@/components/admin/RoleGate";
 import { PageContainer, PageHeader } from "@/components/admin/ui";
 import { Select } from "@/components/admin/ui/Select";
-import { Image as ImageIcon, Save, Upload, X } from "lucide-react";
+import { Role } from "@prisma/client";
+import { Image as ImageIcon, Save, Send, Upload, X } from "lucide-react";
+import { isRedirectError } from "next/dist/client/components/redirect-error";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
@@ -66,7 +69,9 @@ export function BlogEditorForm({ initialData, isEditing = false }: BlogEditorFor
                   router.refresh();
               }
           } catch (e: any) {
-              if (e.message.includes("Concurrency conflict")) {
+              if (isRedirectError(e)) throw e; // Allow Next.js to run the Server-Action redirect
+
+              if (e.message?.includes("Concurrency conflict")) {
                   if (confirm("This post has been modified by another user. Reload to get the latest version?")) {
                       window.location.reload();
                       return;
@@ -94,22 +99,41 @@ export function BlogEditorForm({ initialData, isEditing = false }: BlogEditorFor
               <button 
                  onClick={() => { setFormData({...formData, status: "Draft"}); handleSave(); }}
                  disabled={isPending}
-                 className="backdrop-blur-sm flex-1 sm:flex-initial px-3 py-1.5 md:px-4 md:py-2 rounded-[8px] admin-surface-primary text-[var(--admin-text)] hover:text-gold hover:bg-[var(--admin-text)]/5 transition-all font-bold text-[10px] md:text-sm whitespace-nowrap disabled:opacity-50"
+                 className="backdrop-blur-sm flex-1 sm:flex-initial px-3 py-1.5 md:px-4 md:py-2 rounded-[8px] admin-surface-primary text-[var(--admin-text)] hover:text-gold hover:bg-[var(--admin-text)]/5 transition-all font-bold text-[10px] md:text-sm whitespace-nowrap disabled:opacity-50 border border-[var(--admin-border)] shadow-sm"
               >
                  Save Draft
               </button>
-              <button 
-                 onClick={handleSave}
-                 disabled={isPending}
-                 className="backdrop-blur-sm flex-1 sm:flex-initial px-3 py-1.5 md:px-6 md:py-2 rounded-[8px] admin-surface-primary text-[var(--admin-text)] font-bold text-[10px] md:text-sm hover:text-gold hover:bg-[var(--admin-text)]/5 transition-colors flex items-center justify-center gap-1 md:gap-2 whitespace-nowrap disabled:opacity-50"
-              >
-                 {isPending ? (
-                     <span className="w-4 h-4 border-2 border-primary-foreground/30 border-t-primary-foreground rounded-full animate-spin"/>
-                 ) : (
-                     <Save size={12} className="md:w-4 md:h-4" />
-                 )}
-                 {isEditing ? "Update" : "Publish"}
-              </button>
+              
+              <RoleGate 
+                allowedRoles={[Role.ADMIN, Role.SUPPORT_STAFF]} 
+                fallback={
+                    <button 
+                         onClick={() => { setFormData({...formData, status: "Published"}); handleSave(); }}
+                         disabled={isPending}
+                         className="backdrop-blur-sm flex-1 sm:flex-initial px-3 py-1.5 md:px-6 md:py-2 rounded-[8px] bg-gold text-primary-foreground font-bold text-[10px] md:text-sm hover:bg-gold/90 transition-colors flex items-center justify-center gap-1 md:gap-2 whitespace-nowrap disabled:opacity-50 shadow-[0_4px_14px_0_rgba(212,175,55,0.39)]"
+                      >
+                         {isPending ? (
+                             <span className="w-4 h-4 border-2 border-primary-foreground/30 border-t-primary-foreground rounded-full animate-spin"/>
+                         ) : (
+                             <Save size={12} className="md:w-4 md:h-4" />
+                         )}
+                         {isEditing ? "Update Post" : "Publish Now"}
+                      </button>
+                }
+               >
+                  <button 
+                     onClick={() => { setFormData({...formData, status: "In Review"}); handleSave(); }}
+                     disabled={isPending}
+                     className="backdrop-blur-sm flex-1 sm:flex-initial px-3 py-1.5 md:px-6 md:py-2 rounded-[8px] bg-purple-600/90 text-white font-bold text-[10px] md:text-sm hover:bg-purple-600 transition-colors flex items-center justify-center gap-1 md:gap-2 whitespace-nowrap disabled:opacity-50 shadow-[0_4px_14px_0_rgba(147,51,234,0.39)]"
+                  >
+                     {isPending ? (
+                         <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"/>
+                     ) : (
+                         <Send size={12} className="md:w-4 md:h-4" />
+                     )}
+                     Submit for Review
+                  </button>
+              </RoleGate>
            </div>
          }
        />
@@ -123,7 +147,7 @@ export function BlogEditorForm({ initialData, isEditing = false }: BlogEditorFor
        <div className="grid lg:grid-cols-3 gap-3 md:gap-6">
           {/* Main Content Column */}
           <div className="lg:col-span-2 flex flex-col gap-3 md:gap-6 min-w-0">
-             <div className="admin-surface-primary rounded-[10px] p-3 md:p-6 overflow-hidden">
+             <div className="admin-surface-primary backdrop-blur-sm rounded-[10px] p-3 md:p-6 overflow-hidden">
                 <div className="flex flex-col gap-4">
                    <div className="flex flex-col gap-2">
                       <label className="text-[8px] md:text-xs font-bold text-[var(--admin-text)] uppercase">Post Title</label>
@@ -162,7 +186,7 @@ export function BlogEditorForm({ initialData, isEditing = false }: BlogEditorFor
           {/* Sidebar Column */}
           <div className="flex flex-col gap-3 md:gap-6 min-w-0">
              {/* Publishing Options */}
-             <div className="admin-surface-primary rounded-[10px] p-3 md:p-6 flex flex-col gap-3 md:gap-4">
+             <div className="admin-surface-primary backdrop-blur-sm rounded-[10px] p-3 md:p-6 flex flex-col gap-3 md:gap-4">
                 <h3 className="font-bold text-[var(--admin-text)] text-xs md:text-sm border-b border-[var(--admin-border)] pb-2">Publishing</h3>
                 
                 <div className="flex flex-col gap-2">
@@ -172,6 +196,7 @@ export function BlogEditorForm({ initialData, isEditing = false }: BlogEditorFor
                      onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setFormData({...formData, status: e.target.value})}
                      options={[
                        { value: "Draft", label: "Draft" },
+                       { value: "In Review", label: "In Review" },
                        { value: "Published", label: "Published" },
                        { value: "Archived", label: "Archived" }
                      ]}
@@ -195,7 +220,7 @@ export function BlogEditorForm({ initialData, isEditing = false }: BlogEditorFor
              </div>
 
              {/* Featured Image */}
-             <div className="admin-surface-primary rounded-[10px] p-3 md:p-6 flex flex-col gap-3 md:gap-4">
+             <div className="admin-surface-primary backdrop-blur-sm rounded-[10px] p-3 md:p-6 flex flex-col gap-3 md:gap-4">
                 <h3 className="font-bold text-[var(--admin-text)] text-xs md:text-sm border-b border-[var(--admin-border)] pb-2">Featured Image</h3>
                 
                 {formData.image ? (
@@ -235,7 +260,7 @@ export function BlogEditorForm({ initialData, isEditing = false }: BlogEditorFor
                        value={formData.image}
                        onChange={(e) => setFormData({...formData, image: e.target.value})}
                        placeholder="Or paste image URL..." 
-                       className="w-full admin-surface-input rounded-[8px] px-2 md:px-3 py-1.5 md:py-2 text-[var(--admin-text)] text-[10px] md:text-xs outline-none focus:border-gold/50 pr-8"
+                       className="w-full admin-surface-input rounded-[8px] px-2 md:px-3 py-1.5 md:py-2 text-[var(--admin-text)] text-[10px] md:text-xs outline-none focus:border-gold/50 pr-8 truncate focus:min-w-0"
                     />
                     <button
                         onClick={() => setShowMediaPicker(true)}
@@ -248,14 +273,18 @@ export function BlogEditorForm({ initialData, isEditing = false }: BlogEditorFor
              </div>
              
              {/* Excerpt */}
-             <div className="admin-surface-primary rounded-[10px] p-3 md:p-6 flex flex-col gap-3 md:gap-4">
-                <h3 className="font-bold text-[var(--admin-text)] text-xs md:text-sm border-b border-[var(--admin-border)] pb-2">Excerpt</h3>
+              <div className="admin-surface-primary backdrop-blur-sm rounded-[10px] p-3 md:p-6 flex flex-col gap-3 md:gap-4">
+                 <h3 className="font-bold text-[var(--admin-text)] text-xs md:text-sm border-b border-[var(--admin-border)] pb-2">Excerpt</h3>
                 <textarea 
-                   rows={3}
+                   rows={6}
                    value={formData.excerpt}
-                   onChange={(e) => setFormData({...formData, excerpt: e.target.value})}
+                   onChange={(e) => {
+                       setFormData({...formData, excerpt: e.target.value});
+                       e.target.style.height = 'auto';
+                       e.target.style.height = e.target.scrollHeight + 'px';
+                   }}
                    placeholder="Short summary for SEO and previews..."
-                   className="admin-surface-input rounded-[8px] px-2 md:px-3 py-1.5 md:py-2 text-[var(--admin-text)] text-[10px] md:text-xs outline-none focus:border-gold/50 resize-none"
+                   className="admin-surface-input rounded-[8px] px-2 md:px-3 py-1.5 md:py-2 text-[var(--admin-text)] text-[10px] md:text-xs outline-none focus:border-gold/50 resize-y min-h-[120px]"
                 />
              </div>
           </div>

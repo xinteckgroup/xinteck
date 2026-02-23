@@ -35,10 +35,10 @@ const toolsRow2 = [
 ];
 
 const stats = [
-  { label: "Successful Projects", value: "250+" },
-  { label: "Global Clients", value: "85+" },
-  { label: "Awards Won", value: "12" },
-  { label: "Tech Experts", value: "45" },
+  { label: "Successful Projects", value: "15+" },
+  { label: "Active Clients", value: "12+" },
+  { label: "Industry Partners", value: "5+" },
+  { label: "Dedicated Experts", value: "6+" },
 ];
 
 const values = [

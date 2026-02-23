@@ -7,13 +7,6 @@ const JWT_SECRET = new TextEncoder().encode(process.env.JWT_SECRET || 'developme
 const SALT_ROUNDS = 10;
 const SESSION_EXPIRY = '7d';
 
-/*
-Purpose: Securely hash passwords before storage.
-Decision: Using bcrypt with 10 rounds balances security and performance reasonably well for this scale.
-*/
-export async function hashPassword(plain: string) {
-    return bcrypt.hash(plain, SALT_ROUNDS);
-}
 
 // Purpose: Verify a plaintext password against the stored hash.
 export async function verifyPassword(plain: string, hash: string) {

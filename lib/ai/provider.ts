@@ -1,7 +1,6 @@
 import { INTERNAL_getSecret } from "@/actions/settings";
 import { GoogleGenerativeAI } from "@google/generative-ai";
-
-const MODEL_NAME = "gemini-1.5-flash";
+const MODEL_NAME = "gemini-2.5-flash";
 
 export async function getGeminiModel() {
     const apiKey = await INTERNAL_getSecret("GEMINI_API_KEY");
@@ -14,17 +13,23 @@ export async function getGeminiModel() {
     return genAI.getGenerativeModel({ model: MODEL_NAME });
 }
 
-export async function generateText(prompt: string, temperature = 0.7): Promise<string> {
+export async function generateText(prompt: string, temperature = 0.7, useSearchGrounding = false): Promise<string> {
     try {
         const model = await getGeminiModel();
 
-        const result = await model.generateContent({
+        const req: any = {
             contents: [{ role: "user", parts: [{ text: prompt }] }],
             generationConfig: {
                 temperature,
-                maxOutputTokens: 2000,
+                maxOutputTokens: 8192,
             }
-        });
+        };
+
+        if (useSearchGrounding) {
+            req.tools = [{ googleSearch: {} }];
+        }
+
+        const result = await model.generateContent(req);
 
         const response = result.response;
         return response.text();
@@ -34,7 +39,7 @@ export async function generateText(prompt: string, temperature = 0.7): Promise<s
     }
 }
 
-export async function generateJSON(prompt: string): Promise<any> {
+export async function generateJSON(prompt: string, useSearchGrounding = false): Promise<any> {
     const model = await getGeminiModel();
 
     const jsonPrompt = `${prompt}
@@ -42,13 +47,19 @@ export async function generateJSON(prompt: string): Promise<any> {
     IMPORTANT: Respond with pure JSON only. Do not wrap in markdown code blocks like \`\`\`json. Just the raw JSON object/array.`;
 
     try {
-        const result = await model.generateContent({
+        const req: any = {
             contents: [{ role: "user", parts: [{ text: jsonPrompt }] }],
             generationConfig: {
                 temperature: 0.4, // Lower temp for structured data
                 responseMimeType: "application/json"
             }
-        });
+        };
+
+        if (useSearchGrounding) {
+            req.tools = [{ googleSearch: {} }];
+        }
+
+        const result = await model.generateContent(req);
 
         const text = result.response.text();
 

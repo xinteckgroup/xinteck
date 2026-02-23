@@ -17,7 +17,7 @@ export async function GET() {
             return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
         }
 
-        if (![Role.SUPER_ADMIN, Role.ADMIN].includes(user.role)) {
+        if (!([Role.SUPER_ADMIN, Role.ADMIN] as Role[]).includes(user.role)) {
             return NextResponse.json({ error: "Forbidden" }, { status: 403 });
         }
 

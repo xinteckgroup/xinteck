@@ -14,7 +14,6 @@ const services = [
         subName: "Digital Excellence.",
         price: "Custom",
         description: "Next.js 14+ - High Performance - SEO Optimized",
-        themeColor: "#00B4D8", // Cyan
 
         features: ["Next.js App Router", "Server Components", "Edge Caching"],
         stats: [{ label: "Lighthouse", val: "100" }, { label: "Uptime", val: "99.9%" }, { label: "Speed", val: "<100ms" }],
@@ -48,7 +47,6 @@ const services = [
         subName: "Native Performance.",
         price: "Custom",
         description: "React Native - iOS & Android - Smooth 60FPS",
-        themeColor: "#AF52DE", // Purple
 
         features: ["Cross-Platform", "Native Modules", "Offline Mode"],
         stats: [{ label: "Platforms", val: "2" }, { label: "Code Share", val: "90%" }, { label: "FPS", val: "60" }],
@@ -82,7 +80,6 @@ const services = [
         subName: "Tailored Solutions.",
         price: "Enterprise",
         description: "Microservices - Scalable - Secure",
-        themeColor: "#FF9500", // Orange
 
         features: ["Enterprise Grade", "SaaS Ready", "API First"],
         stats: [{ label: "Security", val: "AES-256" }, { label: "Scale", val: "Unltd" }, { label: "API", val: "REST/QL" }],
@@ -116,7 +113,6 @@ const services = [
         subName: "User Centric.",
         price: "Custom",
         description: "Figma - Prototyping - Design Systems",
-        themeColor: "#FF2D55", // Pinkish Red
 
         features: ["User Research", "Wireframing", "Hi-Fi Visuals"],
         stats: [{ label: "Users", val: "Happy" }, { label: "Conversion", val: "+40%" }, { label: "Awards", val: "Yes" }],
@@ -150,7 +146,6 @@ const services = [
         subName: "Infrastructure.",
         price: "Retainer",
         description: "AWS/Azure - Kubernetes - Terraform",
-        themeColor: "#34C759", // Green
 
         features: ["Auto Scaling", "Cost Optics", "Security Ops"],
         stats: [{ label: "Uptime", val: "99.99%" }, { label: "Deploy", val: "Auto" }, { label: "Cost", val: "-30%" }],

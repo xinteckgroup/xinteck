@@ -94,6 +94,8 @@ export async function updateService(id: string, data: any) {
     const validatedId = uuidSchema.parse(id);
     const parsed = serviceSchema.partial().parse(data);
 
+    const { themeColor, ...restParsed } = parsed as any;
+
     // Optimistic locking (Phase 3)
     const currentVersion = data.version;
 
@@ -104,7 +106,7 @@ export async function updateService(id: string, data: any) {
                 ...(typeof currentVersion === 'number' ? { version: currentVersion } : {})
             },
             data: {
-                ...parsed as any,
+                ...restParsed,
                 version: { increment: 1 }
             }
         });

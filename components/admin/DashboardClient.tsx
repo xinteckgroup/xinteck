@@ -17,18 +17,9 @@ interface DashboardClientProps {
   analytics?: any[]; 
 }
 
-// Fallback analytics if not yet real
-const MOCK_ANALYTICS = [
-    { name: "Mon", visits: 4000, views: 2400, inquiries: 2 },
-    { name: "Tue", visits: 3000, views: 1398, inquiries: 5 },
-    { name: "Wed", visits: 2000, views: 9800, inquiries: 8 },
-    { name: "Thu", visits: 2780, views: 3908, inquiries: 3 },
-    { name: "Fri", visits: 1890, views: 4800, inquiries: 1 },
-    { name: "Sat", visits: 2390, views: 3800, inquiries: 0 },
-    { name: "Sun", visits: 3490, views: 4300, inquiries: 4 },
-];
+// Fallback logic handled on the Server Action
 
-export function DashboardClient({ stats, activity, analytics = MOCK_ANALYTICS }: DashboardClientProps) {
+export function DashboardClient({ stats, activity, analytics = [] }: DashboardClientProps) {
   const [chartType, setChartType] = useState<"traffic" | "conversion">("traffic");
   const [timeRange, setTimeRange] = useState("7d");
 

@@ -32,6 +32,12 @@ export interface InboxMessage {
     replied: boolean;
     color: string;
     avatar: string;
+    phone: string;
+    service: string | null;
+    projectType: string;
+    industry: string;
+    budget: string | null;
+    assignedTo?: { id: string; name: string; avatar: string | null } | null;
 }
 
 export interface NewsletterSubscriber {

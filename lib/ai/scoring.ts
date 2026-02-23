@@ -1,3 +1,4 @@
+import { prisma } from "@/lib/prisma";
 import { CORE_NICHES, SCORING_WEIGHTS, SECONDARY_NICHES } from "./config";
 
 export interface ScoreResult {
@@ -11,11 +12,11 @@ export interface ScoreResult {
     };
 }
 
-export function calculateScore(idea: { title: string; angle: string; keywords: string[] }): ScoreResult {
+export async function calculateScore(idea: { title: string; angle: string; keywords: string[] }): Promise<ScoreResult> {
     const relevance = calculateRelevance(idea);
     const seo = calculateSEO(idea);
     const authority = calculateAuthority(idea);
-    const novelty = calculateNovelty(idea); // Placeholder, requires DB check
+    const novelty = await calculateNovelty(idea); // Now checks DB collisions
     const clarity = calculateClarity(idea);
 
     const total = Math.round(
@@ -90,15 +91,44 @@ function calculateAuthority(idea: { title: string; angle: string }): number {
     return Math.max(0, Math.min(100, score));
 }
 
-function calculateNovelty(idea: { title: string }): number {
-    // In a real implementation, this would compare vector embeddings or string similarity against existing posts.
-    // For now, we assume AI provides reasonably novel ideas if prompted correctly.
-    // We can penalize "generic" structures.
+async function calculateNovelty(idea: { title: string }): Promise<number> {
+    let score = 90;
 
-    if (idea.title.startsWith("Top 10")) return 40;
-    if (idea.title.startsWith("5 Best")) return 50;
+    // Fast-fail generic structures
+    if (idea.title.startsWith("Top 10")) score -= 50;
+    if (idea.title.startsWith("5 Best") || idea.title.startsWith("10 Best")) score -= 40;
 
-    return 90; // Default high novelty assumption for now
+    // Isolate key title terms
+    const titleWords = idea.title
+        .toLowerCase()
+        .replace(/[^a-z0-9 ]/g, "")
+        .split(" ")
+        .filter(w => w.length > 4);
+
+    if (titleWords.length === 0) return Math.max(0, score);
+
+    try {
+        // Enforce true Database-derived Novelty
+        const [blogCollisions, projectCollisions] = await Promise.all([
+            prisma.blogPost.count({
+                where: { OR: titleWords.map(word => ({ title: { contains: word, mode: "insensitive" } })) }
+            }),
+            prisma.project.count({
+                where: { OR: titleWords.map(word => ({ title: { contains: word, mode: "insensitive" } })) }
+            })
+        ]);
+
+        const totalCollisions = blogCollisions + projectCollisions;
+
+        if (totalCollisions > 0) {
+            // Linearly scale down score based on collision gravity. Max penalty of -40 for structural similarity.
+            score -= Math.min(40, totalCollisions * 10);
+        }
+    } catch (e) {
+        console.warn("Could not compute AI DB novelty collision:", e);
+    }
+
+    return Math.max(0, score);
 }
 
 function calculateClarity(idea: { title: string }): number {

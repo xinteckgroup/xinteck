@@ -52,20 +52,3 @@ export function parseUtcEnd(dateStr: string): Date {
     return new Date(Date.UTC(y, m - 1, d, 23, 59, 59, 999));
 }
 
-/**
- * Returns a complete UTC range object for database queries.
- * Safe to use directly in Prisma 'where' clauses.
- */
-export function getUtcDateRange(dateFrom?: string, dateTo?: string) {
-    const range: { gte?: Date; lte?: Date } = {};
-
-    if (dateFrom) {
-        range.gte = parseUtcStart(dateFrom);
-    }
-
-    if (dateTo) {
-        range.lte = parseUtcEnd(dateTo);
-    }
-
-    return range;
-}

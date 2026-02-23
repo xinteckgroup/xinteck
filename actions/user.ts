@@ -171,6 +171,13 @@ export async function deleteUser(id: string) {
         throw new Error("Cannot delete yourself");
     }
 
+    const targetUser = await prisma.user.findUnique({ where: { id: validatedId } });
+    if (!targetUser) throw new Error("User not found");
+    // CRITICAL SECURITY CONSTRAINT: Protect SUPER_ADMIN
+    if (targetUser.role === Role.SUPER_ADMIN) {
+        throw new Error("Action Forbidden: SUPER_ADMIN accounts cannot be deleted. You must demote them to another role first.");
+    }
+
     // Soft delete
     const user = await prisma.user.update({
         where: { id: validatedId },
@@ -198,6 +205,13 @@ export async function deleteUsers(ids: string[]) {
 
     if (validatedIds.includes(currentUser.id)) {
         throw new Error("Cannot delete yourself");
+    }
+
+    // CRITICAL SECURITY CONSTRAINT: Protect ALL SUPER_ADMINs
+    const targetUsers = await prisma.user.findMany({ where: { id: { in: validatedIds } } });
+    const containsSuperAdmin = targetUsers.some(user => user.role === Role.SUPER_ADMIN);
+    if (containsSuperAdmin) {
+        throw new Error("Action Forbidden: Bulk deletion aborted because one or more selected users are SUPER_ADMINs. Please unselect them to proceed.");
     }
 
     // Soft delete
@@ -289,17 +303,18 @@ export async function reactivateUser(id: string) {
 
 
 // Helpers
+// Helpers
 function mapRoleToLabel(role: Role) {
     if (role === Role.SUPER_ADMIN) return "Super Admin";
-    if (role === Role.ADMIN) return "Editor"; // Mapping ADMIN to Editor for UI consistency with existing mock
-    if (role === Role.SUPPORT_STAFF) return "Viewer";
-    return "Viewer";
+    if (role === Role.ADMIN) return "Admin";
+    if (role === Role.SUPPORT_STAFF) return "Support Staff";
+    return "Support Staff";
 }
 
 function mapLabelToRole(label: string): Role {
     if (label === "Super Admin") return Role.SUPER_ADMIN;
-    if (label === "Editor") return Role.ADMIN;
-    if (label === "Viewer") return Role.SUPPORT_STAFF;
+    if (label === "Admin") return Role.ADMIN;
+    if (label === "Support Staff") return Role.SUPPORT_STAFF;
     return Role.SUPPORT_STAFF;
 }
 

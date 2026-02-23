@@ -4,12 +4,13 @@ import { notFound } from "next/navigation";
 
 export const dynamic = "force-dynamic";
 
-export default async function EditBlogPage({ params }: { params: { id: string } }) {
-  if (params.id === "new") {
+export default async function EditBlogPage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
+  if (id === "new") {
     return <BlogEditorForm isEditing={false} />;
   }
 
-  const post = await getBlogPost(params.id);
+  const post = await getBlogPost(id);
 
   if (!post) {
     notFound();

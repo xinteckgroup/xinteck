@@ -42,6 +42,21 @@ export async function inviteUser(data: { email: string; role: Role }) {
         return { success: false, message: "A pending invitation already exists for this email." };
     }
 
+    // Role Capacity Enforcement (1-4-5)
+    if (parsed.role === Role.SUPER_ADMIN) {
+        return { success: false, message: "Only 1 SUPER_ADMIN is allowed in the system." };
+    }
+
+    const { activeCount, pendingCount } = await getRoleCapacity(parsed.role);
+
+    if (parsed.role === Role.ADMIN && (activeCount + pendingCount) >= 4) {
+        return { success: false, message: "Capacity Reached: Maximum of 4 ADMIN accounts allowed." };
+    }
+
+    if (parsed.role === Role.SUPPORT_STAFF && (activeCount + pendingCount) >= 5) {
+        return { success: false, message: "Capacity Reached: Maximum of 5 SUPPORT_STAFF accounts allowed." };
+    }
+
     // Generate Token
     const token = crypto.randomBytes(32).toString("hex");
     const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000); // 7 Days
@@ -204,4 +219,25 @@ async function sendInvitationEmail(email: string, token: string) {
         console.error("Failed to send invitation email", e);
         throw new Error("Failed to send email.");
     }
+}
+
+// Purpose: Helper to check DB capacity for limits
+async function getRoleCapacity(role: Role) {
+    const [activeCount, pendingCount] = await Promise.all([
+        prisma.user.count({
+            where: {
+                role,
+                status: { in: ["ACTIVE", "AWAY"] },
+                deletedAt: null
+            }
+        }),
+        prisma.invitation.count({
+            where: {
+                role,
+                status: "PENDING",
+                expiresAt: { gt: new Date() }
+            }
+        })
+    ]);
+    return { activeCount, pendingCount };
 }

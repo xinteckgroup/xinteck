@@ -40,10 +40,10 @@ export const blogPostSchema = z.object({
     slug: z.string().trim().min(1, "Slug is required").max(200, "Slug too long")
         .regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/, "Slug must be lowercase with hyphens only"),
     excerpt: z.string().trim().max(500, "Excerpt too long").optional().nullable(),
-    content: z.string().optional().nullable(),
+    content: z.string().max(100000, "Content exceeds 100,000 character maximum. Please split into multiple posts.").optional().nullable(),
     category: z.string().trim().optional().nullable(),
     status: z.enum(["Draft", "Published", "Archived"]).default("Draft"),
-    image: z.string().trim().url("Invalid image URL").optional().nullable().or(z.literal("")),
+    image: z.string().trim().optional().nullable().or(z.literal("")),
     version: z.number().int().nonnegative().optional(),
 });
 
@@ -54,9 +54,12 @@ export const projectSchema = z.object({
     client: z.string().trim().max(100, "Client name too long").optional().nullable(),
     url: z.string().trim().url("Invalid URL").optional().nullable().or(z.literal("")),
     description: z.string().trim().max(5000, "Description too long").optional().nullable(),
+    content: z.string().max(100000, "Content exceeds 100,000 character maximum. Please shorten the case study.").optional().nullable(),
     category: z.string().trim().optional().nullable(),
     status: z.string().trim().optional().nullable(),
-    image: z.string().trim().url("Invalid image URL").optional().nullable().or(z.literal("")),
+    role: z.string().trim().max(100, "Role too long").optional().nullable().or(z.literal("")),
+    tags: z.array(z.string().trim().max(50, "Tag too long")).max(10, "Too many tags").optional().default([]),
+    image: z.string().trim().optional().nullable().or(z.literal("")),
     completionDate: z.string().trim().optional().nullable(),
     version: z.number().int().nonnegative().optional(),
 });
@@ -66,12 +69,11 @@ export const projectSchema = z.object({
 export const serviceSchema = z.object({
     name: z.string().trim().min(1, "Service name is required").max(100, "Name too long"),
     subName: z.string().trim().max(200, "Sub name too long").optional().nullable(),
-    image: z.string().trim().url("Invalid image URL").optional().nullable().or(z.literal("")),
+    image: z.string().trim().optional().nullable().or(z.literal("")),
     slug: z.string().trim().min(1, "Slug is required").max(100, "Slug too long")
         .regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/, "Slug must be lowercase with hyphens only"),
     price: z.string().trim().max(50, "Price too long").optional().nullable(),
     description: z.string().trim().max(5000, "Description too long").optional().nullable(),
-    themeColor: z.string().trim().optional().nullable(),
 
     features: z.array(z.string().trim()).default([]),
 

@@ -37,7 +37,7 @@ const services = [
             deliveryPromise: "Agile delivery with bi-weekly demos. Full source code ownership.",
             returnPolicy: "30-day bug fix warranty included."
         },
-        isActive: true,
+        status: ContentStatus.PUBLISHED,
         sortOrder: 1,
         image: "/images/services/web_dev_caricature_1771020665861.webp"
     },
@@ -70,7 +70,7 @@ const services = [
             deliveryPromise: "TestFlight builds delivered weekly.",
             returnPolicy: "Post-launch crash monitoring included."
         },
-        isActive: true,
+        status: ContentStatus.PUBLISHED,
         sortOrder: 2,
         image: "/images/services/mobile_app_caricature_1771020693351.webp"
     },
@@ -103,7 +103,7 @@ const services = [
             deliveryPromise: "Phased rollout with user training.",
             returnPolicy: "SLA-backed support agreements."
         },
-        isActive: true,
+        status: ContentStatus.PUBLISHED,
         sortOrder: 3,
         image: "/images/services/custom_software_caricature_1771020721906.webp"
     },
@@ -136,7 +136,7 @@ const services = [
             deliveryPromise: "Developer-ready handover files.",
             returnPolicy: "Unlimited revisions during design phase."
         },
-        isActive: true,
+        status: ContentStatus.PUBLISHED,
         sortOrder: 4,
         image: "/images/services/ui_ux_caricature_1771020743886.webp"
     },
@@ -169,7 +169,7 @@ const services = [
             deliveryPromise: "Zero-downtime migrations.",
             returnPolicy: "Monthly performance reports."
         },
-        isActive: true,
+        status: ContentStatus.PUBLISHED,
         sortOrder: 5,
         image: "/images/services/cloud_devops_caricature_1771021166591.webp"
     }

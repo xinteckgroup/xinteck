@@ -3,6 +3,7 @@
 import { cn } from "@/lib/utils";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
+import { ContentStatus } from "@prisma/client";
 import { format } from "date-fns";
 import { GripVertical } from "lucide-react";
 import { ServiceActions } from "../ServiceActions";
@@ -58,12 +59,14 @@ export function ServiceSortableItem({ service }: ServiceSortableItemProps) {
               <span
                 className={cn(
                   "px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider border",
-                  service.isActive
+                  service.status === ContentStatus.PUBLISHED
                     ? "bg-green-500/40 text-green-400 border-green-500/20"
+                    : service.status === ContentStatus.IN_REVIEW
+                    ? "bg-purple-500/40 text-purple-400 border-purple-500/20"
                     : "admin-surface-input text-[var(--admin-text)]/50 border-[var(--admin-border)]"
                 )}
               >
-                {service.isActive ? "Active" : "Draft"}
+                {service.status === ContentStatus.PUBLISHED ? "Published" : service.status === ContentStatus.IN_REVIEW ? "In Review" : "Draft"}
               </span>
             </div>
             <p className="text-[var(--admin-text)]/80 text-xs md:text-sm line-clamp-1 max-w-2xl">

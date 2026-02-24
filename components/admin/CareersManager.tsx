@@ -264,8 +264,8 @@ export function CareersManager({ initialData, departments }: CareersManagerProps
 
             {/* Toolbar */}
             <div className="flex flex-col gap-3">
-                <div className="flex flex-row items-center gap-2 justify-between bg-white/30 dark:bg-black/60 backdrop-blur-xl border border-[var(--admin-border)] rounded-[10px] p-2 shadow-xl">
-                    <div className="relative flex-1 min-w-0 md:w-64 lg:w-96 bg-white/50 dark:bg-white/5 rounded-[10px]">
+                <div className="flex flex-row items-center gap-2 justify-between admin-surface-primary backdrop-blur-sm rounded-[10px] p-2 shadow-xl">
+                    <div className="relative flex-1 min-w-0 md:w-64 lg:w-96 bg-black/60 dark:bg-white/30 rounded-[10px]">
                         <div className="relative">
                             <Search
                                 className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--admin-muted)] pointer-events-none"
@@ -276,7 +276,7 @@ export function CareersManager({ initialData, departments }: CareersManagerProps
                                 placeholder="Search positions..."
                                 value={searchQuery}
                                 onChange={(e) => handleSearchChange(e.target.value)}
-                                className="w-full bg-transparent border border-transparent rounded-[10px] pl-10 pr-4 py-2 text-sm text-[var(--admin-text)] placeholder:text-[var(--admin-muted)] focus:border-gold/50 focus:outline-none transition-colors"
+                                className="w-full admin-surface-input border border-[var(--admin-border)] rounded-[10px] pl-10 pr-4 py-2 text-sm text-[var(--admin-text)] placeholder:text-[var(--admin-muted)] focus:border-gold/50 focus:outline-none transition-colors"
                             />
                         </div>
                     </div>
@@ -312,7 +312,7 @@ export function CareersManager({ initialData, departments }: CareersManagerProps
                             className={`px-4 py-1.5 rounded-full border text-xs font-medium whitespace-nowrap transition-colors ${
                                 currentStatus === filter
                                     ? "bg-gold text-[var(--admin-text)] border-gold font-bold shadow-xl"
-                                    : "bg-white/30 dark:bg-black/60 border-[var(--admin-border)] text-[var(--admin-text)] hover:bg-[var(--admin-text)]/5 hover:text-gold backdrop-blur-xl shadow-xl"
+                                    : "admin-surface-primary border-[var(--admin-border)] text-[var(--admin-text)] hover:bg-[var(--admin-text)]/5 hover:text-gold backdrop-blur-sm shadow-xl"
                             }`}
                         >
                             {filter === "all" ? "All" : filter === "active" ? "Active" : "Inactive"}
@@ -339,7 +339,7 @@ export function CareersManager({ initialData, departments }: CareersManagerProps
                         {positions.map((position) => (
                             <div
                                 key={position.id}
-                                className="bg-white/30 dark:bg-black/60 backdrop-blur-xl border border-[var(--admin-border)] rounded-[10px] p-4 md:p-6 flex flex-col md:flex-row md:items-center gap-4 group hover:border-gold/50 transition-all shadow-xl"
+                                className="admin-surface-primary backdrop-blur-sm rounded-[10px] p-4 md:p-6 flex flex-col md:flex-row md:items-center gap-4 group hover:border-gold/50 transition-all shadow-xl"
                             >
                                 <div className="flex-1 min-w-0">
                                     <div className="flex items-center gap-2 flex-wrap mb-2">
@@ -356,7 +356,7 @@ export function CareersManager({ initialData, departments }: CareersManagerProps
                                             {position.isActive ? "Active" : "Inactive"}
                                         </span>
                                     </div>
-                                    <div className="flex items-center gap-3 md:gap-4 flex-wrap text-xs text-[var(--admin-muted)]">
+                                    <div className="flex items-center gap-3 md:gap-4 flex-wrap text-xs text-[var(--admin-text)]">
                                         <span className="flex items-center gap-1">
                                             <Briefcase size={12} />
                                             {position.department}
@@ -377,13 +377,13 @@ export function CareersManager({ initialData, departments }: CareersManagerProps
                                             {position.requirements.slice(0, 4).map((req: string, i: number) => (
                                                 <span
                                                     key={i}
-                                                    className="text-[10px] admin-surface-input px-2 py-0.5 rounded text-[var(--admin-muted)]"
+                                                    className="text-[10px] admin-surface-input px-2 py-0.5 rounded text-[var(--admin-text)]"
                                                 >
                                                     {req}
                                                 </span>
                                             ))}
                                             {position.requirements.length > 4 && (
-                                                <span className="text-[10px] text-[var(--admin-muted)]">
+                                                <span className="text-[10px] text-[var(--admin-text)]">
                                                     +{position.requirements.length - 4} more
                                                 </span>
                                             )}
@@ -397,8 +397,8 @@ export function CareersManager({ initialData, departments }: CareersManagerProps
                                             onClick={() => handleToggle(position.id)}
                                             className={`p-2 rounded-[6px] transition-colors ${
                                                 position.isActive
-                                                    ? "text-green-400 hover:bg-green-400/10"
-                                                    : "text-[var(--admin-muted)] hover:bg-[var(--admin-muted)]/10"
+                                                    ? "text-green-400 hover:bg-green-400/40"
+                                                    : "text-[var(--admin-text)] hover:bg-[var(--admin-text)]/40"
                                             }`}
                                             title={position.isActive ? "Deactivate" : "Activate"}
                                         >
@@ -413,7 +413,7 @@ export function CareersManager({ initialData, departments }: CareersManagerProps
                                         </button>
                                         <button
                                             onClick={() => handleDelete(position.id)}
-                                            className="p-2 rounded-[6px] text-[var(--admin-muted)] hover:text-red-400 hover:bg-red-400/10 transition-colors"
+                                            className="p-2 rounded-[6px] text-[var(--admin-text)] hover:text-red-400 hover:bg-red-400/40 transition-colors"
                                             title="Delete"
                                         >
                                             <Trash2 size={16} />

@@ -128,8 +128,8 @@ export function ProjectManager({ initialData }: ProjectManagerProps) {
       {/* Content Area */}
       <div className="flex flex-col gap-3">
         {/* Toolbar */}
-        <div className="flex flex-row items-center gap-2 justify-between bg-[var(--admin-surface-primary)] backdrop-blur-xl border border-[var(--admin-border)] rounded-[10px] p-2 shadow-xl">
-        <div className="relative flex-1 min-w-0 md:w-64 lg:w-96 bg-[var(--admin-surface-input)] rounded-[10px]">
+        <div className="flex flex-row items-center gap-2 justify-between admin-surface-primary backdrop-blur-sm rounded-[10px] p-2 shadow-xl">
+        <div className="relative flex-1 min-w-0 md:w-64 lg:w-96 bg-black/60 dark:bg-white/30 rounded-[10px]">
           <div className="relative">
              <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--admin-muted)] pointer-events-none" size={18} />
              <input 
@@ -137,7 +137,7 @@ export function ProjectManager({ initialData }: ProjectManagerProps) {
                placeholder="Search projects..." 
                value={searchQuery}
                onChange={(e) => handleSearchChange(e.target.value)}
-               className="w-full bg-transparent border border-transparent rounded-[10px] pl-10 pr-4 py-2 text-sm text-[var(--admin-text)] placeholder:text-[var(--admin-muted)] focus:border-gold/50 focus:outline-none transition-colors"
+               className="w-full admin-surface-input border border-[var(--admin-border)] rounded-[10px] pl-10 pr-4 py-2 text-sm text-[var(--admin-text)] placeholder:text-[var(--admin-muted)] focus:border-gold/50 focus:outline-none transition-colors"
              />
           </div>
         </div>
@@ -181,7 +181,7 @@ export function ProjectManager({ initialData }: ProjectManagerProps) {
              className={`px-4 py-1.5 rounded-full border text-xs font-medium whitespace-nowrap transition-colors ${
                 categoryFilter === filter 
                 ? "bg-gold text-[var(--admin-text)] border-gold font-bold shadow-xl" 
-                : "bg-[var(--admin-surface-primary)] backdrop-blur-xl border-[var(--admin-border)] text-[var(--admin-text)] hover:bg-[var(--admin-text)]/5 hover:text-gold shadow-xl"
+                : "admin-surface-primary backdrop-blur-sm border-[var(--admin-border)] text-[var(--admin-text)] hover:bg-[var(--admin-text)]/5 hover:text-gold shadow-xl"
              }`}
            >
              {filter}
@@ -202,7 +202,7 @@ export function ProjectManager({ initialData }: ProjectManagerProps) {
       {viewMode === "grid" ? (
                  <div className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 md:gap-6">
           {projects.map((project) => (
-            <div key={project.id} className="group bg-[var(--admin-surface-primary)] backdrop-blur-xl border border-[var(--admin-border)] shadow-xl rounded-[10px] overflow-hidden hover:border-gold/50 transition-all flex flex-col">
+            <div key={project.id} className="group admin-surface-primary backdrop-blur-sm shadow-xl rounded-[10px] overflow-hidden hover:border-gold/50 transition-all flex flex-col">
               {/* Image Area */}
               <div className="aspect-video bg-[var(--admin-surface-input)] relative overflow-hidden">
                  {/* Placeholder Gradient if image fails or for mock */}
@@ -256,7 +256,7 @@ export function ProjectManager({ initialData }: ProjectManagerProps) {
           ))}
           
            {/* Add New Placeholer */}
-          <Link href="/admin/projects/new" className="border border-dashed border-[var(--admin-border)] bg-[var(--admin-surface-primary)] backdrop-blur-xl hover:bg-[var(--admin-surface-primary)] shadow-xl rounded-[10px] flex flex-col items-center justify-center gap-4 text-[var(--admin-text)] hover:text-gold hover:border-gold/100 hover:bg-gold/5 transition-all min-h-[200px]">
+          <Link href="/admin/projects/new" className="border border-dashed border-[var(--admin-border)] admin-surface-primary backdrop-blur-sm hover:bg-[var(--admin-surface-primary)] shadow-xl rounded-[10px] flex flex-col items-center justify-center gap-4 text-[var(--admin-text)] hover:text-gold hover:border-gold/100 hover:bg-gold/5 transition-all min-h-[200px]">
              <div className="w-12 h-12 rounded-full bg-[var(--admin-surface-input)] border border-[var(--admin-border)] flex items-center justify-center">
                 <Plus size={24} />
              </div>

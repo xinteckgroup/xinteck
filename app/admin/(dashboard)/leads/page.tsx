@@ -23,5 +23,5 @@ export default async function LeadsPage({
     user.role === Role.SUPER_ADMIN ? getAdminUsers() : Promise.resolve([])
   ]);
 
-  return <LeadsClient initialData={result} adminUsers={adminUsers} currentUserRole={user.role} />;
+  return <LeadsClient initialData={result} adminUsers={adminUsers} currentUserRole={user.role} currentUserId={user.id} />;
 }

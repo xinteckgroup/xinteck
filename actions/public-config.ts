@@ -1,6 +1,7 @@
 "use server";
 
 import { prisma } from "@/lib/prisma";
+import { ContentStatus } from "@prisma/client";
 import { unstable_cache } from "next/cache";
 
 export type ContactConfig = {
@@ -51,7 +52,7 @@ export const getContactConfig = unstable_cache(
             const [phonesSetting, activeServices] = await Promise.all([
                 prisma.siteSetting.findUnique({ where: { key: "CONTACT_PHONES" } }),
                 prisma.service.findMany({
-                    where: { isActive: true },
+                    where: { status: ContentStatus.PUBLISHED },
                     orderBy: { sortOrder: 'asc' },
                     select: { name: true, budgetRanges: true }
                 })

@@ -26,6 +26,10 @@ model User {
   status                  UserStatus @default(ACTIVE)
   lastActiveAt            DateTime?
   notificationPreferences Json? // { marketing: boolean, security: boolean, ... }
+  
+  // 2FA Fields
+  twoFactorSecret         String?
+  twoFactorEnabled        Boolean @default(false)
 
   // Relations
   sessions      Session[]
@@ -33,9 +37,10 @@ model User {
   projects      Project[]
   auditLogs     AuditLog[]
   mediaFiles    MediaFile[]
-  notifications Notification[]
-  invitations   Invitation[]
-  assignedLeads ContactSubmission[] @relation("AssignedLeads")
+  notifications   Notification[]
+  invitations     Invitation[]
+  assignedLeads   ContactSubmission[] @relation("AssignedLeads")
+  leadNotes       LeadNote[]
 
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
@@ -67,6 +72,7 @@ model Session {
   expiresAt DateTime
   userAgent String?
   ipAddress String?
+  twoFactorVerified Boolean @default(false)
   createdAt DateTime @default(now())
 
   @@index([userId])
@@ -220,7 +226,7 @@ model Service {
   buyNowSection    Json // { price: "", unit: "", processingParams: [], deliveryPromise: "", returnPolicy: "" }
   budgetRanges     String[] @default(["$10k - $25k", "$25k - $50k", "$50k - $100k", "$100k+"])
 
-  isActive  Boolean @default(true)
+  status ContentStatus @default(DRAFT)
   sortOrder Int     @default(0)
 
   createdAt DateTime  @default(now())
@@ -229,7 +235,7 @@ model Service {
   version   Int       @default(0)
 
   @@index([slug])
-  @@index([isActive])
+  @@index([status])
 }
 
 // ═══════════════════════════════════════════════════════════════
@@ -253,6 +259,9 @@ model ContactSubmission {
 
   // For replies
   replies ContactReply[]
+  
+  // Internal Notes
+  notes   LeadNote[]
 
   // Assignment / Delegation
   assignedToId String?
@@ -278,6 +287,23 @@ model ContactReply {
   content      String            @db.Text
   sentAt       DateTime          @default(now())
   sentBy       String? // Admin user email/name
+}
+
+model LeadNote {
+  id           String            @id @default(cuid())
+  submissionId String
+  submission   ContactSubmission @relation(fields: [submissionId], references: [id], onDelete: Cascade)
+  
+  content      String            @db.Text
+  
+  authorId     String
+  author       User              @relation(fields: [authorId], references: [id])
+  
+  createdAt    DateTime          @default(now())
+  updatedAt    DateTime          @updatedAt
+  
+  @@index([submissionId])
+  @@index([authorId])
 }
 
 enum MessageStatus {
@@ -545,13 +571,13 @@ model CareerPosition {
   description  String?  @db.Text
   requirements String[]
   salaryRange  String?  // e.g. "$80k - $120k"
-  isActive     Boolean  @default(true)
+  status       ContentStatus @default(DRAFT)
   sortOrder    Int      @default(0)
 
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
   deletedAt DateTime? // Soft delete
 
-  @@index([isActive])
+  @@index([status])
   @@index([department])
 }

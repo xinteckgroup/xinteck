@@ -3,10 +3,12 @@
 import { createProject, updateProject } from "@/actions/project";
 import { MarkdownEditor } from "@/components/admin/MarkdownEditor";
 import { MediaPicker } from "@/components/admin/MediaPicker";
+import { RoleGate } from "@/components/admin/RoleGate";
 import { PageContainer, PageHeader, useToast } from "@/components/admin/ui";
 import { ConfirmModal } from "@/components/admin/ui/ConfirmModal";
 import { Select } from "@/components/admin/ui/Select";
 import { projectSchema } from "@/lib/validations";
+import { Role } from "@prisma/client";
 import { Calendar, Globe, Image as ImageIcon, Save, Upload, X } from "lucide-react";
 import { isRedirectError } from "next/dist/client/components/redirect-error";
 import { useRouter } from "next/navigation";
@@ -107,20 +109,40 @@ export function ProjectEditorForm({ initialData, isEditing = false }: ProjectEdi
                >
                   Save Draft
                </button>
-               <button 
-                  onClick={handleSave}
-                  disabled={isPending}
-                  className="backdrop-blur-sm flex-1 sm:flex-initial px-3 py-1.5 md:px-6 md:py-2 rounded-[8px] bg-gold text-primary-foreground font-bold text-[10px] md:text-sm hover:bg-gold/90 transition-colors flex items-center justify-center gap-1 md:gap-2 whitespace-nowrap disabled:opacity-50 shadow-[0_4px_14px_0_rgba(212,175,55,0.39)]"
+               <RoleGate 
+                 allowedRoles={[Role.SUPER_ADMIN]}
+                 fallback={
+                   <button 
+                      onClick={() => { setFormData({...formData, status: "In Review"}); handleSave(); }}
+                      disabled={isPending}
+                      className="backdrop-blur-sm flex-1 sm:flex-initial px-3 py-1.5 md:px-6 md:py-2 rounded-[8px] bg-purple-600/90 text-white font-bold text-[10px] md:text-sm hover:bg-purple-600 transition-colors flex items-center justify-center gap-1 md:gap-2 whitespace-nowrap disabled:opacity-50 shadow-[0_4px_14px_0_rgba(147,51,234,0.39)]"
+                   >
+                      {isPending ? (
+                          <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"/>
+                      ) : (
+                          <>
+                              <Save size={12} className="md:w-4 md:h-4" />
+                              Submit for Review
+                          </>
+                      )}
+                   </button>
+                 }
                >
-                  {isPending ? (
-                      <span className="w-4 h-4 border-2 border-primary-foreground/30 border-t-primary-foreground rounded-full animate-spin"/>
-                  ) : (
-                      <>
-                          <Save size={12} className="md:w-4 md:h-4" />
-                          {isEditing ? "Update" : "Publish"}
-                      </>
-                  )}
-               </button>
+                 <button 
+                    onClick={() => { setFormData({...formData, status: "Active"}); handleSave(); }}
+                    disabled={isPending}
+                    className="backdrop-blur-sm flex-1 sm:flex-initial px-3 py-1.5 md:px-6 md:py-2 rounded-[8px] bg-gold text-primary-foreground font-bold text-[10px] md:text-sm hover:bg-gold/90 transition-colors flex items-center justify-center gap-1 md:gap-2 whitespace-nowrap disabled:opacity-50 shadow-[0_4px_14px_0_rgba(212,175,55,0.39)]"
+                 >
+                    {isPending ? (
+                        <span className="w-4 h-4 border-2 border-primary-foreground/30 border-t-primary-foreground rounded-full animate-spin"/>
+                    ) : (
+                        <>
+                            <Save size={12} className="md:w-4 md:h-4" />
+                            {isEditing ? "Update" : "Publish"}
+                        </>
+                    )}
+                 </button>
+               </RoleGate>
            </div>
          }
        />

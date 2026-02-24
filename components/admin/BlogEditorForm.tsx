@@ -105,22 +105,8 @@ export function BlogEditorForm({ initialData, isEditing = false }: BlogEditorFor
               </button>
               
               <RoleGate 
-                allowedRoles={[Role.ADMIN, Role.SUPPORT_STAFF]} 
+                allowedRoles={[Role.SUPER_ADMIN]} 
                 fallback={
-                    <button 
-                         onClick={() => { setFormData({...formData, status: "Published"}); handleSave(); }}
-                         disabled={isPending}
-                         className="backdrop-blur-sm flex-1 sm:flex-initial px-3 py-1.5 md:px-6 md:py-2 rounded-[8px] bg-gold text-primary-foreground font-bold text-[10px] md:text-sm hover:bg-gold/90 transition-colors flex items-center justify-center gap-1 md:gap-2 whitespace-nowrap disabled:opacity-50 shadow-[0_4px_14px_0_rgba(212,175,55,0.39)]"
-                      >
-                         {isPending ? (
-                             <span className="w-4 h-4 border-2 border-primary-foreground/30 border-t-primary-foreground rounded-full animate-spin"/>
-                         ) : (
-                             <Save size={12} className="md:w-4 md:h-4" />
-                         )}
-                         {isEditing ? "Update Post" : "Publish Now"}
-                      </button>
-                }
-               >
                   <button 
                      onClick={() => { setFormData({...formData, status: "In Review"}); handleSave(); }}
                      disabled={isPending}
@@ -133,7 +119,21 @@ export function BlogEditorForm({ initialData, isEditing = false }: BlogEditorFor
                      )}
                      Submit for Review
                   </button>
-              </RoleGate>
+                }
+               >
+                  <button 
+                       onClick={() => { setFormData({...formData, status: "Published"}); handleSave(); }}
+                       disabled={isPending}
+                       className="backdrop-blur-sm flex-1 sm:flex-initial px-3 py-1.5 md:px-6 md:py-2 rounded-[8px] bg-gold text-primary-foreground font-bold text-[10px] md:text-sm hover:bg-gold/90 transition-colors flex items-center justify-center gap-1 md:gap-2 whitespace-nowrap disabled:opacity-50 shadow-[0_4px_14px_0_rgba(212,175,55,0.39)]"
+                    >
+                       {isPending ? (
+                           <span className="w-4 h-4 border-2 border-primary-foreground/30 border-t-primary-foreground rounded-full animate-spin"/>
+                       ) : (
+                           <Save size={12} className="md:w-4 md:h-4" />
+                       )}
+                       {isEditing ? "Update Post" : "Publish Now"}
+                    </button>
+               </RoleGate>
            </div>
          }
        />

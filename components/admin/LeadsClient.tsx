@@ -6,10 +6,11 @@ import { PageContainer, PageHeader, Pagination, useToast } from "@/components/ad
 import { ConfirmModal } from "@/components/admin/ui/ConfirmModal";
 import { InboxMessage } from "@/types";
 import { Role } from "@prisma/client";
-import { Archive, ArrowLeft, Check, ClipboardCopy, ExternalLink, Mail, MailOpen, MoreVertical, Reply, Search, Send, Star, Target, Trash2 } from "lucide-react";
+import { Archive, ArrowLeft, Check, ClipboardCopy, ExternalLink, Mail, MailOpen, MessageSquare, MoreVertical, Reply, Search, Send, Star, Target, Trash2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState, useTransition } from "react";
 
+import { LeadNotesDrawer } from "@/components/admin/leads/LeadNotesDrawer";
 import { PaginatedResponse } from "@/lib/pagination";
 import { cn } from "@/lib/utils";
 import { useSearchParams } from "next/navigation";
@@ -18,6 +19,7 @@ interface LeadsClientProps {
   initialData: PaginatedResponse<InboxMessage>;
   adminUsers: { id: string; name: string; email: string; avatar: string | null; role: Role }[];
   currentUserRole: Role;
+  currentUserId: string;
 }
 
 // Lead status helper
@@ -28,7 +30,7 @@ function getLeadStatus(msg: InboxMessage): { label: string; color: string; bgCol
   return { label: "New", color: "text-gold", bgColor: "bg-gold/40", borderColor: "border-gold/20" };
 }
 
-export function LeadsClient({ initialData, adminUsers, currentUserRole }: LeadsClientProps) {
+export function LeadsClient({ initialData, adminUsers, currentUserRole, currentUserId }: LeadsClientProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [isPending, startTransition] = useTransition();
@@ -61,6 +63,7 @@ export function LeadsClient({ initialData, adminUsers, currentUserRole }: LeadsC
   const [copiedEmail, setCopiedEmail] = useState(false);
   const [isAssigning, setIsAssigning] = useState(false);
   const [deleteId, setDeleteId] = useState<string | null>(null);
+  const [isNotesOpen, setIsNotesOpen] = useState(false);
   
   const activeMessage = messages.find((m) => m.id === activeMessageId) || null;
 
@@ -322,15 +325,17 @@ export function LeadsClient({ initialData, adminUsers, currentUserRole }: LeadsC
           </div>
         </div>
         
-        {/* Detail View */}
+        {/* Detail View Container (Holds Main content + Notes Drawer) */}
         <div className={cn(
-          "flex-1 flex-col admin-surface-primary backdrop-blur-xs rounded-[10px] border border-[var(--admin-border)] overflow-hidden relative",
+          "flex-1 flex admin-surface-primary backdrop-blur-xs rounded-[10px] border border-[var(--admin-border)] overflow-hidden relative",
           activeMessageId ? 'flex' : 'hidden lg:flex'
         )}>
           {activeMessage ? (
             <>
-              {/* Detail Toolbar */}
-              <div className="p-2 md:p-3 border-b border-[var(--admin-border)] flex justify-between items-center admin-surface-secondary/50 backdrop-blur-md">
+              {/* Main Content Area */}
+              <div className="flex-1 flex flex-col min-w-0 relative">
+                {/* Detail Toolbar */}
+                <div className="p-2 md:p-3 border-b border-[var(--admin-border)] flex justify-between items-center admin-surface-secondary/50 backdrop-blur-md z-10 sticky top-0">
                 <div className="flex gap-1 md:gap-2 items-center">
                     <button onClick={() => setActiveMessageId(null)} className="p-2 text-[var(--admin-text)]/60 hover:text-[var(--admin-text)] hover:bg-[var(--admin-text)]/5 rounded-[8px] transition-colors lg:hidden" title="Back">
                        <ArrowLeft size={18} />
@@ -374,21 +379,35 @@ export function LeadsClient({ initialData, adminUsers, currentUserRole }: LeadsC
                         onChange={(e) => handleAssignLead(e.target.value || null)}
                      >
                         <option value="">Unassigned</option>
-                        {adminUsers.filter(u => u.role !== Role.SUPER_ADMIN).map(u => (
-                           <option key={u.id} value={u.id}>
-                              Assign: {u.name.split(' ')[0]}
-                           </option>
-                        ))}
-                     </select>
+                         {adminUsers.filter(u => u.role !== Role.SUPER_ADMIN).map(u => (
+                            <option key={u.id} value={u.id}>
+                               Assign: {u.name.split(' ')[0]}
+                            </option>
+                         ))}
+                      </select>
                   </RoleGate>
-                  <button className="p-2 text-[var(--admin-text)]/60 hover:text-[var(--admin-text)] hover:bg-[var(--admin-text)]/5 rounded-[8px] transition-colors">
-                    <MoreVertical size={18} />
-                  </button>
+                     <div className="w-[1px] h-6 bg-[var(--admin-border)] mx-1 md:mx-2" />
+                    
+                    <button 
+                       onClick={() => setIsNotesOpen(!isNotesOpen)} 
+                       className={cn(
+                           "p-2 rounded-[8px] transition-colors flex items-center gap-1.5",
+                           isNotesOpen ? "bg-gold/10 text-gold" : "text-[var(--admin-text)]/60 hover:text-gold hover:bg-[var(--admin-text)]/5"
+                       )} 
+                       title="Internal Notes"
+                    >
+                      <MessageSquare size={18} className={isNotesOpen ? "fill-gold/20" : ""} />
+                      <span className="text-[10px] font-bold uppercase tracking-wider hidden md:inline">Notes</span>
+                    </button>
+                    
+                    <button className="p-2 text-[var(--admin-text)]/60 hover:text-[var(--admin-text)] hover:bg-[var(--admin-text)]/5 rounded-[8px] transition-colors lg:hidden inline-block ml-1">
+                      <MoreVertical size={18} />
+                    </button>
+                  </div>
                 </div>
-              </div>
               
-              {/* Message Content */}
-              <div className="flex-1 p-4 md:p-10 overflow-y-auto custom-scrollbar">
+                {/* Message Content */}
+                <div className="flex-1 p-4 md:p-10 overflow-y-auto custom-scrollbar">
                   <div className="flex flex-col md:flex-row justify-between items-start gap-4 mb-6 md:mb-8">
                     <div className="flex gap-3 md:gap-5">
                         <div className={cn(
@@ -535,7 +554,7 @@ export function LeadsClient({ initialData, adminUsers, currentUserRole }: LeadsC
                                  (!replyText || isReplying) && "opacity-50 cursor-not-allowed grayscale"
                                )}
                            >
-                              {isReplying ? (
+                               {isReplying ? (
                                   <div className="w-4 h-4 border-2 border-primary-foreground/30 border-t-primary-foreground rounded-full animate-spin" />
                               ) : (
                                   <><Send size={16} /> Send Reply</>
@@ -544,7 +563,18 @@ export function LeadsClient({ initialData, adminUsers, currentUserRole }: LeadsC
                         </div>
                      </div>
                   </div>
+                </div>
               </div>
+              
+              {/* The Context Drawer for Notes */}
+              <LeadNotesDrawer 
+                  isOpen={isNotesOpen}
+                  onClose={() => setIsNotesOpen(false)}
+                  submissionId={activeMessage.id}
+                  submissionName={activeMessage.sender}
+                  currentUserRole={currentUserRole}
+                  currentUserId={currentUserId}
+              />
             </>
           ) : (
             <div className="flex-1 flex flex-col items-center justify-center text-[var(--admin-text)] p-4 text-center">

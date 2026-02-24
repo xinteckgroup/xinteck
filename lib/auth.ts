@@ -17,7 +17,7 @@ export async function verifyPassword(plain: string, hash: string) {
 Purpose: Create a stateful session for an authenticated user.
 Decision: We use a database-backed session (via Prisma) combined with a signed JWT to allowing both quick stateless validation (if needed) and server-side revocation.
 */
-export async function createSession(user: Pick<User, 'id' | 'email' | 'role' | 'name'>) {
+export async function createSession(user: Pick<User, 'id' | 'email' | 'role' | 'name' | 'twoFactorEnabled'>, isTwoFactorVerified: boolean = false) {
     // Purpose: Set session expiry to 7 days to reduce login friction for admins.
     const expires = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000); // 7 days
 
@@ -29,7 +29,8 @@ export async function createSession(user: Pick<User, 'id' | 'email' | 'role' | '
         sub: user.id,
         email: user.email,
         role: user.role,
-        name: user.name
+        name: user.name,
+        twoFactorVerified: isTwoFactorVerified
     })
         .setProtectedHeader({ alg: 'HS256' })
         .setIssuedAt()
@@ -42,6 +43,7 @@ export async function createSession(user: Pick<User, 'id' | 'email' | 'role' | '
             userId: user.id,
             token,
             expiresAt: expires,
+            twoFactorVerified: isTwoFactorVerified
         },
     });
 
@@ -64,6 +66,11 @@ export async function verifySession(token: string) {
 
         if (!session || session.expiresAt < new Date()) {
             return null;
+        }
+
+        // Enforce 2FA strictly at the session verification level
+        if (session.user.twoFactorEnabled && !session.twoFactorVerified) {
+            return null; // Session is invalid if 2FA is required but not verified
         }
 
         return {

@@ -221,7 +221,7 @@ export async function getFeaturedProject(): Promise<PublicProject | null> {
 export async function getPublicServices() {
     try {
         const services = await prisma.service.findMany({
-            where: { isActive: true },
+            where: { status: ContentStatus.PUBLISHED },
             orderBy: { sortOrder: 'asc' }
         });
 
@@ -247,7 +247,7 @@ export async function getPublicService(slug: string): Promise<PublicService | nu
             where: { slug },
         });
 
-        if (!s || !s.isActive) return null;
+        if (!s || s.status !== ContentStatus.PUBLISHED) return null;
 
         // Helper to safely access JSON
         const section1 = s.section1 as any || {};
@@ -291,7 +291,7 @@ export async function getPublicService(slug: string): Promise<PublicService | nu
 export async function getServiceNavItems(): Promise<{ name: string; slug: string }[]> {
     try {
         const services = await prisma.service.findMany({
-            where: { isActive: true },
+            where: { status: ContentStatus.PUBLISHED },
             orderBy: { sortOrder: 'asc' },
             select: { name: true, slug: true },
         });

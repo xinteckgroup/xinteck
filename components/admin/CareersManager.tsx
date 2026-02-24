@@ -3,7 +3,6 @@
 import {
     createCareerPosition,
     deleteCareerPosition,
-    toggleCareerPosition,
     updateCareerPosition
 } from "@/actions/careers";
 import { RoleGate } from "@/components/admin/RoleGate";
@@ -20,7 +19,7 @@ import {
 import { ConfirmModal } from "@/components/admin/ui/ConfirmModal";
 import { Pagination } from "@/components/admin/ui/Pagination";
 import { PaginatedResponse } from "@/lib/pagination";
-import { CareerPosition, Role } from "@prisma/client";
+import { CareerPosition, ContentStatus, Role } from "@prisma/client";
 import {
     Briefcase,
     Check,
@@ -29,10 +28,8 @@ import {
     MapPin,
     Plus,
     Search,
-    ToggleLeft,
-    ToggleRight,
     Trash2,
-    X,
+    X
 } from "lucide-react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useCallback, useState, useTransition } from "react";
@@ -55,7 +52,7 @@ const INITIAL_FORM = {
     description: "",
     requirements: [] as string[],
     salaryRange: "",
-    isActive: true,
+    status: "Draft",
     sortOrder: 0,
 };
 
@@ -154,7 +151,7 @@ export function CareersManager({ initialData, departments }: CareersManagerProps
             description: position.description || "",
             requirements: position.requirements,
             salaryRange: position.salaryRange || "",
-            isActive: position.isActive,
+            status: position.status,
             sortOrder: position.sortOrder,
         });
         setRequirementInput("");
@@ -184,16 +181,18 @@ export function CareersManager({ initialData, departments }: CareersManagerProps
 
     // ─── Save ───
 
-    const handleSave = async () => {
+    const handleSave = async (overrideStatus?: string) => {
         if (!form.title || !form.department || !form.location) {
             toast.error("Please fill in all required fields.");
             return;
         }
 
+        const finalForm = overrideStatus ? { ...form, status: overrideStatus } : form;
+
         setSaving(true);
         try {
             if (editingPosition) {
-                await updateCareerPosition(editingPosition.id, form);
+                await updateCareerPosition(editingPosition.id, finalForm);
                 toast.success("Position updated successfully.");
             } else {
                 await createCareerPosition(form);
@@ -226,18 +225,6 @@ export function CareersManager({ initialData, departments }: CareersManagerProps
                         toast.error("Failed to delete position.");
                     }
                 });
-            }
-        });
-    };
-
-    const handleToggle = async (id: string) => {
-        startTransition(async () => {
-            try {
-                const result = await toggleCareerPosition(id);
-                toast.success(result.isActive ? "Position activated." : "Position deactivated.");
-                router.refresh();
-            } catch {
-                toast.error("Failed to toggle position.");
             }
         });
     };
@@ -348,12 +335,14 @@ export function CareersManager({ initialData, departments }: CareersManagerProps
                                         </h3>
                                         <span
                                             className={`px-2 py-0.5 rounded-[4px] text-[10px] font-bold uppercase tracking-wider ${
-                                                position.isActive
+                                                position.status === ContentStatus.PUBLISHED
                                                     ? "bg-green-500/20 text-green-400"
+                                                    : position.status === ContentStatus.IN_REVIEW
+                                                    ? "bg-purple-500/20 text-purple-400"
                                                     : "bg-[var(--admin-muted)]/20 text-[var(--admin-muted)]"
                                             }`}
                                         >
-                                            {position.isActive ? "Active" : "Inactive"}
+                                            {position.status}
                                         </span>
                                     </div>
                                     <div className="flex items-center gap-3 md:gap-4 flex-wrap text-xs text-[var(--admin-text)]">
@@ -393,17 +382,6 @@ export function CareersManager({ initialData, departments }: CareersManagerProps
 
                                 <RoleGate allowedRoles={[Role.SUPER_ADMIN, Role.ADMIN]}>
                                     <div className="flex items-center gap-2 shrink-0">
-                                        <button
-                                            onClick={() => handleToggle(position.id)}
-                                            className={`p-2 rounded-[6px] transition-colors ${
-                                                position.isActive
-                                                    ? "text-green-400 hover:bg-green-400/40"
-                                                    : "text-[var(--admin-text)] hover:bg-[var(--admin-text)]/40"
-                                            }`}
-                                            title={position.isActive ? "Deactivate" : "Activate"}
-                                        >
-                                            {position.isActive ? <ToggleRight size={18} /> : <ToggleLeft size={18} />}
-                                        </button>
                                         <button
                                             onClick={() => openEdit(position)}
                                             className="p-2 rounded-[6px] text-[var(--admin-muted)] hover:text-gold hover:bg-gold/40 transition-colors"
@@ -447,9 +425,21 @@ export function CareersManager({ initialData, departments }: CareersManagerProps
                         <Button variant="ghost" onClick={closeModal}>
                             Cancel
                         </Button>
-                        <Button variant="primary" onClick={handleSave} disabled={saving}>
-                            {saving ? "Saving..." : editingPosition ? "Update" : "Create"}
+                        <Button variant="outline" onClick={() => handleSave("Draft")} disabled={saving}>
+                            Save Draft
                         </Button>
+                        <RoleGate 
+                            allowedRoles={[Role.SUPER_ADMIN]}
+                            fallback={
+                                <Button variant="primary" onClick={() => handleSave("In Review")} disabled={saving}>
+                                    {saving ? "Saving..." : "Submit for Review"}
+                                </Button>
+                            }
+                        >
+                            <Button variant="primary" onClick={() => handleSave("Published")} disabled={saving} className="bg-gold hover:bg-gold/90 text-primary-foreground border-none">
+                                {saving ? "Publishing..." : editingPosition ? "Update & Publish" : "Publish Now"}
+                            </Button>
+                        </RoleGate>
                     </>
                 }
             >
@@ -576,17 +566,6 @@ export function CareersManager({ initialData, departments }: CareersManagerProps
                                 value={form.sortOrder}
                                 onChange={(e) => setForm((p) => ({ ...p, sortOrder: Number(e.target.value) }))}
                             />
-                        </div>
-                        <div className="flex items-end">
-                            <label className="flex items-center gap-2 cursor-pointer select-none pb-2">
-                                <input
-                                    type="checkbox"
-                                    checked={form.isActive}
-                                    onChange={(e) => setForm((p) => ({ ...p, isActive: e.target.checked }))}
-                                    className="accent-gold w-4 h-4"
-                                />
-                                <span className="text-sm text-[var(--admin-text)] font-bold">Active</span>
-                            </label>
                         </div>
                     </div>
                 </div>

@@ -2,6 +2,7 @@
 
 import { createService, updateService } from "@/actions/service";
 import { MediaPicker } from "@/components/admin/MediaPicker";
+import { RoleGate } from "@/components/admin/RoleGate";
 import { PageContainer, PageHeader, useToast } from "@/components/admin/ui";
 import { ConfirmModal } from "@/components/admin/ui/ConfirmModal";
 import { serviceSchema } from "@/lib/validations";
@@ -12,8 +13,8 @@ import {
     ServiceSection,
     ServiceStat
 } from "@/types/service";
-import { Service } from "@prisma/client";
-import { Image as ImageIcon, Plus, Save, X } from "lucide-react";
+import { Role, Service } from "@prisma/client";
+import { Image as ImageIcon, Plus, Save, Send, X } from "lucide-react";
 import { isRedirectError } from "next/dist/client/components/redirect-error";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
@@ -69,6 +70,7 @@ export function ServiceForm({ service }: ServiceFormProps) {
         slug: service?.slug || "",
         description: service?.description || "",
         image: (service as any)?.image || "",
+        status: (service as any)?.status || "Draft",
         
         // Flattened JSON Sections
         section1Title: initialSection1.title || "",
@@ -118,6 +120,7 @@ export function ServiceForm({ service }: ServiceFormProps) {
                     description: formData.description,
                     image: formData.image,
                     version: formData.version,
+                    status: formData.status,
 
                     features: features.filter(f => f.trim() !== ""),
                     budgetRanges: budgetRanges.filter(b => b.trim() !== ""),
@@ -221,18 +224,44 @@ export function ServiceForm({ service }: ServiceFormProps) {
                 backLabel="Back to Services"
                 actions={
           <div className="flex gap-2 md:gap-3 w-full sm:w-auto">
-            <button 
-                  onClick={onSubmit}
-                  disabled={isPending}
-                  className="backdrop-blur-xs flex-1 sm:flex-initial px-3 py-1.5 md:px-6 md:py-2 rounded-[8px] admin-surface-primary text-[var(--admin-text)] font-bold text-[10px] md:text-sm hover:text-gold hover:bg-[var(--admin-text)]/5 transition-colors flex items-center justify-center gap-1 md:gap-2 whitespace-nowrap disabled:opacity-50"
-            >
-                  {isPending ? (
-                      <span className="w-4 h-4 border-2 border-primary-foreground/30 border-t-primary-foreground rounded-full animate-spin"/>
-                  ) : (
-                      <Save size={12} className="md:w-4 md:h-4" />
-                  )}
-                  Save Service
-            </button>
+             <button 
+                 onClick={() => { setFormData({...formData, status: "Draft"}); onSubmit(); }}
+                 disabled={isPending}
+                 className="backdrop-blur-sm flex-1 sm:flex-initial px-3 py-1.5 md:px-4 md:py-2 rounded-[8px] admin-surface-primary text-[var(--admin-text)] hover:text-gold hover:bg-[var(--admin-text)]/5 transition-all font-bold text-[10px] md:text-sm whitespace-nowrap disabled:opacity-50 border border-[var(--admin-border)] shadow-sm"
+              >
+                 Save Draft
+              </button>
+              
+              <RoleGate 
+                allowedRoles={[Role.SUPER_ADMIN]} 
+                fallback={
+                  <button 
+                     onClick={() => { setFormData({...formData, status: "In Review"}); onSubmit(); }}
+                     disabled={isPending}
+                     className="backdrop-blur-sm flex-1 sm:flex-initial px-3 py-1.5 md:px-6 md:py-2 rounded-[8px] bg-purple-600/90 text-white font-bold text-[10px] md:text-sm hover:bg-purple-600 transition-colors flex items-center justify-center gap-1 md:gap-2 whitespace-nowrap disabled:opacity-50 shadow-[0_4px_14px_0_rgba(147,51,234,0.39)]"
+                  >
+                     {isPending ? (
+                         <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"/>
+                     ) : (
+                         <Send size={12} className="md:w-4 md:h-4" />
+                     )}
+                     Submit for Review
+                  </button>
+                }
+               >
+                  <button 
+                       onClick={() => { setFormData({...formData, status: "Published"}); onSubmit(); }}
+                       disabled={isPending}
+                       className="backdrop-blur-sm flex-1 sm:flex-initial px-3 py-1.5 md:px-6 md:py-2 rounded-[8px] bg-gold text-primary-foreground font-bold text-[10px] md:text-sm hover:bg-gold/90 transition-colors flex items-center justify-center gap-1 md:gap-2 whitespace-nowrap disabled:opacity-50 shadow-[0_4px_14px_0_rgba(212,175,55,0.39)]"
+                    >
+                       {isPending ? (
+                           <span className="w-4 h-4 border-2 border-primary-foreground/30 border-t-primary-foreground rounded-full animate-spin"/>
+                       ) : (
+                           <Save size={12} className="md:w-4 md:h-4" />
+                       )}
+                       {service ? "Update Service" : "Publish Now"}
+                    </button>
+               </RoleGate>
           </div>
                 }
             />

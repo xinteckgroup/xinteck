@@ -55,7 +55,12 @@ export type AuditAction =
     | "careers.create"
     | "careers.update"
     | "careers.delete"
-    | "careers.toggle";
+    | "careers.status_change"
+    | "user.enabled_2fa"
+    | "user.disabled_2fa"
+    | "user.login_2fa"
+    | "lead.note.create"
+    | "lead.note.delete";
 
 interface AuditLogParams {
     action: AuditAction;

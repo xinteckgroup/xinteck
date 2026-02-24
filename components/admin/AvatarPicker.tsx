@@ -29,7 +29,7 @@ export function AvatarPicker({ currentAvatar, onSelect, seedName }: AvatarPicker
     // Initial load
     useEffect(() => {
         generateSeeds();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+     
     }, []);
 
     // Update local state if prop changes

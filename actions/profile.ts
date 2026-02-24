@@ -15,22 +15,68 @@ const notificationPrefsSchema = z.object({
 }).strict(); // .strict() rejects any extra keys
 
 // FETCH ACTIVITY
-export async function getUserActivity(limit = 20) {
+export async function getUserActivity(page = 1, limit = 10, search?: string) {
+    const user = await requireRole([Role.SUPER_ADMIN, Role.ADMIN, Role.SUPPORT_STAFF]);
+
+    const skip = (page - 1) * limit;
+
+    const where: any = { userId: user.id };
+
+    if (search) {
+        where.OR = [
+            { action: { contains: search, mode: "insensitive" } },
+            { entity: { contains: search, mode: "insensitive" } },
+        ];
+    }
+
+    const [logs, total] = await Promise.all([
+        prisma.auditLog.findMany({
+            where,
+            orderBy: { createdAt: "desc" },
+            skip,
+            take: limit,
+            select: {
+                id: true,
+                action: true,
+                createdAt: true,
+                metadata: true
+            }
+        }),
+        prisma.auditLog.count({ where })
+    ]);
+
+    return {
+        data: logs,
+        total,
+        totalPages: Math.ceil(total / limit),
+        currentPage: page
+    };
+}
+
+export async function exportUserActivityCsv() {
     const user = await requireRole([Role.SUPER_ADMIN, Role.ADMIN, Role.SUPPORT_STAFF]);
 
     const logs = await prisma.auditLog.findMany({
         where: { userId: user.id },
         orderBy: { createdAt: "desc" },
-        take: limit,
+        // Reasonable upper limit for a direct string return
+        take: 5000,
         select: {
-            id: true,
             action: true,
             createdAt: true,
             metadata: true
         }
     });
 
-    return logs;
+    const header = "Date,Action,Metadata";
+    const rows = logs.map(log => {
+        const date = log.createdAt.toISOString();
+        const action = log.action;
+        const metadata = log.metadata ? JSON.stringify(log.metadata).replace(/"/g, '""') : "";
+        return `"${date}","${action}","${metadata}"`;
+    });
+
+    return [header, ...rows].join("\n");
 }
 
 // UPDATE NOTIFICATIONS

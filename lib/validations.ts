@@ -131,7 +131,7 @@ export const serviceSchema = z.object({
 
     budgetRanges: z.array(z.string().trim()).default(["$10k - $25k", "$25k - $50k", "$50k - $100k", "$100k+"]),
 
-    isActive: z.boolean().default(true),
+    status: z.string().default("Draft"),
     version: z.number().int().nonnegative().optional(),
 });
 

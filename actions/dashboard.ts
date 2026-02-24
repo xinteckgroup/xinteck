@@ -2,7 +2,7 @@
 
 import { requireRole } from "@/lib/auth-check";
 import { prisma } from "@/lib/prisma";
-import { Role } from "@prisma/client";
+import { ContentStatus, Role } from "@prisma/client";
 import { unstable_cache } from "next/cache";
 
 import { IconName } from "@/types";
@@ -33,7 +33,7 @@ export async function getDashboardStats() {
                 ] = await Promise.all([
                     prisma.blogPost.count({ where: { deletedAt: null } }),
                     prisma.project.count({ where: { deletedAt: null } }),
-                    prisma.service.count({ where: { isActive: true } }),
+                    prisma.service.count({ where: { status: ContentStatus.PUBLISHED } }),
                     prisma.newsletterSubscriber.count({ where: { isActive: true } }),
                     prisma.contactSubmission.count({ where: { status: "UNREAD" } }),
                     prisma.blogPost.aggregate({ _sum: { views: true }, where: { deletedAt: null } }),

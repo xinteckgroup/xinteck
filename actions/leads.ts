@@ -319,4 +319,80 @@ export async function assignLead(leadId: string, assignedToId: string | null) {
     return { success: true };
 }
 
+// ---------------------------------------------------------------------------
+// LEAD NOTES
+// ---------------------------------------------------------------------------
 
+export async function addLeadNote(submissionId: string, content: string) {
+    const user = await requireRole([Role.ADMIN, Role.SUPER_ADMIN, Role.SUPPORT_STAFF]);
+
+    if (!content.trim()) throw new Error("Note content cannot be empty.");
+
+    const submission = await prisma.contactSubmission.findUnique({ where: { id: submissionId } });
+    if (!submission) throw new Error("Lead not found.");
+
+    const note = await prisma.leadNote.create({
+        data: {
+            content,
+            submissionId,
+            authorId: user.id
+        },
+        include: {
+            author: {
+                select: { id: true, name: true, avatar: true, role: true }
+            }
+        }
+    });
+
+    await logAudit({
+        action: "lead.note.create",
+        entity: "LeadNote",
+        entityId: note.id,
+        userId: user.id,
+        metadata: { submissionId }
+    });
+
+    revalidatePath("/admin/leads");
+    return note;
+}
+
+export async function deleteLeadNote(noteId: string) {
+    const user = await requireRole([Role.ADMIN, Role.SUPER_ADMIN, Role.SUPPORT_STAFF]);
+
+    const note = await prisma.leadNote.findUnique({ where: { id: noteId } });
+    if (!note) throw new Error("Note not found.");
+
+    // Only SUPER_ADMINs or the author can delete the note
+    if (user.role !== Role.SUPER_ADMIN && note.authorId !== user.id) {
+        throw new Error("You do not have permission to delete this note.");
+    }
+
+    await prisma.leadNote.delete({ where: { id: noteId } });
+
+    await logAudit({
+        action: "lead.note.delete",
+        entity: "LeadNote",
+        entityId: noteId,
+        userId: user.id,
+        metadata: { submissionId: note.submissionId }
+    });
+
+    revalidatePath("/admin/leads");
+    return { success: true };
+}
+
+export async function getLeadNotes(submissionId: string) {
+    await requireRole([Role.ADMIN, Role.SUPER_ADMIN, Role.SUPPORT_STAFF]);
+
+    const notes = await prisma.leadNote.findMany({
+        where: { submissionId },
+        orderBy: { createdAt: 'asc' },
+        include: {
+            author: {
+                select: { id: true, name: true, avatar: true, role: true }
+            }
+        }
+    });
+
+    return notes;
+}

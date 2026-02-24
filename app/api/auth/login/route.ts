@@ -37,13 +37,24 @@ export async function POST(req: Request) {
         Purpose: Create a new session record.
         Decision: We persist the session in the database to allow for server-side revocation (e.g., "Log out all devices").
         */
-        const { session, token } = await createSession(user);
+        const { session, token } = await createSession(user, !user.twoFactorEnabled);
 
         // 5. Update lastActiveAt
         await prisma.user.update({
             where: { id: user.id },
             data: { lastActiveAt: new Date() }
         });
+
+        // If 2FA is enabled, do NOT set the final cookie yet.
+        // Return the token to the client so it can be used for 2FA verification.
+        if (user.twoFactorEnabled) {
+            return NextResponse.json({
+                success: true,
+                requires2FA: true,
+                preAuthToken: token,
+                message: "2FA Required"
+            });
+        }
 
         // Purpose: Log the successful login for security auditing and suspicious activity monitoring.
         await logAudit({

@@ -173,8 +173,8 @@ export function GlobalSearch() {
                         </div>
                     )}
                     <div className="px-3 py-2 bg-gray-50 dark:bg-[#0a0a0a] border-t border-[var(--admin-border)] text-[10px] text-zinc-500 dark:text-[var(--admin-muted)] flex justify-between">
-                        <span>Navigate with <kbd className="font-sans admin-surface-primary px-1 rounded text-[var(--admin-text)]">↑</kbd> <kbd className="font-sans admin-surface-primary px-1 rounded text-[var(--admin-text)]">↓</kbd></span>
-                        <span>Select with <kbd className="font-sans admin-surface-primary px-1 rounded text-[var(--admin-text)]">Enter</kbd></span>
+                        <span>Navigate with <kbd className="font-sans admin-surface-primary px-1 rounded text-black dark:text-white">↑</kbd> <kbd className="font-sans admin-surface-primary px-1 rounded text-black dark:text-white">↓</kbd></span>
+                        <span>Select with <kbd className="font-sans admin-surface-primary px-1 rounded text-black dark:text-white">Enter</kbd></span>
                     </div>
                 </div>
             )}

@@ -31,7 +31,7 @@ export async function proxy(request: NextRequest) {
     const ip = request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || '127.0.0.1';
 
     // ─── 1. Rate Limiting for Public APIs ───
-    if (pathname === '/api/auth/login') {
+    if (pathname === '/api/auth/login' || pathname === '/api/auth/verify-2fa') {
         const { success, limit, remaining, reset } = await authLimiter.limit(ip);
         if (!success) return rateLimitResponse(limit, remaining, reset);
     }
@@ -105,6 +105,7 @@ export const config = {
     matcher: [
         '/admin/:path*',
         '/api/auth/login',
+        '/api/auth/verify-2fa',
         '/api/contact',
         '/api/newsletter',
     ],

@@ -319,24 +319,63 @@ export async function updateProfile(data: { name: string; email: string; avatar?
 Purpose: Provide visibility into active sessions.
 Decision: Helping users understand where they are logged in aids in detecting unauthorized access.
 */
-export async function getSessions() {
+export async function getSessions(page = 1, limit = 10) {
     const user = await requireRole([Role.SUPER_ADMIN, Role.ADMIN, Role.SUPPORT_STAFF]);
 
-    // Purpose: List sessions sorted by recency for better UX.
+    const skip = (page - 1) * limit;
+
+    const [sessions, total] = await Promise.all([
+        prisma.session.findMany({
+            where: { userId: user.id },
+            orderBy: { createdAt: "desc" },
+            skip,
+            take: limit,
+            select: {
+                id: true,
+                ipAddress: true,
+                userAgent: true,
+                createdAt: true,
+                expiresAt: true,
+                token: true
+            }
+        }),
+        prisma.session.count({ where: { userId: user.id } })
+    ]);
+
+    return {
+        data: sessions,
+        total,
+        totalPages: Math.ceil(total / limit),
+        currentPage: page
+    };
+}
+
+export async function exportSessionsCsv() {
+    const user = await requireRole([Role.SUPER_ADMIN, Role.ADMIN, Role.SUPPORT_STAFF]);
+
     const sessions = await prisma.session.findMany({
         where: { userId: user.id },
         orderBy: { createdAt: "desc" },
+        take: 5000,
         select: {
-            id: true,
             ipAddress: true,
             userAgent: true,
             createdAt: true,
-            expiresAt: true,
-            token: true // Need this to identify *current* session
+            expiresAt: true
         }
     });
 
-    return sessions;
+    const header = "IP Address,User Agent,Created At,Expires At";
+    const rows = sessions.map(session => {
+        const ip = session.ipAddress || "Unknown";
+        // Escape quotes if ua contains them, normally replace " with ""
+        const ua = session.userAgent ? `"${session.userAgent.replace(/"/g, '""')}"` : "Unknown";
+        const created = session.createdAt.toISOString();
+        const expires = session.expiresAt.toISOString();
+        return `${ip},${ua},${created},${expires}`;
+    });
+
+    return [header, ...rows].join("\n");
 }
 
 export async function revokeSession(sessionId: string) {

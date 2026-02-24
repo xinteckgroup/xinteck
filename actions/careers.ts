@@ -4,7 +4,7 @@ import { logAudit } from "@/lib/audit";
 import { requireRole } from "@/lib/auth-check";
 import { createPaginatedResult, getPaginationParams, PaginatedResponse } from "@/lib/pagination";
 import { prisma } from "@/lib/prisma";
-import { CareerPosition, Role } from "@prisma/client";
+import { CareerPosition, ContentStatus, Role } from "@prisma/client";
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
 
@@ -18,7 +18,7 @@ const careerPositionSchema = z.object({
     description: z.string().optional(),
     requirements: z.array(z.string()).default([]),
     salaryRange: z.string().optional(),
-    isActive: z.boolean().default(true),
+    status: z.string().default("Draft"),
     sortOrder: z.number().default(0),
 });
 
@@ -54,11 +54,7 @@ export async function getCareerPositions(params?: {
     }
 
     if (params?.status && params.status !== "all") {
-        if (params.status === "active") {
-            where.isActive = true;
-        } else if (params.status === "inactive") {
-            where.isActive = false;
-        }
+        where.status = parseStatus(params.status);
     }
 
     const [items, total] = await Promise.all([
@@ -79,8 +75,16 @@ export async function createCareerPosition(data: CareerPositionInput) {
     const admin = await requireRole([Role.SUPER_ADMIN, Role.ADMIN]);
     const parsed = careerPositionSchema.parse(data);
 
+    let finalStatus = parseStatus(parsed.status);
+    if (finalStatus === ContentStatus.PUBLISHED && admin.role !== Role.SUPER_ADMIN) {
+        finalStatus = ContentStatus.IN_REVIEW;
+    }
+
     const position = await prisma.careerPosition.create({
-        data: parsed,
+        data: {
+            ...parsed,
+            status: finalStatus
+        },
     });
 
     await logAudit({
@@ -100,9 +104,17 @@ export async function updateCareerPosition(id: string, data: CareerPositionInput
     const admin = await requireRole([Role.SUPER_ADMIN, Role.ADMIN]);
     const parsed = careerPositionSchema.parse(data);
 
+    let finalStatus = parseStatus(parsed.status);
+    if (finalStatus === ContentStatus.PUBLISHED && admin.role !== Role.SUPER_ADMIN) {
+        finalStatus = ContentStatus.IN_REVIEW;
+    }
+
     const position = await prisma.careerPosition.update({
         where: { id },
-        data: parsed,
+        data: {
+            ...parsed,
+            status: finalStatus
+        },
     });
 
     await logAudit({
@@ -139,28 +151,33 @@ export async function deleteCareerPosition(id: string) {
     return { success: true };
 }
 
-export async function toggleCareerPosition(id: string) {
+export async function updateCareerStatus(id: string, status: string) {
     const admin = await requireRole([Role.SUPER_ADMIN, Role.ADMIN]);
 
     const existing = await prisma.careerPosition.findUnique({ where: { id } });
     if (!existing) throw new Error("Position not found");
 
+    let finalStatus = parseStatus(status);
+    if (finalStatus === ContentStatus.PUBLISHED && admin.role !== Role.SUPER_ADMIN) {
+        finalStatus = ContentStatus.IN_REVIEW;
+    }
+
     const position = await prisma.careerPosition.update({
         where: { id },
-        data: { isActive: !existing.isActive },
+        data: { status: finalStatus },
     });
 
     await logAudit({
-        action: "careers.toggle",
+        action: "careers.status_change",
         entity: "CareerPosition",
         entityId: id,
         userId: admin.id,
-        metadata: { isActive: position.isActive },
+        metadata: { status: position.status },
     });
 
     revalidatePath("/admin/careers");
     revalidatePath("/careers");
-    return { success: true, isActive: position.isActive };
+    return { success: true, status: position.status };
 }
 
 // ─── Public Action (No Auth) ───
@@ -168,7 +185,7 @@ export async function toggleCareerPosition(id: string) {
 export async function getActiveCareerPositions(): Promise<CareerPosition[]> {
     return prisma.careerPosition.findMany({
         where: {
-            isActive: true,
+            status: ContentStatus.PUBLISHED,
             deletedAt: null,
         },
         orderBy: [{ sortOrder: "asc" }, { createdAt: "desc" }],
@@ -186,4 +203,13 @@ export async function getCareerDepartments(): Promise<string[]> {
     });
 
     return results.map((r: { department: string }) => r.department);
+}
+
+// Helpers
+function parseStatus(status: string): ContentStatus {
+    if (status === "Published" || status === "PUBLISHED") return ContentStatus.PUBLISHED;
+    if (status === "Draft" || status === "DRAFT") return ContentStatus.DRAFT;
+    if (status === "In Review" || status === "IN_REVIEW") return ContentStatus.IN_REVIEW;
+    if (status === "Archived" || status === "ARCHIVED") return ContentStatus.ARCHIVED;
+    return ContentStatus.DRAFT;
 }

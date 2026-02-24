@@ -14,6 +14,9 @@ function AdminLoginContent() {
   const [rememberMe, setRememberMe] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
+  const [requires2FA, setRequires2FA] = useState(false);
+  const [preAuthToken, setPreAuthToken] = useState("");
+  const [totpCode, setTotpCode] = useState("");
   const router = useRouter();
   const searchParams = useSearchParams();
   const isNewlyRegistered = searchParams.get("registered") === "true";
@@ -36,6 +39,45 @@ function AdminLoginContent() {
 
       if (!res.ok) {
         setError(data.error || 'Login failed');
+        setIsLoading(false);
+        return;
+      }
+
+      // Check if 2FA is required
+      if (data.requires2FA) {
+        setRequires2FA(true);
+        setPreAuthToken(data.preAuthToken);
+        setIsLoading(false);
+        return;
+      }
+
+      // Success - Redirect
+      router.push('/admin');
+      
+    } catch (err) {
+      setError('An unexpected system error occurred.');
+      setIsLoading(false);
+    }
+  };
+
+  const handleVerify2FA = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsLoading(true);
+    setError("");
+
+    try {
+      const res = await fetch('/api/auth/verify-2fa', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ preAuthToken, code: totpCode, rememberMe }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        setError(data.error || 'Verification failed. Please check your code.');
         setIsLoading(false);
         return;
       }
@@ -95,12 +137,15 @@ function AdminLoginContent() {
           className="w-full max-w-md space-y-8"
         >
           <div className="text-center lg:text-left">
-            <h2 className="text-3xl font-bold tracking-tight text-foreground">Welcome back</h2>
+            <h2 className="text-3xl font-bold tracking-tight text-foreground">
+                {requires2FA ? "Two-Factor Authentication" : "Welcome back"}
+            </h2>
             <p className="mt-2 text-sm text-muted-foreground">
-              Please enter your credentials to access the dashboard.
+              {requires2FA ? "Please enter your authentication code to continue." : "Please enter your credentials to access the dashboard."}
             </p>
           </div>
 
+          {!requires2FA ? (
           <form onSubmit={handleLogin} className="space-y-6">
             {isNewlyRegistered && !error && (
                 <div className="bg-green-500/40 border border-green-500/20 rounded-[10px] p-4 flex items-center gap-3 text-green-500 text-sm">
@@ -174,6 +219,55 @@ function AdminLoginContent() {
               )}
             </button>
           </form>
+        ) : (
+          <form onSubmit={handleVerify2FA} className="space-y-6">
+            {error && (
+                <div className="bg-red-500/40 border border-red-500/20 rounded-[10px] p-4 flex items-center gap-3 text-red-500 text-sm">
+                    <AlertCircle size={18} />
+                    {error}
+                </div>
+            )}
+
+            <div className="space-y-2">
+              <label className="text-sm font-medium text-foreground/80" htmlFor="totp">Two-Factor Authentication Code</label>
+              <div className="relative">
+                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" size={18} />
+                <input
+                  id="totp"
+                  type="text"
+                  maxLength={6}
+                  value={totpCode}
+                  onChange={(e) => setTotpCode(e.target.value.replace(/[^0-9]/g, ''))}
+                  placeholder="000000"
+                  className="w-full bg-muted/30 border border-input rounded-[10px] pl-10 pr-4 py-3 text-foreground placeholder:text-muted-foreground focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all text-center tracking-widest font-mono text-xl"
+                  required
+                />
+              </div>
+              <p className="text-xs text-muted-foreground">Enter the 6-digit code from your authenticator app.</p>
+            </div>
+
+            <button
+              type="submit"
+              disabled={isLoading || totpCode.length !== 6}
+              className="w-full bg-primary text-primary-foreground font-bold py-3 rounded-[10px] flex items-center justify-center gap-2 hover:bg-primary/90 hover:scale-[1.02] active:scale-[0.98] transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-lg"
+            >
+              {isLoading ? (
+                <div className="w-5 h-5 border-2 border-background/30 border-t-background rounded-full animate-spin" />
+              ) : (
+                <>
+                  Verify Code <CheckCircle2 size={18} />
+                </>
+              )}
+            </button>
+            <button
+               type="button"
+               onClick={() => { setRequires2FA(false); setTotpCode(""); setError(""); }}
+               className="w-full text-sm text-primary/80 hover:text-foreground transition-colors mt-4"
+            >
+               Back to Login
+            </button>
+          </form>
+        )}
 
           <p className="text-center text-sm text-muted-foreground">
             Don't have an account?{" "}

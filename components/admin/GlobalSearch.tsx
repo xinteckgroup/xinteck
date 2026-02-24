@@ -116,7 +116,7 @@ export function GlobalSearch() {
             </div>
 
             {open && (query.length >= 2) && (
-                <div className="fixed top-[74px] left-2 right-2 md:absolute md:top-full md:left-0 md:w-full md:inset-x-auto md:mt-2 admin-surface-floating rounded-[10px] overflow-hidden z-50 animate-in fade-in zoom-in-95 duration-100">
+                <div className="fixed top-[74px] left-2 right-2 md:absolute md:top-full md:left-0 md:w-full md:inset-x-auto md:mt-2 bg-white dark:bg-black border border-[var(--admin-border)] shadow-2xl rounded-xl overflow-hidden z-50 animate-in fade-in zoom-in-95 duration-100">
                     {results.length === 0 && !loading ? (
                         <div className="p-4 text-center text-sm text-[var(--admin-muted)]">
                             No results found.
@@ -126,7 +126,7 @@ export function GlobalSearch() {
                             {results.map((group) => {
                                 return (
                                 <div key={group.label}>
-                                    <div className="px-3 py-1.5 text-[10px] font-bold text-[var(--admin-muted)] uppercase tracking-wider sticky top-0 admin-surface-secondary z-10 border-b border-[var(--admin-border)] rounded-none">
+                                    <div className="px-3 py-1.5 text-[10px] font-bold text-zinc-500 dark:text-[var(--admin-muted)] uppercase tracking-wider sticky top-0 bg-gray-50 dark:bg-[#0a0a0a] z-10 border-b border-[var(--admin-border)] rounded-none">
                                         {group.label}
                                     </div>
                                     <div>
@@ -151,10 +151,10 @@ export function GlobalSearch() {
                                                         {getIcon(result.type)}
                                                     </div>
                                                     <div className="min-w-0 flex-1">
-                                                        <p className={cn("text-sm font-medium truncate", isSelected ? "text-[var(--admin-text)]" : "text-[var(--admin-text)]/70")}>
+                                                        <p className={cn("text-sm font-medium truncate", isSelected ? "text-zinc-900 dark:text-[var(--admin-text)]" : "text-zinc-700 dark:text-[var(--admin-text)]/70")}>
                                                             {result.title}
                                                         </p>
-                                                        <p className={cn("text-xs truncate", isSelected ? "text-gold" : "text-[var(--admin-muted)]")}>
+                                                        <p className={cn("text-xs truncate", isSelected ? "text-gold" : "text-zinc-500 dark:text-[var(--admin-muted)]")}>
                                                             {result.subtitle}
                                                         </p>
                                                     </div>
@@ -172,7 +172,7 @@ export function GlobalSearch() {
                             })}
                         </div>
                     )}
-                    <div className="px-3 py-2 admin-surface-secondary border-t border-[var(--admin-border)] text-[10px] text-[var(--admin-muted)] flex justify-between">
+                    <div className="px-3 py-2 bg-gray-50 dark:bg-[#0a0a0a] border-t border-[var(--admin-border)] text-[10px] text-zinc-500 dark:text-[var(--admin-muted)] flex justify-between">
                         <span>Navigate with <kbd className="font-sans admin-surface-primary px-1 rounded text-[var(--admin-text)]">↑</kbd> <kbd className="font-sans admin-surface-primary px-1 rounded text-[var(--admin-text)]">↓</kbd></span>
                         <span>Select with <kbd className="font-sans admin-surface-primary px-1 rounded text-[var(--admin-text)]">Enter</kbd></span>
                     </div>

@@ -116,7 +116,7 @@ export function DataGrid<T extends { id: string }>({
       {showToolbar && (
         <div className="w-auto inline-flex items-center gap-2 bg-[var(--admin-surface-primary)] backdrop-blur-xl p-2 rounded-[10px] self-start border border-[var(--admin-border)] shadow-xl">
           {!hideSearch && (
-            <div className="relative w-full md:w-64 lg:w-96 block bg-[var(--admin-surface-input)] rounded-[10px]">
+            <div className="relative w-full md:w-64 lg:w-96 block bg-black/60 dark:bg-white/30 rounded-[10px]">
               <div className="relative">
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--admin-muted)] pointer-events-none" size={18} />
                 <input 
@@ -125,7 +125,7 @@ export function DataGrid<T extends { id: string }>({
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
                   className={cn(
-                    "w-full bg-transparent border border-transparent rounded-[10px] pl-10 pr-4 py-2 text-sm text-[var(--admin-text)] placeholder:text-[var(--admin-muted)] focus:border-gold/50 focus:outline-none transition-colors",
+                    "w-full admin-surface-input border border-[var(--admin-border)] rounded-[10px] pl-10 pr-4 py-2 text-sm text-[var(--admin-text)] placeholder:text-[var(--admin-muted)] focus:border-gold/50 focus:outline-none transition-colors",
                     TYPOGRAPHY.input
                   )}
                 />

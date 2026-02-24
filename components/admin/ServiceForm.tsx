@@ -238,7 +238,7 @@ export function ServiceForm({ service }: ServiceFormProps) {
             />
 
             {error && (
-                <div className="bg-red-500/10 border border-red-500/20 text-red-400 p-3 rounded-[8px] text-sm">
+                <div className="bg-red-500/40 border border-red-500/20 text-red-400 p-3 rounded-[8px] text-sm">
                     {error}
                 </div>
             )}

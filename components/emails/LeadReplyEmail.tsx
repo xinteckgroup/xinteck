@@ -1,4 +1,4 @@
-import { Hr, Img, Section, Text } from '@react-email/components';
+import { Hr, Img, Link, Section, Text } from '@react-email/components';
 import * as React from 'react';
 import { XinteckEmailLayout } from './XinteckEmailLayout';
 
@@ -22,14 +22,16 @@ export const LeadReplyEmail = ({
   return (
     <XinteckEmailLayout previewText={`Reply from ${sentBy}`}>
       <Section className="text-left mb-[40px]">
-        <Img
-          src="https://xinteck.co.ke/logos/logo-dark-full.png"
-          width="200"
-          height="200"
-          alt="Xinteck Logo"
-          className="mx-auto block"
-          style={{ objectFit: 'contain' }}
-        />
+        <Link href="https://xinteck.co.ke">
+          <Img
+            src="https://xinteck.co.ke/logos/logo-dark-full.png"
+            width="200"
+            height="200"
+            alt="Xinteck Logo"
+            className="mx-auto block"
+            style={{ objectFit: 'contain' }}
+          />
+        </Link>
       </Section>
       <Section className="bg-[#0A0A0A] border border-[#222222] rounded-[8px] p-[24px] mb-[32px]">
         <Text className="text-[16px] leading-[26px] text-text m-0 mb-[16px]">

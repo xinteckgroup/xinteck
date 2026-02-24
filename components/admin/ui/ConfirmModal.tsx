@@ -33,7 +33,7 @@ export function ConfirmModal({
         <div className="flex items-start gap-4 p-4 admin-surface-primary backdrop-blur-xs rounded-[12px] border border-[var(--admin-border)]">
           <div className={cn(
             "p-3 rounded-full shrink-0",
-            isDestructive ? "bg-red-500/10 text-red-500" : "bg-gold/10 text-gold"
+            isDestructive ? "bg-red-500/40 text-red-500" : "bg-gold/40 text-gold"
           )}>
             <AlertCircle size={24} />
           </div>

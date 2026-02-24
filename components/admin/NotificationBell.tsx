@@ -162,7 +162,7 @@ export function NotificationBell() {
     const getPriorityStyle = (priority: NotificationPriority) => {
         switch (priority) {
             case "CRITICAL": return "border-l-2 border-destructive bg-destructive/10";
-            case "HIGH": return "border-l-2 border-yellow-500 bg-yellow-500/10";
+            case "HIGH": return "border-l-2 border-yellow-500 bg-yellow-500/40";
             default: return "border-l-2 border-transparent hover:bg-muted";
         }
     };

@@ -63,7 +63,7 @@ function ResetPasswordForm() {
     return (
         <form onSubmit={handleSubmit} className="space-y-6">
             {status === "error" && (
-                <div className="bg-red-500/10 border border-red-500/20 text-red-500 p-3 rounded text-sm text-center">
+                <div className="bg-red-500/40 border border-red-500/20 text-red-500 p-3 rounded text-sm text-center">
                     {errorMsg}
                 </div>
             )}

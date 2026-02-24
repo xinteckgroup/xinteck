@@ -203,10 +203,10 @@ export function AuditLogTable({ logs, currentPage, totalPages }: AuditLogTablePr
 }
 
 function getActionColor(action: string): string {
-  if (action.includes("delete")) return "bg-red-500/10 text-red-500 border-red-500/20";
-  if (action.includes("create")) return "bg-green-500/10 text-green-500 border-green-500/20";
-  if (action.includes("update")) return "bg-blue-500/10 text-blue-500 border-blue-500/20";
-  if (action.includes("login")) return "bg-purple-500/10 text-purple-500 border-purple-500/20";
-  if (action.includes("subscribe")) return "bg-gold/10 text-gold border-gold/20";
+  if (action.includes("delete")) return "bg-red-500/40 text-red-500 border-red-500/20";
+  if (action.includes("create")) return "bg-green-500/40 text-green-500 border-green-500/20";
+  if (action.includes("update")) return "bg-blue-500/40 text-blue-500 border-blue-500/20";
+  if (action.includes("login")) return "bg-purple-500/40 text-purple-500 border-purple-500/20";
+  if (action.includes("subscribe")) return "bg-gold/40 text-gold border-gold/20";
   return "admin-surface-input text-[var(--admin-text)] border-[var(--admin-border)]";
 }

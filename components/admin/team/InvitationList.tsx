@@ -35,10 +35,10 @@ export function InvitationList({ invitations }: { invitations: InvitationWithInv
     }
 
     return (
-        <div className="border border-[var(--admin-border)] rounded-[10px] overflow-hidden admin-surface-primary shadow-sm">
+        <div className="admin-surface-primary backdrop-blur-sm rounded-[10px] overflow-hidden shadow-sm">
             <div className="overflow-x-auto">
-                <table className="w-full text-left text-sm text-[var(--admin-text)]/80">
-                    <thead className="bg-[var(--admin-text)]/5 text-[10px] uppercase font-black tracking-widest text-[var(--admin-text)]/60 border-b border-[var(--admin-border)]">
+                <table className="w-full text-left text-sm text-[var(--admin-text)]">
+                    <thead className="bg-[var(--admin-text)]/5 text-[10px] uppercase font-black tracking-widest text-[var(--admin-text)] border-b border-[var(--admin-border)]">
                         <tr>
                             <th className="px-4 py-3">Email</th>
                             <th className="px-4 py-3">Role</th>
@@ -91,16 +91,16 @@ function InvitationRow({ invite }: { invite: InvitationWithInviter }) {
             <tr className="hover:bg-[var(--admin-text)]/5 transition-colors">
             <td className="px-4 py-3 font-medium text-[var(--admin-text)]">{invite.email}</td>
             <td className="px-4 py-3">
-                <span className="bg-[var(--admin-text)]/10 px-2 py-0.5 rounded text-xs text-[var(--admin-text)]/80">{invite.role}</span>
+                <span className="bg-[var(--admin-text)]/40 px-2 py-0.5 rounded text-xs text-[var(--admin-text)]">{invite.role}</span>
             </td>
             <td className="px-4 py-3">
                 <StatusBadge status={status} />
             </td>
-            <td className="px-4 py-3 text-xs text-[var(--admin-muted)]">
+            <td className="px-4 py-3 text-xs text-[var(--admin-text)]">
                 {formatDistanceToNow(new Date(invite.createdAt), { addSuffix: true })}
                 <div className="text-[10px] opacity-70">by {invite.invitedBy.name}</div>
             </td>
-            <td className="px-4 py-3 text-xs">
+            <td className="px-4 py-3 text-xs text-[var(--admin-text)]">
                 {status === "PENDING" && formatDistanceToNow(new Date(invite.expiresAt), { addSuffix: true })}
                 {status !== "PENDING" && "-"}
             </td>
@@ -113,7 +113,7 @@ function InvitationRow({ invite }: { invite: InvitationWithInviter }) {
                             onClick={handleResend} 
                             disabled={isPending}
                             title="Resend Invitation"
-                            className="bg-transparent hover:bg-[var(--admin-text)]/10 text-[var(--admin-muted)] hover:text-[var(--admin-text)]"
+                            className="bg-transparent hover:bg-[var(--admin-text)]/40 text-[var(--admin-muted)] hover:text-[var(--admin-text)]"
                         >
                             <RefreshCw size={14} className={isPending ? "animate-spin" : ""} />
                         </Button>
@@ -124,7 +124,7 @@ function InvitationRow({ invite }: { invite: InvitationWithInviter }) {
                             size="sm" 
                             onClick={() => setIsConfirmOpen(true)}
                             disabled={isPending}
-                            className="text-red-400 hover:text-red-300 hover:bg-red-500/10"
+                            className="text-red-400 hover:text-red-300 hover:bg-red-500/40"
                             title="Revoke Invitation"
                         >
                             <Ban size={14} />
@@ -155,14 +155,14 @@ function InvitationRow({ invite }: { invite: InvitationWithInviter }) {
 
 function StatusBadge({ status }: { status: string }) {
     const styles: Record<string, string> = {
-        PENDING: "bg-blue-500/10 text-blue-400 border-blue-500/20",
-        ACCEPTED: "bg-green-500/10 text-green-400 border-green-500/20",
-        EXPIRED: "bg-orange-500/10 text-orange-400 border-orange-500/20",
-        REVOKED: "bg-red-500/10 text-red-400 border-red-500/20",
+        PENDING: "bg-blue-500/40 text-blue-400 border-blue-500/20",
+        ACCEPTED: "bg-green-500/40 text-green-400 border-green-500/20",
+        EXPIRED: "bg-orange-500/40 text-orange-400 border-orange-500/20",
+        REVOKED: "bg-red-500/40 text-red-400 border-red-500/20",
     };
 
     return (
-        <span className={`px-2 py-0.5 rounded-[4px] text-[10px] font-black uppercase tracking-wider border ${styles[status] || "bg-[var(--admin-text)]/10 text-[var(--admin-muted)] border-[var(--admin-border)]"}`}>
+        <span className={`px-2 py-0.5 rounded-[4px] text-[10px] font-black uppercase tracking-wider border ${styles[status] || "bg-[var(--admin-text)]/40 text-[var(--admin-muted)] border-[var(--admin-border)]"}`}>
             {status}
         </span>
     );

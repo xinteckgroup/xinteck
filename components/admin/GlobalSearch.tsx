@@ -146,7 +146,7 @@ export function GlobalSearch() {
                                                 >
                                                     <div className={cn(
                                                         "w-8 h-8 rounded-lg flex items-center justify-center shrink-0",
-                                                        isSelected ? "bg-gold/10 text-gold" : "admin-surface-input text-[var(--admin-muted)]"
+                                                        isSelected ? "bg-gold/40 text-gold" : "admin-surface-input text-[var(--admin-muted)]"
                                                     )}>
                                                         {getIcon(result.type)}
                                                     </div>

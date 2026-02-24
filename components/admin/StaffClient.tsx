@@ -5,6 +5,7 @@ import { deleteUser, deleteUsers, reactivateUser, suspendUser, updateUserRole } 
 import { DataGrid } from "@/components/admin/DataGrid";
 import { RoleGate } from "@/components/admin/RoleGate";
 import { PageContainer, PageHeader } from "@/components/admin/ui";
+import { ConfirmModal } from "@/components/admin/ui/ConfirmModal";
 import { cn } from "@/lib/utils";
 import { Role } from "@prisma/client";
 import { Activity, Ban, Check, RefreshCw, Shield, UserMinus, UserPlus, Users, X } from "lucide-react";
@@ -259,8 +260,8 @@ export function StaffClient({ initialStaff }: StaffClientProps) {
       render: (row: any) => (
          <span className={cn(
             "inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest border shadow-sm",
-            row.role === 'Super Admin' ? 'bg-primary/10 text-gold border-gold/20' : 
-            row.role === 'Admin' ? 'bg-blue-500/10 text-blue-400 border-blue-500/20' :
+            row.role === 'Super Admin' ? 'bg-primary/40 text-gold border-gold/20' : 
+            row.role === 'Admin' ? 'bg-blue-500/40 text-blue-400 border-blue-500/20' :
             'admin-surface-input text-[var(--admin-text)]/40 border-[var(--admin-border)]'
          )}>
             <Shield size={10} />
@@ -306,7 +307,7 @@ export function StaffClient({ initialStaff }: StaffClientProps) {
                <button
                  onClick={() => handleRevoke(row.id)}
                  disabled={isPending}
-                 className="p-2 text-red-500 hover:bg-red-500/10 rounded-[8px] transition-all flex items-center gap-2 text-[10px] font-black uppercase tracking-widest border border-transparent hover:border-red-500/20"
+                 className="p-2 text-red-500 hover:bg-red-500/40 rounded-[8px] transition-all flex items-center gap-2 text-[10px] font-black uppercase tracking-widest border border-transparent hover:border-red-500/20"
                  title="Revoke Invite"
                >
                  <X size={14} /> Revoke
@@ -365,14 +366,14 @@ export function StaffClient({ initialStaff }: StaffClientProps) {
               label="Total Members" 
               value={optimisticStaff.length} 
               icon={<Users size={20} />} 
-              colorClass="bg-gold/10 text-gold" 
+              colorClass="bg-gold/40 text-gold" 
               valueClass="text-[var(--admin-text)]" 
            />
            <StatsCard 
               label="Active Now" 
               value={optimisticStaff.filter(s => s.status === 'Active').length} 
               icon={<Activity size={20} />} 
-              colorClass="bg-green-500/10 text-green-500" 
+              colorClass="bg-green-500/40 text-green-500" 
               valueClass="text-green-500" 
               pulse 
            />
@@ -380,7 +381,7 @@ export function StaffClient({ initialStaff }: StaffClientProps) {
               label="Suspended" 
               value={optimisticStaff.filter(s => s.status === 'Suspended').length} 
               icon={<UserMinus size={20} />} 
-              colorClass="bg-red-500/10 text-red-500" 
+              colorClass="bg-red-500/40 text-red-500" 
               valueClass="text-red-500" 
            />
         </div>
@@ -453,7 +454,7 @@ export function StaffClient({ initialStaff }: StaffClientProps) {
                         ))}
                      </div>
                   </div>
-                  <div className="bg-gold/20 dark:bg-gold/10 border border-gold/20 rounded-[12px] p-4 flex items-start gap-3">
+                  <div className="bg-gold/20 dark:bg-gold/40 border border-gold/20 rounded-[12px] p-4 flex items-start gap-3">
                     <Shield size={16} className="text-gold shrink-0 mt-0.5" />
                     <p className="text-[11px] font-bold leading-relaxed uppercase tracking-wider opacity-90">
                       Default password will be <strong className="font-black underline text-gold">xinteck123</strong>. Member should change it upon first login.
@@ -527,6 +528,17 @@ export function StaffClient({ initialStaff }: StaffClientProps) {
          </div>
       )}
 
+      {/* Confirm Modal (shared for Revoke, Delete, Suspend) */}
+      <ConfirmModal
+        isOpen={confirmConfig.isOpen}
+        onClose={closeConfirm}
+        onConfirm={confirmConfig.action}
+        title={confirmConfig.title}
+        description={confirmConfig.description}
+        isDestructive={true}
+        isLoading={isPending}
+      />
+
       <style jsx global>{`
         .custom-scrollbar::-webkit-scrollbar {
             width: 6px;
@@ -564,7 +576,7 @@ function StatsCard({
   pulse?: boolean
 }) {
     return (
-        <div className="p-4 md:p-6 bg-white/30 dark:bg-black/60 backdrop-blur-xl rounded-[12px] border border-[var(--admin-border)] shadow-xl relative overflow-hidden group hover:border-gold/30 transition-all duration-500">
+        <div className="p-4 md:p-6 admin-surface-primary backdrop-blur-sm rounded-[12px] shadow-xl relative overflow-hidden group hover:border-gold/30 transition-all duration-500">
            <div className="absolute -right-4 -top-4 opacity-[0.03] group-hover:opacity-[0.08] transition-opacity duration-1000 rotate-12 scale-150 transform">
               {icon}
            </div>

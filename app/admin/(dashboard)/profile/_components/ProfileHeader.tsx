@@ -30,10 +30,10 @@ export function ProfileHeader() {
                 </div>
                 
                 <div className="flex items-center justify-center md:justify-start gap-2 md:gap-3">
-                    <span className="px-2 md:px-3 py-0.5 md:py-1 rounded-full bg-gold/10 text-gold border border-gold/20 text-[10px] md:text-xs font-bold uppercase tracking-wider">
+                    <span className="px-2 md:px-3 py-0.5 md:py-1 rounded-full bg-gold/40 text-gold border border-gold/20 text-[10px] md:text-xs font-bold uppercase tracking-wider">
                         {userRole || "STAFF"}
                     </span>
-                    <span className="px-2 md:px-3 py-0.5 md:py-1 rounded-full bg-green-500/10 text-green-400 border border-green-500/20 text-[10px] md:text-xs font-bold uppercase tracking-wider flex items-center gap-1 md:gap-1.5">
+                    <span className="px-2 md:px-3 py-0.5 md:py-1 rounded-full bg-green-500/40 text-green-400 border border-green-500/20 text-[10px] md:text-xs font-bold uppercase tracking-wider flex items-center gap-1 md:gap-1.5">
                         <span className="w-1 md:w-1.5 h-1 md:h-1.5 rounded-full bg-green-400 animate-pulse" />
                         Active
                     </span>

@@ -1,4 +1,4 @@
-import { Button, Column, Heading, Hr, Img, Row, Section, Text } from '@react-email/components';
+import { Button, Column, Heading, Hr, Img, Link, Row, Section, Text } from '@react-email/components';
 import { XinteckEmailLayout } from './XinteckEmailLayout';
 
 export interface AdminContactAlertEmailProps {
@@ -25,14 +25,16 @@ export const AdminContactAlertEmail = ({
   return (
     <XinteckEmailLayout previewText={`New Lead: ${name} (${projectType})`}>
       <Section className="text-left mb-[40px]">
-        <Img
-          src="https://xinteck.co.ke/logos/logo-dark-full.png"
-          width="200"
-          height="200"
-          alt="Xinteck Logo"
-          className="mx-auto block"
-          style={{ objectFit: 'contain' }}
-        />
+        <Link href="https://xinteck.co.ke">
+          <Img
+            src="https://xinteck.co.ke/logos/logo-dark-full.png"
+            width="200"
+            height="200"
+            alt="Xinteck Logo"
+            className="mx-auto block"
+            style={{ objectFit: 'contain' }}
+          />
+        </Link>
       </Section>
       <Heading className="text-[20px] font-black tracking-tight text-brand m-0 mb-[24px]">
         New Incoming Lead Alert

@@ -244,7 +244,7 @@ export function ProjectManager({ initialData }: ProjectManagerProps) {
                  </div>
                  
                  <div className="mt-auto pt-4 border-t border-[var(--admin-border)] flex items-center justify-between">
-                    <span className="text-xs font-bold text-gold px-2 py-1 bg-gold/10 rounded-[4px] border border-gold/20">{project.category}</span>
+                    <span className="text-xs font-bold text-gold px-2 py-1 bg-gold/40 rounded-[4px] border border-gold/20">{project.category}</span>
                     <RoleGate allowedRoles={[Role.SUPER_ADMIN, Role.ADMIN]}>
                       <button onClick={() => handleDelete(project.id)} className="text-[var(--admin-text)]/60 hover:text-red-400 transition-colors bg-[var(--admin-surface-input)] p-1.5 rounded-[6px]">
                          <Trash2 size={16} />

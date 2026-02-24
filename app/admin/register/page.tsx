@@ -176,7 +176,7 @@ function RegisterContent() {
                     className="w-full max-w-md space-y-8"
                 >
                     <div className="text-center lg:text-left">
-                        <div className="inline-block px-3 py-1 bg-primary/10 border border-primary/20 rounded-full text-xs text-primary font-bold mb-4">
+                        <div className="inline-block px-3 py-1 bg-primary/40 border border-primary/20 rounded-full text-xs text-primary font-bold mb-4">
                             You've been invited by {invitedBy}
                         </div>
                         <h2 className="text-3xl font-bold tracking-tight text-foreground">Create Account</h2>
@@ -185,7 +185,7 @@ function RegisterContent() {
 
                     <form onSubmit={handleSubmit} className={`space-y-6 ${isSubmitting ? "pointer-events-none opacity-50 transition-opacity" : "transition-opacity"}`}>
                         {error && (
-                            <div className="bg-red-500/10 border border-red-500/20 rounded-[10px] p-4 text-red-500 text-sm flex items-center gap-3">
+                            <div className="bg-red-500/40 border border-red-500/20 rounded-[10px] p-4 text-red-500 text-sm flex items-center gap-3">
                                 <span className="font-bold">Error:</span> {error}
                             </div>
                         )}

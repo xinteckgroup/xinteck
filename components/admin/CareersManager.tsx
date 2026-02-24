@@ -365,7 +365,7 @@ export function CareersManager({ initialData, departments }: CareersManagerProps
                                             <MapPin size={12} />
                                             {position.location}
                                         </span>
-                                        <span className="font-bold text-gold px-2 py-0.5 bg-gold/10 rounded-[4px]">
+                                        <span className="font-bold text-gold px-2 py-0.5 bg-gold/40 rounded-[4px]">
                                             {position.type}
                                         </span>
                                         {position.salaryRange && (
@@ -406,7 +406,7 @@ export function CareersManager({ initialData, departments }: CareersManagerProps
                                         </button>
                                         <button
                                             onClick={() => openEdit(position)}
-                                            className="p-2 rounded-[6px] text-[var(--admin-muted)] hover:text-gold hover:bg-gold/10 transition-colors"
+                                            className="p-2 rounded-[6px] text-[var(--admin-muted)] hover:text-gold hover:bg-gold/40 transition-colors"
                                             title="Edit"
                                         >
                                             <Edit size={16} />

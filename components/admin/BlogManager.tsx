@@ -103,8 +103,8 @@ export function BlogManager({ initialData }: BlogManagerProps) {
       label: "Status",
       render: (row: BlogPostSummary) => (
         <span className={`px-3 py-1 rounded-full text-xs font-bold inline-flex items-center gap-1.5 ${
-          row.status === "Published" ? "bg-green-500/10 text-green-400 border border-green-500/20" : 
-          row.status === "In Review" ? "bg-purple-500/10 text-purple-400 border border-purple-500/20" :
+          row.status === "Published" ? "bg-green-500/40 text-green-400 border border-green-500/20" : 
+          row.status === "In Review" ? "bg-purple-500/40 text-purple-400 border border-purple-500/20" :
           "admin-surface-secondary text-[var(--admin-muted)] border border-[var(--admin-border)]"
         }`}>
           <span className={`w-1.5 h-1.5 rounded-full ${row.status === "Published" ? "bg-green-400" : row.status === "In Review" ? "bg-purple-400" : "bg-[var(--admin-muted)]"}`} />
@@ -157,7 +157,7 @@ export function BlogManager({ initialData }: BlogManagerProps) {
                 <RoleGate allowedRoles={[Role.SUPER_ADMIN, Role.ADMIN]}>
                     <button 
                         onClick={() => setConfirmDeleteIds(selectedIds)}
-                        className="p-1.5 md:p-2 rounded-[6px] bg-red-500/10 text-red-400 border border-red-500/20 hover:bg-red-500/20 transition-colors"
+                        className="p-1.5 md:p-2 rounded-[6px] bg-red-500/40 text-red-400 border border-red-500/20 hover:bg-red-500/20 transition-colors"
                         title="Delete Selected"
                     >
                         <Trash2 size={14} className="md:w-[16px] md:h-[16px]" />

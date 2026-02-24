@@ -95,7 +95,7 @@ export function AiSettingsForm({ initialSettings }: SettingsProps) {
         <div className="space-y-6 max-w-5xl">
             {/* Guide Card */}
             <div className="admin-surface-primary backdrop-blur-xs rounded-[12px] p-6 md:p-8 flex flex-col md:flex-row gap-6 items-start border border-[var(--admin-border)]">
-                <div className="w-12 h-12 shrink-0 rounded-[10px] bg-gold/10 text-gold flex items-center justify-center">
+                <div className="w-12 h-12 shrink-0 rounded-[10px] bg-gold/40 text-gold flex items-center justify-center">
                     <Info size={24} />
                 </div>
                 <div className="flex-1">
@@ -129,7 +129,7 @@ export function AiSettingsForm({ initialSettings }: SettingsProps) {
 
                 <div className="flex flex-wrap gap-2 mb-6">
                     {settings.targetNiches.map((niche: string) => (
-                        <span key={niche} className="px-3 py-1 bg-gold/10 text-gold border border-gold/20 rounded-full text-xs font-bold flex items-center gap-2">
+                        <span key={niche} className="px-3 py-1 bg-gold/40 text-gold border border-gold/20 rounded-full text-xs font-bold flex items-center gap-2">
                             {niche}
                             <button onClick={() => handleRemoveNiche(niche)} className="hover:text-[var(--admin-text)] transition-colors"><X size={12} /></button>
                         </span>
@@ -201,7 +201,7 @@ export function AiSettingsForm({ initialSettings }: SettingsProps) {
 
                 <div className="flex flex-wrap gap-2">
                     {settings.excludedKeywords.map((kw: string) => (
-                        <span key={kw} className="px-3 py-1 bg-red-500/10 text-red-400 border border-red-500/20 rounded-full text-xs font-bold flex items-center gap-2">
+                        <span key={kw} className="px-3 py-1 bg-red-500/40 text-red-400 border border-red-500/20 rounded-full text-xs font-bold flex items-center gap-2">
                             {kw}
                             <button onClick={() => handleRemoveExclusion(kw)} className="hover:text-red-200 transition-colors"><X size={12} /></button>
                         </span>

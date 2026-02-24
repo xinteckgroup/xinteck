@@ -82,7 +82,7 @@ export default function ForgotPasswordPage() {
                     {!message ? (
                         <form onSubmit={handleSubmit} className="space-y-6">
                             {error && (
-                                <div className="bg-red-500/10 border border-red-500/20 text-red-500 p-3 rounded text-sm text-center">
+                                <div className="bg-red-500/40 border border-red-500/20 text-red-500 p-3 rounded text-sm text-center">
                                     {error}
                                 </div>
                             )}
@@ -107,7 +107,7 @@ export default function ForgotPasswordPage() {
                             </button>
                         </form>
                     ) : (
-                        <div className="bg-green-500/10 border border-green-500/20 text-green-400 p-4 rounded-[10px] text-center">
+                        <div className="bg-green-500/40 border border-green-500/20 text-green-400 p-4 rounded-[10px] text-center">
                             <p className="font-bold mb-2">Check your inbox</p>
                             <p className="text-sm opacity-80">{message}</p>
                         </div>

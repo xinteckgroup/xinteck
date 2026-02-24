@@ -59,7 +59,7 @@ export function ServiceSortableItem({ service }: ServiceSortableItemProps) {
                 className={cn(
                   "px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider border",
                   service.isActive
-                    ? "bg-green-500/10 text-green-400 border-green-500/20"
+                    ? "bg-green-500/40 text-green-400 border-green-500/20"
                     : "admin-surface-input text-[var(--admin-text)]/50 border-[var(--admin-border)]"
                 )}
               >

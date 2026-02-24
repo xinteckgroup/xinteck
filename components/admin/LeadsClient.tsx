@@ -23,9 +23,9 @@ interface LeadsClientProps {
 // Lead status helper
 function getLeadStatus(msg: InboxMessage): { label: string; color: string; bgColor: string; borderColor: string } {
   if (msg.archived) return { label: "Archived", color: "text-[var(--admin-muted)]", bgColor: "bg-[var(--admin-text)]/5", borderColor: "border-[var(--admin-border)]" };
-  if (msg.replied) return { label: "Responded", color: "text-green-400", bgColor: "bg-green-500/10", borderColor: "border-green-500/20" };
-  if (!msg.unread) return { label: "Read", color: "text-blue-400", bgColor: "bg-blue-500/10", borderColor: "border-blue-500/20" };
-  return { label: "New", color: "text-gold", bgColor: "bg-gold/10", borderColor: "border-gold/20" };
+  if (msg.replied) return { label: "Responded", color: "text-green-400", bgColor: "bg-green-500/40", borderColor: "border-green-500/20" };
+  if (!msg.unread) return { label: "Read", color: "text-blue-400", bgColor: "bg-blue-500/40", borderColor: "border-blue-500/20" };
+  return { label: "New", color: "text-gold", bgColor: "bg-gold/40", borderColor: "border-gold/20" };
 }
 
 export function LeadsClient({ initialData, adminUsers, currentUserRole }: LeadsClientProps) {
@@ -197,7 +197,7 @@ export function LeadsClient({ initialData, adminUsers, currentUserRole }: LeadsC
                <div className="flex items-center gap-2">
                   <Target size={16} className="text-gold" />
                   <h3 className="text-[14px] font-bold text-[var(--admin-text)] uppercase tracking-wider">Leads</h3>
-                  <span className="bg-gold/10 text-gold border border-gold/20 px-2 py-0.5 rounded-full text-[10px] md:text-xs font-bold shadow-[0_0_10px_-3px_rgba(255,215,0,0.2)]">
+                  <span className="bg-gold/40 text-gold border border-gold/20 px-2 py-0.5 rounded-full text-[10px] md:text-xs font-bold shadow-[0_0_10px_-3px_rgba(255,215,0,0.2)]">
                      {initialData.total}
                   </span>
                </div>
@@ -498,14 +498,14 @@ export function LeadsClient({ initialData, adminUsers, currentUserRole }: LeadsC
                            <div className="flex items-center gap-2">
                              {activeMessage.replied && (
                                <>
-                                 <span className="text-[10px] font-bold text-green-400 uppercase tracking-widest bg-green-500/10 px-2 py-1 rounded-md border border-green-500/20 flex items-center gap-1">
+                                 <span className="text-[10px] font-bold text-green-400 uppercase tracking-widest bg-green-500/40 px-2 py-1 rounded-md border border-green-500/20 flex items-center gap-1">
                                    <Send size={10} /> Responded
                                  </span>
                                  <a
                                    href={getGmailSearchUrl(activeMessage.email)}
                                    target="_blank"
                                    rel="noopener noreferrer"
-                                   className="text-[10px] font-bold text-gold uppercase tracking-widest bg-gold/10 px-2 py-1 rounded-md border border-gold/20 flex items-center gap-1 hover:bg-gold/20 transition-colors"
+                                   className="text-[10px] font-bold text-gold uppercase tracking-widest bg-gold/40 px-2 py-1 rounded-md border border-gold/20 flex items-center gap-1 hover:bg-gold/20 transition-colors"
                                  >
                                    <ExternalLink size={10} /> Continue in Gmail
                                  </a>

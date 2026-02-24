@@ -176,7 +176,7 @@ export function SiteSettingsTab({ initialSettings, categories }: SiteSettingsTab
                                         <span className="text-xs font-bold font-mono text-[var(--admin-text)]">{setting.key}</span>
                                         <span className="text-[10px] px-2 py-0.5 rounded-[4px] admin-surface-input text-[var(--admin-muted)] border border-[var(--admin-border)] uppercase tracking-wider font-bold">{setting.category}</span>
                                         {setting.isPublic && (
-                                            <span className="text-[10px] px-2 py-0.5 rounded-[4px] bg-green-500/10 text-green-400 border border-green-500/20 uppercase tracking-wider font-bold">public</span>
+                                            <span className="text-[10px] px-2 py-0.5 rounded-[4px] bg-green-500/40 text-green-400 border border-green-500/20 uppercase tracking-wider font-bold">public</span>
                                         )}
                                     </div>
                                     {setting.description && (
@@ -207,7 +207,7 @@ export function SiteSettingsTab({ initialSettings, categories }: SiteSettingsTab
                                                 <button
                                                     onClick={() => handleSave(setting.key, setting.type)}
                                                     disabled={isPending}
-                                                    className="p-1.5 rounded-[6px] bg-green-500/10 text-green-400 hover:bg-green-500/20 transition-colors disabled:opacity-50 flex items-center gap-1 text-[10px] px-3 font-black uppercase tracking-widest border border-green-500/20"
+                                                    className="p-1.5 rounded-[6px] bg-green-500/40 text-green-400 hover:bg-green-500/20 transition-colors disabled:opacity-50 flex items-center gap-1 text-[10px] px-3 font-black uppercase tracking-widest border border-green-500/20"
                                                 >
                                                     <Save size={12} /> Save
                                                 </button>
@@ -251,7 +251,7 @@ export function SiteSettingsTab({ initialSettings, categories }: SiteSettingsTab
                                                 <button
                                                     onClick={() => handleDelete(setting.key)}
                                                     disabled={isPending}
-                                                    className="p-1.5 rounded-[6px] text-red-400/60 hover:bg-red-500/10 hover:text-red-400 transition-colors disabled:opacity-50 hover:border hover:border-red-500/20"
+                                                    className="p-1.5 rounded-[6px] text-red-400/60 hover:bg-red-500/40 hover:text-red-400 transition-colors disabled:opacity-50 hover:border hover:border-red-500/20"
                                                 >
                                                     <Trash2 size={12} />
                                                 </button>

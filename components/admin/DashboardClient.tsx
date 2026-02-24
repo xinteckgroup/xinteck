@@ -139,9 +139,9 @@ export function DashboardClient({ stats, activity, analytics = [] }: DashboardCl
             {activity.map((activity) => (
               <div key={activity.id} className="flex gap-3 p-2 md:p-3 rounded-[10px] hover:bg-[var(--admin-text)]/5 transition-colors border border-transparent hover:border-[var(--admin-border)] group">
                 <div className={`w-8 h-8 md:w-10 md:h-10 rounded-full flex items-center justify-center shrink-0 ${
-                   activity.type === 'inbox' ? 'bg-blue-500/10 text-blue-400' :
-                   activity.type === 'blog' ? 'bg-green-500/10 text-green-400' :
-                   activity.type === 'file' ? 'bg-purple-500/10 text-purple-400' :
+                   activity.type === 'inbox' ? 'bg-blue-500/40 text-blue-400' :
+                   activity.type === 'blog' ? 'bg-green-500/40 text-green-400' :
+                   activity.type === 'file' ? 'bg-purple-500/40 text-purple-400' :
                    'admin-surface-input text-[var(--admin-muted)]'
                 }`}>
                   <Activity size={14} className="md:w-4 md:h-4 text-gold hover:text-[var(--admin-text)]" />

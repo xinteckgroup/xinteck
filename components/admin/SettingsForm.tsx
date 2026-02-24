@@ -386,7 +386,7 @@ export function SettingsForm({ initialSettings, initialContactInfo }: SettingsFo
                                                     <button
                                                         type="button"
                                                         onClick={() => removeContactPhone(i)}
-                                                        className="p-2 text-[var(--admin-text)]/40 hover:text-red-400 hover:bg-red-500/10 rounded-[8px] transition-colors"
+                                                        className="p-2 text-[var(--admin-text)]/40 hover:text-red-400 hover:bg-red-500/40 rounded-[8px] transition-colors"
                                                         title="Remove"
                                                     >
                                                         <Trash2 size={16} />
@@ -460,7 +460,7 @@ export function SettingsForm({ initialSettings, initialContactInfo }: SettingsFo
                                                     <button
                                                         type="button"
                                                         onClick={() => removeSocialLink(i)}
-                                                        className="p-2 text-[var(--admin-text)]/40 hover:text-red-400 hover:bg-red-500/10 rounded-[8px] transition-colors"
+                                                        className="p-2 text-[var(--admin-text)]/40 hover:text-red-400 hover:bg-red-500/40 rounded-[8px] transition-colors"
                                                         title="Remove"
                                                     >
                                                         <Trash2 size={16} />
@@ -477,7 +477,7 @@ export function SettingsForm({ initialSettings, initialContactInfo }: SettingsFo
 
                     {activeTab === "environment" && (
                         <div className="flex flex-col gap-4">
-                             <div className="bg-blue-500/10 border border-blue-500/20 p-4 rounded-[12px] flex gap-3 text-blue-200 text-xs leading-relaxed">
+                             <div className="bg-blue-500/40 border border-blue-500/20 p-4 rounded-[12px] flex gap-3 text-blue-200 text-xs leading-relaxed">
                                 <Shield className="shrink-0" size={16} />
                                 <p>These variables are set at the system level (e.g. Vercel Environment Variables or .env file). They cannot be changed here for security reasons. If any are missing, add them to your deployment configuration and redeploy.</p>
                              </div>

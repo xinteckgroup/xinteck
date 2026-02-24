@@ -42,7 +42,7 @@ export function StatsCard({ title, value, trend, isPositive, iconName = "activit
           <p className={`${TYPOGRAPHY.cardSubtitle} text-[var(--admin-text)]/80 mb-0.5 md:mb-1 block`}>{title}</p>
           <h3 className={`${TYPOGRAPHY.pageTitle} text-[var(--admin-text)]`}>{value}</h3>
         </div>
-        <div className="w-7 h-7 md:w-10 md:h-10 rounded-[8px] md:rounded-[10px] bg-gold/10 flex items-center justify-center text-gold border border-gold/20 group-hover:bg-gold group-hover:text-primary-foreground transition-colors">
+        <div className="w-7 h-7 md:w-10 md:h-10 rounded-[8px] md:rounded-[10px] bg-gold/40 flex items-center justify-center text-gold border border-gold/20 group-hover:bg-gold group-hover:text-primary-foreground transition-colors">
           <Icon size={14} className="md:hidden" />
           <Icon size={20} className="hidden md:block" />
         </div>

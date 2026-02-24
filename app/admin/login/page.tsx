@@ -103,13 +103,13 @@ function AdminLoginContent() {
 
           <form onSubmit={handleLogin} className="space-y-6">
             {isNewlyRegistered && !error && (
-                <div className="bg-green-500/10 border border-green-500/20 rounded-[10px] p-4 flex items-center gap-3 text-green-500 text-sm">
+                <div className="bg-green-500/40 border border-green-500/20 rounded-[10px] p-4 flex items-center gap-3 text-green-500 text-sm">
                     <CheckCircle2 size={18} />
                     Registration Complete! You may now securely log in.
                 </div>
             )}
             {error && (
-                <div className="bg-red-500/10 border border-red-500/20 rounded-[10px] p-4 flex items-center gap-3 text-red-500 text-sm">
+                <div className="bg-red-500/40 border border-red-500/20 rounded-[10px] p-4 flex items-center gap-3 text-red-500 text-sm">
                     <AlertCircle size={18} />
                     {error}
                 </div>

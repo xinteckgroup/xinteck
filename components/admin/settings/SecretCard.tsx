@@ -28,7 +28,7 @@ export function SecretCard({
         <div className="admin-surface-primary rounded-[10px] p-4 md:p-6 flex flex-col gap-4 relative border border-[var(--admin-border)] backdrop-blur-xs">
             <div className="flex items-start justify-between gap-4">
                 <div className="flex gap-3">
-                    <div className="mt-1 w-8 h-8 rounded-full bg-gold/10 flex items-center justify-center text-gold shrink-0">
+                    <div className="mt-1 w-8 h-8 rounded-full bg-gold/40 flex items-center justify-center text-gold shrink-0">
                         <Lock size={14} />
                     </div>
                     <div>
@@ -63,7 +63,7 @@ export function SecretCard({
                         />
                         {isSaved && isMasked && (
                             <div className="absolute right-10 top-1/2 -translate-y-1/2">
-                                <span className="flex items-center gap-1 bg-green-500/10 border border-green-500/20 text-green-400 text-[10px] px-2 py-0.5 rounded-full font-bold">
+                                <span className="flex items-center gap-1 bg-green-500/40 border border-green-500/20 text-green-400 text-[10px] px-2 py-0.5 rounded-full font-bold">
                                     Encrypted
                                 </span>
                             </div>

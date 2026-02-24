@@ -19,7 +19,7 @@ export function StatusCard({ title, isConfigured, envKey, description, docsLink,
             <div className="flex items-start justify-between gap-4">
                 <div className="flex gap-3">
                     <div className={`mt-0.5 rounded-full p-1 ${
-                        isConfigured ? "text-green-400 bg-green-500/10" : "text-red-400 bg-red-500/10"
+                        isConfigured ? "text-green-400 bg-green-500/40" : "text-red-400 bg-red-500/40"
                     }`}>
                         {isConfigured ? <CheckCircle2 size={18} /> : <XCircle size={18} />}
                     </div>

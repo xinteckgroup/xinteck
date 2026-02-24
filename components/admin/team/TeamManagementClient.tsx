@@ -68,10 +68,10 @@ export function TeamManagementClient({ users, invitations }: { users: User[]; in
                         <Shield size={18} className="text-gold" />
                         Active Members ({users.length})
                     </h3>
-                    <div className="border border-[var(--admin-border)] rounded-[10px] overflow-hidden admin-surface-primary shadow-sm">
+                    <div className="admin-surface-primary backdrop-blur-sm rounded-[10px] overflow-hidden shadow-sm">
                         <div className="overflow-x-auto">
-                            <table className="w-full text-left text-sm text-[var(--admin-text)]/80">
-                                <thead className="bg-[var(--admin-text)]/5 text-[10px] uppercase font-black tracking-widest text-[var(--admin-text)]/60 border-b border-[var(--admin-border)]">
+                            <table className="w-full text-left text-sm text-[var(--admin-text)]">
+                                <thead className="bg-[var(--admin-text)]/5 text-[10px] uppercase font-black tracking-widest text-[var(--admin-text)] border-b border-[var(--admin-border)]">
                                     <tr>
                                         <th className="px-4 py-3">User</th>
                                         <th className="px-4 py-3">Role</th>
@@ -93,7 +93,7 @@ export function TeamManagementClient({ users, invitations }: { users: User[]; in
                                                     </div>
                                                     <div>
                                                         <div className="font-medium text-[var(--admin-text)]">{user.name}</div>
-                                                        <div className="text-xs text-[var(--admin-muted)]">{user.email}</div>
+                                                        <div className="text-xs text-[var(--admin-text)]">{user.email}</div>
                                                     </div>
                                                 </div>
                                             </td>
@@ -105,7 +105,7 @@ export function TeamManagementClient({ users, invitations }: { users: User[]; in
                                                     {user.status}
                                                 </span>
                                             </td>
-                                            <td className="px-4 py-3 text-xs text-[var(--admin-muted)]">
+                                            <td className="px-4 py-3 text-xs text-[var(--admin-text)]">
                                                 {user.lastActiveAt ? formatDistanceToNow(new Date(user.lastActiveAt), { addSuffix: true }) : "Never"}
                                             </td>
                                         </tr>
@@ -134,8 +134,8 @@ export function TeamManagementClient({ users, invitations }: { users: User[]; in
 
 function RoleBadge({ role }: { role: Role }) {
     const styles = {
-        SUPER_ADMIN: "bg-gold/10 text-gold border-gold/30",
-        ADMIN: "bg-[var(--admin-text)]/10 text-[var(--admin-text)] border-[var(--admin-border)]",
+        SUPER_ADMIN: "bg-gold/40 text-gold border-gold/30",
+        ADMIN: "bg-[var(--admin-text)]/40 text-[var(--admin-text)] border-[var(--admin-border)]",
         SUPPORT_STAFF: "bg-[var(--admin-text)]/5 text-[var(--admin-muted)] border-[var(--admin-border)]/50",
     };
     return (
@@ -146,10 +146,10 @@ function RoleBadge({ role }: { role: Role }) {
 }
 
 const statusStyles = {
-    ACTIVE: "bg-green-500/10 text-green-400 border-green-500/20",
-    SUSPENDED: "bg-red-500/10 text-red-400 border-red-500/20",
-    AWAY: "bg-orange-500/10 text-orange-400 border-orange-500/20",
-    DELETED: "bg-[var(--admin-text)]/10 text-[var(--admin-muted)] border-[var(--admin-border)]",
+    ACTIVE: "bg-green-500/40 text-green-400 border-green-500/20",
+    SUSPENDED: "bg-red-500/40 text-red-400 border-red-500/20",
+    AWAY: "bg-orange-500/40 text-orange-400 border-orange-500/20",
+    DELETED: "bg-[var(--admin-text)]/40 text-[var(--admin-muted)] border-[var(--admin-border)]",
 };
 
 function MailIcon() {

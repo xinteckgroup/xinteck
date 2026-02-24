@@ -49,7 +49,7 @@ export function ConfirmDialog({
         >
             <div className="flex flex-col items-center gap-4 text-center py-2">
                 {destructive && (
-                    <div className="w-12 h-12 rounded-full bg-red-500/10 border border-red-500/20 flex items-center justify-center">
+                    <div className="w-12 h-12 rounded-full bg-red-500/40 border border-red-500/20 flex items-center justify-center">
                         <AlertTriangle size={24} className="text-red-400" />
                     </div>
                 )}

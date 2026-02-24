@@ -149,7 +149,7 @@ export function AuditFilters({ entities, currentAction, currentEntity, currentDa
                     e.stopPropagation();
                     router.push(buildUrl({ dateFrom: undefined, page: undefined }));
                   }}
-                  className="hover:text-red-500 ml-1 p-0.5 rounded opacity-60 hover:opacity-100 transition-all hover:bg-red-500/10"
+                  className="hover:text-red-500 ml-1 p-0.5 rounded opacity-60 hover:opacity-100 transition-all hover:bg-red-500/40"
                   title="Clear Start Date"
                 >
                   <X size={12} strokeWidth={3} />
@@ -189,7 +189,7 @@ export function AuditFilters({ entities, currentAction, currentEntity, currentDa
                     e.stopPropagation();
                     router.push(buildUrl({ dateTo: undefined, page: undefined }));
                   }}
-                  className="hover:text-red-500 ml-1 p-0.5 rounded opacity-60 hover:opacity-100 transition-all hover:bg-red-500/10"
+                  className="hover:text-red-500 ml-1 p-0.5 rounded opacity-60 hover:opacity-100 transition-all hover:bg-red-500/40"
                   title="Clear End Date"
                 >
                   <X size={12} strokeWidth={3} />

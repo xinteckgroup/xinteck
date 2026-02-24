@@ -104,6 +104,7 @@ export async function inviteUser(data: { email: string; role: Role }) {
     });
 
     revalidatePath("/admin/settings/team");
+    revalidatePath("/admin/staff");
     return { success: true, message: "Invitation sent successfully." };
 }
 
@@ -128,6 +129,7 @@ export async function revokeInvitation(id: string) {
     });
 
     revalidatePath("/admin/settings/team");
+    revalidatePath("/admin/staff");
     return { success: true };
 }
 
@@ -181,6 +183,7 @@ export async function resendInvitation(id: string) {
     });
 
     revalidatePath("/admin/settings/team");
+    revalidatePath("/admin/staff");
     return { success: true, message: "Invitation resent." };
 }
 

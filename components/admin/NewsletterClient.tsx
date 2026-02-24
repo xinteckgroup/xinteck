@@ -125,14 +125,14 @@ export function NewsletterClient({ initialData, stats }: NewsletterClientProps) 
             label="Total Subscribers" 
             value={stats.total} 
             icon={<Users size={20} />} 
-            colorClass="bg-gold/10 text-gold" 
+            colorClass="bg-gold/40 text-gold" 
             valueClass="text-[var(--admin-text)]" 
           />
           <StatsCard 
             label="Active Readers" 
             value={stats.active} 
             icon={<MailOpen size={20} />} 
-            colorClass="bg-green-500/10 text-green-500" 
+            colorClass="bg-green-500/40 text-green-500" 
             valueClass="text-green-500" 
           />
           <StatsCard 
@@ -213,7 +213,7 @@ export function NewsletterClient({ initialData, stats }: NewsletterClientProps) 
                              </a>
                           </div>
                           <div className="flex items-center gap-1.5">
-                             <span className="bg-gold/10 text-gold border border-gold/20 px-2 py-0.5 rounded-[4px] text-[9px] font-bold uppercase tracking-wider backdrop-blur-sm max-w-max">
+                             <span className="bg-gold/40 text-gold border border-gold/20 px-2 py-0.5 rounded-[4px] text-[9px] font-bold uppercase tracking-wider backdrop-blur-sm max-w-max">
                                  Source: {sub.source}
                              </span>
                           </div>
@@ -223,7 +223,7 @@ export function NewsletterClient({ initialData, stats }: NewsletterClientProps) 
                         <span className={cn(
                           "px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest border shadow-sm",
                           sub.isActive
-                            ? "bg-green-500/10 text-green-400 border-green-500/20"
+                            ? "bg-green-500/40 text-green-400 border-green-500/20"
                             : "admin-surface-input text-[var(--admin-text)]/40 border-[var(--admin-border)]"
                         )}>
                           {sub.isActive ? "ACTIVE" : "UNSUBSCRIBED"}

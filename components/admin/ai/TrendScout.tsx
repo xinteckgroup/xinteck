@@ -81,7 +81,7 @@ export function TrendScout() {
                             <button
                                 onClick={handleDiscardAll}
                                 disabled={saving}
-                                className="flex items-center gap-2 px-4 py-3 admin-surface-input text-[var(--admin-text)] font-bold text-sm rounded-[10px] hover:bg-red-500/10 hover:text-red-400 transition-all disabled:opacity-50"
+                                className="flex items-center gap-2 px-4 py-3 admin-surface-input text-[var(--admin-text)] font-bold text-sm rounded-[10px] hover:bg-red-500/40 hover:text-red-400 transition-all disabled:opacity-50"
                             >
                                 <X size={16} />
                                 <span className="hidden md:inline">Discard All</span>
@@ -122,8 +122,8 @@ export function TrendScout() {
                                 <h3 className="font-bold text-base md:text-lg text-[var(--admin-text)] leading-tight">{idea.title}</h3>
                                 <div className={`px-2 py-0.5 rounded-[4px] text-[10px] font-bold uppercase tracking-wider whitespace-nowrap border ${
                                     idea.score > 80 
-                                        ? "bg-green-500/10 text-green-400 border-green-500/20" 
-                                        : "bg-yellow-500/10 text-yellow-500 border-yellow-500/20"
+                                        ? "bg-green-500/40 text-green-400 border-green-500/20" 
+                                        : "bg-yellow-500/40 text-yellow-500 border-yellow-500/20"
                                 }`}>
                                     Score: {idea.score}
                                 </div>
@@ -166,7 +166,7 @@ export function TrendScout() {
                                 </button>
                                 <button 
                                     onClick={() => handleReject(idea.title)}
-                                    className="flex-1 flex items-center justify-center gap-2 admin-surface-input text-[var(--admin-text)] hover:bg-red-500/10 hover:text-red-400 py-2 rounded-[8px] font-bold text-xs transition-colors"
+                                    className="flex-1 flex items-center justify-center gap-2 admin-surface-input text-[var(--admin-text)] hover:bg-red-500/40 hover:text-red-400 py-2 rounded-[8px] font-bold text-xs transition-colors"
                                     title="Discard Idea"
                                 >
                                     <X size={14} /> Discard

@@ -166,7 +166,7 @@ export function ProjectIdeaQueue() {
                     <button 
                         onClick={handleScout}
                         disabled={scouting}
-                        className="flex items-center gap-2 bg-gold/10 text-gold border border-gold/30 px-3 py-1.5 rounded-[6px] font-bold text-[10px] md:text-xs hover:bg-gold/20 transition-all disabled:opacity-50"
+                        className="flex items-center gap-2 bg-gold/40 text-gold border border-gold/30 px-3 py-1.5 rounded-[6px] font-bold text-[10px] md:text-xs hover:bg-gold/20 transition-all disabled:opacity-50"
                     >
                         {scouting ? <Loader2 className="animate-spin" size={12} /> : <RefreshCw size={12} />}
                         {scouting ? "Ideating..." : "Scout More"}
@@ -249,8 +249,8 @@ export function ProjectIdeaQueue() {
                                             <div className="flex items-center gap-3 mb-2">
                                                 <span className={`text-[10px] font-bold px-2 py-0.5 rounded border ${
                                                     idea.score > 80 
-                                                        ? "bg-green-500/10 text-green-400 border-green-500/20" 
-                                                        : "bg-yellow-500/10 text-yellow-500 border-yellow-500/20"
+                                                        ? "bg-green-500/40 text-green-400 border-green-500/20" 
+                                                        : "bg-yellow-500/40 text-yellow-500 border-yellow-500/20"
                                                 }`}>
                                                     SCORE: {idea.score}
                                                 </span>
@@ -336,8 +336,8 @@ export function ProjectIdeaQueue() {
                                     render: (row: any) => (
                                         <span className={`text-[10px] font-bold px-2 py-0.5 rounded border ${
                                             row.score > 80 
-                                                ? "bg-green-500/10 text-green-400 border-green-500/20" 
-                                                : "bg-yellow-500/10 text-yellow-500 border-yellow-500/20"
+                                                ? "bg-green-500/40 text-green-400 border-green-500/20" 
+                                                : "bg-yellow-500/40 text-yellow-500 border-yellow-500/20"
                                         }`}>
                                             {row.score}
                                         </span>

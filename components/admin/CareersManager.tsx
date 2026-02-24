@@ -52,7 +52,7 @@ const INITIAL_FORM = {
     description: "",
     requirements: [] as string[],
     salaryRange: "",
-    status: "Draft",
+    status: ContentStatus.DRAFT as ContentStatus,
     sortOrder: 0,
 };
 
@@ -181,7 +181,7 @@ export function CareersManager({ initialData, departments }: CareersManagerProps
 
     // ─── Save ───
 
-    const handleSave = async (overrideStatus?: string) => {
+    const handleSave = async (overrideStatus?: typeof ContentStatus[keyof typeof ContentStatus]) => {
         if (!form.title || !form.department || !form.location) {
             toast.error("Please fill in all required fields.");
             return;
@@ -192,7 +192,7 @@ export function CareersManager({ initialData, departments }: CareersManagerProps
         setSaving(true);
         try {
             if (editingPosition) {
-                await updateCareerPosition(editingPosition.id, finalForm);
+                await updateCareerPosition(editingPosition.id, finalForm as any);
                 toast.success("Position updated successfully.");
             } else {
                 await createCareerPosition(form);
@@ -282,8 +282,9 @@ export function CareersManager({ initialData, departments }: CareersManagerProps
                             onChange={(e: React.ChangeEvent<HTMLSelectElement>) => handleStatusChange(e.target.value)}
                             options={[
                                 { value: "all", label: "All Status" },
-                                { value: "active", label: "Active" },
-                                { value: "inactive", label: "Inactive" },
+                                { value: ContentStatus.PUBLISHED, label: "Published" },
+                                { value: ContentStatus.IN_REVIEW, label: "In Review" },
+                                { value: ContentStatus.DRAFT, label: "Draft" },
                             ]}
                             className="w-auto min-w-[120px] hidden md:flex"
                         />
@@ -292,7 +293,7 @@ export function CareersManager({ initialData, departments }: CareersManagerProps
 
                 {/* Mobile Filters */}
                 <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide md:hidden">
-                    {["all", "active", "inactive"].map((filter) => (
+                    {["all", ContentStatus.PUBLISHED, ContentStatus.IN_REVIEW, ContentStatus.DRAFT].map((filter) => (
                         <button
                             key={filter}
                             onClick={() => handleStatusChange(filter)}
@@ -302,7 +303,7 @@ export function CareersManager({ initialData, departments }: CareersManagerProps
                                     : "admin-surface-primary border-[var(--admin-border)] text-[var(--admin-text)] hover:bg-[var(--admin-text)]/5 hover:text-gold backdrop-blur-sm shadow-xl"
                             }`}
                         >
-                            {filter === "all" ? "All" : filter === "active" ? "Active" : "Inactive"}
+                            {filter === "all" ? "All" : filter.replace("_", " ")}
                         </button>
                     ))}
                 </div>
@@ -425,18 +426,18 @@ export function CareersManager({ initialData, departments }: CareersManagerProps
                         <Button variant="ghost" onClick={closeModal}>
                             Cancel
                         </Button>
-                        <Button variant="outline" onClick={() => handleSave("Draft")} disabled={saving}>
+                        <Button variant="outline" onClick={() => handleSave(ContentStatus.DRAFT)} disabled={saving}>
                             Save Draft
                         </Button>
                         <RoleGate 
                             allowedRoles={[Role.SUPER_ADMIN]}
                             fallback={
-                                <Button variant="primary" onClick={() => handleSave("In Review")} disabled={saving}>
+                                <Button variant="primary" onClick={() => handleSave(ContentStatus.IN_REVIEW)} disabled={saving}>
                                     {saving ? "Saving..." : "Submit for Review"}
                                 </Button>
                             }
                         >
-                            <Button variant="primary" onClick={() => handleSave("Published")} disabled={saving} className="bg-gold hover:bg-gold/90 text-primary-foreground border-none">
+                            <Button variant="primary" onClick={() => handleSave(ContentStatus.PUBLISHED)} disabled={saving} className="bg-gold hover:bg-gold/90 text-primary-foreground border-none">
                                 {saving ? "Publishing..." : editingPosition ? "Update & Publish" : "Publish Now"}
                             </Button>
                         </RoleGate>

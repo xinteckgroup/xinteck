@@ -4,16 +4,11 @@ import { useServices } from "@/components/providers/ServicesContext";
 import { cn } from "@/lib/utils";
 import { AnimatePresence, motion } from "framer-motion";
 import {
-    Briefcase,
-    Cloud,
     FileText,
-    Globe,
     Home,
     Layers,
     LayoutGrid,
     Mail,
-    Palette,
-    Smartphone,
     User,
     Zap
 } from "lucide-react";
@@ -36,13 +31,7 @@ const links = [
 ];
 
 // Map service slugs to icons for display
-const slugToIcon: Record<string, React.ComponentType<{ size?: number }>> = {
-  "web-development": Globe,
-  "mobile-app-development": Smartphone,
-  "custom-software-development": Briefcase,
-  "ui-ux-design": Palette,
-  "cloud-devops": Cloud,
-};
+import { SERVICE_UI_MAP } from "@/lib/service-ui-map";
 
 export function FloatingDock() {
   const pathname = usePathname();
@@ -53,11 +42,14 @@ export function FloatingDock() {
   // Build the services list: "All Services" first, then dynamic services from DB
   const services = [
     { name: "All Services", href: "/services", icon: LayoutGrid },
-    ...dynamicServices.map(s => ({
-      name: s.name,
-      href: `/services/${s.slug}`,
-      icon: slugToIcon[s.slug] || Briefcase,
-    })),
+    ...dynamicServices.map(s => {
+      const ui = SERVICE_UI_MAP[s.slug as keyof typeof SERVICE_UI_MAP] || SERVICE_UI_MAP["default"];
+      return {
+        name: s.name,
+        href: `/services/${s.slug}`,
+        icon: ui.icon,
+      }
+    }),
   ];
 
   return (

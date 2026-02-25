@@ -82,7 +82,7 @@ export function ServiceSortableItem({ service }: ServiceSortableItemProps) {
 
         {/* Actions - Prevent drag events here */}
         <div className="pl-11 md:pl-0" onPointerDown={(e) => e.stopPropagation()}>
-          <ServiceActions serviceId={service.id} />
+          <ServiceActions serviceId={service.id} currentStatus={service.status} />
         </div>
       </div>
     </div>

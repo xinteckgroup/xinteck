@@ -226,20 +226,20 @@ export function CampaignComposer({ campaignId, initialData }: CampaignComposerPr
                 <div className="lg:col-span-2 flex flex-col gap-4">
                     {/* Subject */}
                     <div className="admin-surface-primary backdrop-blur-sm rounded-[12px] border border-[var(--admin-border)] p-4 shadow-xl">
-                        <label className="text-[10px] font-black uppercase tracking-widest text-white/50 mb-2 block">Subject Line</label>
+                        <label className="text-[10px] font-black uppercase tracking-widest text-white mb-2 block">Subject Line</label>
                         <div className="flex gap-2">
                             <input
                                 type="text"
                                 value={subject}
                                 onChange={e => setSubject(e.target.value)}
                                 placeholder="Enter your email subject..."
-                                className="flex-1 admin-surface-input border border-[var(--admin-border)] rounded-[10px] px-4 py-2.5 text-sm text-white placeholder:text-white/30 focus:border-gold/50 focus:outline-none transition-colors"
+                                className="flex-1 admin-surface-input border border-[var(--admin-border)] rounded-[10px] px-4 py-2.5 text-sm text-white placeholder:text-white focus:border-gold/50 focus:outline-none transition-colors"
                                 maxLength={200}
                             />
                             <button
                                 onClick={handleGenerateSubjects}
                                 disabled={aiLoading === "subjects"}
-                                className="p-2.5 rounded-[10px] border border-[var(--admin-border)] text-white/40 hover:text-gold hover:border-gold/30 transition-all"
+                                className="p-2.5 rounded-[10px] border border-[var(--admin-border)] text-white hover:text-gold hover:border-gold/30 transition-all"
                                 title="AI: Generate subject lines"
                             >
                                 {aiLoading === "subjects" ? <Loader2 size={16} className="animate-spin" /> : <Sparkles size={16} />}
@@ -256,7 +256,7 @@ export function CampaignComposer({ campaignId, initialData }: CampaignComposerPr
                                         className="text-left px-3 py-2 rounded-[8px] text-xs text-white hover:bg-gold/10 hover:text-gold border border-[var(--admin-border)] transition-all flex items-center justify-between"
                                     >
                                         <span>{s.subject}</span>
-                                        <span className="text-[9px] font-bold uppercase tracking-wider text-white/40 bg-white/5 px-2 py-0.5 rounded-full">{s.style}</span>
+                                        <span className="text-[9px] font-bold uppercase tracking-wider text-white bg-white/5 px-2 py-0.5 rounded-full">{s.style}</span>
                                     </button>
                                 ))}
                             </div>
@@ -265,20 +265,20 @@ export function CampaignComposer({ campaignId, initialData }: CampaignComposerPr
 
                     {/* Preview Text */}
                     <div className="admin-surface-primary backdrop-blur-sm rounded-[12px] border border-[var(--admin-border)] p-4 shadow-xl">
-                        <label className="text-[10px] font-black uppercase tracking-widest text-white/50 mb-2 block">Preview Text (inbox snippet)</label>
+                        <label className="text-[10px] font-black uppercase tracking-widest text-white mb-2 block">Preview Text (inbox snippet)</label>
                         <div className="flex gap-2">
                             <input
                                 type="text"
                                 value={previewText}
                                 onChange={e => setPreviewText(e.target.value)}
                                 placeholder="Brief text shown in inbox preview..."
-                                className="flex-1 admin-surface-input border border-[var(--admin-border)] rounded-[10px] px-4 py-2.5 text-sm text-white placeholder:text-white/30 focus:border-gold/50 focus:outline-none transition-colors"
+                                className="flex-1 admin-surface-input border border-[var(--admin-border)] rounded-[10px] px-4 py-2.5 text-sm text-white placeholder:text-white focus:border-gold/50 focus:outline-none transition-colors"
                                 maxLength={300}
                             />
                             <button
                                 onClick={handleGeneratePreview}
                                 disabled={aiLoading === "preview"}
-                                className="p-2.5 rounded-[10px] border border-[var(--admin-border)] text-white/40 hover:text-gold hover:border-gold/30 transition-all"
+                                className="p-2.5 rounded-[10px] border border-[var(--admin-border)] text-white hover:text-gold hover:border-gold/30 transition-all"
                                 title="AI: Generate preview text"
                             >
                                 {aiLoading === "preview" ? <Loader2 size={16} className="animate-spin" /> : <Wand2 size={16} />}
@@ -289,10 +289,10 @@ export function CampaignComposer({ campaignId, initialData }: CampaignComposerPr
                     {/* Content Editor */}
                     <div className="admin-surface-primary backdrop-blur-sm rounded-[12px] border border-[var(--admin-border)] shadow-xl flex flex-col">
                         <div className="flex items-center justify-between p-4 border-b border-[var(--admin-border)]">
-                            <label className="text-[10px] font-black uppercase tracking-widest text-white/50">Newsletter Content (HTML)</label>
+                            <label className="text-[10px] font-black uppercase tracking-widest text-white">Newsletter Content (HTML)</label>
                             <button
                                 onClick={() => setShowPreview(!showPreview)}
-                                className="flex items-center gap-1.5 px-3 py-1.5 rounded-[8px] text-[10px] font-bold uppercase tracking-wider text-white/50 hover:text-gold border border-[var(--admin-border)] hover:border-gold/30 transition-all"
+                                className="flex items-center gap-1.5 px-3 py-1.5 rounded-[8px] text-[10px] font-bold uppercase tracking-wider text-white hover:text-gold border border-[var(--admin-border)] hover:border-gold/30 transition-all"
                             >
                                 <Eye size={12} /> {showPreview ? "Editor" : "Preview"}
                             </button>
@@ -307,14 +307,14 @@ export function CampaignComposer({ campaignId, initialData }: CampaignComposerPr
                                 value={content}
                                 onChange={e => setContent(e.target.value)}
                                 placeholder={'<h2>Your heading</h2>\n<p>Write your newsletter content here...</p>'}
-                                className="w-full p-4 bg-transparent text-sm text-white placeholder:text-white/20 focus:outline-none resize-none font-mono min-h-[400px]"
+                                className="w-full p-4 bg-transparent text-sm text-white placeholder:text-white focus:outline-none resize-none font-mono min-h-[400px]"
                             />
                         )}
                     </div>
 
                     {/* Audience Selector */}
                     <div className="admin-surface-primary backdrop-blur-sm rounded-[12px] border border-[var(--admin-border)] p-4 shadow-xl">
-                        <label className="text-[10px] font-black uppercase tracking-widest text-white/50 mb-3 block">Target Audience</label>
+                        <label className="text-[10px] font-black uppercase tracking-widest text-white mb-3 block">Target Audience</label>
                         <div className="flex gap-3">
                             {([
                                 {
@@ -350,11 +350,11 @@ export function CampaignComposer({ campaignId, initialData }: CampaignComposerPr
                                             {opt.badge}
                                         </span>
                                     </div>
-                                    <p className="text-[10px] text-white/40 leading-relaxed mb-2">{opt.desc}</p>
+                                    <p className="text-[10px] text-white font-bold leading-relaxed mb-2">{opt.desc}</p>
                                     <div className="flex items-center gap-1.5 pt-2 border-t border-[var(--admin-border)]">
-                                        <Users size={12} className="text-white/30" />
+                                        <Users size={12} className="text-white" />
                                         <span className="text-xs font-black text-white">{opt.count}</span>
-                                        <span className="text-[9px] text-white/30">subscribers</span>
+                                        <span className="text-[9px] text-white font-bold">subscribers</span>
                                     </div>
                                 </button>
                             ))}
@@ -372,7 +372,7 @@ export function CampaignComposer({ campaignId, initialData }: CampaignComposerPr
                             </div>
                             <div>
                                 <h3 className="text-sm font-bold text-white">AI Draft Generator</h3>
-                                <p className="text-[10px] text-white/40">Generate professional content instantly</p>
+                                <p className="text-[10px] text-white font-black">Generate professional content instantly</p>
                             </div>
                         </div>
 
@@ -382,14 +382,14 @@ export function CampaignComposer({ campaignId, initialData }: CampaignComposerPr
                                 value={aiTopic}
                                 onChange={e => setAiTopic(e.target.value)}
                                 placeholder="Newsletter topic..."
-                                className="w-full admin-surface-input border border-[var(--admin-border)] rounded-[10px] px-3 py-2 text-xs text-white placeholder:text-white/25 focus:border-gold/50 focus:outline-none"
+                                className="w-full admin-surface-input border border-[var(--admin-border)] rounded-[10px] px-3 py-2 text-xs text-white placeholder:text-white focus:border-gold/50 focus:outline-none"
                             />
                             <textarea
                                 value={aiKeyPoints}
                                 onChange={e => setAiKeyPoints(e.target.value)}
                                 placeholder="Key points to cover (optional)..."
                                 rows={3}
-                                className="w-full admin-surface-input border border-[var(--admin-border)] rounded-[10px] px-3 py-2 text-xs text-white placeholder:text-white/25 focus:border-gold/50 focus:outline-none resize-none"
+                                className="w-full admin-surface-input border border-[var(--admin-border)] rounded-[10px] px-3 py-2 text-xs text-white placeholder:text-white focus:border-gold/50 focus:outline-none resize-none"
                             />
                             <div className="flex flex-wrap gap-1.5">
                                 {(["professional", "casual", "technical", "inspiring"] as const).map(t => (
@@ -398,7 +398,7 @@ export function CampaignComposer({ campaignId, initialData }: CampaignComposerPr
                                         onClick={() => setAiTone(t)}
                                         className={`px-3 py-1.5 rounded-[6px] text-[10px] font-bold uppercase tracking-wider transition-all ${aiTone === t
                                             ? "bg-gold/90 text-black"
-                                            : "text-white/40 hover:text-white border border-[var(--admin-border)] hover:bg-white/5"
+                                            : "text-white hover:text-gold border border-[var(--admin-border)] hover:bg-white/5"
                                             }`}
                                     >
                                         {t}
@@ -418,14 +418,14 @@ export function CampaignComposer({ campaignId, initialData }: CampaignComposerPr
 
                     {/* AI Refine */}
                     <div className="admin-surface-primary backdrop-blur-sm rounded-[12px] border border-[var(--admin-border)] p-4 shadow-xl">
-                        <h3 className="text-[10px] font-black uppercase tracking-widest text-white/50 mb-3">Refine Content</h3>
+                        <h3 className="text-[10px] font-black uppercase tracking-widest text-white mb-3">Refine Content</h3>
                         <div className="flex flex-col gap-2">
                             <input
                                 type="text"
                                 value={refineInstruction}
                                 onChange={e => setRefineInstruction(e.target.value)}
                                 placeholder="e.g., Make it shorter, more formal..."
-                                className="w-full admin-surface-input border border-[var(--admin-border)] rounded-[10px] px-3 py-2 text-xs text-white placeholder:text-white/25 focus:border-gold/50 focus:outline-none"
+                                className="w-full admin-surface-input border border-[var(--admin-border)] rounded-[10px] px-3 py-2 text-xs text-white placeholder:text-white focus:border-gold/50 focus:outline-none"
                             />
                             <button
                                 onClick={handleRefine}
@@ -441,20 +441,20 @@ export function CampaignComposer({ campaignId, initialData }: CampaignComposerPr
                     {/* Quota Card */}
                     {quota && (
                         <div className="admin-surface-primary backdrop-blur-sm rounded-[12px] border border-[var(--admin-border)] p-4 shadow-xl">
-                            <h3 className="text-[10px] font-black uppercase tracking-widest text-white/50 mb-3">Send Quota (Resend Free Plan)</h3>
+                            <h3 className="text-[10px] font-black uppercase tracking-widest text-white mb-3">Send Quota (Resend Free Plan)</h3>
                             <div className="flex flex-col gap-3">
                                 <QuotaBar label="Daily (100/day)" used={quota.daily.used} limit={quota.daily.limit} />
                                 <QuotaBar label="Monthly (3,000/mo)" used={quota.monthly.used} limit={quota.monthly.limit} />
                                 <div className="flex items-center justify-between pt-2 border-t border-[var(--admin-border)]">
-                                    <span className="text-[10px] text-white/40 font-bold uppercase">Active Subscribers</span>
+                                    <span className="text-[10px] text-white font-black uppercase">Active Subscribers</span>
                                     <span className="text-sm font-black text-gold">{quota.subscribers.active}</span>
                                 </div>
                                 <div className="flex items-center justify-between">
-                                    <span className="text-[10px] text-white/40 font-bold uppercase">Total Subscribers</span>
+                                    <span className="text-[10px] text-white font-black uppercase">Total Subscribers</span>
                                     <span className="text-sm font-black text-white">{quota.subscribers.total}</span>
                                 </div>
                                 <div className="flex items-center justify-between pt-2 border-t border-[var(--admin-border)]">
-                                    <span className="text-[10px] text-white/40 font-bold uppercase">Available to Send Now</span>
+                                    <span className="text-[10px] text-white font-black uppercase">Available to Send Now</span>
                                     <span className={`text-sm font-black ${quota.maxSendable > 0 ? "text-green-400" : "text-red-400"}`}>{quota.maxSendable}</span>
                                 </div>
                             </div>
@@ -469,7 +469,7 @@ export function CampaignComposer({ campaignId, initialData }: CampaignComposerPr
                     <div className="admin-surface-primary border border-[var(--admin-border)] rounded-[16px] p-6 max-w-lg w-full shadow-2xl">
                         <div className="flex items-center justify-between mb-6">
                             <h2 className="text-lg font-black text-white">Send Newsletter</h2>
-                            <button onClick={() => setShowSendDialog(false)} className="text-white/40 hover:text-white transition-colors">
+                            <button onClick={() => setShowSendDialog(false)} className="text-white hover:text-gold transition-colors">
                                 <X size={18} />
                             </button>
                         </div>
@@ -477,13 +477,13 @@ export function CampaignComposer({ campaignId, initialData }: CampaignComposerPr
                         <div className="flex flex-col gap-5">
                             {/* Subject preview */}
                             <div className="p-3 rounded-[10px] bg-white/5 border border-[var(--admin-border)]">
-                                <span className="text-[10px] font-bold uppercase tracking-widest text-white/40 block mb-1">Subject</span>
+                                <span className="text-[10px] font-bold uppercase tracking-widest text-white block mb-1">Subject</span>
                                 <span className="text-sm font-bold text-white">{subject}</span>
                             </div>
 
                             {/* Audience info */}
                             <div className="p-3 rounded-[10px] bg-white/5 border border-[var(--admin-border)]">
-                                <span className="text-[10px] font-bold uppercase tracking-widest text-white/40 block mb-1">Audience</span>
+                                <span className="text-[10px] font-bold uppercase tracking-widest text-white block mb-1">Audience</span>
                                 <div className="flex items-center justify-between">
                                     <span className="text-sm font-bold text-white">
                                         {audience === "ACTIVE_ONLY" ? "Active Subscribers Only" : "All Subscribers"}
@@ -502,7 +502,7 @@ export function CampaignComposer({ campaignId, initialData }: CampaignComposerPr
 
                             {/* Send limit selector — slider + number input */}
                             <div className="p-4 rounded-[12px] bg-white/5 border border-[var(--admin-border)]">
-                                <label className="text-[10px] font-black uppercase tracking-widest text-white/50 mb-3 block">
+                                <label className="text-[10px] font-black uppercase tracking-widest text-white mb-3 block">
                                     How many emails to send right now?
                                 </label>
                                 
@@ -518,10 +518,10 @@ export function CampaignComposer({ campaignId, initialData }: CampaignComposerPr
                                         disabled={maxRecipients === 0}
                                     />
                                     <div className="flex-1">
-                                        <span className="text-xs text-white/60 block">
+                                        <span className="text-xs text-white font-bold block">
                                             out of <span className="font-black text-white">{audience === "ACTIVE_ONLY" ? quota.subscribers.active : quota.subscribers.total}</span> {audience === "ACTIVE_ONLY" ? "active" : "total"} subscribers
                                         </span>
-                                        <span className="text-[10px] text-white/30">
+                                        <span className="text-[10px] text-white font-medium">
                                             Max sendable right now: <span className="font-bold text-green-400">{quota.maxSendable}</span> (based on remaining quota)
                                         </span>
                                     </div>
@@ -538,8 +538,8 @@ export function CampaignComposer({ campaignId, initialData }: CampaignComposerPr
                                     disabled={maxRecipients === 0}
                                 />
                                 <div className="flex items-center justify-between mt-1">
-                                    <span className="text-[9px] text-white/30 font-bold">0</span>
-                                    <span className="text-[9px] text-white/30 font-bold">{maxRecipients}</span>
+                                    <span className="text-[9px] text-white font-black">0</span>
+                                    <span className="text-[9px] text-white font-black">{maxRecipients}</span>
                                 </div>
 
                                 {/* Quick select buttons */}
@@ -550,7 +550,7 @@ export function CampaignComposer({ campaignId, initialData }: CampaignComposerPr
                                             onClick={() => setSendLimit(n)}
                                             className={`px-3 py-1 rounded-[6px] text-[10px] font-bold uppercase tracking-wider transition-all border ${sendLimit === n
                                                 ? "bg-gold/20 text-gold border-gold/40"
-                                                : "text-white/40 border-[var(--admin-border)] hover:text-white hover:bg-white/5"
+                                                : "text-white border-[var(--admin-border)] hover:bg-white/5"
                                                 }`}
                                         >
                                             {n === maxRecipients ? `ALL (${n})` : n}
@@ -597,7 +597,7 @@ function QuotaBar({ label, used, limit }: { label: string; used: number; limit: 
     return (
         <div>
             <div className="flex items-center justify-between mb-1">
-                <span className="text-[10px] font-bold uppercase tracking-widest text-white/50">{label}</span>
+                <span className="text-[10px] font-bold uppercase tracking-widest text-white">{label}</span>
                 <span className="text-[10px] font-black text-white">{used} / {limit}</span>
             </div>
             <div className="h-1.5 rounded-full bg-white/10 overflow-hidden">

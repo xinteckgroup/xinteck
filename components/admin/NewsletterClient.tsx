@@ -113,7 +113,8 @@ export function NewsletterClient({ initialData, stats }: NewsletterClientProps) 
               className="gap-2 admin-surface-primary border border-[var(--admin-border)] text-white hover:text-gold hover:bg-white/5 transition-all text-sm font-bold rounded-[10px]" 
               onClick={() => window.open("/api/newsletter/export", "_blank")}
             >
-              <Download size={14} /> Export CSV
+              <Download size={14} />
+              <span className="text-white">Export CSV</span>
             </Button>
           </div>
         }
@@ -132,7 +133,7 @@ export function NewsletterClient({ initialData, stats }: NewsletterClientProps) 
               "px-5 py-2 rounded-[10px] text-xs font-bold uppercase tracking-wider transition-all",
               tab.active
                 ? "bg-gold/90 text-black shadow-md"
-                : "text-white/40 hover:text-white hover:bg-white/5"
+                : "text-white hover:text-gold hover:bg-white/5"
             )}
           >
             {tab.label}
@@ -154,29 +155,29 @@ export function NewsletterClient({ initialData, stats }: NewsletterClientProps) 
             label="Active Readers" 
             value={stats.active} 
             icon={<MailOpen size={20} />} 
-            colorClass="bg-green-500/40 text-green-500" 
+            colorClass="bg-green-500/40 text-green-400" 
             valueClass="text-green-400" 
           />
           <StatsCard 
             label="Unsubscribed" 
             value={stats.unsubscribed} 
             icon={<UserMinus size={20} />} 
-            colorClass="bg-white/10 text-white/40" 
-            valueClass="text-white/40" 
+            colorClass="bg-white/10 text-white" 
+            valueClass="text-white" 
           />
         </div>
 
         {/* Filters */}
         <div className="flex flex-col md:flex-row gap-4 items-center justify-between admin-surface-primary backdrop-blur-sm p-3 md:p-4 rounded-[12px] border border-[var(--admin-border)] shadow-xl">
-          <div className="relative w-full md:w-64 lg:w-96">
+          <div className="relative w-full md:w-64 lg:w-96 bg-black/60 dark:bg-white/30 rounded-[10px]">
              <div className="relative">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-white/30 pointer-events-none" size={18} />
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-white pointer-events-none" size={18} />
                 <input
                   type="text"
                   placeholder="Search emails..."
                   value={search}
                   onChange={e => handleSearchChange(e.target.value)}
-                  className="w-full admin-surface-input border border-[var(--admin-border)] rounded-[10px] pl-10 pr-4 py-2 text-sm text-white placeholder:text-white/25 focus:border-gold/50 focus:outline-none transition-colors"
+                  className="w-full admin-surface-input border border-[var(--admin-border)] rounded-[10px] pl-10 pr-10 py-2 text-sm text-white placeholder:text-white focus:border-gold/50 focus:outline-none transition-colors"
                 />
              </div>
           </div>
@@ -189,7 +190,7 @@ export function NewsletterClient({ initialData, stats }: NewsletterClientProps) 
                   "px-4 py-1.5 rounded-[6px] text-[10px] md:text-xs font-bold uppercase tracking-wider transition-all whitespace-nowrap flex-1 md:flex-none",
                   filter === f
                     ? "bg-gold/90 text-black shadow-md border border-gold/40"
-                    : "text-white/40 hover:text-white hover:bg-white/10"
+                    : "text-white hover:text-gold hover:bg-white/10"
                 )}
               >
                 {f}
@@ -203,7 +204,7 @@ export function NewsletterClient({ initialData, stats }: NewsletterClientProps) 
           <div className="overflow-x-auto custom-scrollbar">
             <table className="w-full text-left border-collapse min-w-[700px]">
               <thead>
-                <tr className="bg-white/5 text-white/60 text-[11px] font-bold uppercase tracking-widest border-b border-[var(--admin-border)]">
+                <tr className="bg-white/5 text-white text-[11px] font-bold uppercase tracking-widest border-b border-[var(--admin-border)]">
                   <th className="p-4 w-[40%]">Email</th>
                   <th className="p-4 w-[20%]">Status</th>
                   <th className="p-4 w-[20%]">Joined</th>
@@ -215,8 +216,8 @@ export function NewsletterClient({ initialData, stats }: NewsletterClientProps) 
                   <tr>
                     <td colSpan={4} className="p-12 text-center">
                       <div className="flex flex-col items-center gap-4">
-                        <Users size={48} className="text-white/10" />
-                        <p className="text-base font-bold text-white/20 uppercase tracking-widest">No subscribers found</p>
+                        <Users size={48} className="text-white" />
+                        <p className="text-base font-bold text-white uppercase tracking-widest">No subscribers found</p>
                       </div>
                     </td>
                   </tr>
@@ -235,7 +236,7 @@ export function NewsletterClient({ initialData, stats }: NewsletterClientProps) 
                              </a>
                           </div>
                           <div className="flex items-center gap-1.5">
-                             <span className="bg-gold/20 text-gold border border-gold/20 px-2 py-0.5 rounded-[4px] text-[9px] font-bold uppercase tracking-wider max-w-max">
+                             <span className="bg-gold/20 text-white border border-gold/20 px-2 py-0.5 rounded-[4px] text-[9px] font-bold uppercase tracking-wider max-w-max">
                                  Source: {sub.source}
                              </span>
                           </div>
@@ -246,7 +247,7 @@ export function NewsletterClient({ initialData, stats }: NewsletterClientProps) 
                           "px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest border",
                           sub.isActive
                             ? "bg-green-500/20 text-green-400 border-green-500/30"
-                            : "bg-white/5 text-white/30 border-[var(--admin-border)]"
+                            : "bg-white/5 text-white border-[var(--admin-border)]"
                         )}>
                           {sub.isActive ? "ACTIVE" : "UNSUBSCRIBED"}
                         </span>
@@ -254,7 +255,7 @@ export function NewsletterClient({ initialData, stats }: NewsletterClientProps) 
                       <td className="p-4">
                         <div className="flex flex-col">
                            <span className="text-[12px] font-bold text-white">{new Date(sub.subscribedAt).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })}</span>
-                           <span className="text-[10px] text-white/30 font-medium uppercase tracking-wider">Verified</span>
+                           <span className="text-[10px] text-white font-black uppercase tracking-wider">Verified</span>
                         </div>
                       </td>
                       <td className="p-4 text-right">
@@ -264,7 +265,7 @@ export function NewsletterClient({ initialData, stats }: NewsletterClientProps) 
                               <button
                                 onClick={() => handleUnsubscribe(sub.id)}
                                 disabled={isPending}
-                                className="p-2 text-white/40 hover:text-red-400 hover:bg-red-500/10 rounded-[8px] transition-all"
+                                className="p-2 text-white hover:text-red-400 hover:bg-red-500/10 rounded-[8px] transition-all"
                                 title="Unsubscribe"
                               >
                                 {isPending ? <div className="w-3.5 h-3.5 border-2 border-red-400/30 border-t-red-400 rounded-full animate-spin" /> : <UserMinus size={16} />}
@@ -273,7 +274,7 @@ export function NewsletterClient({ initialData, stats }: NewsletterClientProps) 
                               <button
                                 onClick={() => handleResubscribe(sub.id)}
                                 disabled={isPending}
-                                className="p-2 text-white/40 hover:text-green-400 hover:bg-green-500/10 rounded-[8px] transition-all"
+                                className="p-2 text-white hover:text-green-400 hover:bg-green-500/10 rounded-[8px] transition-all"
                                 title="Resubscribe"
                               >
                                 {isPending ? <div className="w-3.5 h-3.5 border-2 border-green-400/30 border-t-green-400 rounded-full animate-spin" /> : <UserPlus size={16} />}
@@ -284,7 +285,7 @@ export function NewsletterClient({ initialData, stats }: NewsletterClientProps) 
                             <button
                               onClick={() => setDeleteId(sub.id)}
                               disabled={isPending}
-                              className="p-2 text-white/40 hover:text-red-500 hover:bg-red-500/10 rounded-[8px] transition-all"
+                              className="p-2 text-white hover:text-red-500 hover:bg-red-500/10 rounded-[8px] transition-all"
                               title="Delete permanently"
                             >
                               <Trash2 size={16} />
@@ -346,14 +347,14 @@ export function NewsletterClient({ initialData, stats }: NewsletterClientProps) 
 function StatsCard({ icon, label, value, colorClass, valueClass }: { icon: any, label: string, value: number, colorClass: string, valueClass: string }) {
     return (
         <div className="p-4 md:p-6 admin-surface-primary backdrop-blur-xs rounded-[12px] border border-[var(--admin-border)] shadow-xl relative overflow-hidden group hover:border-gold/30 transition-all duration-500">
-           <div className="absolute -right-4 -top-4 opacity-[0.03] group-hover:opacity-[0.08] transition-opacity duration-1000 rotate-12 scale-150 transform">
+           <div className="absolute -right-4 -top-4 opacity-[0.05] group-hover:opacity-[0.1] transition-opacity duration-1000 rotate-12 scale-150 transform">
               {icon}
            </div>
            <div className="flex items-center gap-3 mb-3">
              <div className={cn("w-10 h-10 rounded-full flex items-center justify-center shadow-inner", colorClass)}>
                {icon}
              </div>
-             <span className="text-white/50 text-[12px] font-black uppercase tracking-widest">{label}</span>
+             <span className="text-white text-[12px] font-black uppercase tracking-widest">{label}</span>
            </div>
            <p className={cn("text-3xl md:text-4xl font-black tracking-tight", valueClass)}>{value}</p>
         </div>

@@ -61,11 +61,19 @@ export async function proxy(request: NextRequest) {
                         await jwtVerify(token, JWT_SECRET);
                         return NextResponse.redirect(new URL('/admin', request.url));
                     } catch {
-                        // Invalid token — allow access to login page
+                        // Invalid/corrupted token — silently delete it so the user
+                        // gets a clean login page instead of a broken redirect loop
+                        const response = NextResponse.next();
+                        response.cookies.delete('session_token');
+                        response.headers.set('Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0');
+                        return response;
                     }
                 }
             }
-            return NextResponse.next();
+            // Ensure login/register/reset pages are never cached
+            const response = NextResponse.next();
+            response.headers.set('Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0');
+            return response;
         }
 
         // Protected admin route — require valid JWT

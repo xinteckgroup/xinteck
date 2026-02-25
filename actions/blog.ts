@@ -7,6 +7,8 @@ import { blogPostSchema } from "@/lib/validations";
 import { ContentStatus, Prisma, Role } from "@prisma/client";
 import { revalidatePath } from "next/cache";
 
+import { NotificationService } from "@/lib/services/notification-service";
+
 import { createPaginatedResult, getPaginationParams, PaginatedResponse } from "@/lib/pagination";
 
 import { BlogPostSummary } from "@/types";
@@ -141,6 +143,19 @@ export async function createBlogPost(data: any) {
     });
 
     revalidatePath("/admin/blog");
+
+    // Notify SUPER_ADMIN when content is submitted for approval
+    if (finalStatus === ContentStatus.IN_REVIEW) {
+        await NotificationService.broadcastToRoles({
+            roles: [Role.SUPER_ADMIN],
+            title: "Blog Post Awaiting Approval",
+            message: `"${post.title}" was submitted for review by ${user.name}.`,
+            type: "WARNING",
+            priority: "HIGH",
+            link: `/admin/blog/${post.id}`,
+        });
+    }
+
     return { success: true, id: post.id };
 }
 
@@ -195,6 +210,19 @@ export async function updateBlogPost(id: string, data: any) {
 
         revalidatePath("/admin/blog");
         revalidatePath(`/admin/blog/${id}`);
+
+        // Notify SUPER_ADMIN when content is submitted for approval
+        if (finalStatus === ContentStatus.IN_REVIEW) {
+            await NotificationService.broadcastToRoles({
+                roles: [Role.SUPER_ADMIN],
+                title: "Blog Post Awaiting Approval",
+                message: `"${post.title}" was updated and submitted for review by ${user.name}.`,
+                type: "WARNING",
+                priority: "HIGH",
+                link: `/admin/blog/${post.id}`,
+            });
+        }
+
         return { success: true, id };
     } catch (error: any) {
         if (error.code === 'P2025') {

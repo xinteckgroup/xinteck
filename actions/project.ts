@@ -7,6 +7,8 @@ import { projectSchema, uuidSchema } from "@/lib/validations";
 import { ProjectCategory, ProjectStatus, Role } from "@prisma/client";
 import { revalidatePath } from "next/cache";
 
+import { NotificationService } from "@/lib/services/notification-service";
+
 import { createPaginatedResult, getPaginationParams, PaginatedResponse } from "@/lib/pagination";
 import { ProjectSummary } from "@/types";
 import { PaginationParams } from "@/types/pagination";
@@ -132,6 +134,19 @@ export async function createProject(data: any) {
     });
 
     revalidatePath("/admin/projects");
+
+    // Notify SUPER_ADMIN when content is submitted for approval
+    if (finalStatus === ProjectStatus.IN_REVIEW) {
+        await NotificationService.broadcastToRoles({
+            roles: [Role.SUPER_ADMIN],
+            title: "Project Awaiting Approval",
+            message: `"${project.title}" was submitted for review by ${user.name}.`,
+            type: "WARNING",
+            priority: "HIGH",
+            link: `/admin/projects/${project.id}`,
+        });
+    }
+
     return { success: true, id: project.id };
 }
 
@@ -184,6 +199,19 @@ export async function updateProject(id: string, data: any) {
 
         revalidatePath("/admin/projects");
         revalidatePath(`/admin/projects/${id}`);
+
+        // Notify SUPER_ADMIN when content is submitted for approval
+        if (finalStatus === ProjectStatus.IN_REVIEW) {
+            await NotificationService.broadcastToRoles({
+                roles: [Role.SUPER_ADMIN],
+                title: "Project Awaiting Approval",
+                message: `"${project.title}" was updated and submitted for review by ${user.name}.`,
+                type: "WARNING",
+                priority: "HIGH",
+                link: `/admin/projects/${project.id}`,
+            });
+        }
+
         return { success: true, id };
 
     } catch (error: any) {

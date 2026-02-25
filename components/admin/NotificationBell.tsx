@@ -285,7 +285,13 @@ export function NotificationBell() {
                                                 {read.map(n => (
                                                     <div 
                                                         key={n.id}
-                                                        className="p-4 border-b border-[var(--admin-border)] bg-transparent opacity-60 hover:opacity-100 transition-opacity flex gap-3 group hover:bg-zinc-900/5 dark:hover:bg-[var(--admin-text)]/5"
+                                                        onClick={() => {
+                                                            if (n.link) {
+                                                                router.push(n.link);
+                                                                setIsOpen(false);
+                                                            }
+                                                        }}
+                                                        className={`p-4 border-b border-[var(--admin-border)] bg-transparent opacity-60 hover:opacity-100 transition-opacity flex gap-3 group hover:bg-zinc-900/5 dark:hover:bg-[var(--admin-text)]/5 ${n.link ? 'cursor-pointer' : ''}`}
                                                     >
                                                         <div className="mt-0.5 grayscale opacity-50 shrink-0">{getIcon(n.type)}</div>
                                                         <div className="flex-1 min-w-0">
@@ -297,6 +303,9 @@ export function NotificationBell() {
                                                             </div>
                                                             <p className="text-xs text-zinc-500 dark:text-[var(--admin-muted)] line-clamp-1">{n.message}</p>
                                                         </div>
+                                                        {n.link && (
+                                                            <ChevronRight size={14} className="text-zinc-900/40 dark:text-[var(--admin-text)]/30 self-center group-hover:text-gold transition-colors shrink-0 mx-1" />
+                                                        )}
                                                         <button 
                                                             onClick={(e) => handleDelete(e, n.id, true)}
                                                             className="text-zinc-400 hover:text-destructive transition-colors self-center p-1 rounded hover:bg-destructive/10 shrink-0 opacity-0 group-hover:opacity-100"

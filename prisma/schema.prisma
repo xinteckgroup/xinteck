@@ -331,6 +331,41 @@ model NewsletterSubscriber {
   @@index([isActive])
 }
 
+model NewsletterCampaign {
+  id            String           @id @default(cuid())
+  subject       String
+  previewText   String?
+  content       String           @db.Text // HTML body
+  status        CampaignStatus   @default(DRAFT)
+  audience      CampaignAudience @default(ACTIVE_ONLY)
+
+  // Send stats & quota tracking
+  recipientCount Int             @default(0) // How many were targeted
+  sentCount      Int             @default(0) // How many actually sent
+  failedCount    Int             @default(0) // How many failed
+
+  sentAt      DateTime?
+  createdById String
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([status])
+  @@index([createdAt])
+}
+
+enum CampaignStatus {
+  DRAFT
+  SENDING
+  SENT
+  FAILED
+}
+
+enum CampaignAudience {
+  ALL          // All subscribers (re-engagement)
+  ACTIVE_ONLY  // Only active subscribers
+}
+
 // ═══════════════════════════════════════════════════════════════
 // MEDIA MANAGEMENT
 // ═══════════════════════════════════════════════════════════════

@@ -60,7 +60,12 @@ export type AuditAction =
     | "user.disabled_2fa"
     | "user.login_2fa"
     | "lead.note.create"
-    | "lead.note.delete";
+    | "lead.note.delete"
+    | "newsletter.campaign.create"
+    | "newsletter.campaign.update"
+    | "newsletter.campaign.delete"
+    | "newsletter.campaign.send"
+    | "newsletter.unsubscribe.self";
 
 interface AuditLogParams {
     action: AuditAction;

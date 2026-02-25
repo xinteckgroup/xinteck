@@ -4,7 +4,7 @@ import { deleteSubscriber, resubscribeSubscriber, unsubscribeSubscriber } from "
 import { RoleGate } from "@/components/admin/RoleGate";
 import { Button, ConfirmDialog, PageContainer, PageHeader, Pagination, useToast } from "@/components/admin/ui";
 import { Role } from "@prisma/client";
-import { Download, MailOpen, Search, Trash2, UserMinus, UserPlus, Users } from "lucide-react";
+import { Download, MailOpen, Pen, Search, Trash2, UserMinus, UserPlus, Users } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 
@@ -108,15 +108,45 @@ export function NewsletterClient({ initialData, stats }: NewsletterClientProps) 
         title="Newsletter" 
         subtitle="Manage subscribers and track audience growth."
         actions={
-          <Button 
-            variant="outline" 
-            className="gap-2 admin-surface-primary border border-[var(--admin-border)] text-[var(--admin-text)] hover:text-gold hover:bg-[var(--admin-text)]/5 transition-all text-sm font-bold rounded-[10px]" 
-            onClick={() => window.open("/api/newsletter/export", "_blank")}
-          >
-            <Download size={14} /> Export CSV
-          </Button>
+          <div className="flex items-center gap-2">
+            <Button 
+              variant="outline" 
+              className="gap-2 bg-gold/90 border border-gold text-black hover:bg-gold transition-all text-sm font-black rounded-[10px]" 
+              onClick={() => router.push("/admin/newsletter/compose")}
+            >
+              <Pen size={14} /> Compose
+            </Button>
+            <Button 
+              variant="outline" 
+              className="gap-2 admin-surface-primary border border-[var(--admin-border)] text-[var(--admin-text)] hover:text-gold hover:bg-[var(--admin-text)]/5 transition-all text-sm font-bold rounded-[10px]" 
+              onClick={() => window.open("/api/newsletter/export", "_blank")}
+            >
+              <Download size={14} /> Export CSV
+            </Button>
+          </div>
         }
       />
+
+      {/* Tab Navigation */}
+      <div className="flex gap-1 admin-surface-primary border border-[var(--admin-border)] p-1 rounded-[12px] shadow-xl w-fit mb-0">
+        {([
+          { label: "Subscribers", href: "/admin/newsletter", active: true },
+          { label: "Campaigns", href: "/admin/newsletter/campaigns", active: false },
+        ] as const).map(tab => (
+          <button
+            key={tab.label}
+            onClick={() => router.push(tab.href)}
+            className={cn(
+              "px-5 py-2 rounded-[10px] text-xs font-bold uppercase tracking-wider transition-all",
+              tab.active
+                ? "bg-gold/90 text-black shadow-md"
+                : "text-[var(--admin-text)]/40 hover:text-[var(--admin-text)] hover:bg-[var(--admin-text)]/5"
+            )}
+          >
+            {tab.label}
+          </button>
+        ))}
+      </div>
 
       <div className="flex flex-col gap-6">
         {/* Stats Grid */}

@@ -5,7 +5,7 @@ import { requireRole } from "@/lib/auth-check";
 import { prisma } from "@/lib/prisma";
 import { serviceSchema } from "@/lib/validations";
 import { ContentStatus, Role } from "@prisma/client";
-import { revalidatePath } from "next/cache";
+import { revalidatePath, revalidateTag } from "next/cache";
 
 import { createPaginatedResult, getPaginationParams, PaginatedResponse } from "@/lib/pagination";
 import { PaginationParams } from "@/types/pagination";
@@ -91,6 +91,8 @@ export async function createService(data: any) {
 
     revalidatePath("/admin/services");
     revalidatePath("/services");
+    revalidatePath("/", "layout");
+    revalidateTag("services", { expire: 0 });
     return service;
 }
 
@@ -132,6 +134,8 @@ export async function updateService(id: string, data: any) {
 
         revalidatePath("/admin/services");
         revalidatePath(`/services/${service.slug}`);
+        revalidatePath("/", "layout");
+        revalidateTag("services", { expire: 0 });
         return service;
     } catch (error: any) {
         if (error.code === 'P2025') {
@@ -165,6 +169,8 @@ export async function deleteService(id: string) {
     });
 
     revalidatePath("/admin/services");
+    revalidatePath("/", "layout");
+    revalidateTag("services", { expire: 0 });
     return { success: true };
 }
 
@@ -192,6 +198,8 @@ export async function updateServiceStatus(id: string, status: string) {
 
     revalidatePath("/admin/services");
     revalidatePath("/services");
+    revalidatePath("/", "layout");
+    revalidateTag("services", { expire: 0 });
     return service;
 }
 
@@ -227,6 +235,8 @@ export async function updateServiceOrder(items: { id: string; sortOrder: number 
 
         revalidatePath("/admin/services");
         revalidatePath("/services");
+        revalidatePath("/", "layout");
+        revalidateTag("services", { expire: 0 });
         return { success: true };
     } catch (error) {
         console.error("Failed to reorder services:", error);

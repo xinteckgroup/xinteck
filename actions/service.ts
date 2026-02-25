@@ -8,6 +8,7 @@ import { ContentStatus, Role } from "@prisma/client";
 import { revalidatePath, revalidateTag } from "next/cache";
 
 import { createPaginatedResult, getPaginationParams, PaginatedResponse } from "@/lib/pagination";
+import { NotificationService } from "@/lib/services/notification-service";
 import { PaginationParams } from "@/types/pagination";
 
 export type ServiceFilter = PaginationParams & {
@@ -93,6 +94,19 @@ export async function createService(data: any) {
     revalidatePath("/services");
     revalidatePath("/", "layout");
     revalidateTag("services", { expire: 0 });
+
+    // Notify SUPER_ADMIN when content is submitted for approval
+    if (finalStatus === ContentStatus.IN_REVIEW) {
+        await NotificationService.broadcastToRoles({
+            roles: [Role.SUPER_ADMIN],
+            title: "Service Awaiting Approval",
+            message: `"${service.name}" was submitted for review by ${user.name}.`,
+            type: "WARNING",
+            priority: "HIGH",
+            link: `/admin/services/${service.id}`,
+        });
+    }
+
     return service;
 }
 
@@ -136,6 +150,19 @@ export async function updateService(id: string, data: any) {
         revalidatePath(`/services/${service.slug}`);
         revalidatePath("/", "layout");
         revalidateTag("services", { expire: 0 });
+
+        // Notify SUPER_ADMIN when content is submitted for approval
+        if (finalStatus === ContentStatus.IN_REVIEW) {
+            await NotificationService.broadcastToRoles({
+                roles: [Role.SUPER_ADMIN],
+                title: "Service Awaiting Approval",
+                message: `"${service.name}" was updated and submitted for review by ${user.name}.`,
+                type: "WARNING",
+                priority: "HIGH",
+                link: `/admin/services/${service.id}`,
+            });
+        }
+
         return service;
     } catch (error: any) {
         if (error.code === 'P2025') {
@@ -200,6 +227,19 @@ export async function updateServiceStatus(id: string, status: string) {
     revalidatePath("/services");
     revalidatePath("/", "layout");
     revalidateTag("services", { expire: 0 });
+
+    // Notify SUPER_ADMIN when content is submitted for approval
+    if (finalStatus === ContentStatus.IN_REVIEW) {
+        await NotificationService.broadcastToRoles({
+            roles: [Role.SUPER_ADMIN],
+            title: "Service Status — Awaiting Approval",
+            message: `"${service.name}" status was changed and requires review by ${user.name}.`,
+            type: "WARNING",
+            priority: "HIGH",
+            link: `/admin/services/${service.id}`,
+        });
+    }
+
     return service;
 }
 

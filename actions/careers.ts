@@ -4,6 +4,7 @@ import { logAudit } from "@/lib/audit";
 import { requireRole } from "@/lib/auth-check";
 import { createPaginatedResult, getPaginationParams, PaginatedResponse } from "@/lib/pagination";
 import { prisma } from "@/lib/prisma";
+import { NotificationService } from "@/lib/services/notification-service";
 import { CareerPosition, ContentStatus, Role } from "@prisma/client";
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
@@ -97,6 +98,19 @@ export async function createCareerPosition(data: CareerPositionInput) {
 
     revalidatePath("/admin/careers");
     revalidatePath("/careers");
+
+    // Notify SUPER_ADMIN when content is submitted for approval
+    if (finalStatus === ContentStatus.IN_REVIEW) {
+        await NotificationService.broadcastToRoles({
+            roles: [Role.SUPER_ADMIN],
+            title: "Career Position Awaiting Approval",
+            message: `"${position.title}" in ${position.department} was submitted for review by ${admin.name}.`,
+            type: "WARNING",
+            priority: "HIGH",
+            link: `/admin/careers`,
+        });
+    }
+
     return { success: true, position };
 }
 
@@ -127,6 +141,19 @@ export async function updateCareerPosition(id: string, data: CareerPositionInput
 
     revalidatePath("/admin/careers");
     revalidatePath("/careers");
+
+    // Notify SUPER_ADMIN when content is submitted for approval
+    if (finalStatus === ContentStatus.IN_REVIEW) {
+        await NotificationService.broadcastToRoles({
+            roles: [Role.SUPER_ADMIN],
+            title: "Career Position Awaiting Approval",
+            message: `"${position.title}" in ${position.department} was updated and submitted for review by ${admin.name}.`,
+            type: "WARNING",
+            priority: "HIGH",
+            link: `/admin/careers`,
+        });
+    }
+
     return { success: true, position };
 }
 
@@ -177,6 +204,19 @@ export async function updateCareerStatus(id: string, status: string) {
 
     revalidatePath("/admin/careers");
     revalidatePath("/careers");
+
+    // Notify SUPER_ADMIN when content is submitted for approval
+    if (finalStatus === ContentStatus.IN_REVIEW) {
+        await NotificationService.broadcastToRoles({
+            roles: [Role.SUPER_ADMIN],
+            title: "Career Position Status — Awaiting Approval",
+            message: `"${position.title}" status was changed and requires review by ${admin.name}.`,
+            type: "WARNING",
+            priority: "HIGH",
+            link: `/admin/careers`,
+        });
+    }
+
     return { success: true, status: position.status };
 }
 

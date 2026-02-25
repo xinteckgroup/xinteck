@@ -197,10 +197,10 @@ export async function updateServiceStatus(id: string, status: string) {
 
 // Helpers
 function parseStatus(status: string): ContentStatus {
-    if (status === "Published") return ContentStatus.PUBLISHED;
-    if (status === "Draft") return ContentStatus.DRAFT;
-    if (status === "In Review") return ContentStatus.IN_REVIEW;
-    if (status === "Archived") return ContentStatus.ARCHIVED;
+    if (status === "Published" || status === ContentStatus.PUBLISHED) return ContentStatus.PUBLISHED;
+    if (status === "Draft" || status === ContentStatus.DRAFT) return ContentStatus.DRAFT;
+    if (status === "In Review" || status === ContentStatus.IN_REVIEW) return ContentStatus.IN_REVIEW;
+    if (status === "Archived" || status === ContentStatus.ARCHIVED) return ContentStatus.ARCHIVED;
     return ContentStatus.DRAFT;
 }
 

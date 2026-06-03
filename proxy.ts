@@ -31,19 +31,24 @@ export async function proxy(request: NextRequest) {
     const ip = request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || '127.0.0.1';
 
     // ─── 1. Rate Limiting for Public APIs ───
-    if (pathname === '/api/auth/login' || pathname === '/api/auth/verify-2fa') {
-        const { success, limit, remaining, reset } = await authLimiter.limit(ip);
-        if (!success) return rateLimitResponse(limit, remaining, reset);
-    }
+    try {
+        if (pathname === '/api/auth/login' || pathname === '/api/auth/verify-2fa') {
+            const { success, limit, remaining, reset } = await authLimiter.limit(ip);
+            if (!success) return rateLimitResponse(limit, remaining, reset);
+        }
 
-    if (pathname === '/api/contact') {
-        const { success, limit, remaining, reset } = await contactLimiter.limit(ip);
-        if (!success) return rateLimitResponse(limit, remaining, reset);
-    }
+        if (pathname === '/api/contact') {
+            const { success, limit, remaining, reset } = await contactLimiter.limit(ip);
+            if (!success) return rateLimitResponse(limit, remaining, reset);
+        }
 
-    if (pathname === '/api/newsletter') {
-        const { success, limit, remaining, reset } = await newsletterLimiter.limit(ip);
-        if (!success) return rateLimitResponse(limit, remaining, reset);
+        if (pathname === '/api/newsletter') {
+            const { success, limit, remaining, reset } = await newsletterLimiter.limit(ip);
+            if (!success) return rateLimitResponse(limit, remaining, reset);
+        }
+    } catch (error) {
+        console.warn('Rate limiting failed, bypassing:', error);
+        // We fail-open to ensure the service remains available even if Redis goes down.
     }
 
     // ─── 2. Protect Admin Routes ───

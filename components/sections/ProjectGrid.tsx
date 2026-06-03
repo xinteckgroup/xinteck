@@ -30,11 +30,8 @@ export function ProjectGrid({ initialProjects }: { initialProjects: Project[] })
           {/* Project Image Card */}
           <Link href={`/portfolio/${project.slug}`}>
             <div className="relative aspect-[16/10] bg-primary/5 backdrop-blur-xl rounded-[10px] border border-primary/10 overflow-hidden group-hover:border-primary/40 transition-all cursor-pointer">
-              {/* Gradient overlay */}
-              <div className="absolute inset-0 bg-gradient-to-tr from-gold/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity z-10" />
-              
-              {/* Image content */}
-              <div className="absolute inset-0 opacity-40 group-hover:opacity-80 transition-all scale-100 group-hover:scale-110">
+              {/* Image content - 100% opacity without overlay */}
+              <div className="absolute inset-0 transition-all scale-100 group-hover:scale-110">
                 {project.image ? (
                   <Image 
                     src={project.image}

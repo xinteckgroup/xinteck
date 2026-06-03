@@ -118,7 +118,10 @@ export async function getPublicPost(slug: string): Promise<PublicPost | null> {
 export async function getPublicProjects(): Promise<PublicProject[]> {
     try {
         const projects = await prisma.project.findMany({
-            where: { status: { in: [ProjectStatus.COMPLETED, ProjectStatus.ACTIVE] } },
+            where: { 
+                status: { in: [ProjectStatus.COMPLETED, ProjectStatus.ACTIVE] },
+                deletedAt: null
+            },
             orderBy: { completionDate: 'desc' }
         });
 
@@ -157,7 +160,7 @@ export async function getPublicProject(slug: string): Promise<PublicProject | nu
             where: { slug },
         });
 
-        if (!p || (p.status !== ProjectStatus.COMPLETED && p.status !== ProjectStatus.ACTIVE)) return null;
+        if (!p || (p.status !== ProjectStatus.COMPLETED && p.status !== ProjectStatus.ACTIVE) || p.deletedAt !== null) return null;
 
         return {
             slug: p.slug,
@@ -180,7 +183,10 @@ export async function getPublicProject(slug: string): Promise<PublicProject | nu
 export async function getFeaturedProject(): Promise<PublicProject | null> {
     try {
         const p = await prisma.project.findFirst({
-            where: { status: ProjectStatus.COMPLETED },
+            where: { 
+                status: ProjectStatus.COMPLETED,
+                deletedAt: null
+            },
             orderBy: { completionDate: 'desc' }
         });
 

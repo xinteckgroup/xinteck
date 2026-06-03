@@ -3,6 +3,7 @@
 import { TYPOGRAPHY } from "@/lib/typography";
 import { motion } from "framer-motion";
 import { ChevronRight, Code2, ExternalLink, Github } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
 
 interface Project {
@@ -32,9 +33,21 @@ export function ProjectGrid({ initialProjects }: { initialProjects: Project[] })
               {/* Gradient overlay */}
               <div className="absolute inset-0 bg-gradient-to-tr from-gold/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity z-10" />
               
-              {/* Placeholder content - using large icon instead of text */}
-              <div className="absolute inset-0 flex items-center justify-center opacity-10 group-hover:opacity-20 transition-all scale-100 group-hover:scale-110">
-                <Code2 size={200} className="text-gold" />
+              {/* Image content */}
+              <div className="absolute inset-0 opacity-40 group-hover:opacity-80 transition-all scale-100 group-hover:scale-110">
+                {project.image ? (
+                  <Image 
+                    src={project.image}
+                    alt={project.title}
+                    fill
+                    className="object-cover"
+                    sizes="(max-width: 768px) 100vw, 50vw"
+                  />
+                ) : (
+                  <div className="w-full h-full flex items-center justify-center opacity-10">
+                    <Code2 size={200} className="text-gold" />
+                  </div>
+                )}
               </div>
 
               {/* Hover action buttons */}

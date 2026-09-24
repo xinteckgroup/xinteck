@@ -1,5 +1,6 @@
 import { VideoScrollLayout } from "@/components/services/VideoScrollLayout";
 import { getPublicPost } from "@/lib/public-data";
+import { clientMarkdownComponents } from "@/lib/markdown-components";
 import { VIDEO_STATS } from "@/lib/videoStats";
 import { Calendar, ChevronLeft, Clock, User } from "lucide-react";
 import Link from "next/link";
@@ -45,7 +46,7 @@ export default async function BlogPostPage({ params }: { params: { slug: string 
             {post.title}
           </h1>
           <p className="text-xl md:text-2xl text-foreground/70 italic leading-relaxed max-w-4xl border-l-4 border-gold pl-6">
-            "{post.excerpt}"
+            &quot;{post.excerpt}&quot;
           </p>
         </header>
 
@@ -77,64 +78,11 @@ export default async function BlogPostPage({ params }: { params: { slug: string 
 
         {/* Main Content Body */}
         <article className="bg-white/40 dark:bg-black/80 backdrop-blur-xl border border-primary/10 rounded-[20px] shadow-2xl p-8 md:p-16 lg:px-24 clear-both break-words overflow-hidden">
-          <div className="prose dark:prose-invert prose-emerald max-w-none text-foreground break-words prose-p:break-words prose-a:break-all">
+          <div className="max-w-none break-words">
             {post.content ? (
               <ReactMarkdown
                 remarkPlugins={[remarkGfm]}
-                components={{
-                  img: ({ node, ...props }: any) => {
-                    // Extract alignment tag from alt text: "My beautiful img#left" -> left
-                    const parts = (props.alt || "").split("#");
-                    const altText = parts[0];
-                    const align = parts.length > 1 ? parts[1].toLowerCase() : "center";
-                    
-                    let alignmentClass = "block mx-auto max-w-full"; // Default
-                    if (align === "left") alignmentClass = "float-left md:mr-8 mb-6 max-w-full md:max-w-[45%]";
-                    if (align === "right") alignmentClass = "float-right md:ml-8 mb-6 max-w-full md:max-w-[45%]";
-
-                    return (
-                        <img 
-                            {...props} 
-                            alt={altText}
-                            className={`rounded-[16px] shadow-xl my-6 border border-primary/20 object-cover ${alignmentClass}`} 
-                        />
-                    );
-                  },
-                  h1: ({ node, ...props }: any) => (
-                    <h1 {...props} className="clear-both text-3xl md:text-5xl font-black tracking-tighter italic text-gold mb-6 pb-2 border-b border-primary/10" />
-                  ),
-                  h2: ({ node, ...props }: any) => (
-                    <h2 {...props} className="clear-both text-2xl md:text-3xl font-black tracking-tighter italic text-foreground mt-8 mb-4" />
-                  ),
-                  h3: ({ node, ...props }: any) => (
-                    <h3 {...props} className="clear-both text-xl md:text-2xl font-bold tracking-tight text-foreground/90 mt-6 mb-3" />
-                  ),
-                  p: ({ node, ...props }: any) => (
-                    <p {...props} className="text-lg leading-relaxed mb-4 text-foreground/80" />
-                  ),
-                  a: ({ node, ...props }: any) => (
-                    <a {...props} className="text-gold hover:underline underline-offset-4" target="_blank" rel="noopener noreferrer" />
-                  ),
-                  blockquote: ({ node, ...props }: any) => (
-                    <blockquote {...props} className="clear-both border-l-4 border-gold bg-primary/5 p-8 my-6 rounded-[10px] text-foreground/90 italic" />
-                  ),
-                  code: ({ node, inline, ...props }: any) =>
-                    inline ? (
-                      <code {...props} className="bg-black/10 dark:bg-white/10 px-1.5 py-0.5 rounded-[4px] font-mono text-sm text-foreground" />
-                    ) : (
-                      <pre className="clear-both bg-[#0D0D0D] p-4 rounded-[12px] border border-primary/20 overflow-x-auto my-6 shadow-xl">
-                        <code {...props} className="font-mono text-sm text-white" />
-                      </pre>
-                    ),
-                  ul: ({ node, ...props }: any) => (
-                    <ul {...props} className="clear-both list-disc list-outside ml-6 mb-4 space-y-2 text-foreground/80" />
-                  ),
-                  ol: ({ node, ...props }: any) => (
-                    <ol {...props} className="clear-both list-decimal list-outside ml-6 mb-4 space-y-2 text-foreground/80" />
-                  ),
-                  li: ({ node, ...props }: any) => <li {...props} className="pl-2 marker:text-gold" />,
-                  strong: ({ node, ...props }: any) => <strong {...props} className="font-bold text-gold" />,
-                }}
+                components={clientMarkdownComponents}
               >
                 {post.content}
               </ReactMarkdown>

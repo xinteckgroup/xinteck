@@ -1,5 +1,6 @@
 import { VideoScrollLayout } from "@/components/services/VideoScrollLayout";
 import { getPublicProject } from "@/lib/public-data";
+import { clientMarkdownComponents } from "@/lib/markdown-components";
 import { TYPOGRAPHY } from "@/lib/typography";
 import { VIDEO_STATS } from "@/lib/videoStats";
 import { ArrowRight, ChevronLeft, ExternalLink, Github } from "lucide-react";
@@ -119,19 +120,11 @@ export default async function ProjectPage({ params }: { params: { slug: string }
           <section className="px-6">
             <div className="max-w-7xl mx-auto">
               <div className="bg-white/30 dark:bg-black/80 backdrop-blur-xl rounded-[10px] border border-primary/10 p-6 md:p-12 lg:p-16 shadow-[0_10px_40px_-10px_rgba(0,0,0,0.1)]">
-                <div
-                  className="prose dark:prose-invert max-w-none break-words prose-p:break-words prose-a:break-all
-                    prose-headings:text-foreground prose-headings:font-black prose-headings:tracking-tight
-                    prose-h2:text-lg prose-h2:md:text-2xl prose-h2:mt-10 prose-h2:mb-4 prose-h2:text-primary
-                    prose-h3:text-base prose-h3:md:text-lg prose-h3:mt-6 prose-h3:mb-3
-                    prose-p:!text-sm prose-p:md:!text-base prose-p:text-foreground/70 prose-p:leading-relaxed
-                    prose-strong:text-primary prose-a:text-primary hover:prose-a:underline
-                    prose-blockquote:border-l-primary prose-blockquote:bg-primary/5 prose-blockquote:p-6 prose-blockquote:md:p-8 prose-blockquote:rounded-[10px] prose-blockquote:italic prose-blockquote:text-sm
-                    prose-li:text-foreground/70 prose-li:!text-sm prose-li:md:!text-base
-                    prose-img:rounded-[10px] prose-img:border prose-img:border-primary/10
-                    prose-ul:my-4 prose-ol:my-4"
-                >
-                  <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                <div className="max-w-none break-words">
+                  <ReactMarkdown
+                    remarkPlugins={[remarkGfm]}
+                    components={clientMarkdownComponents}
+                  >
                     {project.content}
                   </ReactMarkdown>
                 </div>

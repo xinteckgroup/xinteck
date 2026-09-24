@@ -2,6 +2,7 @@
 
 import { INTERNAL_getSecret } from "@/actions/settings";
 import { LeadReplyEmail } from "@/components/emails/LeadReplyEmail";
+import { OutboundOutreachEmail } from "@/components/emails/OutboundOutreachEmail";
 import { logAudit } from "@/lib/audit";
 import { requireRole } from "@/lib/auth-check";
 import { prisma } from "@/lib/prisma";
@@ -99,7 +100,8 @@ export async function getMessages(params: InboxFilter = {}): Promise<PaginatedRe
             id: r.id,
             content: r.content,
             sentAt: r.sentAt.toISOString(),
-            sentBy: r.sentBy
+            sentBy: r.sentBy,
+            direction: (r.sentBy?.startsWith("Client") ? "INBOUND" : "OUTBOUND") as "INBOUND" | "OUTBOUND"
         }))
     }));
 
@@ -218,13 +220,21 @@ export async function replyToMessage(id: string, content: string) {
 
     const htmlContent = await render(LeadReplyEmail({ content: parsed.content, sentBy: user.name }) as React.ReactElement);
 
+    const senderAddress = fromEmail ? (fromEmail.includes("<") ? fromEmail : `Xinteck <${fromEmail}>`) : "Xinteck <info@xinteck.co.ke>";
+
     const resend = new Resend(apiKey);
+    const trackingCode = `XTK-${submission.id}`;
     const { error: sendError } = await resend.emails.send({
-        from: fromEmail,
+        from: senderAddress,
         to: [submission.email],
-        replyTo: process.env.RESEND_REPLY_TO || fromEmail,
-        subject: `Re: Your inquiry - ${submission.name}`,
-        html: htmlContent
+        replyTo: "info@xinteck.co.ke",
+        subject: `Re: Your inquiry - ${submission.name} [${trackingCode}]`,
+        html: htmlContent,
+        headers: {
+            "X-Entity-Ref-ID": trackingCode,
+            "In-Reply-To": `<${trackingCode}@xinteck.co.ke>`,
+            "References": `<${trackingCode}@xinteck.co.ke>`
+        }
     });
 
     if (sendError) {
@@ -269,6 +279,119 @@ export async function replyToMessage(id: string, content: string) {
 
     revalidatePath("/admin/leads");
     return { success: true };
+}
+
+export interface CreateOutboundLeadParams {
+    name: string;
+    email: string;
+    phone?: string;
+    subject: string;
+    message: string;
+    projectType?: string;
+    service?: string;
+    budget?: string;
+}
+
+export async function createOutboundLead(params: CreateOutboundLeadParams) {
+    const user = await requireRole([Role.SUPER_ADMIN, Role.ADMIN]);
+
+    const name = params.name.trim();
+    const email = params.email.trim().toLowerCase();
+    const message = params.message.trim();
+    const subject = params.subject.trim() || "Digital Engineering Collaboration";
+
+    if (!email || !email.includes("@")) {
+        throw new Error("A valid email address is required.");
+    }
+    if (!message) {
+        throw new Error("Message content cannot be empty.");
+    }
+
+    const apiKey = await INTERNAL_getSecret("RESEND_API_KEY");
+    const fromEmail = await INTERNAL_getSecret("RESEND_FROM_EMAIL");
+
+    if (!apiKey) {
+        throw new Error("Resend API key is not configured in settings.");
+    }
+
+    const senderAddress = fromEmail ? (fromEmail.includes("<") ? fromEmail : `Xinteck <${fromEmail}>`) : "Xinteck <info@xinteck.co.ke>";
+    const trackingCode = `XTK-${Date.now().toString(36).toUpperCase()}`;
+
+    // 1. Create the lead record
+    const submission = await prisma.contactSubmission.create({
+        data: {
+            name: name || email.split("@")[0],
+            email,
+            phone: params.phone || "Not Provided",
+            projectType: params.projectType || "Outbound Outreach",
+            service: params.service || null,
+            budget: params.budget || null,
+            message,
+            status: MessageStatus.REPLIED,
+            assignedToId: user.id
+        }
+    });
+
+    // 2. Dispatch email via Resend
+    try {
+        const htmlContent = await render(
+            OutboundOutreachEmail({
+                recipientName: name || "Colleague",
+                subject,
+                content: message,
+                sentBy: user.name,
+                referenceId: trackingCode
+            }) as React.ReactElement
+        );
+
+        const resend = new Resend(apiKey);
+        const { error: sendError } = await resend.emails.send({
+            from: senderAddress,
+            to: [email],
+            replyTo: "info@xinteck.co.ke",
+            subject: `${subject} [${trackingCode}]`,
+            html: htmlContent,
+            headers: {
+                "X-Entity-Ref-ID": trackingCode,
+                "Message-ID": `<${trackingCode}@xinteck.co.ke>`
+            }
+        });
+
+        if (sendError) {
+            console.error("Failed to send outbound outreach email via Resend:", sendError);
+            await prisma.contactSubmission.delete({ where: { id: submission.id } });
+            throw new Error(`Failed to send email: ${sendError.message}`);
+        }
+    } catch (err: any) {
+        // Ensure submission rollback on unexpected failure
+        await prisma.contactSubmission.delete({ where: { id: submission.id } }).catch(() => {});
+        throw err;
+    }
+
+    // 3. Record initial outreach reply in thread
+    await prisma.contactReply.create({
+        data: {
+            submissionId: submission.id,
+            content: message,
+            sentBy: user.name
+        }
+    });
+
+    // 4. Audit Log
+    await logAudit({
+        action: "contact.outbound_create",
+        entity: "ContactSubmission",
+        entityId: submission.id,
+        userId: user.id,
+        metadata: {
+            recipient: email,
+            subject,
+            trackingCode
+        }
+    });
+
+    revalidatePath("/admin/leads");
+    return { success: true, leadId: submission.id };
 }
 
 function formatDate(date: Date) {

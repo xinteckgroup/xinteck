@@ -37,8 +37,9 @@ export interface InboxMessage {
     projectType: string;
     industry: string;
     budget: string | null;
+    isOutbound?: boolean;
     assignedTo?: { id: string; name: string; avatar: string | null } | null;
-    replies?: { id: string; content: string; sentAt: string; sentBy: string | null }[];
+    replies?: { id: string; content: string; sentAt: string; sentBy: string | null; direction?: "OUTBOUND" | "INBOUND" }[];
 }
 
 export interface NewsletterSubscriber {

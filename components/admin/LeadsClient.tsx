@@ -6,10 +6,11 @@ import { PageContainer, PageHeader, Pagination, useToast } from "@/components/ad
 import { ConfirmModal } from "@/components/admin/ui/ConfirmModal";
 import { InboxMessage } from "@/types";
 import { Role } from "@prisma/client";
-import { Archive, ArchiveRestore, ArrowLeft, Check, ClipboardCopy, ExternalLink, Mail, MailOpen, MessageSquare, MoreVertical, Reply, Search, Send, Star, Target, Trash2 } from "lucide-react";
+import { Archive, ArchiveRestore, ArrowLeft, Check, ClipboardCopy, ExternalLink, Mail, MailOpen, MessageSquare, MoreVertical, Plus, Reply, Search, Send, Star, Target, Trash2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState, useTransition } from "react";
 
+import { ComposeLeadModal } from "@/components/admin/leads/ComposeLeadModal";
 import { LeadNotesDrawer } from "@/components/admin/leads/LeadNotesDrawer";
 import { PaginatedResponse } from "@/lib/pagination";
 import { cn } from "@/lib/utils";
@@ -64,6 +65,7 @@ export function LeadsClient({ initialData, adminUsers, currentUserRole, currentU
   const [isAssigning, setIsAssigning] = useState(false);
   const [deleteId, setDeleteId] = useState<string | null>(null);
   const [isNotesOpen, setIsNotesOpen] = useState(false);
+  const [isComposeOpen, setIsComposeOpen] = useState(false);
   
   const activeMessage = messages.find((m) => m.id === activeMessageId) || null;
 
@@ -224,6 +226,16 @@ export function LeadsClient({ initialData, adminUsers, currentUserRole, currentU
                      {initialData.total}
                   </span>
                </div>
+               <RoleGate allowedRoles={[Role.SUPER_ADMIN, Role.ADMIN]}>
+                  <button
+                    onClick={() => setIsComposeOpen(true)}
+                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-[8px] bg-primary text-primary-foreground text-xs font-bold hover:bg-gold transition-all shadow-sm shadow-primary/20"
+                    title="Compose Outbound Outreach"
+                  >
+                    <Plus size={13} />
+                    <span>Compose</span>
+                  </button>
+               </RoleGate>
             </div>
 
             <div className="grid grid-cols-4 gap-1 admin-surface-input p-1 rounded-[8px] border border-[var(--admin-border)]">
@@ -554,22 +566,36 @@ export function LeadsClient({ initialData, adminUsers, currentUserRole, currentU
                     <p className="whitespace-pre-wrap text-[var(--admin-text)]/90">{activeMessage.message}</p>
                   </div>
                   
-                  {/* Sent Replies History */}
+                  {/* Sent/Received Conversation History */}
                   {activeMessage.replies && activeMessage.replies.length > 0 && (
                     <div className="mt-8 pt-8 border-t border-[var(--admin-border)]">
                       <h5 className="text-[11px] font-black uppercase tracking-widest text-[var(--admin-text)]/60 mb-4 flex items-center gap-2">
-                        <MailOpen size={14} className="text-gold" /> Sent Reply History ({activeMessage.replies.length})
+                        <MessageSquare size={14} className="text-gold" /> Conversation Thread ({activeMessage.replies.length})
                       </h5>
                       <div className="space-y-3">
-                        {activeMessage.replies.map((reply) => (
-                          <div key={reply.id} className="p-4 rounded-[10px] bg-[var(--admin-text)]/5 border border-[var(--admin-border)] flex flex-col gap-2">
-                            <div className="flex items-center justify-between text-[11px] text-[var(--admin-text)]/50">
-                              <span className="font-bold text-gold">{reply.sentBy ? `Sent by ${reply.sentBy}` : "Sent via Admin"}</span>
-                              <span>{new Date(reply.sentAt).toLocaleDateString([], { month: "short", day: "numeric", hour: "2-digit", minute: "2-digit" })}</span>
+                        {activeMessage.replies.map((reply) => {
+                          const isInbound = reply.direction === "INBOUND" || reply.sentBy?.startsWith("Client");
+                          return (
+                            <div 
+                              key={reply.id} 
+                              className={cn(
+                                "p-4 rounded-[10px] flex flex-col gap-2 transition-all",
+                                isInbound 
+                                  ? "bg-blue-500/10 border border-blue-500/30" 
+                                  : "bg-[var(--admin-text)]/5 border border-gold/30"
+                              )}
+                            >
+                              <div className="flex items-center justify-between text-[11px] text-[var(--admin-text)]/50">
+                                <span className={cn("font-bold flex items-center gap-1.5", isInbound ? "text-blue-400" : "text-gold")}>
+                                  {isInbound ? <Mail size={12} /> : <Send size={12} />}
+                                  {reply.sentBy || (isInbound ? "Client" : "Team Admin")}
+                                </span>
+                                <span>{new Date(reply.sentAt).toLocaleDateString([], { month: "short", day: "numeric", hour: "2-digit", minute: "2-digit" })}</span>
+                              </div>
+                              <p className="text-xs md:text-sm text-[var(--admin-text)]/90 whitespace-pre-wrap leading-relaxed">{reply.content}</p>
                             </div>
-                            <p className="text-xs md:text-sm text-[var(--admin-text)]/90 whitespace-pre-wrap leading-relaxed">{reply.content}</p>
-                          </div>
-                        ))}
+                          );
+                        })}
                       </div>
                     </div>
                   )}
@@ -681,6 +707,15 @@ export function LeadsClient({ initialData, adminUsers, currentUserRole, currentU
         description="Are you absolutely sure you want to permanently delete this lead? This cannot be undone."
         confirmText="Delete"
         isDestructive={true}
+      />
+
+      <ComposeLeadModal
+        isOpen={isComposeOpen}
+        onClose={() => setIsComposeOpen(false)}
+        onSuccess={(leadId) => {
+          setActiveMessageId(leadId);
+          router.refresh();
+        }}
       />
     </PageContainer>
   );

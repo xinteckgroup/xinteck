@@ -38,6 +38,7 @@ export interface InboxMessage {
     industry: string;
     budget: string | null;
     assignedTo?: { id: string; name: string; avatar: string | null } | null;
+    replies?: { id: string; content: string; sentAt: string; sentBy: string | null }[];
 }
 
 export interface NewsletterSubscriber {

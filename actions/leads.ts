@@ -10,6 +10,7 @@ import { replySchema } from "@/lib/validations";
 import { MessageStatus, NotificationType, Role } from "@prisma/client";
 import { render } from "@react-email/render";
 import { revalidatePath } from "next/cache";
+import { Resend } from "resend";
 
 import { createPaginatedResult, getPaginationParams, PaginatedResponse, PaginationParams } from "@/lib/pagination";
 
@@ -28,7 +29,7 @@ export async function getMessages(params: InboxFilter = {}): Promise<PaginatedRe
         deletedAt: null
     };
 
-    if (user.role !== Role.SUPER_ADMIN) {
+    if (user.role === Role.SUPPORT_STAFF) {
         where.assignedToId = user.id;
     }
 
@@ -60,8 +61,7 @@ export async function getMessages(params: InboxFilter = {}): Promise<PaginatedRe
             take: limit,
             include: {
                 replies: {
-                    orderBy: { sentAt: 'desc' },
-                    take: 1
+                    orderBy: { sentAt: 'desc' }
                 },
                 assignedTo: {
                     select: {
@@ -94,7 +94,13 @@ export async function getMessages(params: InboxFilter = {}): Promise<PaginatedRe
         projectType: m.projectType,
         industry: m.industry,
         budget: m.budget,
-        assignedTo: m.assignedTo
+        assignedTo: m.assignedTo,
+        replies: m.replies.map(r => ({
+            id: r.id,
+            content: r.content,
+            sentAt: r.sentAt.toISOString(),
+            sentBy: r.sentBy
+        }))
     }));
 
     return createPaginatedResult(data, total, page, limit);
@@ -157,6 +163,24 @@ export async function archiveMessage(id: string) {
     revalidatePath("/admin/leads");
 }
 
+export async function unarchiveMessage(id: string) {
+    const user = await requireRole([Role.ADMIN, Role.SUPER_ADMIN]);
+
+    await prisma.contactSubmission.update({
+        where: { id },
+        data: { isArchived: false, status: MessageStatus.READ }
+    });
+
+    await logAudit({
+        action: "contact.unarchive",
+        entity: "ContactSubmission",
+        entityId: id,
+        userId: user.id
+    });
+
+    revalidatePath("/admin/leads");
+}
+
 export async function deleteMessage(id: string) {
     const user = await requireRole([Role.SUPER_ADMIN]);
 
@@ -182,11 +206,37 @@ export async function replyToMessage(id: string, content: string) {
     const submission = await prisma.contactSubmission.findUnique({ where: { id } });
     if (!submission) throw new Error("Message not found");
 
+    const apiKey = await INTERNAL_getSecret("RESEND_API_KEY");
+    const fromEmail = await INTERNAL_getSecret("RESEND_FROM_EMAIL");
+
+    if (!apiKey) {
+        throw new Error("Resend API key is not configured in settings.");
+    }
+    if (!fromEmail) {
+        throw new Error("Resend sender email is not configured in settings.");
+    }
+
+    const htmlContent = await render(LeadReplyEmail({ content: parsed.content, sentBy: user.name }) as React.ReactElement);
+
+    const resend = new Resend(apiKey);
+    const { error: sendError } = await resend.emails.send({
+        from: fromEmail,
+        to: [submission.email],
+        replyTo: process.env.RESEND_REPLY_TO || fromEmail,
+        subject: `Re: Your inquiry - ${submission.name}`,
+        html: htmlContent
+    });
+
+    if (sendError) {
+        console.error("Failed to send reply email via Resend:", sendError);
+        throw new Error(`Failed to send reply email: ${sendError.message}`);
+    }
+
     // Create reply record
     await prisma.contactReply.create({
         data: {
             submissionId: id,
-            content,
+            content: parsed.content,
             sentBy: user.name
         }
     });
@@ -196,33 +246,6 @@ export async function replyToMessage(id: string, content: string) {
         where: { id },
         data: { status: MessageStatus.REPLIED }
     });
-
-    // Send email via Resend
-    try {
-        const apiKey = await INTERNAL_getSecret("RESEND_API_KEY");
-        const fromEmail = await INTERNAL_getSecret("RESEND_FROM_EMAIL");
-
-        if (apiKey && fromEmail) {
-            const htmlContent = await render(LeadReplyEmail({ content, sentBy: user.name }) as React.ReactElement);
-
-            await fetch("https://api.resend.com/emails", {
-                method: "POST",
-                headers: {
-                    "Authorization": `Bearer ${apiKey}`,
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({
-                    from: fromEmail,
-                    to: submission.email,
-                    reply_to: process.env.RESEND_REPLY_TO || "info@xinteck.co.ke",
-                    subject: `Re: Your inquiry - ${submission.name}`,
-                    html: htmlContent
-                })
-            });
-        }
-    } catch (e) {
-        console.error("Failed to send reply email:", e);
-    }
 
     await logAudit({
         action: "contact.reply",

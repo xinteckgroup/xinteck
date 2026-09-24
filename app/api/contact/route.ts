@@ -30,6 +30,15 @@ export async function POST(req: Request) {
   try {
     const rawData = await req.json();
 
+    // 0. Honeypot Check (anti-bot)
+    if (rawData.website_url) {
+      // Bot detected — return fake success to avoid tipping off the bot
+      return NextResponse.json(
+        { message: "Your inquiry has been launched into our orbit.", status: "success", id: "ok" },
+        { status: 200 }
+      );
+    }
+
     // 1. Validation
     const validation = contactSchema.safeParse(rawData);
 
@@ -41,7 +50,7 @@ export async function POST(req: Request) {
     }
 
     const { name, email, phone, service, projectType, industry, budget, message } = validation.data;
-    const ip = req.headers.get("x-forwarded-for") || "unknown";
+    const ip = req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() || "unknown";
 
     // 2. IP Rate Limiting (Prevent Spam Flooding)
     if (ip !== "unknown") {
@@ -124,6 +133,7 @@ export async function POST(req: Request) {
         await resend.emails.send({
           from: fromEmail || "onboarding@resend.dev",
           to: [toEmail || "admin@xinteck.co.ke"],
+          replyTo: email,
           subject: `New Inquiry: ${name} (${projectType})`,
           html: htmlContent
         });

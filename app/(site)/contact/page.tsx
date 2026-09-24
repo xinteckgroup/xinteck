@@ -6,8 +6,8 @@ import { VideoScrollLayout } from "@/components/services/VideoScrollLayout";
 import { TYPOGRAPHY } from "@/lib/typography";
 import { VIDEO_STATS } from "@/lib/videoStats";
 import { motion } from "framer-motion";
-import { CheckCircle2, Clock, Globe, Info, Loader2, Mail, MessageCircle, Phone, Send } from "lucide-react";
-import { useEffect, useState } from "react";
+import { CheckCircle2, Clock, Globe, Info, Loader2, Mail, MessageCircle, Phone, RefreshCw, Send } from "lucide-react";
+import { useCallback, useEffect, useState } from "react";
 
 export default function ContactPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -30,11 +30,16 @@ export default function ContactPage() {
   const [captcha, setCaptcha] = useState({ num1: 0, num2: 0, answer: 0 });
   const [userCaptcha, setUserCaptcha] = useState("");
 
-  useEffect(() => {
+  const generateCaptcha = useCallback(() => {
     // Generate simple math problem with odd numbers only (3-19)
     const n1 = Math.floor(Math.random() * 9) * 2 + 3; // 3,5,7,9,11,13,15,17,19
     const n2 = Math.floor(Math.random() * 9) * 2 + 3;
     setCaptcha({ num1: n1, num2: n2, answer: n1 + n2 });
+    setUserCaptcha("");
+  }, []);
+
+  useEffect(() => {
+    generateCaptcha();
 
     // Fetch dynamic config
     getContactConfig().then((data) => {
@@ -102,6 +107,7 @@ export default function ContactPage() {
       projectType: formData.get("projectType"),
       industry: finalIndustry,
       message: formData.get("message"),
+      website_url: formData.get("website_url"),
     };
 
     try {
@@ -193,7 +199,7 @@ export default function ContactPage() {
               the coordinates and will reach out within <span className="text-primary font-bold">4 hours</span>.
             </p>
             <button 
-              onClick={() => { setSubmitted(false); setIsSubmitting(false); }}
+              onClick={() => { setSubmitted(false); setIsSubmitting(false); generateCaptcha(); }}
               className="px-10 py-3 border-2 border-primary text-primary font-bold rounded-full hover:bg-primary hover:text-black transition-all"
             >
               Send Another Signal
@@ -271,6 +277,16 @@ export default function ContactPage() {
              className="lg:col-span-2 p-6 md:p-16 rounded-[10px] bg-white/30 dark:bg-black/80 backdrop-blur-xl shadow-2xl relative"
           >
             <form onSubmit={handleSubmit} className="flex flex-col gap-6 md:gap-8">
+              {/* Bot Honeypot */}
+              <input 
+                type="text" 
+                name="website_url" 
+                tabIndex={-1} 
+                autoComplete="off" 
+                aria-hidden="true"
+                className="opacity-0 absolute -z-10 pointer-events-none h-0 w-0" 
+              />
+
               {/* Row 1: Identity */}
               <div className="grid md:grid-cols-2 gap-6 md:gap-8">
                 <div className="flex flex-col gap-3">
@@ -408,6 +424,14 @@ export default function ContactPage() {
                         required
                         className="w-24 bg-white/10 rounded-[8px] px-4 py-2 text-center font-bold text-foreground outline-none"
                     />
+                    <button 
+                      type="button" 
+                      onClick={generateCaptcha} 
+                      className="p-2 text-muted-foreground hover:text-primary transition-colors"
+                      title="New Math Challenge"
+                    >
+                      <RefreshCw size={16} />
+                    </button>
                 </div>
               </div>
 

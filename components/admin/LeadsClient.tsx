@@ -1,12 +1,12 @@
 "use client";
 
-import { archiveMessage, assignLead, deleteMessage, markAsRead, replyToMessage, toggleStar } from "@/actions/leads";
+import { archiveMessage, assignLead, deleteMessage, markAsRead, replyToMessage, toggleStar, unarchiveMessage } from "@/actions/leads";
 import { RoleGate } from "@/components/admin/RoleGate";
 import { PageContainer, PageHeader, Pagination, useToast } from "@/components/admin/ui";
 import { ConfirmModal } from "@/components/admin/ui/ConfirmModal";
 import { InboxMessage } from "@/types";
 import { Role } from "@prisma/client";
-import { Archive, ArrowLeft, Check, ClipboardCopy, ExternalLink, Mail, MailOpen, MessageSquare, MoreVertical, Reply, Search, Send, Star, Target, Trash2 } from "lucide-react";
+import { Archive, ArchiveRestore, ArrowLeft, Check, ClipboardCopy, ExternalLink, Mail, MailOpen, MessageSquare, MoreVertical, Reply, Search, Send, Star, Target, Trash2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState, useTransition } from "react";
 
@@ -57,7 +57,7 @@ export function LeadsClient({ initialData, adminUsers, currentUserRole, currentU
   }, [initialData]);
 
   const [activeMessageId, setActiveMessageId] = useState<string | null>(initialData.data.length > 0 ? initialData.data[0].id : null);
-  const [searchQuery, setSearchQuery] = useState("");
+  const [searchQuery, setSearchQuery] = useState(searchParams.get("search") || "");
   const [replyText, setReplyText] = useState("");
   const [isReplying, setIsReplying] = useState(false);
   const [copiedEmail, setCopiedEmail] = useState(false);
@@ -134,6 +134,16 @@ export function LeadsClient({ initialData, adminUsers, currentUserRole, currentU
      });
   };
 
+  const handleUnarchive = (id: string) => {
+     setMessages(prev => prev.filter((m) => m.id !== id));
+     if (activeMessageId === id) setActiveMessageId(null);
+     
+     startTransition(async () => {
+         await unarchiveMessage(id);
+         router.refresh();
+     });
+  };
+
   const handleSendReply = () => {
     if (!replyText || !activeMessage) return;
     setIsReplying(true);
@@ -141,9 +151,19 @@ export function LeadsClient({ initialData, adminUsers, currentUserRole, currentU
     startTransition(async () => {
       try {
         await replyToMessage(activeMessage.id, replyText);
+        const newReply = {
+          id: "reply-" + Date.now(),
+          content: replyText,
+          sentAt: new Date().toISOString(),
+          sentBy: "You"
+        };
+        setMessages(prev => prev.map((m) => m.id === activeMessage.id ? { 
+          ...m, 
+          replied: true,
+          replies: [newReply, ...(m.replies || [])]
+        } : m));
         setReplyText("");
-        setMessages(prev => prev.map((m) => m.id === activeMessage.id ? { ...m, replied: true } : m));
-        toast("Reply sent — continue the conversation in Gmail", "success");
+        toast("Reply sent successfully via Resend", "success");
       } catch (e: any) {
         toast(`Failed to send: ${e.message}`, "error");
       } finally {
@@ -206,7 +226,7 @@ export function LeadsClient({ initialData, adminUsers, currentUserRole, currentU
                </div>
             </div>
 
-            <div className="grid grid-cols-3 gap-1 admin-surface-input p-1 rounded-[8px] border border-[var(--admin-border)]">
+            <div className="grid grid-cols-4 gap-1 admin-surface-input p-1 rounded-[8px] border border-[var(--admin-border)]">
                <button 
                   onClick={() => handleTabChange("all")} 
                   className={cn(
@@ -240,10 +260,34 @@ export function LeadsClient({ initialData, adminUsers, currentUserRole, currentU
                >
                   Starred
                </button>
+               <button 
+                  onClick={() => handleTabChange("archived")} 
+                  className={cn(
+                    "py-1.5 rounded-[6px] text-xs font-bold transition-all",
+                    activeFilter === 'archived' 
+                      ? "admin-surface-floating text-[var(--admin-text)] shadow-sm border border-[var(--admin-border)]" 
+                      : "text-[var(--admin-text)]/40 hover:text-[var(--admin-text)]"
+                  )}
+               >
+                  Archived
+               </button>
             </div>
              
              <div className="relative bg-black/60 dark:bg-white/30 rounded-[10px]">
-                <div className="relative">
+                <form 
+                  onSubmit={(e) => {
+                    e.preventDefault();
+                    const params = new URLSearchParams(searchParams.toString());
+                    if (searchQuery.trim()) {
+                      params.set("search", searchQuery.trim());
+                    } else {
+                      params.delete("search");
+                    }
+                    params.delete("page");
+                    router.push(`/admin/leads?${params.toString()}`);
+                  }}
+                  className="relative"
+                >
                   <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-[var(--admin-muted)] pointer-events-none" size={18} />
                   <input 
                     type="text" 
@@ -252,7 +296,7 @@ export function LeadsClient({ initialData, adminUsers, currentUserRole, currentU
                     onChange={(e) => setSearchQuery(e.target.value)}
                     className="w-full admin-surface-input border border-[var(--admin-border)] rounded-[10px] pl-10 pr-4 py-2 text-sm text-[var(--admin-text)] placeholder:text-[var(--admin-muted)] focus:border-gold/50 focus:outline-none transition-colors"
                   />
-                </div>
+                </form>
              </div>
           </div>
           
@@ -299,7 +343,7 @@ export function LeadsClient({ initialData, adminUsers, currentUserRole, currentU
                    <button onClick={(e) => handleReadToggle(msg.id, e)} className="p-1.5 hover:bg-[var(--admin-text)]/5 rounded text-[var(--admin-text)]/40 hover:text-[var(--admin-text)]" title={msg.unread ? "Mark Read" : "Mark Unread"}>
                       {msg.unread ? <MailOpen size={12} /> : <Mail size={12} />}
                    </button>
-                   <RoleGate allowedRoles={[Role.SUPER_ADMIN, Role.ADMIN]}>
+                   <RoleGate allowedRoles={[Role.SUPER_ADMIN]}>
                      <button onClick={(e) => { e.stopPropagation(); handleDelete(msg.id); }} className="p-1.5 hover:bg-[var(--admin-text)]/5 rounded text-[var(--admin-text)]/40 hover:text-red-400"><Trash2 size={12} /></button>
                    </RoleGate>
                 </div>
@@ -341,7 +385,11 @@ export function LeadsClient({ initialData, adminUsers, currentUserRole, currentU
                        <ArrowLeft size={18} />
                     </button>
                     <RoleGate allowedRoles={[Role.SUPER_ADMIN, Role.ADMIN]}>
-                      <button onClick={() => handleArchive(activeMessage.id)} className="p-2 text-[var(--admin-text)]/60 hover:text-[var(--admin-text)] hover:bg-[var(--admin-text)]/5 rounded-[8px] transition-colors" title="Archive"><Archive size={18} /></button>
+                      {activeMessage.archived ? (
+                        <button onClick={() => handleUnarchive(activeMessage.id)} className="p-2 text-[var(--admin-text)]/60 hover:text-[var(--admin-text)] hover:bg-[var(--admin-text)]/5 rounded-[8px] transition-colors" title="Unarchive"><ArchiveRestore size={18} /></button>
+                      ) : (
+                        <button onClick={() => handleArchive(activeMessage.id)} className="p-2 text-[var(--admin-text)]/60 hover:text-[var(--admin-text)] hover:bg-[var(--admin-text)]/5 rounded-[8px] transition-colors" title="Archive"><Archive size={18} /></button>
+                      )}
                     </RoleGate>
                     <RoleGate allowedRoles={[Role.SUPER_ADMIN]}>
                       <button onClick={() => handleDelete(activeMessage.id)} className="p-2 text-[var(--admin-text)]/60 hover:text-red-400 hover:bg-red-500/5 rounded-[8px] transition-colors" title="Delete"><Trash2 size={18} /></button>
@@ -506,8 +554,28 @@ export function LeadsClient({ initialData, adminUsers, currentUserRole, currentU
                     <p className="whitespace-pre-wrap text-[var(--admin-text)]/90">{activeMessage.message}</p>
                   </div>
                   
+                  {/* Sent Replies History */}
+                  {activeMessage.replies && activeMessage.replies.length > 0 && (
+                    <div className="mt-8 pt-8 border-t border-[var(--admin-border)]">
+                      <h5 className="text-[11px] font-black uppercase tracking-widest text-[var(--admin-text)]/60 mb-4 flex items-center gap-2">
+                        <MailOpen size={14} className="text-gold" /> Sent Reply History ({activeMessage.replies.length})
+                      </h5>
+                      <div className="space-y-3">
+                        {activeMessage.replies.map((reply) => (
+                          <div key={reply.id} className="p-4 rounded-[10px] bg-[var(--admin-text)]/5 border border-[var(--admin-border)] flex flex-col gap-2">
+                            <div className="flex items-center justify-between text-[11px] text-[var(--admin-text)]/50">
+                              <span className="font-bold text-gold">{reply.sentBy ? `Sent by ${reply.sentBy}` : "Sent via Admin"}</span>
+                              <span>{new Date(reply.sentAt).toLocaleDateString([], { month: "short", day: "numeric", hour: "2-digit", minute: "2-digit" })}</span>
+                            </div>
+                            <p className="text-xs md:text-sm text-[var(--admin-text)]/90 whitespace-pre-wrap leading-relaxed">{reply.content}</p>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
                   {/* Reply Section */}
-                  <div className="mt-12 md:mt-20 pt-8 md:pt-12 border-t border-[var(--admin-border)]">
+                  <div className="mt-8 md:mt-12 pt-8 md:pt-12 border-t border-[var(--admin-border)]">
                      <div className="flex flex-col gap-4">
                         <div className="flex items-center justify-between">
                            <h4 className="text-[12px] md:text-sm font-black text-[var(--admin-text)] uppercase tracking-widest flex items-center gap-2">

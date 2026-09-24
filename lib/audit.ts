@@ -46,6 +46,7 @@ export type AuditAction =
     | "service.restore"
     | "newsletter.restore"
     | "contact.restore"
+    | "contact.unarchive"
     | "service.reorder"
     | "secret_update"
     | "team.invite_user"

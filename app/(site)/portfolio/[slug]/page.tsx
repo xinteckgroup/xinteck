@@ -12,13 +12,13 @@ import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 
 export async function generateMetadata({ params }: { params: { slug: string } }) {
-    const { slug } = await params;
-    const project = await getPublicProject(slug);
-    if (!project) return { title: "Project Not Found" };
-    return {
-      title: project.title,
-      description: project.description,
-    };
+  const { slug } = await params;
+  const project = await getPublicProject(slug);
+  if (!project) return { title: "Project Not Found" };
+  return {
+    title: project.title,
+    description: project.description,
+  };
 }
 
 export default async function ProjectPage({ params }: { params: { slug: string } }) {
@@ -26,7 +26,7 @@ export default async function ProjectPage({ params }: { params: { slug: string }
   const project = await getPublicProject(slug);
 
   if (!project) {
-      notFound();
+    notFound();
   }
 
   // Extract gallery images from markdown content & strip them for clean text rendering

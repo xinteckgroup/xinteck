@@ -51,15 +51,16 @@ export function ProjectGrid({ initialProjects }: { initialProjects: Project[] })
                 <AppEmulatorPreview image={project.image} title={project.title} />
               ) : (
                 <div className="relative aspect-[16/10] bg-primary/5 backdrop-blur-xl rounded-[10px] border border-primary/10 overflow-hidden group-hover:border-primary/40 transition-all cursor-pointer">
-                  {/* Image content - 100% opacity without overlay */}
-                  <div className="absolute inset-0 transition-all scale-100 group-hover:scale-110">
+                  {/* Image content - 100% opacity without overlay or blur-inducing scale */}
+                  <div className="absolute inset-0 transition-all">
                     {project.image ? (
                       <Image 
                         src={project.image}
                         alt={project.title}
                         fill
-                        className="object-cover"
+                        className="object-cover object-top"
                         sizes="(max-width: 768px) 100vw, 50vw"
+                        unoptimized
                       />
                     ) : (
                       <div className="w-full h-full flex items-center justify-center opacity-10">

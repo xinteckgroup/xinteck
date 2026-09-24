@@ -26,8 +26,8 @@ export function AppEmulatorPreview({ image, title }: AppEmulatorPreviewProps) {
       {/* Subtle tech grid texture */}
       <div className="absolute inset-0 bg-[radial-gradient(#ffffff0a_1px,transparent_1px)] bg-[size:16px_16px] pointer-events-none opacity-40" />
 
-      {/* Phone Emulator Container */}
-      <div className="relative z-10 h-[92%] max-h-[280px] aspect-[9/19.5] transition-all duration-500 group-hover:scale-105 group-hover:-translate-y-1.5 flex flex-col items-center">
+      {/* Phone Emulator Container - natural 576/1172 screenshot aspect ratio */}
+      <div className="relative z-10 h-[92%] max-h-[280px] aspect-[576/1172] transition-transform duration-500 group-hover:-translate-y-1.5 flex flex-col items-center">
         {/* Device Frame */}
         <div className="relative w-full h-full rounded-[26px] border-[3.5px] border-[#25262b] bg-[#0c0d0f] shadow-[0_20px_50px_-10px_rgba(0,0,0,0.9),0_0_0_1px_rgba(255,255,255,0.08)] overflow-hidden flex flex-col">
           {/* Dynamic Island / Camera Notch */}
@@ -37,15 +37,16 @@ export function AppEmulatorPreview({ image, title }: AppEmulatorPreviewProps) {
             </div>
           </div>
 
-          {/* Screen Content */}
+          {/* Screen Content - exact 1:1 contain without zoom or crop */}
           <div className="relative flex-1 w-full bg-black overflow-hidden">
             {image ? (
               <Image
                 src={image}
                 alt={title}
                 fill
-                className="object-cover object-top transition-transform duration-700 group-hover:scale-105"
+                className="object-contain"
                 sizes="(max-width: 768px) 50vw, 25vw"
+                unoptimized
               />
             ) : (
               <div className="w-full h-full flex items-center justify-center opacity-20">

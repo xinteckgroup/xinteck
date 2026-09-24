@@ -26,7 +26,7 @@ export const clientMarkdownComponents: Components = {
       <img
         {...props}
         alt={altText}
-        className={`rounded-[16px] shadow-xl my-6 border border-primary/20 object-cover ${alignmentClass}`}
+        className={`rounded-[16px] shadow-xl my-6 border border-primary/20 object-contain h-auto ${alignmentClass}`}
       />
     );
   },

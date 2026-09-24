@@ -63,24 +63,25 @@ export function MobileAppShowcase({
             </div>
           </div>
 
-          {/* Screen area with image slideshow */}
-          <div className="relative bg-black overflow-hidden" style={{ aspectRatio: "9/19.5" }}>
+          {/* Screen area with image slideshow - exact 576/1172 native aspect ratio */}
+          <div className="relative bg-black overflow-hidden" style={{ aspectRatio: "576/1172" }}>
             <AnimatePresence mode="wait">
               <motion.div
                 key={current}
-                initial={{ opacity: 0, scale: 1.03 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.97 }}
-                transition={{ duration: 0.4, ease: "easeInOut" }}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.3, ease: "easeInOut" }}
                 className="absolute inset-0"
               >
                 <Image
                   src={images[current]}
                   alt={`${title} — Screen ${current + 1}`}
                   fill
-                  className="object-cover object-top"
-                  sizes="(max-width: 768px) 85vw, 330px"
+                  className="object-contain"
+                  sizes="330px"
                   priority={current === 0}
+                  unoptimized
                 />
                 {/* Diagonal glass reflection */}
                 <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/[0.04] to-transparent pointer-events-none" />
@@ -169,7 +170,7 @@ export function MobileAppShowcase({
                 <button
                   key={i}
                   onClick={() => setCurrent(i)}
-                  className={`relative aspect-[9/16] rounded-[8px] overflow-hidden border-2 transition-all cursor-pointer ${
+                  className={`relative aspect-[576/1172] bg-black/40 rounded-[8px] overflow-hidden border-2 transition-all cursor-pointer ${
                     i === current
                       ? "border-primary ring-2 ring-primary/40 scale-105 shadow-md opacity-100"
                       : "border-white/10 opacity-50 hover:opacity-90 hover:border-white/30"
@@ -180,8 +181,9 @@ export function MobileAppShowcase({
                     src={img}
                     alt={`Screenshot ${i + 1}`}
                     fill
-                    className="object-cover object-top"
+                    className="object-contain"
                     sizes="70px"
+                    unoptimized
                   />
                 </button>
               ))}

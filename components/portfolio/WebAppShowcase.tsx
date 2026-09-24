@@ -66,24 +66,25 @@ export function WebAppShowcase({
           <div className="w-[52px]" /> {/* Spacer to balance the dots */}
         </div>
 
-        {/* Screen area */}
-        <div className="relative w-full overflow-hidden" style={{ aspectRatio: "16/10" }}>
+        {/* Screen area - exact 1920/966 native resolution aspect ratio */}
+        <div className="relative w-full overflow-hidden bg-black" style={{ aspectRatio: "1920/966" }}>
           <AnimatePresence mode="wait">
             <motion.div
               key={current}
-              initial={{ opacity: 0, x: 40 }}
+              initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: -40 }}
-              transition={{ duration: 0.4, ease: "easeInOut" }}
+              exit={{ opacity: 0, x: -20 }}
+              transition={{ duration: 0.3, ease: "easeInOut" }}
               className="absolute inset-0"
             >
               <Image
                 src={images[current]}
                 alt={`${title} — Screen ${current + 1}`}
                 fill
-                className="object-cover object-top"
-                sizes="(max-width: 768px) 100vw, 800px"
+                className="object-contain"
+                sizes="(max-width: 1200px) 100vw, 1200px"
                 priority={current === 0}
+                unoptimized
               />
             </motion.div>
           </AnimatePresence>

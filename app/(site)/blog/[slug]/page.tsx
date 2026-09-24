@@ -1,4 +1,5 @@
 import { VideoScrollLayout } from "@/components/services/VideoScrollLayout";
+import { BlogFeaturedImage } from "@/components/blog/BlogFeaturedImage";
 import { getPublicPost } from "@/lib/public-data";
 import { clientMarkdownComponents } from "@/lib/markdown-components";
 import { VIDEO_STATS } from "@/lib/videoStats";
@@ -65,15 +66,7 @@ export default async function BlogPostPage({ params }: { params: { slug: string 
 
         {/* Featured Image - prominently positioned above content */}
         {post.featuredImage && (
-            <div className="relative w-full aspect-video md:aspect-[21/9] rounded-[24px] overflow-hidden border border-primary/20 shadow-2xl flex-shrink-0">
-               <img 
-                   src={post.featuredImage} 
-                   alt={post.title} 
-                   className="object-cover w-full h-full"
-                   onError={(e) => { e.currentTarget.src = "/images/placeholder.jpg"; e.currentTarget.onerror = null; }}
-               />
-               <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent pointer-events-none" />
-            </div>
+          <BlogFeaturedImage src={post.featuredImage} alt={post.title} />
         )}
 
         {/* Main Content Body */}

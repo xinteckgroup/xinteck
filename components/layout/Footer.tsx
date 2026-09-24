@@ -1,9 +1,10 @@
 "use client";
 
 import { getBusinessContact, type BusinessContact } from "@/actions/public-config";
+import { useCookieConsent } from "@/components/analytics/AnalyticsProvider";
 import { useServices } from "@/components/providers/ServicesContext";
 import { motion } from "framer-motion";
-import { ArrowUpRight, Mail, MapPin, Phone } from "lucide-react";
+import { ArrowUpRight, Cookie, Mail, MapPin, Phone } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
@@ -38,6 +39,7 @@ const staticLinks = {
 
 export function Footer() {
   const dynamicServices = useServices();
+  const { openPreferences } = useCookieConsent();
   const [contact, setContact] = useState<BusinessContact>({ email: "info@xinteck.co.ke", phone: "+254 782 063 736", socialLinks: [] });
 
   useEffect(() => {
@@ -218,6 +220,13 @@ export function Footer() {
                   {link.label}
                 </Link>
               ))}
+              <button
+                onClick={openPreferences}
+                className="flex items-center gap-2 text-gray-400 hover:text-[#D4AF37] transition-colors text-sm text-left cursor-pointer"
+              >
+                <Cookie size={14} />
+                Cookie Preferences
+              </button>
             </nav>
           </div>
         </div>

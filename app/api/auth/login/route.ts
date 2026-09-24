@@ -37,7 +37,7 @@ export async function POST(req: Request) {
         Purpose: Create a new session record.
         Decision: We persist the session in the database to allow for server-side revocation (e.g., "Log out all devices").
         */
-        const { session, token } = await createSession(user, !user.twoFactorEnabled);
+        const { session, token } = await createSession(user, !user.twoFactorEnabled, !!rememberMe);
 
         // 5. Update lastActiveAt
         await prisma.user.update({

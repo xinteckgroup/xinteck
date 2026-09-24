@@ -1,13 +1,15 @@
 "use client";
 
+import { useCookieConsent } from "@/components/analytics/AnalyticsProvider";
 import { VideoScrollLayout } from "@/components/services/VideoScrollLayout";
 import { VIDEO_STATS } from "@/lib/videoStats";
 import { motion } from "framer-motion";
-import { BarChart2, Cookie, Eye, Mail, Settings, Shield, Target, ToggleLeft, ToggleRight } from "lucide-react";
+import { BarChart2, Check, Cookie, Eye, Mail, Settings, Shield, Target } from "lucide-react";
 import Link from "next/link";
 
 export default function CookiesPage() {
-  const lastUpdated = "February 6, 2026";
+  const lastUpdated = "September 24, 2026";
+  const { consent, openPreferences } = useCookieConsent();
 
   const cookieTypes = [
     {
@@ -16,40 +18,32 @@ export default function CookiesPage() {
       required: true,
       description: "These cookies are strictly necessary for the website to function properly. They enable core functionality such as security, network management, and accessibility. You cannot opt out of these cookies.",
       examples: [
-        { name: "session_id", purpose: "Maintains user session state", duration: "Session" },
-        { name: "csrf_token", purpose: "Security - prevents cross-site request forgery", duration: "Session" },
-        { name: "cookie_consent", purpose: "Stores your cookie preferences", duration: "1 year" },
+        { name: "session_token", purpose: "Maintains authenticated admin session (HttpOnly, Secure)", duration: "1–30 days" },
+        { name: "cookie_consent", purpose: "Stores your cookie category preferences", duration: "1 year" },
+        { name: "theme", purpose: "Remembers your dark/light mode preference (via localStorage)", duration: "Persistent" },
       ]
     },
     {
       icon: BarChart2,
       name: "Analytics Cookies",
       required: false,
+      consentKey: "analytics" as const,
       description: "These cookies help us understand how visitors interact with our website by collecting and reporting information anonymously. This helps us improve our website performance and user experience.",
       examples: [
-        { name: "_ga", purpose: "Google Analytics - distinguishes users", duration: "2 years" },
-        { name: "_gid", purpose: "Google Analytics - distinguishes users", duration: "24 hours" },
-        { name: "ph_*", purpose: "PostHog - product analytics", duration: "1 year" },
+        { name: "_ga", purpose: "Google Analytics — distinguishes users", duration: "2 years" },
+        { name: "_gid", purpose: "Google Analytics — distinguishes users", duration: "24 hours" },
+        { name: "sentry-*", purpose: "Sentry — error monitoring and session replay", duration: "Session" },
       ]
     },
     {
       icon: Target,
       name: "Marketing Cookies",
       required: false,
+      consentKey: "marketing" as const,
       description: "These cookies are used to track visitors across websites. The intention is to display ads that are relevant and engaging for the individual user and thereby more valuable for publishers and third-party advertisers.",
       examples: [
-        { name: "_fbp", purpose: "Facebook - tracks visits across websites", duration: "3 months" },
-        { name: "_gcl_au", purpose: "Google Ads - conversion tracking", duration: "90 days" },
-      ]
-    },
-    {
-      icon: Settings,
-      name: "Preference Cookies",
-      required: false,
-      description: "These cookies enable the website to remember choices you make (such as your preferred language or the region you are in) and provide enhanced, more personal features.",
-      examples: [
-        { name: "theme", purpose: "Remembers your dark/light mode preference", duration: "1 year" },
-        { name: "locale", purpose: "Stores your language preference", duration: "1 year" },
+        { name: "_fbp", purpose: "Meta Pixel — tracks visits across websites", duration: "3 months" },
+        { name: "li_sugr / lintrk", purpose: "LinkedIn Insight Tag — ad analytics and retargeting", duration: "90 days" },
       ]
     },
   ];
@@ -134,7 +128,6 @@ export default function CookiesPage() {
                   <ul className="list-disc list-inside space-y-2">
                     <li><strong>Essential Operations:</strong> To ensure our website functions correctly and securely</li>
                     <li><strong>Analytics:</strong> To understand how visitors use our website and identify areas for improvement</li>
-                    <li><strong>Preferences:</strong> To remember your settings, such as dark mode or language</li>
                     <li><strong>Marketing:</strong> To deliver relevant advertisements (if applicable) and measure their effectiveness</li>
                   </ul>
                 </div>
@@ -159,60 +152,85 @@ export default function CookiesPage() {
             </p>
           </motion.div>
 
-          {cookieTypes.map((category, i) => (
-            <motion.div
-              key={category.name}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: i * 0.1 }}
-              className="p-8 md:p-12 rounded-[10px] border border-primary/10 bg-white/30 dark:bg-black/80 backdrop-blur-xl shadow-lg"
-            >
-              <div className="flex items-start gap-6">
-                <div className="w-12 h-12 rounded-[10px] bg-primary/10 flex items-center justify-center text-gold shrink-0">
-                  <category.icon size={24} />
-                </div>
-                <div className="flex-1">
-                  <div className="flex items-center justify-between mb-4">
-                    <h4 className="text-xl font-black tracking-tight text-foreground">{category.name}</h4>
-                    {category.required ? (
-                      <span className="px-3 py-1 bg-gold/10 text-gold text-xs font-bold rounded-full">
-                        Always Active
-                      </span>
-                    ) : (
-                      <div className="flex items-center gap-2 text-sm text-foreground/60">
-                        <ToggleLeft size={20} />
-                        <span>Optional</span>
-                      </div>
-                    )}
+          {cookieTypes.map((category, i) => {
+            const isActive = category.required || (category.consentKey && consent?.[category.consentKey]);
+
+            return (
+              <motion.div
+                key={category.name}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: i * 0.1 }}
+                className="p-8 md:p-12 rounded-[10px] border border-primary/10 bg-white/30 dark:bg-black/80 backdrop-blur-xl shadow-lg"
+              >
+                <div className="flex items-start gap-6">
+                  <div className="w-12 h-12 rounded-[10px] bg-primary/10 flex items-center justify-center text-gold shrink-0">
+                    <category.icon size={24} />
                   </div>
-                  <p className="text-foreground/70 mb-6">{category.description}</p>
-                  
-                  {/* Cookie Table */}
-                  <div className="overflow-x-auto">
-                    <table className="w-full text-sm">
-                      <thead>
-                        <tr className="border-b border-primary/10">
-                          <th className="text-left py-2 font-bold text-foreground">Cookie Name</th>
-                          <th className="text-left py-2 font-bold text-foreground">Purpose</th>
-                          <th className="text-left py-2 font-bold text-foreground">Duration</th>
-                        </tr>
-                      </thead>
-                      <tbody className="text-foreground/70">
-                        {category.examples.map((cookie) => (
-                          <tr key={cookie.name} className="border-b border-primary/5">
-                            <td className="py-2 font-mono text-xs">{cookie.name}</td>
-                            <td className="py-2">{cookie.purpose}</td>
-                            <td className="py-2">{cookie.duration}</td>
+                  <div className="flex-1">
+                    <div className="flex items-center justify-between mb-4">
+                      <h4 className="text-xl font-black tracking-tight text-foreground">{category.name}</h4>
+                      {category.required ? (
+                        <span className="px-3 py-1 bg-gold/10 text-gold text-xs font-bold rounded-full">
+                          Always Active
+                        </span>
+                      ) : (
+                        <div className="flex items-center gap-2">
+                          <span className={`px-3 py-1 text-xs font-bold rounded-full ${
+                            isActive 
+                              ? "bg-green-500/10 text-green-500" 
+                              : "bg-muted text-muted-foreground"
+                          }`}>
+                            {isActive ? "Accepted" : "Declined"}
+                          </span>
+                        </div>
+                      )}
+                    </div>
+                    <p className="text-foreground/70 mb-6">{category.description}</p>
+                    
+                    {/* Cookie Table */}
+                    <div className="overflow-x-auto">
+                      <table className="w-full text-sm">
+                        <thead>
+                          <tr className="border-b border-primary/10">
+                            <th className="text-left py-2 font-bold text-foreground">Cookie Name</th>
+                            <th className="text-left py-2 font-bold text-foreground">Purpose</th>
+                            <th className="text-left py-2 font-bold text-foreground">Duration</th>
                           </tr>
-                        ))}
-                      </tbody>
-                    </table>
+                        </thead>
+                        <tbody className="text-foreground/70">
+                          {category.examples.map((cookie) => (
+                            <tr key={cookie.name} className="border-b border-primary/5">
+                              <td className="py-2 font-mono text-xs">{cookie.name}</td>
+                              <td className="py-2">{cookie.purpose}</td>
+                              <td className="py-2">{cookie.duration}</td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
                   </div>
                 </div>
-              </div>
-            </motion.div>
-          ))}
+              </motion.div>
+            );
+          })}
+
+          {/* Manage Preferences CTA */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="flex justify-center"
+          >
+            <button
+              onClick={openPreferences}
+              className="px-8 py-3 bg-gold hover:bg-gold-hover text-black font-bold rounded-[10px] transition-all shadow-lg shadow-gold/20 flex items-center gap-2"
+            >
+              <Settings size={18} />
+              Manage Cookie Preferences
+            </button>
+          </motion.div>
         </section>
 
         {/* Managing Cookies */}
@@ -225,13 +243,20 @@ export default function CookiesPage() {
           >
             <div className="flex items-start gap-6">
               <div className="w-12 h-12 rounded-[10px] bg-primary/10 flex items-center justify-center text-gold shrink-0">
-                <ToggleRight size={24} />
+                <Settings size={24} />
               </div>
               <div className="flex-1">
                 <h3 className="text-2xl font-black tracking-tight mb-4 text-foreground">Managing Your Cookie Preferences</h3>
                 <div className="text-foreground/70 leading-relaxed space-y-4">
                   <p>You have several options to control cookies:</p>
                   
+                  <h4 className="font-bold text-foreground mt-6">Our Cookie Preferences Tool</h4>
+                  <p>
+                    You can change your cookie preferences at any time using the <strong>"Cookie Preferences"</strong> button 
+                    in our website footer, or by clicking the button above. Your consent can be 
+                    withdrawn as easily as it was given.
+                  </p>
+
                   <h4 className="font-bold text-foreground mt-6">Browser Settings</h4>
                   <p>
                     Most web browsers allow you to control cookies through their settings. You can set your 
@@ -286,9 +311,11 @@ export default function CookiesPage() {
                     over these third-party cookies. The third parties we work with include:
                   </p>
                   <ul className="list-disc list-inside space-y-2 mt-4">
-                    <li><strong>Google Analytics:</strong> Website analytics - <a href="https://policies.google.com/privacy" target="_blank" rel="noopener noreferrer" className="text-gold hover:underline">Privacy Policy</a></li>
-                    <li><strong>PostHog:</strong> Product analytics - <a href="https://posthog.com/privacy" target="_blank" rel="noopener noreferrer" className="text-gold hover:underline">Privacy Policy</a></li>
-                    <li><strong>Vercel:</strong> Website hosting and analytics - <a href="https://vercel.com/legal/privacy-policy" target="_blank" rel="noopener noreferrer" className="text-gold hover:underline">Privacy Policy</a></li>
+                    <li><strong>Google Analytics:</strong> Website analytics — <a href="https://policies.google.com/privacy" target="_blank" rel="noopener noreferrer" className="text-gold hover:underline">Privacy Policy</a></li>
+                    <li><strong>Meta (Facebook) Pixel:</strong> Marketing analytics — <a href="https://www.facebook.com/privacy/policy/" target="_blank" rel="noopener noreferrer" className="text-gold hover:underline">Privacy Policy</a></li>
+                    <li><strong>LinkedIn Insight Tag:</strong> Marketing analytics — <a href="https://www.linkedin.com/legal/privacy-policy" target="_blank" rel="noopener noreferrer" className="text-gold hover:underline">Privacy Policy</a></li>
+                    <li><strong>Sentry:</strong> Error monitoring and performance — <a href="https://sentry.io/privacy/" target="_blank" rel="noopener noreferrer" className="text-gold hover:underline">Privacy Policy</a></li>
+                    <li><strong>Vercel:</strong> Website hosting and analytics — <a href="https://vercel.com/legal/privacy-policy" target="_blank" rel="noopener noreferrer" className="text-gold hover:underline">Privacy Policy</a></li>
                   </ul>
                 </div>
               </div>

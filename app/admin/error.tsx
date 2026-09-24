@@ -9,16 +9,16 @@ import { useEffect } from "react";
   (e.g., corrupted cookies, stale JS chunks, hydration failures) and offers the user
   a self-healing "Clear Session & Reload" action instead of a permanent blank screen.
   
-  Decision: We programmatically wipe localStorage, sessionStorage, and the session_token
-  cookie before hard-refreshing, which resolves 99% of "works in Incognito but not in
-  normal browser" scenarios caused by stale client state.
+  Decision: We call the server-side logout endpoint to properly clear the httpOnly
+  session_token cookie (which cannot be deleted via document.cookie from client-side JS),
+  then wipe localStorage and sessionStorage before hard-refreshing.
 */
 
-function clearAllClientState() {
+async function clearAllClientState() {
     try { localStorage.clear(); } catch {}
     try { sessionStorage.clear(); } catch {}
-    // Delete session cookie
-    document.cookie = "session_token=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT; SameSite=Lax;";
+    // Call the server to properly delete the httpOnly session cookie
+    try { await fetch('/api/auth/logout', { method: 'POST' }); } catch {}
     // Hard reload bypassing cache
     window.location.href = "/admin/login";
 }

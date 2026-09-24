@@ -5,7 +5,12 @@ import { prisma } from './prisma';
 
 const JWT_SECRET = new TextEncoder().encode(process.env.JWT_SECRET || 'development_super_secret_key_change_me');
 const SALT_ROUNDS = 10;
-const SESSION_EXPIRY = '7d';
+
+// Session lifespans — kept in sync with the cookie maxAge set by login/verify-2fa routes
+const SESSION_EXPIRY_REMEMBER = '30d';       // "Remember Me" checked
+const SESSION_EXPIRY_DEFAULT  = '1d';        // Default session (no remember me)
+const SESSION_MS_REMEMBER     = 30 * 24 * 60 * 60 * 1000; // 30 days in ms
+const SESSION_MS_DEFAULT      = 1  * 24 * 60 * 60 * 1000; // 1 day in ms
 
 
 // Purpose: Verify a plaintext password against the stored hash.
@@ -16,10 +21,17 @@ export async function verifyPassword(plain: string, hash: string) {
 /*
 Purpose: Create a stateful session for an authenticated user.
 Decision: We use a database-backed session (via Prisma) combined with a signed JWT to allowing both quick stateless validation (if needed) and server-side revocation.
+The `rememberMe` flag aligns the JWT expiry and DB session record with the cookie maxAge set by the caller, preventing premature session invalidation.
 */
-export async function createSession(user: Pick<User, 'id' | 'email' | 'role' | 'name' | 'twoFactorEnabled'>, isTwoFactorVerified: boolean = false) {
-    // Purpose: Set session expiry to 7 days to reduce login friction for admins.
-    const expires = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000); // 7 days
+export async function createSession(
+    user: Pick<User, 'id' | 'email' | 'role' | 'name' | 'twoFactorEnabled'>,
+    isTwoFactorVerified: boolean = false,
+    rememberMe: boolean = false
+) {
+    // Purpose: Align session expiry with the cookie maxAge to prevent premature invalidation.
+    const sessionMs = rememberMe ? SESSION_MS_REMEMBER : SESSION_MS_DEFAULT;
+    const jwtExpiry = rememberMe ? SESSION_EXPIRY_REMEMBER : SESSION_EXPIRY_DEFAULT;
+    const expires = new Date(Date.now() + sessionMs);
 
     /*
     Purpose: Generate a signed JWT as the session token.
@@ -34,7 +46,7 @@ export async function createSession(user: Pick<User, 'id' | 'email' | 'role' | '
     })
         .setProtectedHeader({ alg: 'HS256' })
         .setIssuedAt()
-        .setExpirationTime(SESSION_EXPIRY)
+        .setExpirationTime(jwtExpiry)
         .sign(JWT_SECRET);
 
     // Purpose: Persist the session to allow for auditing and revocation (e.g., "Log out all devices").

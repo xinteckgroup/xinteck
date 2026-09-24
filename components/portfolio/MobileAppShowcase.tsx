@@ -2,14 +2,14 @@
 
 /**
  * MobileAppShowcase — Displays mobile app screenshots inside an Android phone
- * frame with an auto-cycling slideshow.
+ * emulator on the LEFT side, with navigation arrows and controls on the RIGHT side.
  *
- * Reusable: any project with category "MOBILE_APP" will automatically get this
- * treatment. The admin only needs to upload images to the markdown case study.
+ * For app portfolio projects (Drop Customer, Drop Rider, Drop Vendor, and future apps).
+ * The outer rectangle background is removed per design specifications.
  */
 
 import { AnimatePresence, motion } from "framer-motion";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronLeft, ChevronRight, Pause, Play } from "lucide-react";
 import Image from "next/image";
 import { useCallback, useEffect, useState } from "react";
 
@@ -46,92 +46,167 @@ export function MobileAppShowcase({
 
   return (
     <div
-      className="flex flex-col items-center gap-6"
+      className="flex flex-col md:flex-row items-center md:items-center justify-start gap-8 lg:gap-16 py-4"
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}
     >
-      {/* Phone Frame */}
-      <div className="relative mx-auto" style={{ width: "min(320px, 80vw)" }}>
-        {/* Phone bezel */}
-        <div className="relative rounded-[40px] border-[6px] border-[#1a1a1a] bg-[#1a1a1a] shadow-[0_20px_60px_-15px_rgba(0,0,0,0.5),0_0_0_1px_rgba(255,255,255,0.05)] overflow-hidden">
-          {/* Status bar / notch */}
-          <div className="relative z-20 flex items-center justify-center pt-2 pb-1 bg-[#1a1a1a]">
-            <div className="w-[90px] h-[26px] bg-[#0a0a0a] rounded-full flex items-center justify-center gap-2">
-              <div className="w-[8px] h-[8px] rounded-full bg-[#1a1a1a] border border-[#333]" />
+      {/* ═══════════════════════════════════════════════════
+          LEFT SIDE: Phone Emulator Displaying Photos
+          ═══════════════════════════════════════════════════ */}
+      <div className="relative flex-shrink-0" style={{ width: "min(330px, 85vw)" }}>
+        {/* Outer Phone Frame */}
+        <div className="relative rounded-[42px] border-[6px] border-[#1e1f24] bg-[#121316] shadow-[0_25px_60px_-15px_rgba(0,0,0,0.85),0_0_0_1px_rgba(255,255,255,0.08)] overflow-hidden">
+          {/* Status bar / Notch */}
+          <div className="relative z-20 flex items-center justify-center pt-2.5 pb-1 bg-[#121316]">
+            <div className="w-[92px] h-[24px] bg-[#000] rounded-full flex items-center justify-center gap-2">
+              <div className="w-[7px] h-[7px] rounded-full bg-[#1e1f24] border border-[#333]" />
             </div>
           </div>
 
-          {/* Screen area */}
+          {/* Screen area with image slideshow */}
           <div className="relative bg-black overflow-hidden" style={{ aspectRatio: "9/19.5" }}>
             <AnimatePresence mode="wait">
               <motion.div
                 key={current}
-                initial={{ opacity: 0, scale: 1.05 }}
+                initial={{ opacity: 0, scale: 1.03 }}
                 animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.95 }}
-                transition={{ duration: 0.5, ease: "easeInOut" }}
+                exit={{ opacity: 0, scale: 0.97 }}
+                transition={{ duration: 0.4, ease: "easeInOut" }}
                 className="absolute inset-0"
               >
                 <Image
                   src={images[current]}
                   alt={`${title} — Screen ${current + 1}`}
                   fill
-                  className="object-cover"
-                  sizes="320px"
+                  className="object-cover object-top"
+                  sizes="(max-width: 768px) 85vw, 330px"
                   priority={current === 0}
                 />
+                {/* Diagonal glass reflection */}
+                <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/[0.04] to-transparent pointer-events-none" />
               </motion.div>
             </AnimatePresence>
           </div>
 
-          {/* Bottom navigation bar */}
-          <div className="relative z-20 flex items-center justify-center py-2 bg-[#1a1a1a]">
-            <div className="w-[100px] h-[4px] bg-[#555] rounded-full" />
+          {/* Bottom navigation pill */}
+          <div className="relative z-20 flex items-center justify-center py-2 bg-[#121316]">
+            <div className="w-[100px] h-[4px] bg-[#444] rounded-full" />
           </div>
         </div>
 
-        {/* Side buttons (cosmetic) */}
-        <div className="absolute right-[-8px] top-[100px] w-[3px] h-[50px] bg-[#333] rounded-r-sm" />
-        <div className="absolute left-[-8px] top-[80px] w-[3px] h-[30px] bg-[#333] rounded-l-sm" />
-        <div className="absolute left-[-8px] top-[120px] w-[3px] h-[50px] bg-[#333] rounded-l-sm" />
+        {/* Side buttons (cosmetic hardware details) */}
+        <div className="absolute right-[-8px] top-[105px] w-[3px] h-[50px] bg-[#333] rounded-r-sm" />
+        <div className="absolute left-[-8px] top-[85px] w-[3px] h-[30px] bg-[#333] rounded-l-sm" />
+        <div className="absolute left-[-8px] top-[125px] w-[3px] h-[50px] bg-[#333] rounded-l-sm" />
+
+        {/* Floor drop shadow */}
+        <div className="w-3/4 h-3 bg-black/80 blur-md rounded-full mx-auto mt-4 pointer-events-none" />
       </div>
 
-      {/* Navigation controls */}
-      {images.length > 1 && (
+      {/* ═══════════════════════════════════════════════════
+          RIGHT SIDE: Navigation Arrows & Interactive Controls
+          ═══════════════════════════════════════════════════ */}
+      <div className="flex-1 flex flex-col justify-center gap-6 max-w-xl w-full">
+        {/* Header & Active Screen Counter */}
+        <div className="flex flex-col gap-2">
+          <div className="flex items-center gap-2">
+            <span className="w-2 h-2 rounded-full bg-primary animate-pulse" />
+            <span className="text-xs uppercase tracking-[0.2em] font-bold text-primary">
+              App Screen Showcase
+            </span>
+          </div>
+          <h3 className="text-2xl md:text-3xl font-extrabold tracking-tight text-foreground flex items-baseline gap-3">
+            <span>Screen {String(current + 1).padStart(2, "0")}</span>
+            <span className="text-foreground/40 font-normal text-lg">
+              / {String(images.length).padStart(2, "0")}
+            </span>
+          </h3>
+          <p className="text-sm text-foreground/60 leading-relaxed">
+            Use the navigation arrows or click any screenshot preview below to view the application screens.
+          </p>
+        </div>
+
+        {/* Prominent Navigation Arrows on the RIGHT side */}
         <div className="flex items-center gap-4">
           <button
             onClick={prev}
-            className="w-9 h-9 rounded-full bg-white/10 backdrop-blur-sm border border-primary/20 flex items-center justify-center text-foreground/60 hover:text-primary hover:border-primary/50 transition-all"
+            className="flex items-center gap-2.5 px-6 py-3.5 rounded-[10px] bg-white/5 hover:bg-primary/20 border border-primary/25 hover:border-primary/60 text-foreground hover:text-primary transition-all active:scale-95 group shadow-lg cursor-pointer"
             aria-label="Previous screenshot"
           >
-            <ChevronLeft size={16} />
+            <ChevronLeft size={20} className="group-hover:-translate-x-1 transition-transform" />
+            <span className="text-sm font-semibold tracking-wide">Previous</span>
           </button>
 
-          {/* Dot indicators */}
-          <div className="flex items-center gap-2">
+          <button
+            onClick={next}
+            className="flex items-center gap-2.5 px-7 py-3.5 rounded-[10px] bg-primary text-black hover:bg-gold-hover transition-all active:scale-95 group shadow-lg cursor-pointer font-bold"
+            aria-label="Next screenshot"
+          >
+            <span className="text-sm font-bold tracking-wide">Next</span>
+            <ChevronRight size={20} className="group-hover:translate-x-1 transition-transform" />
+          </button>
+
+          {/* Pause / Play status toggle */}
+          <button
+            onClick={() => setIsPaused(!isPaused)}
+            className="w-11 h-11 rounded-[10px] bg-white/5 hover:bg-white/10 border border-white/10 flex items-center justify-center text-foreground/60 hover:text-foreground transition-all cursor-pointer"
+            title={isPaused ? "Resume auto-slideshow" : "Pause auto-slideshow"}
+            aria-label={isPaused ? "Resume auto-slideshow" : "Pause auto-slideshow"}
+          >
+            {isPaused ? <Play size={16} /> : <Pause size={16} />}
+          </button>
+        </div>
+
+        {/* Thumbnail Navigator (showing all screens in project) */}
+        {images.length > 1 && (
+          <div className="flex flex-col gap-3 pt-2">
+            <div className="flex items-center justify-between text-xs text-foreground/50 font-medium">
+              <span>All Available Screens ({images.length})</span>
+              <span>{isPaused ? "Paused" : "Auto-playing (4s)"}</span>
+            </div>
+            <div className="grid grid-cols-4 sm:grid-cols-6 md:grid-cols-4 lg:grid-cols-5 gap-2.5 max-h-[300px] overflow-y-auto pr-1">
+              {images.map((img, i) => (
+                <button
+                  key={i}
+                  onClick={() => setCurrent(i)}
+                  className={`relative aspect-[9/16] rounded-[8px] overflow-hidden border-2 transition-all cursor-pointer ${
+                    i === current
+                      ? "border-primary ring-2 ring-primary/40 scale-105 shadow-md opacity-100"
+                      : "border-white/10 opacity-50 hover:opacity-90 hover:border-white/30"
+                  }`}
+                  aria-label={`Jump to screenshot ${i + 1}`}
+                >
+                  <Image
+                    src={img}
+                    alt={`Screenshot ${i + 1}`}
+                    fill
+                    className="object-cover object-top"
+                    sizes="70px"
+                  />
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Progress Dots Track */}
+        {images.length > 1 && (
+          <div className="flex items-center gap-2 pt-1">
             {images.map((_, i) => (
               <button
                 key={i}
                 onClick={() => setCurrent(i)}
-                className={`rounded-full transition-all duration-300 ${
+                className={`h-1.5 rounded-full transition-all duration-300 ${
                   i === current
-                    ? "w-6 h-2 bg-primary"
-                    : "w-2 h-2 bg-foreground/20 hover:bg-foreground/40"
+                    ? "w-8 bg-primary"
+                    : "w-2 bg-foreground/20 hover:bg-foreground/40"
                 }`}
-                aria-label={`Go to screenshot ${i + 1}`}
+                aria-label={`Jump to screenshot ${i + 1}`}
               />
             ))}
           </div>
-
-          <button
-            onClick={next}
-            className="w-9 h-9 rounded-full bg-white/10 backdrop-blur-sm border border-primary/20 flex items-center justify-center text-foreground/60 hover:text-primary hover:border-primary/50 transition-all"
-            aria-label="Next screenshot"
-          >
-            <ChevronRight size={16} />
-          </button>
-        </div>
-      )}
+        )}
+      </div>
     </div>
   );
 }

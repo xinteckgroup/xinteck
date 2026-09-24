@@ -1,5 +1,6 @@
 "use client";
 
+import { AppEmulatorPreview } from "@/components/portfolio/AppEmulatorPreview";
 import { TYPOGRAPHY } from "@/lib/typography";
 import { motion } from "framer-motion";
 import { ChevronRight, Code2, ExternalLink, Github } from "lucide-react";
@@ -9,57 +10,78 @@ import Link from "next/link";
 interface Project {
   title: string;
   category: string;
+  categoryRaw?: string;
   description: string;
   tags: string[];
   image?: string;
   slug: string;
 }
 
+function isAppProject(project: Project): boolean {
+  const raw = (project.categoryRaw || "").toUpperCase();
+  if (raw === "MOBILE_APP" || raw.includes("APP") || raw.includes("MOBILE")) return true;
+
+  const cat = (project.category || "").toLowerCase();
+  if (cat.includes("app") || cat.includes("mobile")) return true;
+
+  const tags = (project.tags || []).map((t) => t.toLowerCase());
+  return tags.some((t) =>
+    ["mobile", "app", "ios", "android", "react native", "flutter", "expo"].includes(t)
+  );
+}
+
 export function ProjectGrid({ initialProjects }: { initialProjects: Project[] }) {
   return (
     <div className="grid md:grid-cols-2 gap-8">
-      {initialProjects.map((project, i) => (
-        <motion.div
-          key={project.slug}
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ delay: i * 0.1 }}
-          className="group flex flex-col gap-6"
-        >
-          {/* Project Image Card */}
-          <Link href={`/portfolio/${project.slug}`}>
-            <div className="relative aspect-[16/10] bg-primary/5 backdrop-blur-xl rounded-[10px] border border-primary/10 overflow-hidden group-hover:border-primary/40 transition-all cursor-pointer">
-              {/* Image content - 100% opacity without overlay */}
-              <div className="absolute inset-0 transition-all scale-100 group-hover:scale-110">
-                {project.image ? (
-                  <Image 
-                    src={project.image}
-                    alt={project.title}
-                    fill
-                    className="object-cover"
-                    sizes="(max-width: 768px) 100vw, 50vw"
-                  />
-                ) : (
-                  <div className="w-full h-full flex items-center justify-center opacity-10">
-                    <Code2 size={200} className="text-gold" />
-                  </div>
-                )}
-              </div>
+      {initialProjects.map((project, i) => {
+        const isApp = isAppProject(project);
 
-              {/* Hover action buttons */}
-              <div className="absolute inset-0 p-8 flex flex-col justify-end opacity-0 group-hover:opacity-100 transition-all translate-y-4 group-hover:translate-y-0 z-20">
-                <div className="flex gap-3">
-                  <button className="w-12 h-12 rounded-[10px] bg-primary text-black flex items-center justify-center hover:bg-gold-hover transition-all">
-                    <ExternalLink size={20} />
-                  </button>
-                  <button className="w-12 h-12 rounded-[10px] bg-black/50 backdrop-blur-xl border border-primary/20 text-white flex items-center justify-center hover:border-gold transition-all">
-                    <Github size={20} />
-                  </button>
+        return (
+          <motion.div
+            key={project.slug}
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: i * 0.1 }}
+            className="group flex flex-col gap-6"
+          >
+            {/* Project Image Card */}
+            <Link href={`/portfolio/${project.slug}`}>
+              {isApp ? (
+                <AppEmulatorPreview image={project.image} title={project.title} />
+              ) : (
+                <div className="relative aspect-[16/10] bg-primary/5 backdrop-blur-xl rounded-[10px] border border-primary/10 overflow-hidden group-hover:border-primary/40 transition-all cursor-pointer">
+                  {/* Image content - 100% opacity without overlay */}
+                  <div className="absolute inset-0 transition-all scale-100 group-hover:scale-110">
+                    {project.image ? (
+                      <Image 
+                        src={project.image}
+                        alt={project.title}
+                        fill
+                        className="object-cover"
+                        sizes="(max-width: 768px) 100vw, 50vw"
+                      />
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center opacity-10">
+                        <Code2 size={200} className="text-gold" />
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Hover action buttons */}
+                  <div className="absolute inset-0 p-8 flex flex-col justify-end opacity-0 group-hover:opacity-100 transition-all translate-y-4 group-hover:translate-y-0 z-20">
+                    <div className="flex gap-3">
+                      <button className="w-12 h-12 rounded-[10px] bg-primary text-black flex items-center justify-center hover:bg-gold-hover transition-all">
+                        <ExternalLink size={20} />
+                      </button>
+                      <button className="w-12 h-12 rounded-[10px] bg-black/50 backdrop-blur-xl border border-primary/20 text-white flex items-center justify-center hover:border-gold transition-all">
+                        <Github size={20} />
+                      </button>
+                    </div>
+                  </div>
                 </div>
-              </div>
-            </div>
-          </Link>
+              )}
+            </Link>
 
           {/* Project Info */}
           <div className="flex flex-col gap-4 bg-primary/5 backdrop-blur-xl border border-primary/10 rounded-[10px] p-8 group-hover:border-primary/40 transition-all">
@@ -91,7 +113,8 @@ export function ProjectGrid({ initialProjects }: { initialProjects: Project[] })
             </p>
           </div>
         </motion.div>
-      ))}
+      );
+    })}
     </div>
   );
 }

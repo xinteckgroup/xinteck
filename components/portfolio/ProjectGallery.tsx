@@ -29,13 +29,15 @@ export function ProjectGallery({ images, category, title }: ProjectGalleryProps)
   return (
     <section className="px-6">
       <div className="max-w-7xl mx-auto">
-        <div className="bg-white/30 dark:bg-black/80 backdrop-blur-xl rounded-[10px] border border-primary/10 p-6 md:p-12 lg:p-16 shadow-[0_10px_40px_-10px_rgba(0,0,0,0.1)]">
-          {isMobile ? (
+        {isMobile ? (
+          <div className="py-4">
             <MobileAppShowcase images={images} title={title} />
-          ) : (
+          </div>
+        ) : (
+          <div className="bg-white/30 dark:bg-black/80 backdrop-blur-xl rounded-[10px] border border-primary/10 p-6 md:p-12 lg:p-16 shadow-[0_10px_40px_-10px_rgba(0,0,0,0.1)]">
             <WebAppShowcase images={images} title={title} />
-          )}
-        </div>
+          </div>
+        )}
       </div>
     </section>
   );

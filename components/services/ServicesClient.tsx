@@ -1,5 +1,6 @@
 "use client";
 
+import { SERVICE_UI_MAP } from "@/lib/service-ui-map";
 import { VideoScrollLayout } from "@/components/services/VideoScrollLayout";
 import { TYPOGRAPHY } from "@/lib/typography";
 import { VIDEO_STATS } from "@/lib/videoStats";
@@ -104,29 +105,36 @@ export default function ServicesClient({ services }: { services: PublicService[]
                     </div>
                 </div>
 
-                {/* Image Card */}
+                {/* Image Card — slug-aware: renders custom mockup if registered */}
                 <div className={`lg:col-span-4 ${i % 2 !== 0 ? "lg:order-1" : "lg:order-2"}`}>
                     <div className="h-full min-h-[300px] flex items-center justify-center relative">
-                        {service.image ? (
-                            <motion.div
-                                animate={{ y: [0, -10, 0] }}
-                                transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-                                className="relative w-full aspect-square flex items-center justify-center"
-                            >
-                                <div className="relative w-full h-full rounded-[10px] overflow-hidden shadow-2xl">
-                                    <Image
-                                        src={service.image}
-                                        alt={service.title}
-                                        fill
-                                        className="object-cover"
-                                    />
+                        {(() => {
+                            const uiEntry = SERVICE_UI_MAP[service.slug as keyof typeof SERVICE_UI_MAP];
+                            if (uiEntry) {
+                                const MockupComp = uiEntry.mockup;
+                                return <MockupComp imageSrc={service.image} service={service} />;
+                            }
+                            return service.image ? (
+                                <motion.div
+                                    animate={{ y: [0, -10, 0] }}
+                                    transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+                                    className="relative w-full aspect-square flex items-center justify-center"
+                                >
+                                    <div className="relative w-full h-full rounded-[10px] overflow-hidden shadow-2xl">
+                                        <Image
+                                            src={service.image}
+                                            alt={service.title}
+                                            fill
+                                            className="object-cover"
+                                        />
+                                    </div>
+                                </motion.div>
+                            ) : (
+                                <div className="w-full aspect-square flex items-center justify-center rounded-[10px] bg-white/5 backdrop-blur-sm">
+                                    <Code size={80} className="text-primary/20" />
                                 </div>
-                            </motion.div>
-                        ) : (
-                            <div className="w-full aspect-square flex items-center justify-center rounded-[10px] bg-white/5 backdrop-blur-sm">
-                                <Code size={80} className="text-primary/20" />
-                            </div>
-                        )}
+                            );
+                        })()}
                     </div>
                 </div>
             </motion.div>

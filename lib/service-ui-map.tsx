@@ -1,9 +1,11 @@
+import { BusinessCardMockup } from "@/components/services/mockups/BusinessCardMockup";
 import { motion } from "framer-motion";
 import {
     Cloud,
     Code,
     Globe,
     Palette,
+    PenTool,
     Smartphone
 } from "lucide-react";
 import Image from "next/image";
@@ -195,6 +197,10 @@ export const SERVICE_UI_MAP: Record<string, { icon: any, mockup: any }> = {
     "cloud-devops": {
         icon: Cloud,
         mockup: CloudMockup
+    },
+    "graphic-design": {
+        icon: PenTool,
+        mockup: BusinessCardMockup
     },
     // Defaults for others
     "default": {

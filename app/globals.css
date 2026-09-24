@@ -374,3 +374,21 @@ body {
 .gold-scrollbar::-webkit-scrollbar-thumb:hover {
   background: #C5A028;
 }
+
+/* ═══════════════════════════════════════════════════════════════
+   3D CARD FLIP UTILITIES
+   Used by BusinessCardMockup for interactive front/back reveal
+   ═══════════════════════════════════════════════════════════════ */
+.perspective-1200 {
+  perspective: 1200px;
+}
+.preserve-3d {
+  transform-style: preserve-3d;
+}
+.backface-hidden {
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+.rotate-y-180 {
+  transform: rotateY(180deg);
+}

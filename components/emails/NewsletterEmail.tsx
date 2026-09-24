@@ -15,7 +15,7 @@ export const NewsletterEmail = ({
     unsubscribeUrl = "#",
 }: NewsletterEmailProps) => {
     return (
-        <XinteckEmailLayout previewText={previewText || subject}>
+        <XinteckEmailLayout previewText={previewText || subject} showSignature>
             {/* Logo */}
             <Section className="text-center mb-[32px]">
                 <Link href="https://xinteck.co.ke">

@@ -20,7 +20,7 @@ export const LeadReplyEmail = ({
   ));
 
   return (
-    <XinteckEmailLayout previewText={`Reply from ${sentBy}`}>
+    <XinteckEmailLayout previewText={`Reply from ${sentBy}`} showSignature>
       <Section className="text-left mb-[40px]">
         <Link href="https://xinteck.co.ke">
           <Img

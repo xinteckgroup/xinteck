@@ -9,15 +9,18 @@ import {
     Text,
 } from '@react-email/components';
 import * as React from 'react';
+import { XinteckEmailSignature } from './XinteckEmailSignature';
 
 interface XinteckEmailLayoutProps {
   children: React.ReactNode;
   previewText?: string;
+  showSignature?: boolean;
 }
 
 export const XinteckEmailLayout = ({
   children,
   previewText = "Message from Xinteck Administration",
+  showSignature = false,
 }: XinteckEmailLayoutProps) => {
   return (
     <Html>
@@ -48,6 +51,9 @@ export const XinteckEmailLayout = ({
             <Section className="bg-surface border border-border rounded-[12px] p-[32px] mb-[40px]">
               {children}
             </Section>
+
+            {/* Professional Signature — opt-in for client-facing emails */}
+            {showSignature && <XinteckEmailSignature />}
             
             {/* Footer */}
             <Section className="text-center px-[20px]">
@@ -65,3 +71,4 @@ export const XinteckEmailLayout = ({
     </Html>
   );
 };
+

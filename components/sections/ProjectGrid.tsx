@@ -50,15 +50,15 @@ export function ProjectGrid({ initialProjects }: { initialProjects: Project[] })
               {isApp ? (
                 <AppEmulatorPreview image={project.image} title={project.title} />
               ) : (
-                <div className="relative aspect-[16/10] bg-primary/5 backdrop-blur-xl rounded-[10px] border border-primary/10 overflow-hidden group-hover:border-primary/40 transition-all cursor-pointer">
-                  {/* Image content - 100% opacity without overlay or blur-inducing scale */}
-                  <div className="absolute inset-0 transition-all">
+                <div className="relative aspect-[16/10] bg-primary/5 backdrop-blur-xl rounded-[10px] border border-primary/10 overflow-hidden group-hover:border-primary/40 transition-all cursor-pointer p-[10px]">
+                  {/* Image container with 10px padding so full image is visible */}
+                  <div className="relative w-full h-full rounded-[6px] overflow-hidden flex items-center justify-center">
                     {project.image ? (
                       <Image 
                         src={project.image}
                         alt={project.title}
                         fill
-                        className="object-cover object-top"
+                        className="object-contain"
                         sizes="(max-width: 768px) 100vw, 50vw"
                         unoptimized
                       />
@@ -70,14 +70,14 @@ export function ProjectGrid({ initialProjects }: { initialProjects: Project[] })
                   </div>
 
                   {/* Hover action buttons */}
-                  <div className="absolute inset-0 p-8 flex flex-col justify-end opacity-0 group-hover:opacity-100 transition-all translate-y-4 group-hover:translate-y-0 z-20">
-                    <div className="flex gap-3">
-                      <button className="w-12 h-12 rounded-[10px] bg-primary text-black flex items-center justify-center hover:bg-gold-hover transition-all">
+                  <div className="absolute inset-0 p-8 flex flex-col justify-end opacity-0 group-hover:opacity-100 transition-all translate-y-4 group-hover:translate-y-0 z-20 pointer-events-none">
+                    <div className="flex gap-3 pointer-events-auto">
+                      <div className="w-12 h-12 rounded-[10px] bg-primary text-black flex items-center justify-center hover:bg-gold-hover transition-all shadow-lg">
                         <ExternalLink size={20} />
-                      </button>
-                      <button className="w-12 h-12 rounded-[10px] bg-black/50 backdrop-blur-xl border border-primary/20 text-white flex items-center justify-center hover:border-gold transition-all">
+                      </div>
+                      <div className="w-12 h-12 rounded-[10px] bg-black/50 backdrop-blur-xl border border-primary/20 text-white flex items-center justify-center hover:border-gold transition-all shadow-lg">
                         <Github size={20} />
-                      </button>
+                      </div>
                     </div>
                   </div>
                 </div>

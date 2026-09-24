@@ -107,7 +107,7 @@ export function MobileAppShowcase({
       {/* ═══════════════════════════════════════════════════
           RIGHT SIDE: Navigation Arrows & Interactive Controls
           ═══════════════════════════════════════════════════ */}
-      <div className="flex-1 flex flex-col justify-center gap-6 max-w-xl w-full">
+      <div className="flex-1 flex flex-col justify-center gap-6 max-w-xl w-full bg-white/30 dark:bg-black/80 backdrop-blur-xl rounded-[20px] border border-primary/10 p-6 md:p-8 lg:p-10 shadow-[0_10px_40px_-10px_rgba(0,0,0,0.1)]">
         {/* Header & Active Screen Counter */}
         <div className="flex flex-col gap-2">
           <div className="flex items-center gap-2">
@@ -170,11 +170,10 @@ export function MobileAppShowcase({
                 <button
                   key={i}
                   onClick={() => setCurrent(i)}
-                  className={`relative aspect-[576/1172] bg-black/40 rounded-[8px] overflow-hidden border-2 transition-all cursor-pointer ${
-                    i === current
-                      ? "border-primary ring-2 ring-primary/40 scale-105 shadow-md opacity-100"
-                      : "border-white/10 opacity-50 hover:opacity-90 hover:border-white/30"
-                  }`}
+                  className={`relative aspect-[576/1172] bg-black/40 rounded-[8px] overflow-hidden border-2 transition-all cursor-pointer ${i === current
+                    ? "border-primary ring-2 ring-primary/40 scale-105 shadow-md opacity-100"
+                    : "border-white/10 opacity-50 hover:opacity-90 hover:border-white/30"
+                    }`}
                   aria-label={`Jump to screenshot ${i + 1}`}
                 >
                   <Image
@@ -198,11 +197,10 @@ export function MobileAppShowcase({
               <button
                 key={i}
                 onClick={() => setCurrent(i)}
-                className={`h-1.5 rounded-full transition-all duration-300 ${
-                  i === current
-                    ? "w-8 bg-primary"
-                    : "w-2 bg-foreground/20 hover:bg-foreground/40"
-                }`}
+                className={`h-1.5 rounded-full transition-all duration-300 ${i === current
+                  ? "w-8 bg-primary"
+                  : "w-2 bg-foreground/20 hover:bg-foreground/40"
+                  }`}
                 aria-label={`Jump to screenshot ${i + 1}`}
               />
             ))}

@@ -1,3 +1,4 @@
+import { MobileAppShowcase } from "@/components/portfolio/MobileAppShowcase";
 import { ProjectGallery } from "@/components/portfolio/ProjectGallery";
 import { VideoScrollLayout } from "@/components/services/VideoScrollLayout";
 import { clientMarkdownComponents } from "@/lib/markdown-components";
@@ -32,6 +33,7 @@ export default async function ProjectPage({ params }: { params: { slug: string }
   // Extract gallery images from markdown content & strip them for clean text rendering
   const galleryImages = project.content ? extractImagesFromMarkdown(project.content) : [];
   const textContent = project.content ? stripImagesFromMarkdown(project.content) : "";
+  const isMobile = project.categoryRaw?.toUpperCase().includes("MOBILE") || project.categoryRaw?.toUpperCase().includes("APP");
 
   return (
     <VideoScrollLayout videoSrc={VIDEO_STATS.portfolio.src} videoStats={VIDEO_STATS.portfolio}>
@@ -121,31 +123,63 @@ export default async function ProjectPage({ params }: { params: { slug: string }
           </div>
         </section>
 
-        {/* Image Gallery — auto-selects phone frame or browser frame based on category */}
-        {galleryImages.length > 0 && (
-          <ProjectGallery
-            images={galleryImages}
-            category={project.categoryRaw}
-            title={project.title}
-          />
-        )}
-
-        {/* Case Study Content (text only — images extracted to gallery above) */}
-        {textContent && (
+        {/* For Mobile Apps: Phone Emulator on the LEFT, Case Study Text in its own card div on the RIGHT */}
+        {isMobile ? (
           <section className="px-6">
             <div className="max-w-7xl mx-auto">
-              <div className="bg-white/30 dark:bg-black/80 backdrop-blur-xl rounded-[10px] border border-primary/10 p-6 md:p-12 lg:p-16 shadow-[0_10px_40px_-10px_rgba(0,0,0,0.1)]">
-                <div className="max-w-none break-words">
-                  <ReactMarkdown
-                    remarkPlugins={[remarkGfm]}
-                    components={clientMarkdownComponents}
-                  >
-                    {textContent}
-                  </ReactMarkdown>
-                </div>
+              <div className="flex flex-col lg:flex-row items-center lg:items-start gap-8 lg:gap-12 xl:gap-16">
+                {/* LEFT: Phone Emulator (NOT inside the card div) */}
+                {galleryImages.length > 0 && (
+                  <div className="w-full lg:w-auto flex-shrink-0 flex justify-center lg:sticky lg:top-28">
+                    <MobileAppShowcase images={galleryImages} title={project.title} />
+                  </div>
+                )}
+
+                {/* RIGHT: Text in its own card div */}
+                {textContent && (
+                  <div className="flex-1 w-full bg-white/30 dark:bg-black/80 backdrop-blur-xl rounded-[10px] border border-primary/10 p-6 md:p-10 lg:p-14 shadow-[0_10px_40px_-10px_rgba(0,0,0,0.1)] text-foreground">
+                    <div className="max-w-none break-words">
+                      <ReactMarkdown
+                        remarkPlugins={[remarkGfm]}
+                        components={clientMarkdownComponents}
+                      >
+                        {textContent}
+                      </ReactMarkdown>
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
           </section>
+        ) : (
+          <>
+            {/* Image Gallery — non-mobile / web apps */}
+            {galleryImages.length > 0 && (
+              <ProjectGallery
+                images={galleryImages}
+                category={project.categoryRaw}
+                title={project.title}
+              />
+            )}
+
+            {/* Case Study Content (text only — images extracted to gallery above) */}
+            {textContent && (
+              <section className="px-6">
+                <div className="max-w-7xl mx-auto">
+                  <div className="bg-white/30 dark:bg-black/80 backdrop-blur-xl rounded-[10px] border border-primary/10 p-6 md:p-12 lg:p-16 shadow-[0_10px_40px_-10px_rgba(0,0,0,0.1)] text-foreground">
+                    <div className="max-w-none break-words">
+                      <ReactMarkdown
+                        remarkPlugins={[remarkGfm]}
+                        components={clientMarkdownComponents}
+                      >
+                        {textContent}
+                      </ReactMarkdown>
+                    </div>
+                  </div>
+                </div>
+              </section>
+            )}
+          </>
         )}
 
         {/* CTA Section */}

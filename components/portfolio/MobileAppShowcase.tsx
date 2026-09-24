@@ -2,10 +2,11 @@
 
 /**
  * MobileAppShowcase — Displays mobile app screenshots inside an Android phone
- * emulator on the LEFT side, with navigation arrows and controls on the RIGHT side.
+ * emulator with interactive navigation controls directly integrated beneath the device.
  *
- * For app portfolio projects (Drop Customer, Drop Rider, Drop Vendor, and future apps).
- * The outer rectangle background is removed per design specifications.
+ * Designed to sit on the LEFT side of the project portfolio page, with the case study
+ * text in its own high-contrast card div on the RIGHT side.
+ * The emulator itself is NOT enclosed in a background card div per specifications.
  */
 
 import { AnimatePresence, motion } from "framer-motion";
@@ -18,12 +19,14 @@ interface MobileAppShowcaseProps {
   title?: string;
   /** Auto-cycle interval in ms (default 4000) */
   interval?: number;
+  className?: string;
 }
 
 export function MobileAppShowcase({
   images,
   title = "Mobile App",
   interval = 4000,
+  className = "",
 }: MobileAppShowcaseProps) {
   const [current, setCurrent] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
@@ -46,14 +49,14 @@ export function MobileAppShowcase({
 
   return (
     <div
-      className="flex flex-col md:flex-row items-center md:items-center justify-start gap-8 lg:gap-16 py-4"
+      className={`flex flex-col items-center gap-6 w-full max-w-[340px] ${className}`}
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}
     >
       {/* ═══════════════════════════════════════════════════
-          LEFT SIDE: Phone Emulator Displaying Photos
+          PHONE EMULATOR DISPLAYING PHOTOS (NO OUTER CARD DIV)
           ═══════════════════════════════════════════════════ */}
-      <div className="relative flex-shrink-0" style={{ width: "min(330px, 85vw)" }}>
+      <div className="relative flex-shrink-0 w-full" style={{ maxWidth: "330px" }}>
         {/* Outer Phone Frame */}
         <div className="relative rounded-[42px] border-[6px] border-[#1e1f24] bg-[#121316] shadow-[0_25px_60px_-15px_rgba(0,0,0,0.85),0_0_0_1px_rgba(255,255,255,0.08)] overflow-hidden">
           {/* Status bar / Notch */}
@@ -105,72 +108,59 @@ export function MobileAppShowcase({
       </div>
 
       {/* ═══════════════════════════════════════════════════
-          RIGHT SIDE: Navigation Arrows & Interactive Controls
+          INTERACTIVE CONTROLS UNDER PHONE EMULATOR
           ═══════════════════════════════════════════════════ */}
-      <div className="flex-1 flex flex-col justify-center gap-6 max-w-xl w-full">
-        {/* Header & Active Screen Counter */}
-        <div className="flex flex-col gap-2">
+      <div className="w-full flex flex-col gap-3.5 px-1 max-w-[330px]">
+        {/* Active Screen Counter & Controls Header */}
+        <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <span className="w-2 h-2 rounded-full bg-primary animate-pulse" />
-            <span className="text-xs uppercase tracking-[0.2em] font-bold text-primary">
-              App Screen Showcase
+            <span className="text-[11px] uppercase tracking-[0.15em] font-bold text-primary">
+              Screen {String(current + 1).padStart(2, "0")} / {String(images.length).padStart(2, "0")}
             </span>
           </div>
-          <h3 className="text-2xl md:text-3xl font-extrabold tracking-tight text-foreground flex items-baseline gap-3">
-            <span>Screen {String(current + 1).padStart(2, "0")}</span>
-            <span className="text-foreground/40 font-normal text-lg">
-              / {String(images.length).padStart(2, "0")}
-            </span>
-          </h3>
-          <p className="text-sm text-foreground/60 leading-relaxed">
-            Use the navigation arrows or click any screenshot preview below to view the application screens.
-          </p>
-        </div>
-
-        {/* Prominent Navigation Arrows on the RIGHT side */}
-        <div className="flex items-center gap-4">
-          <button
-            onClick={prev}
-            className="flex items-center gap-2.5 px-6 py-3.5 rounded-[10px] bg-white/5 hover:bg-primary/20 border border-primary/25 hover:border-primary/60 text-foreground hover:text-primary transition-all active:scale-95 group shadow-lg cursor-pointer"
-            aria-label="Previous screenshot"
-          >
-            <ChevronLeft size={20} className="group-hover:-translate-x-1 transition-transform" />
-            <span className="text-sm font-semibold tracking-wide">Previous</span>
-          </button>
-
-          <button
-            onClick={next}
-            className="flex items-center gap-2.5 px-7 py-3.5 rounded-[10px] bg-primary text-black hover:bg-gold-hover transition-all active:scale-95 group shadow-lg cursor-pointer font-bold"
-            aria-label="Next screenshot"
-          >
-            <span className="text-sm font-bold tracking-wide">Next</span>
-            <ChevronRight size={20} className="group-hover:translate-x-1 transition-transform" />
-          </button>
 
           {/* Pause / Play status toggle */}
           <button
             onClick={() => setIsPaused(!isPaused)}
-            className="w-11 h-11 rounded-[10px] bg-white/5 hover:bg-white/10 border border-white/10 flex items-center justify-center text-foreground/60 hover:text-foreground transition-all cursor-pointer"
+            className="w-8 h-8 rounded-[8px] bg-white/5 hover:bg-white/10 border border-white/10 flex items-center justify-center text-foreground/60 hover:text-foreground transition-all cursor-pointer"
             title={isPaused ? "Resume auto-slideshow" : "Pause auto-slideshow"}
             aria-label={isPaused ? "Resume auto-slideshow" : "Pause auto-slideshow"}
           >
-            {isPaused ? <Play size={16} /> : <Pause size={16} />}
+            {isPaused ? <Play size={13} /> : <Pause size={13} />}
           </button>
         </div>
 
-        {/* Thumbnail Navigator (showing all screens in project) */}
+        {/* Navigation Arrow Buttons */}
+        <div className="flex items-center gap-2.5 w-full">
+          <button
+            onClick={prev}
+            className="flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-[10px] bg-white/5 hover:bg-primary/20 border border-primary/25 hover:border-primary/60 text-foreground hover:text-primary transition-all active:scale-95 group shadow-sm cursor-pointer"
+            aria-label="Previous screenshot"
+          >
+            <ChevronLeft size={16} className="group-hover:-translate-x-0.5 transition-transform" />
+            <span className="text-xs font-semibold tracking-wide">Previous</span>
+          </button>
+
+          <button
+            onClick={next}
+            className="flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-[10px] bg-primary text-black hover:bg-gold-hover transition-all active:scale-95 group shadow-sm cursor-pointer font-bold"
+            aria-label="Next screenshot"
+          >
+            <span className="text-xs font-bold tracking-wide">Next</span>
+            <ChevronRight size={16} className="group-hover:translate-x-0.5 transition-transform" />
+          </button>
+        </div>
+
+        {/* Thumbnail Selector Grid */}
         {images.length > 1 && (
-          <div className="flex flex-col gap-3 pt-2">
-            <div className="flex items-center justify-between text-xs text-foreground/50 font-medium">
-              <span>All Available Screens ({images.length})</span>
-              <span>{isPaused ? "Paused" : "Auto-playing (4s)"}</span>
-            </div>
-            <div className="grid grid-cols-4 sm:grid-cols-6 md:grid-cols-4 lg:grid-cols-5 gap-2.5 max-h-[300px] overflow-y-auto pr-1">
+          <div className="flex flex-col gap-2 pt-1">
+            <div className="grid grid-cols-5 gap-1.5 max-h-[140px] overflow-y-auto pr-0.5">
               {images.map((img, i) => (
                 <button
                   key={i}
                   onClick={() => setCurrent(i)}
-                  className={`relative aspect-[576/1172] bg-black/40 rounded-[8px] overflow-hidden border-2 transition-all cursor-pointer ${
+                  className={`relative aspect-[576/1172] bg-black/40 rounded-[6px] overflow-hidden border transition-all cursor-pointer ${
                     i === current
                       ? "border-primary ring-2 ring-primary/40 scale-105 shadow-md opacity-100"
                       : "border-white/10 opacity-50 hover:opacity-90 hover:border-white/30"
@@ -182,30 +172,28 @@ export function MobileAppShowcase({
                     alt={`Screenshot ${i + 1}`}
                     fill
                     className="object-contain"
-                    sizes="70px"
+                    sizes="60px"
                     unoptimized
                   />
                 </button>
               ))}
             </div>
-          </div>
-        )}
 
-        {/* Progress Dots Track */}
-        {images.length > 1 && (
-          <div className="flex items-center gap-2 pt-1">
-            {images.map((_, i) => (
-              <button
-                key={i}
-                onClick={() => setCurrent(i)}
-                className={`h-1.5 rounded-full transition-all duration-300 ${
-                  i === current
-                    ? "w-8 bg-primary"
-                    : "w-2 bg-foreground/20 hover:bg-foreground/40"
-                }`}
-                aria-label={`Jump to screenshot ${i + 1}`}
-              />
-            ))}
+            {/* Progress Dots Track */}
+            <div className="flex items-center justify-center gap-1.5 pt-1">
+              {images.map((_, i) => (
+                <button
+                  key={i}
+                  onClick={() => setCurrent(i)}
+                  className={`h-1.5 rounded-full transition-all duration-300 ${
+                    i === current
+                      ? "w-6 bg-primary"
+                      : "w-1.5 bg-foreground/20 hover:bg-foreground/40"
+                  }`}
+                  aria-label={`Jump to screenshot ${i + 1}`}
+                />
+              ))}
+            </div>
           </div>
         )}
       </div>

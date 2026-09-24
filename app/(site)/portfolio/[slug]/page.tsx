@@ -1,6 +1,8 @@
+import { ProjectGallery } from "@/components/portfolio/ProjectGallery";
 import { VideoScrollLayout } from "@/components/services/VideoScrollLayout";
-import { getPublicProject } from "@/lib/public-data";
 import { clientMarkdownComponents } from "@/lib/markdown-components";
+import { extractImagesFromMarkdown, stripImagesFromMarkdown } from "@/lib/markdown-utils";
+import { getPublicProject } from "@/lib/public-data";
 import { TYPOGRAPHY } from "@/lib/typography";
 import { VIDEO_STATS } from "@/lib/videoStats";
 import { ArrowRight, ChevronLeft, ExternalLink, Github } from "lucide-react";
@@ -26,6 +28,10 @@ export default async function ProjectPage({ params }: { params: { slug: string }
   if (!project) {
       notFound();
   }
+
+  // Extract gallery images from markdown content & strip them for clean text rendering
+  const galleryImages = project.content ? extractImagesFromMarkdown(project.content) : [];
+  const textContent = project.content ? stripImagesFromMarkdown(project.content) : "";
 
   return (
     <VideoScrollLayout videoSrc={VIDEO_STATS.portfolio.src} videoStats={VIDEO_STATS.portfolio}>
@@ -115,8 +121,17 @@ export default async function ProjectPage({ params }: { params: { slug: string }
           </div>
         </section>
 
-        {/* Content Section */}
-        {project.content && (
+        {/* Image Gallery — auto-selects phone frame or browser frame based on category */}
+        {galleryImages.length > 0 && (
+          <ProjectGallery
+            images={galleryImages}
+            category={project.categoryRaw}
+            title={project.title}
+          />
+        )}
+
+        {/* Case Study Content (text only — images extracted to gallery above) */}
+        {textContent && (
           <section className="px-6">
             <div className="max-w-7xl mx-auto">
               <div className="bg-white/30 dark:bg-black/80 backdrop-blur-xl rounded-[10px] border border-primary/10 p-6 md:p-12 lg:p-16 shadow-[0_10px_40px_-10px_rgba(0,0,0,0.1)]">
@@ -125,7 +140,7 @@ export default async function ProjectPage({ params }: { params: { slug: string }
                     remarkPlugins={[remarkGfm]}
                     components={clientMarkdownComponents}
                   >
-                    {project.content}
+                    {textContent}
                   </ReactMarkdown>
                 </div>
               </div>

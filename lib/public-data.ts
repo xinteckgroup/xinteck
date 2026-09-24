@@ -19,6 +19,8 @@ export interface PublicProject {
     slug: string;
     title: string;
     category: string;
+    /** Raw enum value e.g. MOBILE_APP — used for category-aware rendering */
+    categoryRaw: string;
     description: string;
     tags: string[];
     year: string;
@@ -129,6 +131,7 @@ export async function getPublicProjects(): Promise<PublicProject[]> {
             slug: p.slug,
             title: p.title,
             category: p.category.replace(/_/g, ' '),
+            categoryRaw: p.category,
             description: p.description || "",
             tags: p.tags || [],
             year: p.completionDate ? p.completionDate.getFullYear().toString() : new Date().getFullYear().toString(),
@@ -143,6 +146,7 @@ export async function getPublicProjects(): Promise<PublicProject[]> {
                 slug: "fintech-revolution",
                 title: "Fintech Revolution (Demo)",
                 category: "Financial Tech",
+                categoryRaw: "WEB_DEV",
                 description: "System demonstration mode. Database unavailable.",
                 tags: ["Demo", "System"],
                 year: "2024",
@@ -166,6 +170,7 @@ export async function getPublicProject(slug: string): Promise<PublicProject | nu
             slug: p.slug,
             title: p.title,
             category: p.category.replace(/_/g, ' '),
+            categoryRaw: p.category,
             description: p.description || "",
             tags: p.tags || [],
             year: p.completionDate ? p.completionDate.getFullYear().toString() : new Date().getFullYear().toString(),
@@ -195,6 +200,7 @@ export async function getFeaturedProject(): Promise<PublicProject | null> {
                 slug: p.slug,
                 title: p.title,
                 category: p.category.replace(/_/g, ' '),
+                categoryRaw: p.category,
                 description: p.description || "",
                 tags: p.tags || [],
                 year: p.completionDate ? p.completionDate.getFullYear().toString() : new Date().getFullYear().toString(),
@@ -214,6 +220,7 @@ export async function getFeaturedProject(): Promise<PublicProject | null> {
         slug: "fintech-revolution",
         title: "Fintech Revolution",
         category: "Financial Tech",
+        categoryRaw: "WEB_DEV",
         description: "A complete overhaul of a legacy banking system, migrating 5M+ users to a secure, cloud-native infrastructure with zero downtime.",
         tags: ["Cloud", "Security", "Migration"],
         year: "2024",

@@ -68,7 +68,10 @@ export type AuditAction =
     | "newsletter.campaign.update"
     | "newsletter.campaign.delete"
     | "newsletter.campaign.send"
-    | "newsletter.unsubscribe.self";
+    | "newsletter.unsubscribe.self"
+    | "announcement.create"
+    | "announcement.update"
+    | "announcement.delete";
 
 interface AuditLogParams {
     action: AuditAction;

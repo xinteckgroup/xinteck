@@ -616,3 +616,24 @@ model CareerPosition {
   @@index([status])
   @@index([department])
 }
+
+// ═══════════════════════════════════════════════════════════════
+// ANNOUNCEMENTS (Public Banner Ticker)
+// ═══════════════════════════════════════════════════════════════
+
+model Announcement {
+  id        String  @id @default(cuid())
+  text      String
+  icon      String  @default("Zap") // Lucide icon name
+  highlight Boolean @default(false) // Gold accent vs muted
+  link      String? // Optional CTA URL
+  isActive  Boolean @default(true)
+  sortOrder Int     @default(0)
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime? // Soft delete
+
+  @@index([isActive])
+  @@index([sortOrder])
+}

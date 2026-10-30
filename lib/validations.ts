@@ -183,3 +183,52 @@ export const settingsStateSchema = z.object({
     vercelOidcToken: z.string().trim().optional(),
     geminiApiKey: z.string().trim().optional(),
 });
+
+// ═══════════════════════════════════════════════════════════════
+// DISCOVERY CALL SCHEMAS
+// ═══════════════════════════════════════════════════════════════
+
+export const bookingRequestSchema = z.object({
+    name: z.string().trim().min(2, "Name must be at least 2 characters").max(100, "Name too long"),
+    email: z.string().trim().email("Please enter a valid email address"),
+    phone: z.string().trim().min(8, "Phone number must be at least 8 digits").max(20, "Phone number too long"),
+    company: z.string().trim().max(100, "Company name too long").optional().nullable(),
+    service: z.string().trim().max(100, "Service name too long").optional().nullable(),
+    message: z.string().trim().max(2000, "Message too long (max 2000 characters)").optional().nullable(),
+    date: z.string().trim().regex(/^\d{4}-\d{2}-\d{2}$/, "Date must be YYYY-MM-DD"),
+    startTime: z.string().trim().regex(/^\d{2}:\d{2}$/, "Time must be HH:MM in 24h format"),
+    honeypot: z.string().max(0, "Bot detected").optional(),
+    captchaToken: z.string().trim().optional(),
+    captchaAnswer: z.union([z.string(), z.number()]).optional(),
+});
+
+export const confirmBookingSchema = z.object({
+    bookingId: z.string().min(1, "Booking ID is required"),
+    meetLink: z.string().trim().url("Please provide a valid Google Meet URL").min(1, "Google Meet link is required"),
+    adminNotes: z.string().trim().max(2000, "Notes too long").optional().nullable(),
+});
+
+export const cancelBookingSchema = z.object({
+    bookingId: z.string().min(1, "Booking ID is required"),
+    reason: z.string().trim().min(3, "Cancellation reason is required").max(1000, "Reason too long"),
+});
+
+export const rescheduleBookingSchema = z.object({
+    bookingId: z.string().min(1, "Booking ID is required"),
+    newDate: z.string().trim().regex(/^\d{4}-\d{2}-\d{2}$/, "Date must be YYYY-MM-DD"),
+    newStartTime: z.string().trim().regex(/^\d{2}:\d{2}$/, "Time must be HH:MM in 24h format"),
+    reason: z.string().trim().max(1000, "Reason too long").optional().nullable(),
+});
+
+export const addBlockedDateSchema = z.object({
+    date: z.string().trim().regex(/^\d{4}-\d{2}-\d{2}$/, "Date must be YYYY-MM-DD"),
+    reason: z.string().trim().min(2, "Reason required").max(200, "Reason too long"),
+});
+
+export const updateAvailabilityDaySchema = z.object({
+    dayOfWeek: z.number().int().min(0).max(6),
+    startTime: z.string().trim().regex(/^\d{2}:\d{2}$/, "Time must be HH:MM in 24h format"),
+    endTime: z.string().trim().regex(/^\d{2}:\d{2}$/, "Time must be HH:MM in 24h format"),
+    isActive: z.boolean(),
+});
+

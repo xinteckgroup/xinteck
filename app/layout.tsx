@@ -12,18 +12,33 @@ const outfit = Outfit({
 
 export const metadata: Metadata = {
   title: {
-    default: "Xinteck | Software Development Company in Kenya",
+    default: "Xinteck | Software Development & Graphic Design Company in Kenya",
     template: "%s | Xinteck",
   },
-  description: "Xinteck is a premium software development company in Nairobi, Kenya. We build high-performing websites, mobile apps, and custom software for businesses across East Africa.",
-  keywords: ["software development Kenya", "web development Nairobi", "mobile app development Kenya", "custom software Kenya", "UI/UX design Nairobi", "Next.js developer Kenya", "software company East Africa", "Xinteck"],
+  description: "Xinteck builds M-Pesa-ready websites, mobile apps, custom software, and graphic design for businesses in Kenya. eTIMS-compliant. Based in Nairobi.",
+  keywords: [
+    "software development Kenya",
+    "web development Nairobi",
+    "mobile app development Kenya",
+    "custom software Kenya",
+    "UI/UX design Nairobi",
+    "graphic design Kenya",
+    "business card design Nairobi",
+    "M-Pesa integration developer",
+    "eTIMS integration Kenya",
+    "Next.js developer Kenya",
+    "software company East Africa",
+    "Xinteck",
+    "logo design Kenya",
+    "brand identity Nairobi"
+  ],
   metadataBase: new URL("https://xinteck.co.ke"),
   alternates: {
     canonical: "/",
   },
   openGraph: {
-    title: "Xinteck | Software Development Company in Kenya",
-    description: "Premium web, mobile, and custom software solutions for modern businesses in Kenya and East Africa.",
+    title: "Xinteck | Software Development & Graphic Design Company in Kenya",
+    description: "M-Pesa-ready websites, mobile apps, custom software, and graphic design for businesses in Kenya. eTIMS-compliant. Based in Nairobi.",
     url: "https://xinteck.co.ke",
     siteName: "Xinteck",
     locale: "en_KE",
@@ -31,8 +46,8 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Xinteck | Software Development Company in Kenya",
-    description: "Premium web, mobile, and custom software solutions for modern businesses in Kenya and East Africa.",
+    title: "Xinteck | Software Development & Graphic Design Company in Kenya",
+    description: "M-Pesa-ready websites, mobile apps, custom software, and graphic design for businesses in Kenya. eTIMS-compliant. Based in Nairobi.",
   },
   robots: {
     index: true,
@@ -67,7 +82,14 @@ export default function RootLayout({
               name: "Xinteck",
               url: "https://xinteck.co.ke",
               logo: "https://xinteck.co.ke/icon.png",
-              description: "Premium software development company in Nairobi, Kenya. Web development, mobile apps, custom software, and UI/UX design.",
+              description: "M-Pesa-ready websites, mobile apps, custom software, and graphic design for businesses in Kenya. eTIMS-compliant. Based in Nairobi.",
+              foundingDate: "2018",
+              telephone: "+254782063736",
+              priceRange: "KES 5,000 - KES 5,000,000",
+              areaServed: {
+                "@type": "Country",
+                name: "Kenya",
+              },
               address: {
                 "@type": "PostalAddress",
                 addressLocality: "Nairobi",
@@ -75,9 +97,22 @@ export default function RootLayout({
               },
               contactPoint: {
                 "@type": "ContactPoint",
+                telephone: "+254782063736",
                 email: "info@xinteck.co.ke",
                 contactType: "customer service",
                 availableLanguage: ["English", "Swahili"],
+              },
+              hasOfferCatalog: {
+                "@type": "OfferCatalog",
+                name: "Services",
+                itemListElement: [
+                  { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Web Development" } },
+                  { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Mobile App Development" } },
+                  { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Custom Software Development" } },
+                  { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "UI/UX Design" } },
+                  { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Cloud & DevOps" } },
+                  { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Graphic Design" } },
+                ],
               },
               sameAs: [],
             }),

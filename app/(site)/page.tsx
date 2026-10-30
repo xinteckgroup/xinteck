@@ -19,6 +19,7 @@ export default async function Home() {
       videoStats={VIDEO_STATS.homepage}
     >
       <Hero />
+
       <ServicesFeatured />
       
       {/* Featured Project Teaser */}
@@ -249,16 +250,24 @@ export default async function Home() {
           <div className="flex flex-col gap-4">
             {[
               {
+                q: "Do you integrate with M-Pesa and Safaricom Daraja APIs?",
+                a: "Yes. M-Pesa Daraja STK Push, C2B, B2C, and automated instant payment confirmation are standard in all our web and mobile applications.",
+              },
+              {
+                q: "Are your platforms eTIMS and KRA compliant?",
+                a: "Absolutely. We build direct eTIMS electronic tax invoicing APIs into our ERP, POS, and custom software systems, ensuring complete compliance with KRA regulations from day one.",
+              },
+              {
                 q: "What is your typical project timeline?",
-                a: "Timelines vary depending on complexity. Small projects take 4-6 weeks, while large-scale enterprise solutions typically range from 3-6 months.",
+                a: "Timelines vary depending on complexity. Identity and card design takes 48-72 hours, standard websites 3-4 weeks, while complex full-stack or mobile platforms typically range from 6-12 weeks.",
               },
               {
-                q: "Do you offer post-launch support?",
-                a: "Absolutely. We provide dedicated support packages for maintenance, updates, and 24/7 monitoring to ensure 99.99% uptime.",
+                q: "What payment currencies and terms do you offer?",
+                a: "We bill in Kenyan Shillings (KES) with phased milestone payments (e.g., 40% kickoff, 30% beta demo, 30% launch handover). We accept M-Pesa Paybill, bank transfers, and cards.",
               },
               {
-                q: "Can you work with our existing internal team?",
-                a: "Yes, we often act as an extension of internal teams, providing specialized expertise in cloud architecture, DevOps, or UI/UX.",
+                q: "Do you offer post-launch support and hosting?",
+                a: "Yes. Every project includes a 30-day post-launch warranty, and we provide ongoing maintenance, cloud backups, and DevOps monitoring to guarantee 99.9% uptime.",
               },
             ].map((faq, i) => (
               <div 
@@ -294,7 +303,7 @@ export default async function Home() {
           </p>
           <div className="flex justify-center gap-4 mt-8">
             <Link 
-              href="/contact"
+              href="/book"
               className={`${TYPOGRAPHY.button} px-12 py-4 bg-primary text-primary-foreground rounded-[10px] shadow-[0_0_30px_rgba(212,175,55,0.3)] hover:shadow-[0_0_50px_rgba(212,175,55,0.5)] hover:scale-105 transition-all text-center`}
             >
               Book a Discovery Call

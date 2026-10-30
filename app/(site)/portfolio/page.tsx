@@ -94,7 +94,7 @@ export default async function PortfolioPage() {
               href="/contact"
               className={`inline-flex items-center gap-2 px-8 md:px-12 py-4 md:py-5 bg-foreground text-background font-black rounded-[10px] hover:bg-gold-hover transition-all ${TYPOGRAPHY.button}`}
             >
-              Start Your Journey
+              Start a Project
             </Link>
           </div>
         </section>

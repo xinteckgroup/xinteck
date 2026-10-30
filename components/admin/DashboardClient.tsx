@@ -10,16 +10,31 @@ import { Area, AreaChart, Bar, BarChart, CartesianGrid, ResponsiveContainer, Too
 import { TYPOGRAPHY } from "@/lib/typography";
 import { DashboardStat, RecentActivity } from "@/types";
 
+import { BookingsDashboardWidget } from "@/components/admin/BookingsDashboardWidget";
+
 // Prop types for real data
 interface DashboardClientProps {
   stats: DashboardStat[];
   activity: RecentActivity[];
   analytics?: any[]; 
+  bookingStats?: {
+    pendingCount: number;
+    confirmedCount: number;
+    completedCount: number;
+    todayCount: number;
+    totalCount: number;
+    nextCall?: {
+      name: string;
+      date: string;
+      startTime: string;
+      service?: string;
+    } | null;
+  } | null;
 }
 
 // Fallback logic handled on the Server Action
 
-export function DashboardClient({ stats, activity, analytics = [] }: DashboardClientProps) {
+export function DashboardClient({ stats, activity, analytics = [], bookingStats }: DashboardClientProps) {
   const [chartType, setChartType] = useState<"traffic" | "conversion">("traffic");
   const [timeRange, setTimeRange] = useState("7d");
 
@@ -52,6 +67,13 @@ export function DashboardClient({ stats, activity, analytics = [] }: DashboardCl
           />
         ))}
       </div>
+
+      {/* Discovery Calls Highlight Widget */}
+      {bookingStats && (
+        <div className="w-full">
+          <BookingsDashboardWidget stats={bookingStats} nextCall={bookingStats.nextCall} />
+        </div>
+      )}
 
       {/* Quick Actions */}
       <div>

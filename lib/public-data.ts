@@ -31,6 +31,16 @@ export interface PublicProject {
 }
 
 
+export interface PricingTier {
+    name: string;
+    price: string;
+    description: string;
+    includes: string[];
+    turnaround: string;
+    popular?: boolean;
+    note?: string;
+}
+
 export interface PublicService {
     slug: string;
     title: string;
@@ -47,7 +57,7 @@ export interface PublicService {
     section2?: { title?: string; description?: string };
     section3?: { title?: string; description?: string };
     section4?: { title?: string; steps?: any[] };
-    buyNowSection?: { title?: string; description?: string; button?: string };
+    buyNowSection?: { title?: string; description?: string; button?: string; pricingTiers?: PricingTier[] };
     freshnessSection?: { title?: string; description?: string };
 }
 
@@ -245,6 +255,7 @@ export async function getPublicServices() {
             description: s.description,
             image: s.image,
             features: s.features,
+            price: s.price,
         }));
     } catch (error) {
         console.error("Failed to fetch services:", error);
@@ -288,7 +299,8 @@ export async function getPublicService(slug: string): Promise<PublicService | nu
             buyNowSection: {
                 title: buyNow.title || "READY TO BUILD?",
                 description: buyNow.description || "Let's discuss your project.",
-                button: buyNow.button || "Start Now"
+                button: buyNow.button || "Start Now",
+                pricingTiers: Array.isArray(buyNow.pricingTiers) ? buyNow.pricingTiers : undefined,
             }
         };
     } catch (error) {
@@ -319,6 +331,7 @@ export async function getServiceNavItems(): Promise<{ name: string; slug: string
             { name: "Custom Software Development", slug: "custom-software-development" },
             { name: "UI/UX Design", slug: "ui-ux-design" },
             { name: "Cloud & DevOps", slug: "cloud-devops" },
+            { name: "Graphic Design", slug: "graphic-design" },
         ];
     }
 }

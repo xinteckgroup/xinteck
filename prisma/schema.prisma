@@ -41,6 +41,7 @@ model User {
   invitations     Invitation[]
   assignedLeads   ContactSubmission[] @relation("AssignedLeads")
   leadNotes       LeadNote[]
+  assignedBookings DiscoveryBooking[] @relation("AssignedBookings")
 
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
@@ -637,3 +638,94 @@ model Announcement {
   @@index([isActive])
   @@index([sortOrder])
 }
+
+// ═══════════════════════════════════════════════════════════════
+// DISCOVERY CALL BOOKINGS
+// ═══════════════════════════════════════════════════════════════
+
+model DiscoveryBooking {
+  id            String          @id @default(cuid())
+  
+  // Customer Info
+  name          String
+  email         String
+  phone         String
+  company       String?         // Optional company name
+  service       String?         // Which service they're interested in
+  message       String?         @db.Text  // Brief description of what they want to discuss
+  
+  // Scheduling
+  date          DateTime        @db.Date  // The calendar date (YYYY-MM-DD)
+  startTime     String          // "09:00", "09:35", etc. (EAT)
+  endTime       String          // "09:15", "09:50", etc. (EAT)
+  timezone      String          @default("Africa/Nairobi")
+  
+  // Google Meet
+  meetLink      String?         // The Google Meet URL for this call
+  
+  // Status Machine
+  status        BookingStatus   @default(PENDING)
+  
+  // Admin Management & Host Assignment
+  adminNotes    String?         @db.Text
+  confirmedBy   String?         // Admin user ID who confirmed
+  assignedToId  String?         // Staff/Admin user assigned to host the call
+  assignedTo    User?           @relation("AssignedBookings", fields: [assignedToId], references: [id], onDelete: SetNull)
+  cancelledBy   String?         // "admin" or "customer"
+  cancelReason  String?
+  
+  // Email Tracking
+  confirmationEmailSent  Boolean @default(false)
+  reminderEmailSent      Boolean @default(false)
+  
+  // Anti-spam
+  ipAddress     String?
+  userAgent     String?
+  
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+  
+  // Prevent double booking: only one active/held booking per date+time slot
+  @@unique([date, startTime], name: "unique_booking_slot")
+  @@index([status])
+  @@index([date])
+  @@index([email])
+  @@index([assignedToId])
+  @@index([createdAt])
+}
+
+enum BookingStatus {
+  PENDING       // Customer booked, awaiting admin confirmation
+  CONFIRMED     // Admin confirmed, Meet link assigned
+  CANCELLED     // Cancelled by admin or customer
+  COMPLETED     // Call happened
+  NO_SHOW       // Customer didn't show up
+  RESCHEDULED   // Moved to a different slot
+}
+
+model BookingAvailability {
+  id          String   @id @default(cuid())
+  
+  dayOfWeek   Int      // 0 = Sunday, 1 = Monday, ..., 6 = Saturday
+  startTime   String   // "09:00" (EAT)
+  endTime     String   // "17:00" (EAT)
+  isActive    Boolean  @default(true)
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  @@unique([dayOfWeek])
+  @@index([isActive])
+}
+
+model BookingBlockedDate {
+  id          String   @id @default(cuid())
+  
+  date        DateTime @db.Date    // Specific date to block (holidays, unavailable days)
+  reason      String?              // "Public Holiday", "Out of Office", etc.
+  
+  createdAt   DateTime @default(now())
+  
+  @@unique([date])
+}
+

@@ -7,6 +7,7 @@ import { Role } from "@prisma/client";
 import { motion } from "framer-motion";
 import {
     Briefcase,
+    Calendar,
     ChevronLeft,
     ChevronRight,
     FileText,
@@ -38,6 +39,7 @@ const SIDEBAR_ITEMS = [
   { label: "Services", icon: Briefcase, href: "/admin/services" },
   { label: "Files", href: "/admin/files", icon: FolderOpen },
   { label: "Leads", href: "/admin/leads", icon: Target },
+  { label: "Bookings", href: "/admin/bookings", icon: Calendar },
   { label: "Newsletter", href: "/admin/newsletter", icon: Mail },
   { label: "Careers", href: "/admin/careers", icon: GraduationCap },
   { label: "Announcements", href: "/admin/announcements", icon: Megaphone },

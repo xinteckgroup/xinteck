@@ -22,6 +22,7 @@ interface PublicService {
     description: string;
     features: string[];
     image?: string | null;
+    price?: string | null;
 }
 
 export default function ServicesClient({ services }: { services: PublicService[] }) {
@@ -96,12 +97,19 @@ export default function ServicesClient({ services }: { services: PublicService[]
                                 ))}
                             </div>
                         </div>
-                        <Link
-                            href={`/services/${service.slug}`}
-                            className={`${TYPOGRAPHY.button} mt-8 pt-6 border-t border-primary/10 flex items-center gap-2 text-gold transition-all w-fit hover:gap-4`}
-                        >
-                            Explore Details <ChevronRight size={20} />
-                        </Link>
+                        <div className="mt-8 pt-6 border-t border-primary/10 flex flex-wrap items-center justify-between gap-4">
+                            <Link
+                                href={`/services/${service.slug}`}
+                                className={`${TYPOGRAPHY.button} flex items-center gap-2 text-gold transition-all w-fit hover:gap-4`}
+                            >
+                                Explore Details <ChevronRight size={20} />
+                            </Link>
+                            {service.price && (
+                                <span className={`${TYPOGRAPHY.badge} px-3 py-1.5 rounded-[10px] bg-primary/10 text-primary border border-primary/20 font-semibold tracking-wide`}>
+                                    {service.price}
+                                </span>
+                            )}
+                        </div>
                     </div>
                 </div>
 

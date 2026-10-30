@@ -162,7 +162,7 @@ export default async function ProjectPage({ params }: { params: { slug: string }
                 href="/contact"
                 className={`${TYPOGRAPHY.button} inline-flex items-center gap-2 px-8 md:px-12 py-4 md:py-5 bg-foreground text-background rounded-[10px] hover:bg-primary hover:text-primary-foreground transition-all`}
               >
-                Start Your Project <ArrowRight size={16} />
+                Start a Project <ArrowRight size={16} />
               </Link>
             </div>
           </div>

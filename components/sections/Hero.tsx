@@ -2,7 +2,7 @@
 
 import { TYPOGRAPHY } from "@/lib/typography";
 import { motion, useScroll, useTransform } from "framer-motion";
-import { ArrowRight, Server, Shield } from "lucide-react";
+import { ArrowRight, Server, Shield, Video } from "lucide-react";
 import Link from "next/link";
 import { useRef } from "react";
 
@@ -50,41 +50,51 @@ export function Hero() {
               <span className="relative inline-flex rounded-full h-2 w-2 bg-primary"></span>
             </span>
             <span className={`${TYPOGRAPHY.badge} text-primary`}>
-              Accepting Waitlist for Q2
+              Now Accepting New Projects
             </span>
           </div>
 
           <h1 className="text-3xl md:text-5xl lg:text-6xl font-black tracking-tighter text-white leading-[0.95]">
-            WE <span className="text-white/40">ENGINEER YOUR</span> <br />
+            WE BUILD <span className="text-white/40">THE SOFTWARE</span> <br />
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary via-yellow-200 to-primary animate-gradient-x">
-              DIGITAL FUTURE
+              YOUR BUSINESS NEEDS.
             </span>
           </h1>
 
           <p className={`${TYPOGRAPHY.pageSubtitle} text-white max-w-lg`}>
-            Xinteck is an elite software development collective. We build scalable platforms, intuitive interfaces, and robust infrastructure for the next generation of business.
+            M-Pesa-ready platforms. eTIMS-compliant systems. Enterprise-grade mobile apps. We build the digital infrastructure that powers your business — from startup to scale.
           </p>
 
-          <div className="flex flex-wrap gap-4 mt-2">
+          <div className="flex flex-wrap items-center gap-3 md:gap-4 mt-2">
             <Link
-              href="/contact"
-              className="group relative overflow-hidden rounded-[10px] transition-all"
+              href="/book"
+              className="group relative overflow-hidden rounded-[12px] transition-all"
             >
-              <div className={`${TYPOGRAPHY.button} relative z-10 flex items-center gap-2 px-8 py-3 bg-primary text-black shadow-[0_0_20px_rgba(212,175,55,0.3)] hover:shadow-[0_0_40px_rgba(212,175,55,0.5)] transition-shadow`}>
-                Start a Project
-                <ArrowRight className="group-hover:translate-x-1 transition-transform" size={18} />
+              <div className={`${TYPOGRAPHY.button} relative z-10 flex items-center gap-2.5 px-7 md:px-8 py-3.5 md:py-4 bg-primary text-black font-black shadow-[0_0_25px_rgba(212,175,55,0.45)] hover:shadow-[0_0_45px_rgba(212,175,55,0.85)] hover:scale-105 transition-all text-sm md:text-base tracking-wide`}>
+                <Video size={18} className="text-black shrink-0" />
+                <span>Book Free 15-Min Call</span>
+                <ArrowRight className="group-hover:translate-x-1.5 transition-transform" size={18} />
               </div>
             </Link>
+
+            <Link
+              href="/contact"
+              className="group relative overflow-hidden rounded-[12px] transition-all"
+            >
+              <div className={`${TYPOGRAPHY.button} relative z-10 flex items-center gap-2 px-6 md:px-7 py-3.5 md:py-4 border border-white/20 hover:border-white/40 bg-white/5 hover:bg-white/10 text-white transition-all text-sm md:text-base shadow-sm`}>
+                Start a Project
+              </div>
+            </Link>
+
             <Link
               href="/portfolio"
-              className="group"
+              className="group hidden sm:block"
             >
               <div
-                className="px-8 py-3 rounded-[10px] border-2 border-primary bg-white/30 dark:bg-black/70 hover:scale-105 transition-transform animate-gold-pulse"
+                className="px-6 py-3.5 md:py-4 rounded-[12px] border border-white/20 hover:border-white/40 bg-white/5 hover:bg-white/10 transition-all"
               >
-                <span className={`${TYPOGRAPHY.button} text-black dark:text-white flex items-center gap-2`}>
+                <span className={`${TYPOGRAPHY.button} text-white/80 hover:text-white flex items-center gap-2 text-sm`}>
                   View Our Work
-                  <ArrowRight className="group-hover:translate-x-1 transition-transform" size={18} />
                 </span>
               </div>
             </Link>

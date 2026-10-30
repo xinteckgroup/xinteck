@@ -1,12 +1,12 @@
 "use client";
 
 import { VideoScrollLayout } from "@/components/services/VideoScrollLayout";
-import { PublicService } from "@/lib/public-data";
+import { PublicService, PricingTier } from "@/lib/public-data";
 import { SERVICE_UI_MAP } from "@/lib/service-ui-map";
 import { TYPOGRAPHY } from "@/lib/typography";
 import { VIDEO_STATS } from "@/lib/videoStats";
 import { motion } from "framer-motion";
-import { ArrowRight, CheckCircle2, Code } from "lucide-react"; // Default icon
+import { ArrowRight, CheckCircle2, Clock, Code, Star, Video } from "lucide-react"; // Default icon
 import Link from "next/link";
 
 export function ServicePageClient({ service }: { service: PublicService }) {
@@ -68,7 +68,7 @@ export function ServicePageClient({ service }: { service: PublicService }) {
                   href="/contact"
                   className={`${TYPOGRAPHY.button} group flex items-center gap-2 px-6 md:px-8 py-3 md:py-4 bg-primary text-primary-foreground rounded-[10px] hover:bg-primary/90 transition-all`}
                 >
-                  Start Your Project
+                  Start a Project
                   <ArrowRight className="group-hover:translate-x-1 transition-transform" size={18} />
                 </Link>
                 <Link
@@ -247,6 +247,105 @@ export function ServicePageClient({ service }: { service: PublicService }) {
         </section>
         )}
 
+        {/* Pricing Packages */}
+        {service.buyNowSection?.pricingTiers && service.buyNowSection.pricingTiers.length > 0 && (
+          <section className="px-6 py-6 md:py-12" id="pricing">
+            <div className="max-w-7xl mx-auto">
+              <div className="text-center max-w-3xl mx-auto mb-12 md:mb-16 flex flex-col gap-4 md:gap-6 bg-white/30 dark:bg-black/80 backdrop-blur-xl rounded-[10px] p-6 md:p-8 shadow-lg">
+                <h2 className={`${TYPOGRAPHY.tableHeader} text-primary`}>
+                  Transparent Pricing
+                </h2>
+                <h3 className={`${TYPOGRAPHY.pageTitle} text-foreground`}>
+                  CHOOSE YOUR PACKAGE.
+                </h3>
+                <p className={`${TYPOGRAPHY.body} text-foreground/70`}>
+                  Clear pricing for every deliverable. No hidden fees.
+                </p>
+              </div>
+
+              <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+                {service.buyNowSection.pricingTiers.map((tier: PricingTier, i: number) => (
+                  <motion.div
+                    key={tier.name}
+                    initial={{ opacity: 0, y: 30 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ delay: i * 0.12 }}
+                    className={`relative flex flex-col rounded-[10px] backdrop-blur-xl shadow-lg overflow-hidden transition-all hover:shadow-2xl hover:-translate-y-1 ${
+                      tier.popular
+                        ? "bg-primary/5 dark:bg-primary/10 border-2 border-primary ring-1 ring-primary/20"
+                        : "bg-white/30 dark:bg-black/80 border border-border/50"
+                    }`}
+                  >
+                    {/* Popular Badge */}
+                    {tier.popular && (
+                      <div className="absolute top-0 right-0 bg-primary text-primary-foreground px-4 py-1.5 text-xs font-bold uppercase tracking-wider rounded-bl-[10px] flex items-center gap-1.5">
+                        <Star size={12} fill="currentColor" />
+                        Most Popular
+                      </div>
+                    )}
+
+                    <div className="flex flex-col gap-5 p-6 md:p-8 flex-1">
+                      {/* Tier Name & Price */}
+                      <div className="flex flex-col gap-2">
+                        <h4 className={`${TYPOGRAPHY.cardTitle} text-foreground pr-20`}>
+                          {tier.name}
+                        </h4>
+                        <div className="flex items-baseline gap-1">
+                          <span className="text-2xl md:text-3xl font-black text-primary tracking-tight">
+                            {tier.price}
+                          </span>
+                        </div>
+                        <p className={`${TYPOGRAPHY.body} text-foreground/60 text-sm leading-relaxed`}>
+                          {tier.description}
+                        </p>
+                      </div>
+
+                      {/* Includes List */}
+                      <div className="flex flex-col gap-2.5 flex-1">
+                        {tier.includes.map((item: string) => (
+                          <div key={item} className="flex items-start gap-2.5">
+                            <CheckCircle2 className="text-primary mt-0.5 shrink-0" size={16} />
+                            <span className="text-sm text-foreground/80 leading-snug">{item}</span>
+                          </div>
+                        ))}
+                      </div>
+
+                      {/* Turnaround */}
+                      <div className="flex items-center gap-2 text-foreground/60 text-sm pt-2 border-t border-border/30">
+                        <Clock size={14} className="text-primary" />
+                        <span className="font-medium">{tier.turnaround}</span>
+                      </div>
+
+                      {/* Note (e.g. "Design only — printing not included.") */}
+                      {tier.note && (
+                        <p className="text-xs text-foreground/50 italic">
+                          {tier.note}
+                        </p>
+                      )}
+                    </div>
+
+                    {/* CTA */}
+                    <div className="px-6 md:px-8 pb-6 md:pb-8">
+                      <Link
+                        href={`/contact?service=${encodeURIComponent(service.title)}&package=${encodeURIComponent(tier.name)}`}
+                        className={`${TYPOGRAPHY.button} w-full flex items-center justify-center gap-2 py-3 rounded-[10px] transition-all text-sm ${
+                          tier.popular
+                            ? "bg-primary text-primary-foreground hover:bg-primary/90"
+                            : "bg-foreground/5 text-foreground hover:bg-foreground/10 border border-border/50"
+                        }`}
+                      >
+                        Get Started
+                        <ArrowRight size={16} />
+                      </Link>
+                    </div>
+                  </motion.div>
+                ))}
+              </div>
+            </div>
+          </section>
+        )}
+
         {/* CTA Section */}
         <section className="px-6 mb-12 md:mb-20">
           <div className="max-w-7xl mx-auto bg-white/30 dark:bg-black/80 backdrop-blur-xl rounded-[10px] p-8 md:p-24 text-center shadow-lg">
@@ -256,13 +355,22 @@ export function ServicePageClient({ service }: { service: PublicService }) {
             <p className={`${TYPOGRAPHY.pageSubtitle} text-foreground/80 max-w-2xl mx-auto mb-8 md:mb-10`}>
               {service.buyNowSection?.description || "Let's discuss your project."}
             </p>
-            <Link 
-              href="/contact"
-              className={`${TYPOGRAPHY.button} inline-flex items-center gap-2 px-8 md:px-12 py-4 md:py-5 bg-primary text-primary-foreground rounded-[10px] hover:bg-primary/90 transition-all`}
-            >
-              {service.buyNowSection?.button || "Start Now"}
-              <ArrowRight size={20} />
-            </Link>
+            <div className="flex flex-wrap items-center justify-center gap-4">
+              <Link 
+                href="/book"
+                className={`${TYPOGRAPHY.button} inline-flex items-center gap-2 px-8 md:px-10 py-4 md:py-5 bg-primary text-black font-extrabold rounded-[10px] shadow-[0_0_25px_rgba(212,175,55,0.4)] hover:shadow-[0_0_35px_rgba(212,175,55,0.7)] hover:scale-105 transition-all text-sm md:text-base`}
+              >
+                <Video size={18} className="text-black" />
+                <span>Book Free 15-Min Call</span>
+              </Link>
+              <Link 
+                href="/contact"
+                className={`${TYPOGRAPHY.button} inline-flex items-center gap-2 px-8 md:px-10 py-4 md:py-5 border border-white/20 hover:border-white/40 text-foreground rounded-[10px] hover:bg-white/5 transition-all text-sm md:text-base`}
+              >
+                {service.buyNowSection?.button || "Start a Project"}
+                <ArrowRight size={18} />
+              </Link>
+            </div>
           </div>
         </section>
       </div>

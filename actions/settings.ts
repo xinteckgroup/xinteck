@@ -176,14 +176,18 @@ export async function INTERNAL_getSecret(key: string): Promise<string | null> {
     }
 
     // Fallback to Env
-    if (key === "CLOUDINARY_CLOUD_NAME" && process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME) {
+    const upperKey = key.toUpperCase();
+    if (upperKey === "CLOUDINARY_CLOUD_NAME" && process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME) {
         return process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME;
     }
-    if (key === "CLOUDINARY_API_KEY" && process.env.NEXT_PUBLIC_CLOUDINARY_API_KEY) {
-        return process.env.NEXT_PUBLIC_CLOUDINARY_API_KEY;
+    if (upperKey === "CLOUDINARY_API_KEY" && (process.env.CLOUDINARY_API_KEY || process.env.NEXT_PUBLIC_CLOUDINARY_API_KEY)) {
+        return process.env.CLOUDINARY_API_KEY || process.env.NEXT_PUBLIC_CLOUDINARY_API_KEY || null;
     }
-    if (key === "CLOUDINARY_API_SECRET" && process.env.NEXT_PUBLIC_CLOUDINARY_API_SECRET) {
-        return process.env.NEXT_PUBLIC_CLOUDINARY_API_SECRET;
+    if (upperKey === "CLOUDINARY_API_SECRET" && (process.env.CLOUDINARY_API_SECRET || process.env.NEXT_PUBLIC_CLOUDINARY_API_SECRET)) {
+        return process.env.CLOUDINARY_API_SECRET || process.env.NEXT_PUBLIC_CLOUDINARY_API_SECRET || null;
     }
-    return process.env[key] || null;
+    if (upperKey === "RESEND_API_KEY") {
+        return process.env.RESEND_API_KEY || process.env.RESEND_KI || null;
+    }
+    return process.env[key] || process.env[upperKey] || null;
 }

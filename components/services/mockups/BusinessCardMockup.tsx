@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { PenTool } from "lucide-react";
+import { PenTool, RotateCw } from "lucide-react";
 import Image from "next/image";
 import { useState } from "react";
 
@@ -14,8 +14,8 @@ interface MockupProps {
     };
 }
 
-const CARD_FRONT = "/images/services/business-card-front.webp";
-const CARD_BACK = "/images/services/business-card-back.webp";
+const CARD_FRONT = "/images/services/bs-card-front.webp";
+const CARD_BACK = "/images/services/bs-card-back.webp";
 
 export function BusinessCardMockup({ imageSrc, service }: MockupProps) {
     const [isFlipped, setIsFlipped] = useState(false);
@@ -65,16 +65,19 @@ export function BusinessCardMockup({ imageSrc, service }: MockupProps) {
                 </div>
 
                 {/* Flip Indicator */}
-                <motion.p
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ delay: 1.5 }}
-                    className="mt-4 text-center select-none"
+                <motion.div
+                    initial={{ opacity: 0, y: 4 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.8 }}
+                    className="mt-4 flex items-center justify-center select-none"
                 >
-                    <span className="text-[10px] md:text-xs text-foreground/40 font-medium uppercase tracking-widest">
-                        {isFlipped ? "Tap to see front" : "Tap to flip"}
+                    <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-background/90 dark:bg-card/90 backdrop-blur-md border border-primary/30 text-foreground shadow-sm">
+                        <RotateCw size={11} className="text-primary animate-spin-slow" />
+                        <span className="text-[10px] md:text-xs font-semibold uppercase tracking-wider text-foreground">
+                            {isFlipped ? "Tap to see front" : "Tap to flip"}
+                        </span>
                     </span>
-                </motion.p>
+                </motion.div>
             </motion.div>
 
             {/* Floating Feature Badge */}

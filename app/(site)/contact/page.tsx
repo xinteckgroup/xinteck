@@ -6,10 +6,11 @@ import { VideoScrollLayout } from "@/components/services/VideoScrollLayout";
 import { TYPOGRAPHY } from "@/lib/typography";
 import { VIDEO_STATS } from "@/lib/videoStats";
 import { motion } from "framer-motion";
-import { CheckCircle2, Clock, Globe, Info, Loader2, Mail, MessageCircle, Phone, RefreshCw, Send } from "lucide-react";
-import { useCallback, useEffect, useState } from "react";
+import { CheckCircle2, Clock, Globe, Info, Loader2, Mail, MessageCircle, Phone, RefreshCw, Send, Video } from "lucide-react";
+import { useSearchParams } from "next/navigation";
+import { Suspense, useCallback, useEffect, useState } from "react";
 
-export default function ContactPage() {
+function ContactPageContent() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -38,14 +39,29 @@ export default function ContactPage() {
     setUserCaptcha("");
   }, []);
 
+  // Read URL query params for pre-selection from pricing tiers
+  const searchParams = useSearchParams();
+  const [prefilledPackage, setPrefilledPackage] = useState<string>("");
+
   useEffect(() => {
     generateCaptcha();
+
+    const urlService = searchParams.get("service") || "";
+    const urlPackage = searchParams.get("package") || "";
+    if (urlPackage) setPrefilledPackage(urlPackage);
 
     // Fetch dynamic config
     getContactConfig().then((data) => {
             if (data) {
                 setConfig(data);
-                if (data.services.length > 0) {
+                // If URL has a service param, try to match it against available services
+                if (urlService && data.services.length > 0) {
+                    const match = data.services.find(
+                        (s) => s.toLowerCase().includes(urlService.toLowerCase()) ||
+                               urlService.toLowerCase().includes(s.toLowerCase())
+                    );
+                    setSelectedService(match || data.services[0]);
+                } else if (data.services.length > 0) {
                     setSelectedService(data.services[0]);
                 }
             }
@@ -72,7 +88,7 @@ export default function ContactPage() {
         const budgets = config.budgets[selectedService] || config.budgets["Other"] || [];
         setAvailableBudgets(budgets);
     } else {
-        setAvailableBudgets(["$10k - $25k", "$25k - $50k", "$50k - $100k", "$100k+"]);
+        setAvailableBudgets(["KES 50k - 150k", "KES 150k - 500k", "KES 500k - 1M", "KES 1M+"]);
     }
   }, [selectedService, config]);
 
@@ -165,10 +181,23 @@ export default function ContactPage() {
         </div>
     ),
     icon: Phone,
-    sub: "Mon - Fri, 9am - 6pm EST",
+    sub: "Mon - Fri, 9am - 6pm EAT",
   };
 
   const infoCards = [
+    {
+        title: "Free Discovery Call",
+        value: (
+          <a
+            href="/book"
+            className="inline-flex items-center gap-2 text-primary hover:text-primary/80 font-bold underline underline-offset-4 text-base"
+          >
+            Book 15-Min Free Session →
+          </a>
+        ),
+        icon: Video,
+        sub: "Direct consultation with Google Meet link",
+    },
     {
         title: "Email Us",
         value: businessContact.email,
@@ -198,12 +227,20 @@ export default function ContactPage() {
               Your inquiry has reached our command center. Our engineers are reviewing 
               the coordinates and will reach out within <span className="text-primary font-bold">4 hours</span>.
             </p>
-            <button 
-              onClick={() => { setSubmitted(false); setIsSubmitting(false); generateCaptcha(); }}
-              className="px-10 py-3 border-2 border-primary text-primary font-bold rounded-full hover:bg-primary hover:text-black transition-all"
-            >
-              Send Another Signal
-            </button>
+            <div className="flex flex-col sm:flex-row items-center gap-4">
+              <a 
+                href="/book"
+                className="px-8 py-3 bg-primary text-primary-foreground font-bold rounded-full hover:bg-primary/90 transition-all flex items-center gap-2 shadow-lg"
+              >
+                <Video size={18} /> Or Book a 15-Min Free Call Now
+              </a>
+              <button 
+                onClick={() => { setSubmitted(false); setIsSubmitting(false); generateCaptcha(); }}
+                className="px-8 py-3 border border-border text-foreground font-bold rounded-full hover:bg-white/10 transition-all"
+              >
+                Send Another Signal
+              </button>
+            </div>
           </motion.div>
         </div>
       </VideoScrollLayout>
@@ -336,7 +373,6 @@ export default function ContactPage() {
                      ) : (
                         <option className="bg-background text-foreground">Loading...</option>
                      )}
-                     <option className="bg-background text-foreground">Other</option>
                   </select>
                 </div>
               </div>
@@ -398,6 +434,7 @@ export default function ContactPage() {
                   rows={8}
                   required
                   maxLength={2000}
+                  defaultValue={prefilledPackage ? `I'm interested in the ${prefilledPackage} package. Please send me more details.` : ""}
                   placeholder="Tell us about your mission... (at least 10 chars, max 300 words)"
                   className={`bg-muted/10 rounded-[10px] px-6 py-4 outline-none transition-all placeholder:text-white/70 text-foreground resize-none ${TYPOGRAPHY.input}`}
                   onChange={(e) => {
@@ -478,5 +515,13 @@ export default function ContactPage() {
         </section>
       </div>
     </VideoScrollLayout>
+  );
+}
+
+export default function ContactPage() {
+  return (
+    <Suspense>
+      <ContactPageContent />
+    </Suspense>
   );
 }

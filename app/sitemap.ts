@@ -12,6 +12,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { path: "/blog", priority: 0.8, changeFreq: "daily" as const },
     { path: "/careers", priority: 0.7, changeFreq: "weekly" as const },
     { path: "/contact", priority: 0.8, changeFreq: "monthly" as const },
+    { path: "/book", priority: 0.9, changeFreq: "weekly" as const },
     { path: "/privacy", priority: 0.3, changeFreq: "yearly" as const },
     { path: "/terms", priority: 0.3, changeFreq: "yearly" as const },
     { path: "/cookies", priority: 0.3, changeFreq: "yearly" as const },
@@ -29,6 +30,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "custom-software-development",
     "ui-ux-design",
     "cloud-devops",
+    "graphic-design",
   ].map((slug) => ({
     url: `${baseUrl}/services/${slug}`,
     lastModified: new Date(),

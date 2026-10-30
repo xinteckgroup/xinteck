@@ -3,7 +3,7 @@
 import { ThemeToggle } from "@/components/theme-toggle";
 import { cn } from "@/lib/utils";
 import { motion } from "framer-motion";
-import { Rocket } from "lucide-react";
+import { Rocket, Video } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
@@ -29,7 +29,7 @@ export function Navbar() {
           "pointer-events-auto",
           "w-full max-w-7xl mx-auto rounded-[10px]",
           "flex items-center justify-between",
-          "px-6 py-2 transition-all duration-300",
+          "px-4 sm:px-6 py-2 transition-all duration-300",
           scrolled 
             ? "bg-black/80 dark:bg-white/30 backdrop-blur-xl border border-primary/30 shadow-[0_10px_40px_-10px_rgba(0,0,0,0.1)]" 
             : "bg-transparent border border-transparent"
@@ -81,7 +81,7 @@ export function Navbar() {
                     src="/logos/logo-dark-full.webp"
                     alt="Xinteck Full"
                     fill
-                    className="object-cover"
+                    className="object-cover" 
                   />
               </div>
             </div>
@@ -89,17 +89,26 @@ export function Navbar() {
         </Link>
         
         {/* Right Actions */}
-        <div className="flex items-center gap-4">
-            <ThemeToggle />
-            <Link href="/contact" className="hidden md:block group relative">
+        <div className="flex items-center gap-2 sm:gap-4">
+            {/* Conspicuous Book Free Call CTA */}
+            <Link href="/book" className="group relative">
+                <div className="px-3.5 py-2 sm:px-5 sm:py-2.5 rounded-[10px] bg-primary text-black font-extrabold text-xs sm:text-sm flex items-center gap-1.5 sm:gap-2 shadow-[0_0_20px_rgba(212,175,55,0.4)] hover:shadow-[0_0_35px_rgba(212,175,55,0.7)] hover:scale-105 transition-all">
+                   <Video size={15} className="text-black shrink-0" />
+                   <span className="whitespace-nowrap">Book Free Call</span>
+                </div>
+            </Link>
+
+            <Link href="/contact" className="hidden lg:block group relative">
                 <div 
-                  className="px-6 py-2.5 rounded-[10px] border-2 border-primary bg-white/30 dark:bg-black/70 hover:scale-105 transition-transform animate-gold-pulse"
+                  className="px-5 py-2.5 rounded-[10px] border-2 border-primary bg-white/30 dark:bg-black/70 hover:scale-105 transition-transform animate-gold-pulse"
                 >
                    <span className="flex items-center gap-2 text-sm font-bold text-primary">
                      Get Started <Rocket size={16} className="group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
                    </span>
                 </div>
             </Link>
+
+            <ThemeToggle />
         </div>
       </motion.div>
     </nav>

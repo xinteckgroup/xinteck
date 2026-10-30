@@ -24,6 +24,7 @@ const staticLinks = {
     { label: "Careers", href: "/careers" },
     { label: "Blog", href: "/blog" },
     { label: "Contact", href: "/contact" },
+    { label: "Free Discovery Call", href: "/book" },
   ],
   resources: [
     { label: "Portfolio", href: "/portfolio" },
@@ -74,7 +75,7 @@ export function Footer() {
           <div className="flex flex-col sm:flex-row items-start sm:items-center gap-6">
             <Link href="/contact" className="group relative">
               <div className="px-8 py-4 bg-[#D4AF37] rounded-[10px] flex items-center justify-between gap-6 hover:scale-[1.02] transition-transform shadow-[0_4px_14px_0_rgba(0,0,0,0.2)]">
-                <span className="text-lg font-black text-black whitespace-nowrap">START PROJECT</span>
+                <span className="text-lg font-black text-black whitespace-nowrap">START A PROJECT</span>
                 <ArrowUpRight className="text-black group-hover:rotate-45 transition-transform" size={24} />
               </div>
             </Link>
@@ -123,7 +124,7 @@ export function Footer() {
               </motion.div>
             </Link>
             <p className="text-gray-400 max-w-xs leading-relaxed">
-              Engineering the digital future.
+              Software that works for Kenya.
             </p>
             
             {/* Contact Info */}

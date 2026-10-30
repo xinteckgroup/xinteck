@@ -68,12 +68,12 @@ export const getContactConfig = unstable_cache(
                 servicesList.push(s.name);
                 budgetsMap[s.name] = s.budgetRanges && s.budgetRanges.length > 0
                     ? s.budgetRanges
-                    : ["$10k - $25k", "$25k - $50k", "$50k - $100k", "$100k+"]; // Fallback
+                    : ["KES 50k - 150k", "KES 150k - 500k", "KES 500k - 1M", "KES 1M+"]; // Fallback
             });
 
             // Add standard options for edge cases
             servicesList.push("Other");
-            budgetsMap["Other"] = ["$10k - $25k", "$25k - $50k", "$50k - $100k", "$100k+"];
+            budgetsMap["Other"] = ["KES 50k - 150k", "KES 150k - 500k", "KES 500k - 1M", "KES 1M+"];
 
             return {
                 services: servicesList,

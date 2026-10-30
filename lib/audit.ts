@@ -71,13 +71,27 @@ export type AuditAction =
     | "newsletter.unsubscribe.self"
     | "announcement.create"
     | "announcement.update"
-    | "announcement.delete";
+    | "announcement.delete"
+    | "booking.create"
+    | "booking.confirm"
+    | "booking.assign"
+    | "booking.reschedule"
+    | "booking.cancel"
+    | "booking.complete"
+    | "booking.no_show"
+    | "booking.note"
+    | "booking.delete"
+    | "booking.availability_update"
+    | "booking.blocked_date_add"
+    | "booking.blocked_date_remove";
+
 
 interface AuditLogParams {
     action: AuditAction;
     entity: string;
     entityId?: string;
     userId?: string;
+    details?: string;
     metadata?: Record<string, any>;
 }
 
@@ -85,15 +99,16 @@ interface AuditLogParams {
 Purpose: Centralized audit logging mechanism to track critical system actions for security and compliance.
 Decision: We use a fire-and-forget approach (silent failure) to prevent non-critical logging errors from blocking main user flows (e.g., login should work even if logger is down).
 */
-export async function logAudit({ action, entity, entityId, userId, metadata }: AuditLogParams) {
+export async function logAudit({ action, entity, entityId, userId, details, metadata }: AuditLogParams) {
     try {
+        const mergedMetadata = details ? { details, ...metadata } : metadata;
         await prisma.auditLog.create({
             data: {
                 action,
                 entity,
                 entityId,
                 userId,
-                metadata,
+                metadata: mergedMetadata,
             },
         });
     } catch (error) {

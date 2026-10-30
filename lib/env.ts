@@ -54,9 +54,6 @@ export function validateEnv() {
         // Error monitoring
         "NEXT_PUBLIC_SENTRY_DSN",
 
-        // Newsletter
-        "NEXT_PUBLIC_SITE_URL",
-
         // Deployment
         "VERCEL_OIDC_TOKEN",
     ];

@@ -116,7 +116,7 @@ export async function POST(req: Request) {
         }
 
         const resend = new Resend(apiKey);
-        const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://xinteck.co.ke";
+        const siteUrl = process.env.NEXT_PUBLIC_APP_URL || process.env.NEXT_PUBLIC_SITE_URL || "https://xinteck.co.ke";
 
         // Send in batches of 50 (well within Resend's 100 batch limit)
         const BATCH_SIZE = 50;

@@ -1,6 +1,7 @@
 import { INTERNAL_getSecret } from "@/actions/settings";
 import { BookingReminderEmail } from "@/components/emails/BookingReminderEmail";
 import { prisma } from "@/lib/prisma";
+import { NotificationService } from "@/lib/services/notification-service";
 import { BookingStatus } from "@prisma/client";
 import { render } from "@react-email/render";
 import { NextRequest, NextResponse } from "next/server";
@@ -131,6 +132,11 @@ async function handleCron(req: NextRequest) {
                 processedBookings.push(`${booking.id} (${booking.name}) - ${reminderType}`);
             }
         }
+
+        // Housekeeping: automatically purge expired in-app admin notifications
+        await NotificationService.cleanupExpired().catch((e) =>
+            console.error("Cron notification cleanup error:", e)
+        );
 
         return NextResponse.json({
             success: true,

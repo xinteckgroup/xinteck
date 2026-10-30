@@ -5,22 +5,75 @@ import { prisma } from "@/lib/prisma";
 import { NotificationService } from "@/lib/services/notification-service";
 import { MessageStatus, NotificationPriority, NotificationType, Role } from "@prisma/client";
 import { render } from "@react-email/render";
+import crypto from "crypto";
 import { NextResponse } from "next/server";
 import { Resend } from "resend";
 
+function verifySvixSignature(rawBody: string, headers: Headers, secret: string): boolean {
+  const svixId = headers.get("svix-id");
+  const svixTimestamp = headers.get("svix-timestamp");
+  const svixSignature = headers.get("svix-signature");
+
+  if (!svixId || !svixTimestamp || !svixSignature) return false;
+
+  const timestampSec = parseInt(svixTimestamp, 10);
+  const nowSec = Math.floor(Date.now() / 1000);
+  if (isNaN(timestampSec) || Math.abs(nowSec - timestampSec) > 300) {
+    return false;
+  }
+
+  const key = secret.startsWith("whsec_")
+    ? Buffer.from(secret.slice(6), "base64")
+    : Buffer.from(secret, "utf-8");
+
+  const toSign = `${svixId}.${svixTimestamp}.${rawBody}`;
+  const computedSignature = crypto
+    .createHmac("sha256", key)
+    .update(toSign)
+    .digest("base64");
+
+  const signatures = svixSignature
+    .split(" ")
+    .map((s) => s.replace(/^v\d+,/, ""));
+
+  return signatures.some((sig) => {
+    try {
+      return crypto.timingSafeEqual(
+        Buffer.from(sig),
+        Buffer.from(computedSignature)
+      );
+    } catch {
+      return false;
+    }
+  });
+}
+
 export async function POST(req: Request) {
   try {
-    // 1. Webhook Secret Authentication (if configured)
-    const authHeader = req.headers.get("authorization");
+    const rawPayloadText = await req.text();
     const configuredSecret = process.env.INBOUND_WEBHOOK_SECRET;
-    if (configuredSecret && authHeader !== `Bearer ${configuredSecret}`) {
-      const apiKeyHeader = req.headers.get("x-webhook-secret");
-      if (apiKeyHeader !== configuredSecret) {
-        return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+
+    // 1. Webhook Secret & Signature Authentication
+    if (configuredSecret) {
+      const hasSvixHeaders = req.headers.has("svix-signature");
+      if (hasSvixHeaders) {
+        const isValid = verifySvixSignature(rawPayloadText, req.headers, configuredSecret);
+        if (!isValid) {
+          return NextResponse.json({ error: "Invalid webhook signature" }, { status: 401 });
+        }
+      } else {
+        const authHeader = req.headers.get("authorization");
+        const apiKeyHeader = req.headers.get("x-webhook-secret");
+        const isValidHeader =
+          authHeader === `Bearer ${configuredSecret}` ||
+          apiKeyHeader === configuredSecret;
+        if (!isValidHeader) {
+          return NextResponse.json({ error: "Unauthorized webhook request" }, { status: 401 });
+        }
       }
     }
 
-    const payload = await req.json();
+    const payload = JSON.parse(rawPayloadText);
 
     // 2. Normalize Inbound Payload across Resend / Cloudflare / Custom Email Handlers
     // Handle Resend webhook event structure: payload.data or payload root

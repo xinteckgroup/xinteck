@@ -46,7 +46,7 @@ export const AdminBookingAlertEmail = ({
 
       {/* Appointment Window Highlight */}
       <Section className="bg-[#141414] border-2 border-brand/40 rounded-[8px] p-[20px] mb-[24px] text-center">
-        <Text className="text-dimText text-[12px] uppercase font-bold tracking-widest m-0 mb-[6px]">
+        <Text className="text-dimText text-[12px] uppercase font-bold tracking-widest m-0 mb-[6px]" style={{ color: '#D4AF37' }}>
           Scheduled Appointment (15 Minutes)
         </Text>
         <Text className="text-white text-[18px] font-black m-0">
@@ -61,19 +61,19 @@ export const AdminBookingAlertEmail = ({
         </Text>
         
         <Row className="mb-[8px]">
-          <Column style={{ width: '110px' }}><Text className="text-dimText text-[14px] m-0">Client Name:</Text></Column>
+          <Column style={{ width: '110px' }}><Text className="text-dimText text-[14px] m-0" style={{ color: '#C0C0C0' }}>Client Name:</Text></Column>
           <Column><Text className="text-white font-medium text-[14px] m-0">{name}</Text></Column>
         </Row>
         <Row className="mb-[8px]">
-          <Column style={{ width: '110px' }}><Text className="text-dimText text-[14px] m-0">Email:</Text></Column>
-          <Column><a href={`mailto:${email}`} className="text-brand text-[14px] m-0">{email}</a></Column>
+          <Column style={{ width: '110px' }}><Text className="text-dimText text-[14px] m-0" style={{ color: '#C0C0C0' }}>Email:</Text></Column>
+          <Column><a href={`mailto:${email}`} className="text-brand text-[14px] m-0" style={{ color: '#D4AF37' }}>{email}</a></Column>
         </Row>
         <Row className="mb-[8px]">
-          <Column style={{ width: '110px' }}><Text className="text-dimText text-[14px] m-0">Phone / WA:</Text></Column>
+          <Column style={{ width: '110px' }}><Text className="text-dimText text-[14px] m-0" style={{ color: '#C0C0C0' }}>Phone / WA:</Text></Column>
           <Column><a href={`tel:${phone}`} className="text-white font-medium text-[14px] m-0">{phone || 'N/A'}</a></Column>
         </Row>
         <Row>
-          <Column style={{ width: '110px' }}><Text className="text-dimText text-[14px] m-0">Company:</Text></Column>
+          <Column style={{ width: '110px' }}><Text className="text-dimText text-[14px] m-0" style={{ color: '#C0C0C0' }}>Company:</Text></Column>
           <Column><Text className="text-white font-medium text-[14px] m-0">{company || 'Not provided'}</Text></Column>
         </Row>
       </Section>
@@ -85,38 +85,38 @@ export const AdminBookingAlertEmail = ({
         </Text>
         
         <Row className="mb-[8px]">
-          <Column style={{ width: '110px' }}><Text className="text-dimText text-[14px] m-0">Service:</Text></Column>
-          <Column><Text className="text-brand font-black text-[14px] m-0">{service || 'General Discovery'}</Text></Column>
+          <Column style={{ width: '110px' }}><Text className="text-dimText text-[14px] m-0" style={{ color: '#C0C0C0' }}>Service:</Text></Column>
+          <Column><Text className="text-brand font-black text-[14px] m-0" style={{ color: '#D4AF37' }}>{service || 'General Discovery'}</Text></Column>
         </Row>
 
         <Hr className="border border-[#222222] my-[16px]" />
 
-        <Text className="text-dimText text-[12px] uppercase tracking-wider mb-[8px] m-0">Client Notes / Objective</Text>
-        <Text className="text-text text-[14px] leading-[24px] bg-[#111] p-[16px] rounded-[6px] border border-[#333] m-0 italic">
+        <Text className="text-dimText text-[12px] uppercase tracking-wider mb-[8px] m-0" style={{ color: '#D4AF37' }}>Client Notes / Objective</Text>
+        <Text className="text-text text-[14px] leading-[24px] bg-[#111] p-[16px] rounded-[6px] border border-[#333] m-0 italic" style={{ color: '#FFFFFF' }}>
           "{message || "No additional message provided."}"
         </Text>
       </Section>
 
-      {/* Action Buttons */}
-      <Section className="text-center mb-[24px]">
-        <Row>
-          <Column style={{ paddingRight: '8px' }}>
-            <Button
-              href={`https://xinteck.co.ke/admin/bookings?id=${id}&action=confirm`}
-              className="bg-brand text-[#0A0A0A] font-black uppercase tracking-widest text-[13px] rounded-[6px] px-[20px] py-[14px] text-center inline-block w-full"
-            >
-              Confirm & Assign Meet
-            </Button>
-          </Column>
-          <Column style={{ paddingLeft: '8px' }}>
-            <Button
-              href={`mailto:${email}`}
-              className="bg-[#222222] text-white border border-[#333333] font-black uppercase tracking-widest text-[13px] rounded-[6px] px-[20px] py-[14px] text-center inline-block w-full"
-            >
-              Reply to Client
-            </Button>
-          </Column>
-        </Row>
+      {/* Action Buttons — Stacked Vertically & Left-Aligned */}
+      <Section className="text-left mb-[24px]">
+        <div style={{ marginBottom: '12px' }}>
+          <Button
+            href={`https://xinteck.co.ke/admin/bookings?id=${id}&action=confirm`}
+            className="bg-brand text-[#0A0A0A] font-black uppercase tracking-widest text-[13px] rounded-[6px] px-[24px] py-[14px] text-center inline-block"
+            style={{ display: 'inline-block', textAlign: 'center', backgroundColor: '#D4AF37', color: '#0A0A0A' }}
+          >
+            Confirm & Assign Meet →
+          </Button>
+        </div>
+        <div>
+          <Button
+            href={`mailto:${email}`}
+            className="bg-[#222222] text-white border border-[#333333] font-black uppercase tracking-widest text-[13px] rounded-[6px] px-[24px] py-[14px] text-center inline-block"
+            style={{ display: 'inline-block', textAlign: 'center', backgroundColor: '#222222', color: '#FFFFFF' }}
+          >
+            Reply to Client ✉
+          </Button>
+        </div>
       </Section>
     </XinteckEmailLayout>
   );

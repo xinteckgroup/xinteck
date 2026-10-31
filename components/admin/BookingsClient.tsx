@@ -130,7 +130,7 @@ export const BookingsClient: React.FC<BookingsClientProps> = ({
     return (
         <div className="w-full flex flex-col gap-6 p-4 sm:p-6 lg:p-8 text-foreground max-w-7xl mx-auto">
             {/* Top Bar: Title & Role status */}
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-border/50 pb-5">
+            <div className="flex flex-col gap-4 border-b border-border/50 pb-5">
                 <div>
                     <div className="flex items-center gap-3">
                         <h2 className="text-2xl sm:text-3xl font-black tracking-tight text-foreground">
@@ -145,8 +145,8 @@ export const BookingsClient: React.FC<BookingsClientProps> = ({
                     </p>
                 </div>
 
-                {/* View Mode Switcher */}
-                <div className="flex items-center gap-1.5 p-1 rounded-xl bg-muted/20 border border-border/60 self-start sm:self-auto">
+                {/* View Mode Switcher — directly below subtitle */}
+                <div className="flex flex-wrap items-center gap-1.5 p-1 rounded-xl bg-muted/20 border border-border/60 self-start w-fit">
                     <button
                         type="button"
                         onClick={() => setViewMode("calendar")}
@@ -408,6 +408,7 @@ export const BookingsClient: React.FC<BookingsClientProps> = ({
                     onClose={() => setIsDetailOpen(false)}
                     userRole={userRole}
                     staffList={staffList}
+                    currentUser={currentUser}
                     onUpdated={() => {
                         handleRefreshData();
                         window.location.reload();

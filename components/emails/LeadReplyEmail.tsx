@@ -34,21 +34,21 @@ export const LeadReplyEmail = ({
         </Link>
       </Section>
       <Section className="bg-[#0A0A0A] border border-[#222222] rounded-[8px] p-[24px] mb-[32px]">
-        <Text className="text-[16px] leading-[26px] text-text m-0 mb-[16px]">
+        <Text className="text-[16px] leading-[26px] text-text m-0 mb-[16px]" style={{ color: '#F5F5F5' }}>
           Thank you for reaching out to Xinteck. We have successfully received your inquiry and our engineering team is actively reviewing your requirements.
         </Text>
-        <Text className="text-[16px] leading-[26px] text-text m-0 mb-[24px]">
+        <Text className="text-[16px] leading-[26px] text-text m-0 mb-[24px]" style={{ color: '#F5F5F5' }}>
           We take pride in delivering highly scalable, performant, and secure solutions tailored exactly to your business logic. Our team is fully committed to ensuring your project's success.
         </Text>
         <Hr className="border border-[#222222] my-[16px]" />
-        <Text className="text-[16px] leading-[26px] text-text m-0 italic">
+        <Text className="text-[16px] leading-[26px] text-text m-0 italic" style={{ color: '#FFFFFF' }}>
           {formattedContent}
         </Text>
       </Section>
       
       <Hr className="border border-[#222222] my-[24px]" />
       
-      <Text className="text-dimText text-[13px] leading-[20px] italic m-0">
+      <Text className="text-dimText text-[13px] leading-[20px] italic m-0" style={{ color: '#B5B5B5' }}>
         This is a formal reply to the inquiry you submitted via our website. Our engineers are standing by if you have any further questions.
       </Text>
     </XinteckEmailLayout>

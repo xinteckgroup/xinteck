@@ -182,8 +182,15 @@ export function generateGoogleCalendarUrl({
     return `https://calendar.google.com/calendar/render?${params.toString()}`;
 }
 
+export interface IcsAttendee {
+    name: string;
+    email: string;
+    role?: "REQ-PARTICIPANT" | "OPT-PARTICIPANT";
+}
+
 /**
- * Generates an iCalendar (.ics) string for Apple Calendar & Outlook
+ * Generates an iCalendar (.ics) string for Google Calendar, Apple Calendar & Outlook
+ * Includes native 15-minute push alarms and RFC 5545 METHOD:REQUEST
  */
 export function generateIcsContent({
     id,
@@ -193,6 +200,9 @@ export function generateIcsContent({
     startTime,
     endTime,
     meetLink,
+    organizer = { name: "Xinteck Technologies", email: "info@xinteck.co.ke" },
+    attendees = [],
+    sequence = 0,
 }: {
     id: string;
     title: string;
@@ -201,6 +211,9 @@ export function generateIcsContent({
     startTime: string; // HH:MM
     endTime: string;   // HH:MM
     meetLink?: string;
+    organizer?: { name: string; email: string };
+    attendees?: IcsAttendee[];
+    sequence?: number;
 }): string {
     const cleanDate = startDate.replace(/-/g, "");
     const startMinsUTC = timeToMinutes(startTime) - 3 * 60;
@@ -213,23 +226,110 @@ export function generateIcsContent({
 
     const dtStart = `${cleanDate}T${startHUTC.toString().padStart(2, "0")}${startMUTC.toString().padStart(2, "0")}00Z`;
     const dtEnd = `${cleanDate}T${endHUTC.toString().padStart(2, "0")}${endMUTC.toString().padStart(2, "0")}00Z`;
+    const nowStamp = new Date().toISOString().replace(/[-:]/g, "").split(".")[0] + "Z";
 
-    return [
+    const lines = [
         "BEGIN:VCALENDAR",
-        "VERSION:2.0",
         "PRODID:-//Xinteck Technologies//Discovery Call Scheduler//EN",
+        "VERSION:2.0",
         "CALSCALE:GREGORIAN",
         "METHOD:REQUEST",
         "BEGIN:VEVENT",
         `UID:discovery-${id}@xinteck.co.ke`,
-        `DTSTAMP:${cleanDate}T000000Z`,
+        `DTSTAMP:${nowStamp}`,
+        `SEQUENCE:${sequence}`,
         `DTSTART:${dtStart}`,
         `DTEND:${dtEnd}`,
         `SUMMARY:${title}`,
         `DESCRIPTION:${description.replace(/\n/g, "\\n")}`,
         `LOCATION:${meetLink || "Google Meet"}`,
-        "STATUS:CONFIRMED",
-        "END:VEVENT",
-        "END:VCALENDAR",
-    ].join("\r\n");
+        `ORGANIZER;CN="${organizer.name}":mailto:${organizer.email}`,
+    ];
+
+    attendees.forEach((att) => {
+        lines.push(`ATTENDEE;CUTYPE=INDIVIDUAL;ROLE=${att.role || "REQ-PARTICIPANT"};PARTSTAT=ACCEPTED;CN="${att.name}":mailto:${att.email}`);
+    });
+
+    lines.push("STATUS:CONFIRMED");
+    lines.push("TRANSP:OPAQUE");
+
+    // Native alarm: 15 minutes before event
+    lines.push(
+        "BEGIN:VALARM",
+        "ACTION:DISPLAY",
+        "DESCRIPTION:Reminder: Xinteck Discovery Call starting in 15 minutes",
+        "TRIGGER:-PT15M",
+        "END:VALARM"
+    );
+
+    lines.push("END:VEVENT");
+    lines.push("END:VCALENDAR");
+
+    return lines.join("\r\n");
+}
+
+/**
+ * Generates an iCalendar (.ics) cancellation string with METHOD:CANCEL
+ * Automatically removes/updates the event in Google Calendar, Apple Calendar & Outlook
+ */
+export function generateIcsCancelContent({
+    id,
+    title,
+    description = "This discovery call has been cancelled.",
+    startDate,
+    startTime,
+    endTime,
+    organizer = { name: "Xinteck Technologies", email: "info@xinteck.co.ke" },
+    attendees = [],
+    sequence = 1,
+}: {
+    id: string;
+    title: string;
+    description?: string;
+    startDate: string; // YYYY-MM-DD
+    startTime: string; // HH:MM
+    endTime: string;   // HH:MM
+    organizer?: { name: string; email: string };
+    attendees?: IcsAttendee[];
+    sequence?: number;
+}): string {
+    const cleanDate = startDate.replace(/-/g, "");
+    const startMinsUTC = timeToMinutes(startTime) - 3 * 60;
+    const endMinsUTC = timeToMinutes(endTime) - 3 * 60;
+
+    const startHUTC = Math.floor((startMinsUTC + 1440) % 1440 / 60);
+    const startMUTC = (startMinsUTC + 1440) % 60;
+    const endHUTC = Math.floor((endMinsUTC + 1440) % 1440 / 60);
+    const endMUTC = (endMinsUTC + 1440) % 60;
+
+    const dtStart = `${cleanDate}T${startHUTC.toString().padStart(2, "0")}${startMUTC.toString().padStart(2, "0")}00Z`;
+    const dtEnd = `${cleanDate}T${endHUTC.toString().padStart(2, "0")}${endMUTC.toString().padStart(2, "0")}00Z`;
+    const nowStamp = new Date().toISOString().replace(/[-:]/g, "").split(".")[0] + "Z";
+
+    const lines = [
+        "BEGIN:VCALENDAR",
+        "PRODID:-//Xinteck Technologies//Discovery Call Scheduler//EN",
+        "VERSION:2.0",
+        "CALSCALE:GREGORIAN",
+        "METHOD:CANCEL",
+        "BEGIN:VEVENT",
+        `UID:discovery-${id}@xinteck.co.ke`,
+        `DTSTAMP:${nowStamp}`,
+        `SEQUENCE:${sequence}`,
+        `DTSTART:${dtStart}`,
+        `DTEND:${dtEnd}`,
+        `SUMMARY:${title}`,
+        `DESCRIPTION:${description.replace(/\n/g, "\\n")}`,
+        `ORGANIZER;CN="${organizer.name}":mailto:${organizer.email}`,
+    ];
+
+    attendees.forEach((att) => {
+        lines.push(`ATTENDEE;CUTYPE=INDIVIDUAL;ROLE=${att.role || "REQ-PARTICIPANT"};PARTSTAT=DECLINED;CN="${att.name}":mailto:${att.email}`);
+    });
+
+    lines.push("STATUS:CANCELLED");
+    lines.push("END:VEVENT");
+    lines.push("END:VCALENDAR");
+
+    return lines.join("\r\n");
 }

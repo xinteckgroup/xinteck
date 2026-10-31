@@ -47,21 +47,21 @@ export const BookingReceivedEmail = ({
         </Text>
         
         <Row className="mb-[8px]">
-          <Column style={{ width: '120px' }}><Text className="text-dimText text-[14px] m-0">Date:</Text></Column>
+          <Column style={{ width: '120px' }}><Text className="text-dimText text-[14px] m-0" style={{ color: '#C0C0C0' }}>Date:</Text></Column>
           <Column><Text className="text-white font-medium text-[14px] m-0">{date}</Text></Column>
         </Row>
         <Row className="mb-[8px]">
-          <Column style={{ width: '120px' }}><Text className="text-dimText text-[14px] m-0">Time Window:</Text></Column>
+          <Column style={{ width: '120px' }}><Text className="text-dimText text-[14px] m-0" style={{ color: '#C0C0C0' }}>Time Window:</Text></Column>
           <Column><Text className="text-white font-medium text-[14px] m-0">{startTime} – {endTime} (East Africa Time, UTC+3)</Text></Column>
         </Row>
         <Row className="mb-[8px]">
-          <Column style={{ width: '120px' }}><Text className="text-dimText text-[14px] m-0">Duration:</Text></Column>
+          <Column style={{ width: '120px' }}><Text className="text-dimText text-[14px] m-0" style={{ color: '#C0C0C0' }}>Duration:</Text></Column>
           <Column><Text className="text-white font-medium text-[14px] m-0">15 Minutes</Text></Column>
         </Row>
         {service && (
           <Row>
-            <Column style={{ width: '120px' }}><Text className="text-dimText text-[14px] m-0">Focus Area:</Text></Column>
-            <Column><Text className="text-brand font-medium text-[14px] m-0">{service}</Text></Column>
+            <Column style={{ width: '120px' }}><Text className="text-dimText text-[14px] m-0" style={{ color: '#C0C0C0' }}>Focus Area:</Text></Column>
+            <Column><Text className="text-brand font-medium text-[14px] m-0" style={{ color: '#D4AF37' }}>{service}</Text></Column>
           </Row>
         )}
       </Section>
@@ -71,7 +71,7 @@ export const BookingReceivedEmail = ({
         <Text className="text-white font-bold text-[14px] m-0 mb-[8px]">
           What happens next?
         </Text>
-        <Text className="text-dimText text-[13px] leading-[22px] m-0">
+        <Text className="text-dimText text-[13px] leading-[22px] m-0" style={{ color: '#D0D0D0' }}>
           Our engineering team is preparing for your session. You will receive an official confirmation email containing your direct <strong>Google Meet video link</strong> shortly.
         </Text>
       </Section>

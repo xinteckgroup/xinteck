@@ -45,45 +45,49 @@ export const BookingConfirmedEmail = ({
       </Text>
 
       {/* Prominent Google Meet Box */}
-      <Section className="bg-[#141414] border-2 border-brand rounded-[10px] p-[28px] mb-[28px] text-center">
-        <Text className="text-dimText text-[12px] uppercase font-bold tracking-widest m-0 mb-[6px]">
+      <Section className="bg-[#141414] border-2 border-brand rounded-[10px] p-[20px] sm:p-[28px] mb-[24px] text-left">
+        <Text className="text-dimText text-[12px] uppercase font-bold tracking-widest m-0 mb-[6px]" style={{ color: '#D4AF37' }}>
           Google Meet Video Room
         </Text>
-        <Text className="text-white text-[19px] font-black m-0 mb-[18px]">
+        <Text className="text-white text-[18px] sm:text-[20px] font-black m-0 mb-[20px]">
           📅 {date} · ⏰ {startTime} – {endTime} EAT
         </Text>
 
-        <Button
-          href={meetLink}
-          className="bg-brand text-[#0A0A0A] font-black uppercase tracking-widest text-[14px] rounded-[6px] px-[28px] py-[16px] text-center inline-block shadow-lg"
-        >
-          Join Google Meet Call →
-        </Button>
+        {/* Buttons Stacked Vertically & Left-Aligned */}
+        <div style={{ marginBottom: '12px' }}>
+          <Button
+            href={meetLink}
+            className="bg-brand text-[#0A0A0A] font-black uppercase tracking-widest text-[13px] sm:text-[14px] rounded-[6px] px-[28px] py-[15px] text-center inline-block shadow-lg"
+            style={{ display: 'inline-block', textAlign: 'center', backgroundColor: '#D4AF37', color: '#0A0A0A' }}
+          >
+            Join Google Meet Call →
+          </Button>
+        </div>
 
-        <Text className="text-dimText text-[12px] m-0 mt-[16px]">
-          Meeting Link: <a href={meetLink} className="text-brand underline">{meetLink}</a>
+        {googleCalendarUrl && googleCalendarUrl !== "#" && (
+          <div style={{ marginBottom: '4px' }}>
+            <Button
+              href={googleCalendarUrl}
+              className="bg-[#222222] text-white border border-[#444] font-bold text-[12px] sm:text-[13px] rounded-[6px] px-[22px] py-[12px] text-center inline-block"
+              style={{ display: 'inline-block', textAlign: 'center', backgroundColor: '#222222', color: '#FFFFFF' }}
+            >
+              🗓️ Add to Google Calendar
+            </Button>
+          </div>
+        )}
+
+        <Text className="text-dimText text-[12px] m-0 mt-[16px]" style={{ wordBreak: 'break-all', color: '#C0C0C0' }}>
+          Meeting Link: <a href={meetLink} className="text-brand underline" style={{ color: '#D4AF37' }}>{meetLink}</a>
         </Text>
       </Section>
-
-      {/* Calendar Add Button */}
-      {googleCalendarUrl && googleCalendarUrl !== "#" && (
-        <Section className="text-center mb-[28px]">
-          <Button
-            href={googleCalendarUrl}
-            className="bg-[#222222] text-white border border-[#444] font-bold text-[13px] rounded-[6px] px-[20px] py-[12px] text-center inline-block"
-          >
-            🗓️ Add to Google Calendar
-          </Button>
-        </Section>
-      )}
 
       {/* Personal Admin Note if provided */}
       {adminNote && (
         <Section className="bg-[#0A0A0A] border border-[#222222] rounded-[8px] p-[20px] mb-[24px]">
-          <Text className="text-dimText text-[12px] uppercase tracking-wider mb-[6px] m-0 font-bold">
+          <Text className="text-dimText text-[12px] uppercase tracking-wider mb-[6px] m-0 font-bold" style={{ color: '#D4AF37' }}>
             Note from our team:
           </Text>
-          <Text className="text-white text-[14px] leading-[22px] m-0 italic">
+          <Text className="text-white text-[14px] leading-[22px] m-0 italic" style={{ color: '#FFFFFF' }}>
             "{adminNote}"
           </Text>
         </Section>
@@ -96,15 +100,15 @@ export const BookingConfirmedEmail = ({
         </Text>
         <Row className="mb-[8px]">
           <Column style={{ width: '20px' }}><Text className="text-brand text-[14px] m-0">✓</Text></Column>
-          <Column><Text className="text-dimText text-[13px] m-0">Have a brief outline of the project, goal, or technical obstacle you'd like to discuss.</Text></Column>
+          <Column><Text className="text-dimText text-[13px] m-0" style={{ color: '#E0E0E0' }}>Have a brief outline of the project, goal, or technical obstacle you'd like to discuss.</Text></Column>
         </Row>
         <Row className="mb-[8px]">
           <Column style={{ width: '20px' }}><Text className="text-brand text-[14px] m-0">✓</Text></Column>
-          <Column><Text className="text-dimText text-[13px] m-0">Ensure you have a working microphone and camera for Google Meet.</Text></Column>
+          <Column><Text className="text-dimText text-[13px] m-0" style={{ color: '#E0E0E0' }}>Ensure you have a working microphone and camera for Google Meet.</Text></Column>
         </Row>
         <Row>
           <Column style={{ width: '20px' }}><Text className="text-brand text-[14px] m-0">✓</Text></Column>
-          <Column><Text className="text-dimText text-[13px] m-0">Join 1-2 minutes early so we can dive straight into actionable solutions.</Text></Column>
+          <Column><Text className="text-dimText text-[13px] m-0" style={{ color: '#E0E0E0' }}>Join 1-2 minutes early so we can dive straight into actionable solutions.</Text></Column>
         </Row>
       </Section>
 

@@ -37,6 +37,7 @@ interface BookingDetailModalProps {
     onClose: () => void;
     userRole: string;
     staffList?: { id: string; name: string; email: string; role: string }[];
+    currentUser?: { id: string; name: string; email: string; role: string };
     onUpdated: () => void;
 }
 
@@ -46,10 +47,16 @@ export const BookingDetailModal: React.FC<BookingDetailModalProps> = ({
     onClose,
     userRole,
     staffList = [],
+    currentUser,
     onUpdated,
 }) => {
     const isSuperAdmin = userRole === Role.SUPER_ADMIN;
     const isAdminOrSuper = userRole === Role.SUPER_ADMIN || userRole === Role.ADMIN;
+
+    // Reactive host assignment state
+    const [assignedToId, setAssignedToId] = useState<string | null>(booking?.assignedToId || null);
+    const [assignedTo, setAssignedTo] = useState<any>(booking?.assignedTo || null);
+    const isAssignedToMe = Boolean(currentUser?.id && assignedToId === currentUser.id);
 
     // Action states
     const [meetLink, setMeetLink] = useState(booking?.meetLink || "");
@@ -60,6 +67,12 @@ export const BookingDetailModal: React.FC<BookingDetailModalProps> = ({
     const [showCompletePrompt, setShowCompletePrompt] = useState(false);
     const [outcomeNote, setOutcomeNote] = useState("");
     const [isSubmitting, setIsSubmitting] = useState(false);
+
+    React.useEffect(() => {
+        setAssignedToId(booking?.assignedToId || null);
+        setAssignedTo(booking?.assignedTo || null);
+        setMeetLink(booking?.meetLink || "");
+    }, [booking]);
 
     if (!isOpen || !booking) return null;
 
@@ -114,10 +127,13 @@ export const BookingDetailModal: React.FC<BookingDetailModalProps> = ({
 
     // 2. Assign Host
     const handleAssignHost = async (hostId: string) => {
+        const targetId = hostId === "none" ? null : hostId;
         try {
-            const res = await assignBookingHost(booking.id, hostId === "none" ? null : hostId);
-            if (res.success) {
-                toast.success("Host assigned successfully.");
+            const res = await assignBookingHost(booking.id, targetId);
+            if (res.success && res.booking) {
+                setAssignedToId(res.booking.assignedToId);
+                setAssignedTo(res.booking.assignedTo);
+                toast.success(targetId === currentUser?.id ? "Assigned to yourself!" : "Host assigned successfully.");
                 onUpdated();
             } else {
                 toast.error("Failed to assign host.");
@@ -316,25 +332,59 @@ export const BookingDetailModal: React.FC<BookingDetailModalProps> = ({
                         <span className="text-xs font-bold uppercase tracking-wider text-muted-foreground block">
                             Assigned Engineering Host
                         </span>
-                        <span className="text-xs text-foreground font-medium">
-                            {booking.assignedTo ? `${booking.assignedTo.name} (${booking.assignedTo.role})` : "Unassigned (Team Queue)"}
-                        </span>
+                        <div className="flex items-center gap-2 mt-0.5">
+                            <span className="text-xs text-foreground font-medium">
+                                {assignedTo ? `${assignedTo.name} (${assignedTo.role})` : "Unassigned (Team Queue)"}
+                            </span>
+                            {isAssignedToMe && (
+                                <span className="inline-flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded-full bg-primary/20 text-primary border border-primary/30">
+                                    <UserCheck size={11} /> You
+                                </span>
+                            )}
+                        </div>
                     </div>
 
                     {isAdminOrSuper ? (
-                        <div className="w-full sm:w-48">
-                            <select
-                                value={booking.assignedToId || "none"}
-                                onChange={(e) => handleAssignHost(e.target.value)}
-                                className="w-full bg-background border border-border rounded-lg px-2.5 py-1.5 text-xs text-foreground focus:border-primary focus:outline-none"
-                            >
-                                <option value="none">-- Select Host --</option>
-                                {staffList.map((staff) => (
-                                    <option key={staff.id} value={staff.id}>
-                                        {staff.name} ({staff.role})
-                                    </option>
-                                ))}
-                            </select>
+                        <div className="flex items-center gap-2 w-full sm:w-auto">
+                            {/* 1-Click "Assign to Me" Button */}
+                            {currentUser?.id && (
+                                isAssignedToMe ? (
+                                    <button
+                                        type="button"
+                                        onClick={() => handleAssignHost("none")}
+                                        className="text-xs text-muted-foreground hover:text-destructive px-2 py-1.5 rounded-lg border border-border/50 hover:border-destructive/30 transition-colors whitespace-nowrap cursor-pointer"
+                                        title="Unassign yourself from this call"
+                                    >
+                                        Unassign Me
+                                    </button>
+                                ) : (
+                                    <button
+                                        type="button"
+                                        onClick={() => handleAssignHost(currentUser.id)}
+                                        className="inline-flex items-center gap-1.5 text-xs font-semibold bg-primary/15 hover:bg-primary/25 text-primary border border-primary/30 px-2.5 py-1.5 rounded-lg transition-colors whitespace-nowrap cursor-pointer shadow-sm"
+                                        title="Assign this discovery call to yourself"
+                                    >
+                                        <UserCheck size={13} />
+                                        Assign to Me
+                                    </button>
+                                )
+                            )}
+
+                            {/* Staff Dropdown */}
+                            <div className="w-full sm:w-44">
+                                <select
+                                    value={assignedToId || "none"}
+                                    onChange={(e) => handleAssignHost(e.target.value)}
+                                    className="w-full bg-background border border-border rounded-lg px-2.5 py-1.5 text-xs text-foreground focus:border-primary focus:outline-none"
+                                >
+                                    <option value="none">-- Select Host --</option>
+                                    {staffList.map((staff) => (
+                                        <option key={staff.id} value={staff.id}>
+                                            {staff.name} {staff.id === currentUser?.id ? "(You)" : `(${staff.role})`}
+                                        </option>
+                                    ))}
+                                </select>
+                            </div>
                         </div>
                     ) : (
                         <span className="text-xs text-muted-foreground">Managed by Admin</span>

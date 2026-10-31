@@ -11,6 +11,9 @@ import {
     BOOKING_CONFIG,
     calculateSlotEndTime,
     generateGoogleCalendarUrl,
+    generateIcsCancelContent,
+    generateIcsContent,
+    IcsAttendee,
     isDateInPast,
     isSlotWithinLeadBuffer,
 } from "@/lib/booking-utils";
@@ -26,7 +29,7 @@ import {
     rescheduleBookingSchema,
     updateAvailabilityDaySchema,
 } from "@/lib/validations";
-import { BookingStatus, NotificationPriority, NotificationType, Role } from "@prisma/client";
+import { BookingStatus, NotificationPriority, NotificationType, Role, UserStatus } from "@prisma/client";
 import { render } from "@react-email/render";
 import { revalidatePath } from "next/cache";
 import React from "react";
@@ -373,6 +376,11 @@ export async function confirmBooking(rawInput: unknown) {
 
     const booking = await prisma.discoveryBooking.findUnique({
         where: { id: bookingId },
+        include: {
+            assignedTo: {
+                select: { id: true, name: true, email: true, role: true },
+            },
+        },
     });
 
     if (!booking) {
@@ -389,17 +397,22 @@ export async function confirmBooking(rawInput: unknown) {
             confirmedBy: user.id,
             adminNotes: adminNotes ? (booking.adminNotes ? `${booking.adminNotes}\n\n${adminNotes}` : adminNotes) : booking.adminNotes,
         },
+        include: {
+            assignedTo: {
+                select: { id: true, name: true, email: true, role: true },
+            },
+        },
     });
 
     await logAudit({
         action: "booking.confirm",
         entity: "DiscoveryBooking",
         entityId: bookingId,
-        details: `Confirmed booking for ${booking.name} with Meet link: ${meetLink}`,
+        details: `Confirmed booking for ${booking.name} with Meet link: ${meetLink} by ${user.name}`,
     });
 
-    // Send Confirmation Email with Meet Link & Google Calendar CTA
-    const { resend, senderAddress } = await getEmailConfig();
+    // Send Confirmation Email with Meet Link, Google Calendar CTA & native .ics Attachment
+    const { resend, senderAddress, adminRecipient } = await getEmailConfig();
 
     if (resend) {
         try {
@@ -412,7 +425,48 @@ export async function confirmBooking(rawInput: unknown) {
                 meetLink,
             });
 
-            const html = await render(
+            // Prepare Attendees list for RFC 5545 calendar invite
+            const attendees: IcsAttendee[] = [
+                { name: booking.name, email: booking.email, role: "REQ-PARTICIPANT" },
+            ];
+
+            const assignedHost = updated.assignedTo;
+            if (assignedHost?.email) {
+                attendees.push({
+                    name: assignedHost.name,
+                    email: assignedHost.email,
+                    role: "REQ-PARTICIPANT",
+                });
+            }
+
+            const icsDescription = `15-Minute Technical Discovery & Strategy Session with Xinteck Technologies.\n\n` +
+                `Client: ${booking.name} (${booking.email})\n` +
+                `Phone: ${booking.phone || "Not provided"}\n` +
+                `Company: ${booking.company || "N/A"}\n` +
+                `Service: ${booking.service || "General Inquiry"}\n` +
+                (booking.message ? `Goals / Agenda: ${booking.message}\n` : "") +
+                (adminNotes ? `Admin Notes: ${adminNotes}\n` : "") +
+                `\nGoogle Meet: ${meetLink}`;
+
+            const icsContent = generateIcsContent({
+                id: booking.id,
+                title: `Discovery Call: Xinteck & ${booking.name}`,
+                description: icsDescription,
+                startDate: dateStr,
+                startTime: booking.startTime,
+                endTime: booking.endTime,
+                meetLink,
+                attendees,
+            });
+
+            const icsAttachment = {
+                filename: "invite.ics",
+                content: Buffer.from(icsContent, "utf-8"),
+                contentType: "text/calendar; method=REQUEST; charset=UTF-8",
+            };
+
+            // 1. Client Confirmation Email with .ics attached
+            const clientHtml = await render(
                 BookingConfirmedEmail({
                     name: booking.name,
                     date: dateStr,
@@ -429,10 +483,101 @@ export async function confirmBooking(rawInput: unknown) {
                 to: [booking.email],
                 replyTo: "info@xinteck.co.ke",
                 subject: `Confirmed! Your Discovery Call with Xinteck — ${dateStr} at ${booking.startTime} EAT ✅`,
-                html,
+                html: clientHtml,
+                attachments: [icsAttachment],
             });
+
+            // 2. Internal Staff & SuperAdmin Notifications with .ics attached
+            // Fetch SuperAdmins to notify them & sync to their Google Calendar
+            const superAdmins = await prisma.user.findMany({
+                where: {
+                    role: Role.SUPER_ADMIN,
+                    status: UserStatus.ACTIVE,
+                    deletedAt: null,
+                },
+                select: { id: true, name: true, email: true },
+            });
+
+            // Track emails to prevent duplicate sends if a SuperAdmin is also the assigned Host
+            const notifiedEmails = new Set<string>();
+            notifiedEmails.add(booking.email.toLowerCase());
+
+            // (a) Notify Assigned Host
+            if (assignedHost?.email) {
+                const hostEmailNorm = assignedHost.email.toLowerCase();
+                notifiedEmails.add(hostEmailNorm);
+
+                await resend.emails.send({
+                    from: senderAddress,
+                    to: [assignedHost.email],
+                    replyTo: booking.email,
+                    subject: `🗓️ Host Assigned: Discovery Call with ${booking.name} — ${dateStr} at ${booking.startTime} EAT`,
+                    html: `
+                        <div style="font-family: 'Outfit', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; background-color: #0d0d0d; color: #ffffff; padding: 24px; border-radius: 12px; border: 1px solid #2e2e2e; max-width: 600px;">
+                            <h2 style="color: #00E5FF; margin-top: 0; font-size: 20px;">🗓️ Discovery Call Host Assignment</h2>
+                            <p style="color: #E0E0E0; font-size: 14px; line-height: 1.6;">You are the assigned lead host for this confirmed technical discovery call:</p>
+                            <div style="background-color: #161616; border: 1px solid #2e2e2e; border-radius: 8px; padding: 20px; margin: 20px 0;">
+                                <p style="margin: 6px 0; font-size: 14px; color: #FFFFFF;"><strong style="color: #00E5FF;">Client:</strong> ${booking.name} &lt;${booking.email}&gt;</p>
+                                <p style="margin: 6px 0; font-size: 14px; color: #FFFFFF;"><strong style="color: #00E5FF;">Date & Time:</strong> ${dateStr} · ${booking.startTime} – ${booking.endTime} EAT</p>
+                                <p style="margin: 6px 0; font-size: 14px; color: #FFFFFF;"><strong style="color: #00E5FF;">Company:</strong> ${booking.company || "N/A"}</p>
+                                <p style="margin: 6px 0; font-size: 14px; color: #FFFFFF;"><strong style="color: #00E5FF;">Service:</strong> ${booking.service || "General Inquiry"}</p>
+                                ${booking.message ? `<p style="margin: 6px 0; font-size: 14px; color: #FFFFFF;"><strong style="color: #00E5FF;">Client Notes:</strong> <em>"${booking.message}"</em></p>` : ""}
+                                <p style="margin: 16px 0 6px 0; font-size: 14px; color: #FFFFFF;"><strong style="color: #00E5FF;">Google Meet:</strong> <a href="${meetLink}" style="color: #00E5FF; font-weight: bold; text-decoration: underline;">${meetLink}</a></p>
+                            </div>
+                            <p style="color: #B5B5B5; font-size: 12px; margin-bottom: 0;">The attached calendar invitation (.ics) will automatically synchronize with your Google Calendar and trigger notifications on your phone.</p>
+                        </div>
+                    `,
+                    attachments: [icsAttachment],
+                });
+            }
+
+            // (b) Notify SuperAdmins (Executive Observer) — deduplicated!
+            for (const sa of superAdmins) {
+                const saEmailNorm = sa.email.toLowerCase();
+                if (!notifiedEmails.has(saEmailNorm)) {
+                    notifiedEmails.add(saEmailNorm);
+
+                    await resend.emails.send({
+                        from: senderAddress,
+                        to: [sa.email],
+                        replyTo: booking.email,
+                        subject: `🗓️ [Executive] Confirmed Discovery Call: ${booking.name} — ${dateStr} at ${booking.startTime} EAT`,
+                        html: `
+                            <div style="font-family: 'Outfit', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; background-color: #0d0d0d; color: #ffffff; padding: 24px; border-radius: 12px; border: 1px solid #2e2e2e; max-width: 600px;">
+                                <div style="display: inline-block; padding: 4px 10px; background-color: rgba(0, 229, 255, 0.15); color: #00E5FF; font-size: 11px; font-weight: bold; border-radius: 4px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px;">Executive Calendar Notification</div>
+                                <h2 style="color: #ffffff; margin-top: 0; font-size: 20px;">Discovery Call Confirmed</h2>
+                                <p style="color: #E0E0E0; font-size: 14px; line-height: 1.6;">A new discovery call has been confirmed. Below are the briefing details:</p>
+                                <div style="background-color: #161616; border: 1px solid #2e2e2e; border-radius: 8px; padding: 20px; margin: 20px 0;">
+                                    <p style="margin: 6px 0; font-size: 14px; color: #FFFFFF;"><strong style="color: #00E5FF;">Client:</strong> ${booking.name} &lt;${booking.email}&gt;</p>
+                                    <p style="margin: 6px 0; font-size: 14px; color: #FFFFFF;"><strong style="color: #00E5FF;">Date & Time:</strong> ${dateStr} · ${booking.startTime} – ${booking.endTime} EAT</p>
+                                    <p style="margin: 6px 0; font-size: 14px; color: #FFFFFF;"><strong style="color: #00E5FF;">Assigned Host:</strong> ${assignedHost ? `${assignedHost.name} (${assignedHost.role})` : "Unassigned"}</p>
+                                    <p style="margin: 6px 0; font-size: 14px; color: #FFFFFF;"><strong style="color: #00E5FF;">Company:</strong> ${booking.company || "N/A"}</p>
+                                    <p style="margin: 6px 0; font-size: 14px; color: #FFFFFF;"><strong style="color: #00E5FF;">Service:</strong> ${booking.service || "General Inquiry"}</p>
+                                    ${booking.message ? `<p style="margin: 6px 0; font-size: 14px; color: #FFFFFF;"><strong style="color: #00E5FF;">Client Notes:</strong> <em>"${booking.message}"</em></p>` : ""}
+                                    <p style="margin: 16px 0 6px 0; font-size: 14px; color: #FFFFFF;"><strong style="color: #00E5FF;">Google Meet:</strong> <a href="${meetLink}" style="color: #00E5FF; font-weight: bold; text-decoration: underline;">${meetLink}</a></p>
+                                </div>
+                                <p style="color: #B5B5B5; font-size: 12px; margin-bottom: 0;">The attached calendar invitation (.ics) automatically synchronizes with your Google Calendar for mobile push notifications.</p>
+                            </div>
+                        `,
+                        attachments: [icsAttachment],
+                    });
+                }
+            }
+
+            // Also check adminRecipient if not yet notified
+            if (adminRecipient && !notifiedEmails.has(adminRecipient.toLowerCase())) {
+                notifiedEmails.add(adminRecipient.toLowerCase());
+                await resend.emails.send({
+                    from: senderAddress,
+                    to: [adminRecipient],
+                    replyTo: booking.email,
+                    subject: `🗓️ Confirmed Discovery Call: ${booking.name} — ${dateStr} at ${booking.startTime} EAT`,
+                    html: clientHtml,
+                    attachments: [icsAttachment],
+                });
+            }
         } catch (err) {
-            console.error("Failed to send customer confirmation email:", err);
+            console.error("Failed to send confirmation emails/calendar invites:", err);
         }
     }
 
@@ -449,12 +594,82 @@ export async function assignBookingHost(bookingId: string, assignedToId: string 
         include: { assignedTo: true },
     });
 
+    const isSelfAssignment = assignedToId === user.id;
+
     await logAudit({
         action: "booking.assign",
         entity: "DiscoveryBooking",
         entityId: bookingId,
-        details: `Assigned booking ${bookingId} to user ${assignedToId || "None"} by ${user.name}`,
+        details: isSelfAssignment
+            ? `Assigned booking ${bookingId} to self (${user.name})`
+            : `Assigned booking ${bookingId} to user ${booking.assignedTo?.name || "None"} (${assignedToId || "None"}) by ${user.name}`,
     });
+
+    // In-app notification for assigned user (if assigned to someone else)
+    if (assignedToId && assignedToId !== user.id) {
+        try {
+            await NotificationService.create({
+                userId: assignedToId,
+                type: NotificationType.INFO,
+                priority: NotificationPriority.HIGH,
+                title: "🗓️ Assigned as Discovery Call Host",
+                message: `You were assigned as lead host for ${booking.name}'s call on ${booking.date.toISOString().split("T")[0]} at ${booking.startTime} EAT.`,
+                link: `/admin/bookings?id=${booking.id}`,
+            });
+        } catch (notifErr) {
+            console.error("Failed to create in-app assignment notification:", notifErr);
+        }
+    }
+
+    // If the booking is ALREADY CONFIRMED, dispatch an updated calendar invite to the host
+    if (booking.status === BookingStatus.CONFIRMED && booking.assignedTo) {
+        const { resend, senderAddress } = await getEmailConfig();
+        if (resend) {
+            try {
+                const dateStr = booking.date.toISOString().split("T")[0];
+                const icsContent = generateIcsContent({
+                    id: booking.id,
+                    title: `Discovery Call: Xinteck & ${booking.name}`,
+                    description: `You are assigned as host.\nClient: ${booking.name} (${booking.email})\nCompany: ${booking.company || "N/A"}\nService: ${booking.service || "General Inquiry"}\nJoin Meet: ${booking.meetLink || "TBD"}`,
+                    startDate: dateStr,
+                    startTime: booking.startTime,
+                    endTime: booking.endTime,
+                    meetLink: booking.meetLink || undefined,
+                    attendees: [
+                        { name: booking.name, email: booking.email },
+                        { name: booking.assignedTo.name, email: booking.assignedTo.email },
+                    ],
+                });
+
+                await resend.emails.send({
+                    from: senderAddress,
+                    to: [booking.assignedTo.email],
+                    subject: `Host Assignment: Discovery Call with ${booking.name} — ${dateStr} at ${booking.startTime} EAT 🗓️`,
+                    html: `
+                        <div style="font-family: 'Outfit', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; background-color: #0d0d0d; color: #ffffff; padding: 24px; border-radius: 12px; border: 1px solid #222;">
+                            <h2 style="color: #00E5FF; margin-top: 0;">Discovery Call Host Assignment</h2>
+                            <p style="color: #ccc;">You have been assigned as the lead host for the following discovery session:</p>
+                            <div style="background-color: #161616; border: 1px solid #2a2a2a; border-radius: 8px; padding: 20px; margin: 20px 0;">
+                                <p style="margin: 6px 0;"><strong>Client:</strong> ${booking.name} &lt;${booking.email}&gt;</p>
+                                <p style="margin: 6px 0;"><strong>Date & Time:</strong> ${dateStr} at ${booking.startTime} – ${booking.endTime} EAT</p>
+                                <p style="margin: 6px 0;"><strong>Google Meet:</strong> <a href="${booking.meetLink}" style="color: #00E5FF;">${booking.meetLink || "Not yet set"}</a></p>
+                            </div>
+                            <p style="color: #888; font-size: 12px;">The attached .ics calendar invite has been dispatched and will synchronize with your Google Calendar.</p>
+                        </div>
+                    `,
+                    attachments: [
+                        {
+                            filename: "invite.ics",
+                            content: Buffer.from(icsContent, "utf-8"),
+                            contentType: "text/calendar; method=REQUEST; charset=UTF-8",
+                        },
+                    ],
+                });
+            } catch (err) {
+                console.error("Failed to notify newly assigned host:", err);
+            }
+        }
+    }
 
     revalidatePath("/admin/bookings");
     return { success: true, booking };
@@ -472,6 +687,11 @@ export async function cancelBooking(rawInput: unknown) {
 
     const booking = await prisma.discoveryBooking.findUnique({
         where: { id: bookingId },
+        include: {
+            assignedTo: {
+                select: { id: true, name: true, email: true },
+            },
+        },
     });
 
     if (!booking) return { success: false, error: "Booking not found." };
@@ -491,13 +711,33 @@ export async function cancelBooking(rawInput: unknown) {
         action: "booking.cancel",
         entity: "DiscoveryBooking",
         entityId: bookingId,
-        details: `Cancelled booking for ${booking.name}. Reason: ${reason}`,
+        details: `Cancelled booking for ${booking.name}. Reason: ${reason} by ${user.name}`,
     });
 
-    // Send polite cancellation email
+    // Send cancellation email with METHOD:CANCEL .ics so calendars automatically remove the event
     const { resend, senderAddress } = await getEmailConfig();
     if (resend) {
         try {
+            const cancelIcs = generateIcsCancelContent({
+                id: booking.id,
+                title: `Cancelled: Discovery Call with Xinteck & ${booking.name}`,
+                description: `This discovery call has been cancelled.\nReason: ${reason}`,
+                startDate: dateStr,
+                startTime: booking.startTime,
+                endTime: booking.endTime,
+                attendees: [
+                    { name: booking.name, email: booking.email },
+                    ...(booking.assignedTo ? [{ name: booking.assignedTo.name, email: booking.assignedTo.email }] : []),
+                ],
+                sequence: 1,
+            });
+
+            const cancelAttachment = {
+                filename: "cancellation.ics",
+                content: Buffer.from(cancelIcs, "utf-8"),
+                contentType: "text/calendar; method=CANCEL; charset=UTF-8",
+            };
+
             const html = await render(
                 BookingCancellationEmail({
                     name: booking.name,
@@ -507,13 +747,67 @@ export async function cancelBooking(rawInput: unknown) {
                 }) as React.ReactElement
             );
 
+            // 1. Notify Client with cancellation .ics
             await resend.emails.send({
                 from: senderAddress,
                 to: [booking.email],
                 replyTo: "info@xinteck.co.ke",
                 subject: `Discovery Call Update — Xinteck (${dateStr})`,
                 html,
+                attachments: [cancelAttachment],
             });
+
+            // 2. Notify Assigned Host & SuperAdmins so event clears from their Google Calendar
+            const superAdmins = await prisma.user.findMany({
+                where: {
+                    role: Role.SUPER_ADMIN,
+                    status: UserStatus.ACTIVE,
+                    deletedAt: null,
+                },
+                select: { id: true, name: true, email: true },
+            });
+
+            const notifiedEmails = new Set<string>();
+            notifiedEmails.add(booking.email.toLowerCase());
+
+            if (booking.assignedTo?.email) {
+                notifiedEmails.add(booking.assignedTo.email.toLowerCase());
+                await resend.emails.send({
+                    from: senderAddress,
+                    to: [booking.assignedTo.email],
+                    subject: `Cancelled: Discovery Call with ${booking.name} (${dateStr})`,
+                    html: `
+                        <div style="font-family: 'Outfit', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; background-color: #0d0d0d; color: #ffffff; padding: 24px; border-radius: 8px; border: 1px solid #2e2e2e; max-width: 600px;">
+                            <h2 style="color: #ff4d4f; margin-top: 0;">Discovery Call Cancelled</h2>
+                            <p style="color: #E0E0E0; font-size: 14px; line-height: 1.6;">The discovery call with <strong style="color: #FFFFFF;">${booking.name}</strong> on <strong style="color: #FFFFFF;">${dateStr} at ${booking.startTime} EAT</strong> was cancelled by ${user.name}.</p>
+                            <p style="color: #E0E0E0; font-size: 14px;"><strong style="color: #FFFFFF;">Reason:</strong> <em style="color: #F5F5F5;">"${reason}"</em></p>
+                            <p style="color: #B5B5B5; font-size: 12px; margin-bottom: 0;">The attached cancellation .ics will clear this event from your Google Calendar.</p>
+                        </div>
+                    `,
+                    attachments: [cancelAttachment],
+                });
+            }
+
+            for (const sa of superAdmins) {
+                const saEmailNorm = sa.email.toLowerCase();
+                if (!notifiedEmails.has(saEmailNorm)) {
+                    notifiedEmails.add(saEmailNorm);
+                    await resend.emails.send({
+                        from: senderAddress,
+                        to: [sa.email],
+                        subject: `[Cancelled] Discovery Call: ${booking.name} (${dateStr})`,
+                        html: `
+                            <div style="font-family: 'Outfit', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; background-color: #0d0d0d; color: #ffffff; padding: 24px; border-radius: 8px; border: 1px solid #2e2e2e; max-width: 600px;">
+                                <h2 style="color: #ff4d4f; margin-top: 0;">Discovery Call Cancelled</h2>
+                                <p style="color: #E0E0E0; font-size: 14px; line-height: 1.6;">The discovery call for <strong style="color: #FFFFFF;">${booking.name}</strong> on <strong style="color: #FFFFFF;">${dateStr} at ${booking.startTime} EAT</strong> has been cancelled.</p>
+                                <p style="color: #E0E0E0; font-size: 14px;"><strong style="color: #FFFFFF;">Cancelled by:</strong> ${user.name}<br/><strong style="color: #FFFFFF;">Reason:</strong> <em style="color: #F5F5F5;">"${reason}"</em></p>
+                                <p style="color: #B5B5B5; font-size: 12px; margin-bottom: 0;">The attached cancellation .ics will clear this event from your Google Calendar.</p>
+                            </div>
+                        `,
+                        attachments: [cancelAttachment],
+                    });
+                }
+            }
         } catch (err) {
             console.error("Failed to send cancellation email:", err);
         }
@@ -935,6 +1229,26 @@ export async function customerRescheduleBooking(rawInput: unknown) {
                 meetLink: existing.meetLink || undefined,
             });
 
+            const icsContent = generateIcsContent({
+                id: existing.id,
+                title: `Discovery Call: Xinteck & ${existing.name}`,
+                description: `Rescheduled 15-Minute Technical Discovery & Consultation Session with Xinteck Technologies.\n\nJoin Google Meet: ${existing.meetLink || "https://meet.google.com/new"}`,
+                startDate: newDate,
+                startTime: newStartTime,
+                endTime: newEndTime,
+                meetLink: existing.meetLink || undefined,
+                sequence: 1,
+                attendees: [
+                    { name: existing.name, email: existing.email, role: "REQ-PARTICIPANT" },
+                ],
+            });
+
+            const icsAttachment = {
+                filename: "invite.ics",
+                content: Buffer.from(icsContent, "utf-8"),
+                contentType: "text/calendar; method=REQUEST; charset=UTF-8",
+            };
+
             const customerHtml = await render(
                 BookingConfirmedEmail({
                     name: existing.name,
@@ -953,6 +1267,7 @@ export async function customerRescheduleBooking(rawInput: unknown) {
                 replyTo: "info@xinteck.co.ke",
                 subject: `Rescheduled: Your Discovery Call with Xinteck — ${newDate} at ${newStartTime} EAT ✅`,
                 html: customerHtml,
+                attachments: [icsAttachment],
             });
 
             await resend.emails.send({
@@ -961,6 +1276,7 @@ export async function customerRescheduleBooking(rawInput: unknown) {
                 replyTo: existing.email,
                 subject: `🗓️ Reschedule Alert: ${existing.name} moved call to ${newDate} at ${newStartTime} EAT`,
                 text: `${existing.name} has rescheduled their discovery call.\nPrevious: ${currentDateStr} at ${existing.startTime} EAT\nNew: ${newDate} at ${newStartTime} EAT\nReason: ${reason || "None"}\nAdmin: https://xinteck.co.ke/admin/bookings`,
+                attachments: [icsAttachment],
             });
         } catch (emailErr) {
             console.error("Failed to send reschedule notification emails:", emailErr);

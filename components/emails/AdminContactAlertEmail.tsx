@@ -46,15 +46,15 @@ export const AdminContactAlertEmail = ({
         </Text>
         
         <Row className="mb-[8px]">
-          <Column style={{ width: '100px' }}><Text className="text-dimText text-[14px] m-0">Name:</Text></Column>
+          <Column style={{ width: '100px' }}><Text className="text-dimText text-[14px] m-0" style={{ color: '#C0C0C0' }}>Name:</Text></Column>
           <Column><Text className="text-white font-medium text-[14px] m-0">{name}</Text></Column>
         </Row>
         <Row className="mb-[8px]">
-          <Column style={{ width: '100px' }}><Text className="text-dimText text-[14px] m-0">Email:</Text></Column>
-          <Column><a href={`mailto:${email}`} className="text-brand text-[14px] m-0">{email}</a></Column>
+          <Column style={{ width: '100px' }}><Text className="text-dimText text-[14px] m-0" style={{ color: '#C0C0C0' }}>Email:</Text></Column>
+          <Column><a href={`mailto:${email}`} className="text-brand text-[14px] m-0" style={{ color: '#D4AF37' }}>{email}</a></Column>
         </Row>
         <Row>
-          <Column style={{ width: '100px' }}><Text className="text-dimText text-[14px] m-0">Phone:</Text></Column>
+          <Column style={{ width: '100px' }}><Text className="text-dimText text-[14px] m-0" style={{ color: '#C0C0C0' }}>Phone:</Text></Column>
           <Column><Text className="text-white font-medium text-[14px] m-0">{phone || 'N/A'}</Text></Column>
         </Row>
       </Section>
@@ -65,53 +65,54 @@ export const AdminContactAlertEmail = ({
         </Text>
         
         <Row className="mb-[8px]">
-          <Column style={{ width: '100px' }}><Text className="text-dimText text-[14px] m-0">Objective:</Text></Column>
+          <Column style={{ width: '100px' }}><Text className="text-dimText text-[14px] m-0" style={{ color: '#C0C0C0' }}>Objective:</Text></Column>
           <Column><Text className="text-white font-medium text-[14px] m-0">{projectType}</Text></Column>
         </Row>
         <Row className="mb-[8px]">
-          <Column style={{ width: '100px' }}><Text className="text-dimText text-[14px] m-0">Industry:</Text></Column>
+          <Column style={{ width: '100px' }}><Text className="text-dimText text-[14px] m-0" style={{ color: '#C0C0C0' }}>Industry:</Text></Column>
           <Column><Text className="text-white font-medium text-[14px] m-0">{industry}</Text></Column>
         </Row>
         <Row className="mb-[8px]">
-          <Column style={{ width: '100px' }}><Text className="text-dimText text-[14px] m-0">Service:</Text></Column>
+          <Column style={{ width: '100px' }}><Text className="text-dimText text-[14px] m-0" style={{ color: '#C0C0C0' }}>Service:</Text></Column>
           <Column><Text className="text-white font-medium text-[14px] m-0">{service}</Text></Column>
         </Row>
         <Row className="mb-[8px]">
-          <Column style={{ width: '100px' }}><Text className="text-dimText text-[14px] m-0">Budget:</Text></Column>
-          <Column><Text className="text-brand font-black text-[14px] m-0">{budget}</Text></Column>
+          <Column style={{ width: '100px' }}><Text className="text-dimText text-[14px] m-0" style={{ color: '#C0C0C0' }}>Budget:</Text></Column>
+          <Column><Text className="text-brand font-black text-[14px] m-0" style={{ color: '#D4AF37' }}>{budget}</Text></Column>
         </Row>
         <Row className="mb-[16px]">
-          <Column style={{ width: '100px' }}><Text className="text-dimText text-[14px] m-0">Received:</Text></Column>
+          <Column style={{ width: '100px' }}><Text className="text-dimText text-[14px] m-0" style={{ color: '#C0C0C0' }}>Received:</Text></Column>
           <Column><Text className="text-white font-medium text-[14px] m-0">{new Date().toLocaleString()}</Text></Column>
         </Row>
 
         <Hr className="border border-[#222222] my-[16px]" />
 
-        <Text className="text-dimText text-[12px] uppercase tracking-wider mb-[8px] m-0">Message Content</Text>
-        <Text className="text-text text-[14px] leading-[24px] bg-[#111] p-[16px] rounded-[6px] border border-[#333] m-0 italic">
+        <Text className="text-dimText text-[12px] uppercase tracking-wider mb-[8px] m-0" style={{ color: '#D4AF37' }}>Message Content</Text>
+        <Text className="text-text text-[14px] leading-[24px] bg-[#111] p-[16px] rounded-[6px] border border-[#333] m-0 italic" style={{ color: '#FFFFFF' }}>
           "{message}"
         </Text>
       </Section>
 
-      <Section className="text-center mb-[24px]">
-        <Row>
-          <Column style={{ paddingRight: '12px' }}>
-            <Button
-              href="https://xinteck.co.ke/admin/leads"
-              className="bg-brand text-[#0A0A0A] font-black uppercase tracking-widest text-[14px] rounded-[6px] px-[24px] py-[16px] text-center inline-block w-[50%]"
-            >
-              View inside CRM
-            </Button>
-          </Column>
-          <Column style={{ paddingLeft: '12px' }}>
-            <Button
-              href={`mailto:${email}`}
-              className="bg-[#222222] text-white border border-[#333333] font-black uppercase tracking-widest text-[14px] rounded-[6px] px-[24px] py-[16px] text-center inline-block w-[50%]"
-            >
-              Reply to Client
-            </Button>
-          </Column>
-        </Row>
+      {/* Action Buttons — Stacked Vertically & Left-Aligned */}
+      <Section className="text-left mb-[24px]">
+        <div style={{ marginBottom: '12px' }}>
+          <Button
+            href="https://xinteck.co.ke/admin/leads"
+            className="bg-brand text-[#0A0A0A] font-black uppercase tracking-widest text-[13px] rounded-[6px] px-[24px] py-[14px] text-center inline-block"
+            style={{ display: 'inline-block', textAlign: 'center', backgroundColor: '#D4AF37', color: '#0A0A0A' }}
+          >
+            View inside CRM →
+          </Button>
+        </div>
+        <div>
+          <Button
+            href={`mailto:${email}`}
+            className="bg-[#222222] text-white border border-[#333333] font-black uppercase tracking-widest text-[13px] rounded-[6px] px-[24px] py-[14px] text-center inline-block"
+            style={{ display: 'inline-block', textAlign: 'center', backgroundColor: '#222222', color: '#FFFFFF' }}
+          >
+            Reply to Client ({email}) ✉
+          </Button>
+        </div>
       </Section>
     </XinteckEmailLayout>
   );

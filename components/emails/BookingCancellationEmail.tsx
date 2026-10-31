@@ -41,29 +41,32 @@ export const BookingCancellationEmail = ({
       {/* Reason Box */}
       {reason && (
         <Section className="bg-[#0A0A0A] border border-[#222222] rounded-[8px] p-[20px] mb-[28px]">
-          <Text className="text-dimText text-[12px] uppercase font-bold tracking-wider mb-[6px] m-0">
+          <Text className="text-dimText text-[12px] uppercase font-bold tracking-wider mb-[6px] m-0" style={{ color: '#D4AF37' }}>
             Reason for update:
           </Text>
-          <Text className="text-white text-[14px] leading-[22px] m-0 italic">
+          <Text className="text-white text-[14px] leading-[22px] m-0 italic" style={{ color: '#FFFFFF' }}>
             "{reason}"
           </Text>
         </Section>
       )}
 
-      {/* Rebook CTA */}
-      <Section className="bg-[#111111] border border-brand/30 rounded-[8px] p-[24px] mb-[28px] text-center">
-        <Text className="text-white font-bold text-[15px] m-0 mb-[12px]">
+      {/* Rebook CTA — Left-Aligned */}
+      <Section className="bg-[#111111] border border-brand/30 rounded-[8px] p-[20px] sm:p-[24px] mb-[24px] text-left">
+        <Text className="text-white font-bold text-[15px] m-0 mb-[8px]">
           We would still love to speak with you!
         </Text>
-        <Text className="text-dimText text-[13px] leading-[22px] m-0 mb-[20px]">
+        <Text className="text-dimText text-[13px] leading-[22px] m-0 mb-[16px]" style={{ color: '#E0E0E0' }}>
           Please select any upcoming open slot on our calendar that fits your schedule.
         </Text>
-        <Button
-          href="https://xinteck.co.ke/book"
-          className="bg-brand text-[#0A0A0A] font-black uppercase tracking-widest text-[13px] rounded-[6px] px-[28px] py-[14px] text-center inline-block"
-        >
-          Select a New Time Slot →
-        </Button>
+        <div>
+          <Button
+            href="https://xinteck.co.ke/book"
+            className="bg-brand text-[#0A0A0A] font-black uppercase tracking-widest text-[13px] rounded-[6px] px-[24px] py-[14px] text-center inline-block"
+            style={{ display: 'inline-block', textAlign: 'center', backgroundColor: '#D4AF37', color: '#0A0A0A' }}
+          >
+            Select a New Time Slot →
+          </Button>
+        </div>
       </Section>
 
       <Hr className="border border-[#222222] my-[24px]" />

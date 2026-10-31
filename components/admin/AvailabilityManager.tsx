@@ -140,7 +140,7 @@ export const AvailabilityManager: React.FC<AvailabilityManagerProps> = ({
                             onClick={() => setShowAddBlockedModal(true)}
                             className="bg-primary hover:bg-primary/90 text-primary-foreground font-black text-xs uppercase px-4 py-2.5 rounded-xl flex items-center gap-1.5 transition-all shadow-md cursor-pointer w-fit"
                         >
-                            <Plus size={14} /> + Set Day Off / Block Date
+                            <Plus size={14} /> Set Day Off / Block Date
                         </button>
                     )}
                 </div>
@@ -196,7 +196,7 @@ export const AvailabilityManager: React.FC<AvailabilityManagerProps> = ({
                     </p>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-4">
                     {editingAvailability.map((item, index) => {
                         const dayName = dayNames[item.dayOfWeek];
                         const isFriday = item.dayOfWeek === 5;
@@ -205,15 +205,15 @@ export const AvailabilityManager: React.FC<AvailabilityManagerProps> = ({
                         return (
                             <div
                                 key={item.dayOfWeek}
-                                className="p-4 rounded-xl bg-muted/10 border border-border/60 flex flex-col gap-3"
+                                className="p-4 rounded-xl bg-muted/10 border border-border/60 flex flex-col justify-between gap-3 min-w-0 overflow-hidden"
                             >
-                                <div className="flex items-center justify-between">
-                                    <span className="text-sm font-bold text-foreground">
-                                        {dayName} {isFriday && <span className="text-[10px] text-primary">(Half-day)</span>}
+                                <div className="flex items-center justify-between gap-2">
+                                    <span className="text-sm font-bold text-foreground truncate">
+                                        {dayName} {isFriday && <span className="text-[10px] text-primary font-semibold">(Half-day)</span>}
                                     </span>
 
                                     {isSuperAdmin ? (
-                                        <label className="flex items-center gap-1.5 text-xs text-muted-foreground font-semibold cursor-pointer">
+                                        <label className="flex items-center gap-1.5 text-xs text-muted-foreground font-semibold cursor-pointer shrink-0">
                                             <input
                                                 type="checkbox"
                                                 checked={item.isActive}
@@ -227,37 +227,45 @@ export const AvailabilityManager: React.FC<AvailabilityManagerProps> = ({
                                             <span>Active</span>
                                         </label>
                                     ) : (
-                                        <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${item.isActive ? "bg-emerald-500/10 text-emerald-500" : "bg-muted text-muted-foreground"}`}>
+                                        <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full shrink-0 ${item.isActive ? "bg-emerald-500/10 text-emerald-500" : "bg-muted text-muted-foreground"}`}>
                                             {item.isActive ? "Open" : "Closed"}
                                         </span>
                                     )}
                                 </div>
 
-                                {item.isActive && (
-                                    <div className="flex items-center gap-2 text-xs">
-                                        <input
-                                            type="time"
-                                            disabled={!isSuperAdmin}
-                                            value={item.startTime}
-                                            onChange={(e) => {
-                                                const updated = [...editingAvailability];
-                                                updated[index].startTime = e.target.value;
-                                                setEditingAvailability(updated);
-                                            }}
-                                            className="bg-background border border-border rounded px-2 py-1 text-xs text-foreground focus:border-primary disabled:opacity-60"
-                                        />
-                                        <span className="text-muted-foreground">to</span>
-                                        <input
-                                            type="time"
-                                            disabled={!isSuperAdmin}
-                                            value={item.endTime}
-                                            onChange={(e) => {
-                                                const updated = [...editingAvailability];
-                                                updated[index].endTime = e.target.value;
-                                                setEditingAvailability(updated);
-                                            }}
-                                            className="bg-background border border-border rounded px-2 py-1 text-xs text-foreground focus:border-primary disabled:opacity-60"
-                                        />
+                                {item.isActive ? (
+                                    <div className="flex flex-wrap sm:flex-nowrap items-center gap-2 text-xs w-full min-w-0">
+                                        <div className="flex-1 min-w-[105px]">
+                                            <input
+                                                type="time"
+                                                disabled={!isSuperAdmin}
+                                                value={item.startTime}
+                                                onChange={(e) => {
+                                                    const updated = [...editingAvailability];
+                                                    updated[index].startTime = e.target.value;
+                                                    setEditingAvailability(updated);
+                                                }}
+                                                className="w-full bg-background border border-border rounded-lg px-2 py-1.5 text-xs text-foreground focus:border-primary focus:outline-none disabled:opacity-60 text-center"
+                                            />
+                                        </div>
+                                        <span className="text-muted-foreground text-xs font-semibold shrink-0 text-center">to</span>
+                                        <div className="flex-1 min-w-[105px]">
+                                            <input
+                                                type="time"
+                                                disabled={!isSuperAdmin}
+                                                value={item.endTime}
+                                                onChange={(e) => {
+                                                    const updated = [...editingAvailability];
+                                                    updated[index].endTime = e.target.value;
+                                                    setEditingAvailability(updated);
+                                                }}
+                                                className="w-full bg-background border border-border rounded-lg px-2 py-1.5 text-xs text-foreground focus:border-primary focus:outline-none disabled:opacity-60 text-center"
+                                            />
+                                        </div>
+                                    </div>
+                                ) : (
+                                    <div className="text-xs text-muted-foreground italic py-1">
+                                        Closed for bookings
                                     </div>
                                 )}
 
@@ -265,9 +273,9 @@ export const AvailabilityManager: React.FC<AvailabilityManagerProps> = ({
                                     <button
                                         type="button"
                                         onClick={() => handleSaveDayAvailability(item)}
-                                        className="mt-1 text-xs text-primary font-bold hover:underline flex items-center gap-1 cursor-pointer w-fit"
+                                        className="mt-auto pt-1 text-xs text-primary font-bold hover:text-primary/80 flex items-center gap-1.5 cursor-pointer w-fit transition-colors"
                                     >
-                                        <Save size={12} /> Save {dayName}
+                                        <Save size={13} /> Save {dayName}
                                     </button>
                                 )}
                             </div>

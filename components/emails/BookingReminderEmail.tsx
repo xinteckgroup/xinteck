@@ -55,32 +55,35 @@ export const BookingReminderEmail = ({
       </Text>
 
       {/* Prominent Google Meet Box */}
-      <Section className="bg-[#141414] border-2 border-brand rounded-[10px] p-[28px] mb-[28px] text-center">
-        <Text className="text-dimText text-[12px] uppercase font-bold tracking-widest m-0 mb-[6px]">
+      <Section className="bg-[#141414] border-2 border-brand rounded-[10px] p-[20px] sm:p-[28px] mb-[24px] text-left">
+        <Text className="text-dimText text-[12px] uppercase font-bold tracking-widest m-0 mb-[6px]" style={{ color: '#D4AF37' }}>
           Google Meet Video Room
         </Text>
-        <Text className="text-white text-[19px] font-black m-0 mb-[18px]">
+        <Text className="text-white text-[18px] sm:text-[20px] font-black m-0 mb-[18px]">
           📅 {date} · ⏰ {startTime} – {endTime} (Nairobi EAT, UTC+3)
         </Text>
 
-        <Button
-          href={meetLink}
-          className="bg-brand text-[#0A0A0A] font-black uppercase tracking-widest text-[14px] rounded-[6px] px-[32px] py-[16px] text-center inline-block shadow-lg"
-        >
-          Join Google Meet Call ↗
-        </Button>
+        <div style={{ marginBottom: '14px' }}>
+          <Button
+            href={meetLink}
+            className="bg-brand text-[#0A0A0A] font-black uppercase tracking-widest text-[13px] sm:text-[14px] rounded-[6px] px-[28px] py-[15px] text-center inline-block shadow-lg"
+            style={{ display: 'inline-block', textAlign: 'center', backgroundColor: '#D4AF37', color: '#0A0A0A' }}
+          >
+            Join Google Meet Call ↗
+          </Button>
+        </div>
 
-        <Text className="text-dimText text-[12px] m-0 mt-[14px]">
-          Direct link: <Link href={meetLink} className="text-brand underline">{meetLink}</Link>
+        <Text className="text-dimText text-[12px] m-0" style={{ wordBreak: 'break-all', color: '#C0C0C0' }}>
+          Direct link: <Link href={meetLink} className="text-brand underline" style={{ color: '#D4AF37' }}>{meetLink}</Link>
         </Text>
       </Section>
 
       {/* Tips Section */}
-      <Section className="bg-[#111111] border border-white/10 rounded-[8px] p-[20px] mb-[28px]">
+      <Section className="bg-[#111111] border border-white/10 rounded-[8px] p-[20px] mb-[24px] text-left">
         <Text className="text-brand text-[13px] font-bold uppercase tracking-wider m-0 mb-[10px]">
           Quick Session Recommendations
         </Text>
-        <Text className="text-white/80 text-[13px] leading-[22px] m-0">
+        <Text className="text-white/80 text-[13px] leading-[22px] m-0" style={{ color: '#EAEAEA' }}>
           • Have a brief overview of your system goals, timeline, and current pain points.<br />
           • If you have existing code, wireframes, or API docs, feel free to share screen.<br />
           • Test your microphone and camera 2 minutes before the call starts.
@@ -88,15 +91,21 @@ export const BookingReminderEmail = ({
       </Section>
 
       {rescheduleUrl && (
-        <>
-          <Hr className="border-t border-white/10 my-[24px]" />
-          <Text className="text-dimText text-[12px] leading-[20px] text-center m-0">
-            Need to reschedule? You can easily adjust your time slot online up to 2 hours before the call:{' '}
-            <Link href={rescheduleUrl} className="text-brand underline">
-              Choose a new time slot
-            </Link>
+        <Section className="text-left mb-[20px]">
+          <Hr className="border-t border-white/10 my-[20px]" />
+          <Text className="text-dimText text-[12px] leading-[20px] m-0 mb-[10px]" style={{ color: '#D0D0D0' }}>
+            Need to reschedule? You can easily adjust your time slot online up to 2 hours before the call:
           </Text>
-        </>
+          <div>
+            <Button
+              href={rescheduleUrl}
+              className="bg-[#222222] text-white border border-[#444] font-bold text-[12px] sm:text-[13px] rounded-[6px] px-[20px] py-[10px] text-center inline-block"
+              style={{ display: 'inline-block', textAlign: 'center', backgroundColor: '#222222', color: '#FFFFFF' }}
+            >
+              🗓️ Reschedule Appointment
+            </Button>
+          </div>
+        </Section>
       )}
     </XinteckEmailLayout>
   );

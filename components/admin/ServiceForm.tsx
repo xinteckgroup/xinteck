@@ -61,7 +61,7 @@ export function ServiceForm({ service }: ServiceFormProps) {
     const initialBuyNow = safeCast<ServiceBuyNowSection>(service?.buyNowSection, { title: "", description: "", button: "" });
     const initialStats = safeCast<ServiceStat[]>(service?.stats, [{ label: "", val: "" }]);
     const initialFeatures = service?.features || [];
-    const initialBudgetRanges = (service as any)?.budgetRanges || ["$10k - $25k", "$25k - $50k", "$50k - $100k", "$100k+"];
+    const initialBudgetRanges = (service as any)?.budgetRanges || ["KES 80k - 200k", "KES 200k - 600k", "KES 600k - 2M", "KES 2M+"];
 
     // Core Form State
     const [formData, setFormData] = useState({
@@ -561,7 +561,7 @@ export function ServiceForm({ service }: ServiceFormProps) {
                                             setBudgetRanges(newB);
                                         }}
                                         className="flex-1 admin-surface-input rounded-[6px] px-2 py-1.5 text-[var(--admin-text)] text-xs outline-none focus:border-gold/50"
-                                        placeholder="e.g. $10k - $25k"
+                                        placeholder="e.g. KES 80k - 200k"
                                     />
                                     <button 
                                         onClick={() => setBudgetRanges(budgetRanges.filter((_, idx) => idx !== i))}

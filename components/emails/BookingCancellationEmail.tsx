@@ -16,19 +16,6 @@ export const BookingCancellationEmail = ({
 }: BookingCancellationEmailProps) => {
   return (
     <XinteckEmailLayout previewText={`Update regarding your discovery call on ${date}`} showSignature={true}>
-      <Section className="text-left mb-[40px]">
-        <Link href="https://xinteck.co.ke">
-          <Img
-            src="https://xinteck.co.ke/logos/logo-dark-full.png"
-            width="200"
-            height="200"
-            alt="Xinteck Logo"
-            className="mx-auto block"
-            style={{ objectFit: 'contain' }}
-          />
-        </Link>
-      </Section>
-
       <Heading className="text-[20px] font-black tracking-tight text-brand m-0 mb-[16px]">
         Discovery Call Update
       </Heading>

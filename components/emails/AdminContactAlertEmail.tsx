@@ -24,18 +24,6 @@ export const AdminContactAlertEmail = ({
 }: AdminContactAlertEmailProps) => {
   return (
     <XinteckEmailLayout previewText={`New Lead: ${name} (${projectType})`}>
-      <Section className="text-left mb-[40px]">
-        <Link href="https://xinteck.co.ke">
-          <Img
-            src="https://xinteck.co.ke/logos/logo-dark-full.png"
-            width="200"
-            height="200"
-            alt="Xinteck Logo"
-            className="mx-auto block"
-            style={{ objectFit: 'contain' }}
-          />
-        </Link>
-      </Section>
       <Heading className="text-[20px] font-black tracking-tight text-brand m-0 mb-[24px]">
         New Incoming Lead Alert
       </Heading>
@@ -51,11 +39,11 @@ export const AdminContactAlertEmail = ({
         </Row>
         <Row className="mb-[8px]">
           <Column style={{ width: '100px' }}><Text className="text-dimText text-[14px] m-0" style={{ color: '#C0C0C0' }}>Email:</Text></Column>
-          <Column><a href={`mailto:${email}`} className="text-brand text-[14px] m-0" style={{ color: '#D4AF37' }}>{email}</a></Column>
+          <Column><a href={`mailto:${email}`} className="text-brand text-[14px] m-0" style={{ color: '#D4AF37', textDecoration: 'none' }}>{email}</a></Column>
         </Row>
         <Row>
           <Column style={{ width: '100px' }}><Text className="text-dimText text-[14px] m-0" style={{ color: '#C0C0C0' }}>Phone:</Text></Column>
-          <Column><Text className="text-white font-medium text-[14px] m-0">{phone || 'N/A'}</Text></Column>
+          <Column><a href={`tel:${phone}`} className="text-white font-medium text-[14px] m-0" style={{ color: '#FFFFFF', textDecoration: 'none' }}>{phone || 'N/A'}</a></Column>
         </Row>
       </Section>
 

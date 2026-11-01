@@ -21,18 +21,6 @@ export const LeadReplyEmail = ({
 
   return (
     <XinteckEmailLayout previewText={`Reply from ${sentBy}`} showSignature>
-      <Section className="text-left mb-[40px]">
-        <Link href="https://xinteck.co.ke">
-          <Img
-            src="https://xinteck.co.ke/logos/logo-dark-full.png"
-            width="200"
-            height="200"
-            alt="Xinteck Logo"
-            className="mx-auto block"
-            style={{ objectFit: 'contain' }}
-          />
-        </Link>
-      </Section>
       <Section className="bg-[#0A0A0A] border border-[#222222] rounded-[8px] p-[24px] mb-[32px]">
         <Text className="text-[16px] leading-[26px] text-text m-0 mb-[16px]" style={{ color: '#F5F5F5' }}>
           Thank you for reaching out to Xinteck. We have successfully received your inquiry and our engineering team is actively reviewing your requirements.

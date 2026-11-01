@@ -22,19 +22,6 @@ export const BookingConfirmedEmail = ({
 }: BookingConfirmedEmailProps) => {
   return (
     <XinteckEmailLayout previewText={`Confirmed: Your Xinteck Discovery Call is on ${date} at ${startTime} EAT`} showSignature={true}>
-      <Section className="text-left mb-[40px]">
-        <Link href="https://xinteck.co.ke">
-          <Img
-            src="https://xinteck.co.ke/logos/logo-dark-full.png"
-            width="200"
-            height="200"
-            alt="Xinteck Logo"
-            className="mx-auto block"
-            style={{ objectFit: 'contain' }}
-          />
-        </Link>
-      </Section>
-
       <Heading className="text-[22px] font-black tracking-tight text-brand m-0 mb-[16px]">
         Your Discovery Call is Confirmed! ✅
       </Heading>

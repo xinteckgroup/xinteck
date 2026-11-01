@@ -16,20 +16,6 @@ export const NewsletterEmail = ({
 }: NewsletterEmailProps) => {
     return (
         <XinteckEmailLayout previewText={previewText || subject} showSignature>
-            {/* Logo */}
-            <Section className="text-center mb-[32px]">
-                <Link href="https://xinteck.co.ke">
-                    <Img
-                        src="https://xinteck.co.ke/logos/logo-dark-full.png"
-                        width="180"
-                        height="180"
-                        alt="Xinteck Logo"
-                        className="mx-auto block"
-                        style={{ objectFit: 'contain' }}
-                    />
-                </Link>
-            </Section>
-
             {/* Subject as heading */}
             <Section className="mb-[24px]">
                 <Text className="text-[22px] font-bold text-brand m-0 leading-[30px] tracking-tight">

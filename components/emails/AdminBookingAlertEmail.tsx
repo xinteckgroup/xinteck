@@ -28,24 +28,12 @@ export const AdminBookingAlertEmail = ({
 }: AdminBookingAlertEmailProps) => {
   return (
     <XinteckEmailLayout previewText={`New Discovery Call: ${name} (${date} at ${startTime} EAT)`}>
-      <Section className="text-left mb-[40px]">
-        <Link href="https://xinteck.co.ke">
-          <Img
-            src="https://xinteck.co.ke/logos/logo-dark-full.png"
-            width="200"
-            height="200"
-            alt="Xinteck Logo"
-            className="mx-auto block"
-            style={{ objectFit: 'contain' }}
-          />
-        </Link>
-      </Section>
       <Heading className="text-[20px] font-black tracking-tight text-brand m-0 mb-[24px]">
         New Discovery Call Booking Alert
       </Heading>
 
       {/* Appointment Window Highlight */}
-      <Section className="bg-[#141414] border-2 border-brand/40 rounded-[8px] p-[20px] mb-[24px] text-center">
+      <Section className="bg-[#141414] border-2 border-brand/40 rounded-[8px] p-[20px] mb-[24px] text-left">
         <Text className="text-dimText text-[12px] uppercase font-bold tracking-widest m-0 mb-[6px]" style={{ color: '#D4AF37' }}>
           Scheduled Appointment (15 Minutes)
         </Text>
@@ -66,11 +54,11 @@ export const AdminBookingAlertEmail = ({
         </Row>
         <Row className="mb-[8px]">
           <Column style={{ width: '110px' }}><Text className="text-dimText text-[14px] m-0" style={{ color: '#C0C0C0' }}>Email:</Text></Column>
-          <Column><a href={`mailto:${email}`} className="text-brand text-[14px] m-0" style={{ color: '#D4AF37' }}>{email}</a></Column>
+          <Column><a href={`mailto:${email}`} className="text-brand text-[14px] m-0" style={{ color: '#D4AF37', textDecoration: 'none' }}>{email}</a></Column>
         </Row>
         <Row className="mb-[8px]">
           <Column style={{ width: '110px' }}><Text className="text-dimText text-[14px] m-0" style={{ color: '#C0C0C0' }}>Phone / WA:</Text></Column>
-          <Column><a href={`tel:${phone}`} className="text-white font-medium text-[14px] m-0">{phone || 'N/A'}</a></Column>
+          <Column><a href={`tel:${phone}`} className="text-white font-medium text-[14px] m-0" style={{ color: '#FFFFFF', textDecoration: 'none' }}>{phone || 'N/A'}</a></Column>
         </Row>
         <Row>
           <Column style={{ width: '110px' }}><Text className="text-dimText text-[14px] m-0" style={{ color: '#C0C0C0' }}>Company:</Text></Column>

@@ -23,11 +23,11 @@ export const XinteckEmailSignature = () => {
             {/* Logo Column */}
             <td valign="top" style={{ paddingRight: '18px', borderRight: '2px solid #D4AF37', width: '88px' }}>
               <Img
-                src="https://xinteck.co.ke/logos/logo-dark-full.png"
+                src="https://xinteck.co.ke/logos/logo-dark.png"
                 alt="Xinteck Logo"
                 width="70"
                 height="70"
-                style={{ display: 'block', borderRadius: '8px' }}
+                style={{ display: 'block', borderRadius: '8px', objectFit: 'contain' }}
               />
             </td>
 
@@ -122,7 +122,7 @@ export const XINTECK_SIGNATURE_HTML = `
   </tr>
   <tr>
     <td valign="top" style="padding-right: 18px; border-right: 2px solid #D4AF37; width: 88px;">
-      <img src="https://xinteck.co.ke/logos/logo-dark-full.png" alt="Xinteck Logo" width="70" height="70" style="display: block; border-radius: 8px;" />
+      <img src="https://xinteck.co.ke/logos/logo-dark.png" alt="Xinteck Logo" width="70" height="70" style="display: block; border-radius: 8px; object-fit: contain;" />
     </td>
     <td valign="top" style="padding-left: 18px;">
       <p style="margin: 0 0 2px 0; font-size: 17px; font-weight: 700; color: #FFFFFF; letter-spacing: 0.3px;">John Jackson O.</p>

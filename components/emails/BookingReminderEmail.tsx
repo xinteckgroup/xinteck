@@ -31,19 +31,6 @@ export const BookingReminderEmail = ({
       }
       showSignature={true}
     >
-      <Section className="text-left mb-[40px]">
-        <Link href="https://xinteck.co.ke">
-          <Img
-            src="https://xinteck.co.ke/logos/logo-dark-full.png"
-            width="200"
-            height="200"
-            alt="Xinteck Logo"
-            className="mx-auto block"
-            style={{ objectFit: 'contain' }}
-          />
-        </Link>
-      </Section>
-
       <Heading className="text-[22px] font-black tracking-tight text-brand m-0 mb-[16px]">
         {isUpcomingSoon ? "⏰ Your Discovery Call is Starting Soon!" : "🗓️ Reminder: Your Discovery Call Tomorrow"}
       </Heading>

@@ -14,18 +14,6 @@ export const TeamInviteEmail = ({
 }: TeamInviteEmailProps) => {
   return (
     <XinteckEmailLayout previewText="You have been invited to Xinteck">
-      <Section className="text-left mb-[40px]">
-        <Link href="https://xinteck.co.ke">
-          <Img
-            src="https://xinteck.co.ke/logos/logo-dark-full.png"
-            width="200"
-            height="200"
-            alt="Xinteck Logo"
-            className="mx-auto block"
-            style={{ objectFit: 'contain' }}
-          />
-        </Link>
-      </Section>
       <Heading className="text-[22px] sm:text-[24px] font-black tracking-tight text-left text-white m-0 mb-[20px]">
         You've Been Invited!
       </Heading>

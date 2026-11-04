@@ -1,4 +1,10 @@
 import { BusinessCardMockup } from "@/components/services/mockups/BusinessCardMockup";
+import { CloudDevOpsSimulator } from "@/components/services/mockups/CloudDevOpsSimulator";
+import { CustomSoftwareSimulator } from "@/components/services/mockups/CustomSoftwareSimulator";
+import { GraphicDesignSimulator } from "@/components/services/mockups/GraphicDesignSimulator";
+import { MobileAppSimulator } from "@/components/services/mockups/MobileAppSimulator";
+import { UiUxDesignSimulator } from "@/components/services/mockups/UiUxDesignSimulator";
+import { WebDevStudioSimulator } from "@/components/services/mockups/WebDevStudioSimulator";
 import { motion } from "framer-motion";
 import {
     Cloud,
@@ -180,27 +186,27 @@ const CloudMockup = ({ imageSrc, service }: MockupProps) => (
 export const SERVICE_UI_MAP: Record<string, { icon: any, mockup: any }> = {
     "web-development": {
         icon: Globe,
-        mockup: WebDevMockup
+        mockup: WebDevStudioSimulator
     },
     "mobile-app-development": {
         icon: Smartphone,
-        mockup: MobileMockup
+        mockup: MobileAppSimulator
     },
     "custom-software-development": {
         icon: Code,
-        mockup: CustomSoftwareMockup
+        mockup: CustomSoftwareSimulator
     },
     "ui-ux-design": {
         icon: Palette,
-        mockup: DesignMockup
+        mockup: UiUxDesignSimulator
     },
     "cloud-devops": {
         icon: Cloud,
-        mockup: CloudMockup
+        mockup: CloudDevOpsSimulator
     },
     "graphic-design": {
         icon: PenTool,
-        mockup: BusinessCardMockup
+        mockup: GraphicDesignSimulator
     },
     // Defaults for others
     "default": {

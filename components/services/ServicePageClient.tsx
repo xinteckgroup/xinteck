@@ -8,12 +8,38 @@ import { VIDEO_STATS } from "@/lib/videoStats";
 import { motion } from "framer-motion";
 import { ArrowRight, CheckCircle2, Clock, Code, Star, Video } from "lucide-react"; // Default icon
 import Link from "next/link";
+import { MobileIndustryPacks } from "./mobile/MobileIndustryPacks";
+import { MobileDeviceTrust } from "./mobile/MobileDeviceTrust";
+import { MobileScopeEstimator } from "./mobile/MobileScopeEstimator";
+import { MobileFaqSection } from "./mobile/MobileFaqSection";
+import { WebSpeedBenchmark } from "./web/WebSpeedBenchmark";
+import { WebTechStackShowcase } from "./web/WebTechStackShowcase";
+import { WebScopeEstimator } from "./web/WebScopeEstimator";
+import { WebFaqSection } from "./web/WebFaqSection";
+import { CustomSoftwareBeforeAfter } from "./custom/CustomSoftwareBeforeAfter";
+import { CustomSoftwareScopeEstimator } from "./custom/CustomSoftwareScopeEstimator";
+import { CustomSoftwareFaqSection } from "./custom/CustomSoftwareFaqSection";
+import { UiUxRoiMetrics } from "./design/UiUxRoiMetrics";
+import { UiUxScopeEstimator } from "./design/UiUxScopeEstimator";
+import { UiUxFaqSection } from "./design/UiUxFaqSection";
+import { CloudCostOptimizer } from "./cloud/CloudCostOptimizer";
+import { CloudScopeEstimator } from "./cloud/CloudScopeEstimator";
+import { CloudFaqSection } from "./cloud/CloudFaqSection";
+import { GraphicTrustProof } from "./graphic/GraphicTrustProof";
+import { GraphicScopeEstimator } from "./graphic/GraphicScopeEstimator";
+import { GraphicFaqSection } from "./graphic/GraphicFaqSection";
 
 export function ServicePageClient({ service }: { service: PublicService }) {
   
   const ui = SERVICE_UI_MAP[service.slug as keyof typeof SERVICE_UI_MAP] || SERVICE_UI_MAP["default"];
   const HeroIcon = ui.icon;
   const MockupComponent = ui.mockup;
+  const isMobileApp = service.slug === "mobile-app-development";
+  const isWebDev = service.slug === "web-development";
+  const isCustomSoftware = service.slug === "custom-software-development";
+  const isUiUx = service.slug === "ui-ux-design";
+  const isCloud = service.slug === "cloud-devops";
+  const isGraphicDesign = service.slug === "graphic-design";
 
   // Split title for styling
   const titleParts = service.title.split("\n"); // Or split by space if needed. For now assuming name is short.
@@ -85,6 +111,24 @@ export function ServicePageClient({ service }: { service: PublicService }) {
           </div>
         </section>
 
+        {/* Mobile Industry Solutions Showcase */}
+        {isMobileApp && <MobileIndustryPacks />}
+
+        {/* Web Speed & 3-Second Benchmark */}
+        {isWebDev && <WebSpeedBenchmark />}
+
+        {/* Custom Software Before vs After Transformation */}
+        {isCustomSoftware && <CustomSoftwareBeforeAfter />}
+
+        {/* UI/UX Prototyping & Zero-Waste ROI */}
+        {isUiUx && <UiUxRoiMetrics />}
+
+        {/* Cloud Cost Optimizer & Security Radar */}
+        {isCloud && <CloudCostOptimizer />}
+
+        {/* Graphic Design Commercial Press Proof */}
+        {isGraphicDesign && <GraphicTrustProof />}
+
         {/* Features Grid */}
         <section className="px-6">
           <div className="max-w-7xl mx-auto">
@@ -117,6 +161,12 @@ export function ServicePageClient({ service }: { service: PublicService }) {
           </div>
         </section>
 
+        {/* Mobile Real Device & Store Approval Proof */}
+        {isMobileApp && <MobileDeviceTrust />}
+
+        {/* Web Search Engine & Architecture Foundation */}
+        {isWebDev && <WebTechStackShowcase />}
+
         {/* Dynamic Key Stats */}
         {service.stats && service.stats.length > 0 && (
           <section className="px-6 py-6 md:py-12">
@@ -143,6 +193,14 @@ export function ServicePageClient({ service }: { service: PublicService }) {
             </div>
           </section>
         )}
+
+        {/* Interactive Scope & Cost Estimator */}
+        {isMobileApp && <MobileScopeEstimator />}
+        {isWebDev && <WebScopeEstimator />}
+        {isCustomSoftware && <CustomSoftwareScopeEstimator />}
+        {isUiUx && <UiUxScopeEstimator />}
+        {isCloud && <CloudScopeEstimator />}
+        {isGraphicDesign && <GraphicScopeEstimator />}
 
         {/* Content Blocks (Section 2 & 3) */}
         {(service.section2?.title || service.section3?.title) && (
@@ -345,6 +403,14 @@ export function ServicePageClient({ service }: { service: PublicService }) {
             </div>
           </section>
         )}
+
+        {/* Mobile Objection-Buster FAQ Section */}
+        {isMobileApp && <MobileFaqSection />}
+        {isWebDev && <WebFaqSection />}
+        {isCustomSoftware && <CustomSoftwareFaqSection />}
+        {isUiUx && <UiUxFaqSection />}
+        {isCloud && <CloudFaqSection />}
+        {isGraphicDesign && <GraphicFaqSection />}
 
         {/* CTA Section */}
         <section className="px-6 mb-12 md:mb-20">

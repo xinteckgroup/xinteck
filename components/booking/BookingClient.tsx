@@ -16,9 +16,11 @@ import {
     CheckCircle2,
     Download,
     ExternalLink,
+    Info,
     Video,
 } from "lucide-react";
-import React, { useCallback, useEffect, useState } from "react";
+import { useSearchParams } from "next/navigation";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 
 interface BookingClientProps {
     servicesList: string[];
@@ -33,6 +35,18 @@ export const BookingClient: React.FC<BookingClientProps> = ({
     const todayDateStr = React.useMemo(() => {
         return getCurrentEATDate().toISOString().split("T")[0];
     }, []);
+
+    // Read query params from scope estimators (e.g. /book?service=Web+Development&budget=KES+145,000)
+    const searchParams = useSearchParams();
+    const initialService = useMemo(() => searchParams.get("service") || undefined, [searchParams]);
+    const initialMessage = useMemo(() => {
+        const budget = searchParams.get("budget");
+        const pkg = searchParams.get("package");
+        const parts: string[] = [];
+        if (budget) parts.push(`Estimated budget from scope calculator: ${budget}`);
+        if (pkg) parts.push(`Selected package: ${pkg}`);
+        return parts.length > 0 ? parts.join("\n") : undefined;
+    }, [searchParams]);
 
     // Calendar state
     const [selectedDate, setSelectedDate] = useState<string>(todayDateStr);
@@ -293,7 +307,32 @@ export const BookingClient: React.FC<BookingClientProps> = ({
                 </motion.div>
             ) : (
                 /* MAIN INTERACTIVE BOOKING LAYOUT */
-                <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+                <div className="flex flex-col gap-6">
+                    {/* Scope Estimator Context Banner */}
+                    {(initialService || initialMessage) && (
+                        <motion.div
+                            initial={{ opacity: 0, y: -10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            className="bg-primary/10 border border-primary/30 rounded-[10px] px-5 py-4 flex items-start gap-3"
+                        >
+                            <Info size={18} className="text-primary shrink-0 mt-0.5" />
+                            <div className="text-xs text-foreground leading-relaxed">
+                                <span className="font-bold text-foreground">Your scope estimate has been saved.</span>
+                                {initialService && (
+                                    <span> Service: <strong className="text-primary">{initialService}</strong>.</span>
+                                )}
+                                {searchParams.get("budget") && (
+                                    <span> Budget estimate: <strong className="text-primary">{searchParams.get("budget")}</strong>.</span>
+                                )}
+                                {searchParams.get("package") && (
+                                    <span> Package: <strong className="text-primary">{searchParams.get("package")}</strong>.</span>
+                                )}
+                                <span className="text-foreground/80"> Pick a date and time below — your selections will be pre-filled in the form.</span>
+                            </div>
+                        </motion.div>
+                    )}
+
+                    <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
                     {/* LEFT COLUMN: Large Interactive Calendar Widget */}
                     <motion.div
                         initial={{ opacity: 0, x: -20 }}
@@ -340,9 +379,12 @@ export const BookingClient: React.FC<BookingClientProps> = ({
                                 isSubmitting={isSubmitting}
                                 error={submissionError}
                                 onBackToSlots={() => setStep("slots")}
+                                initialService={initialService}
+                                initialMessage={initialMessage}
                             />
                         )}
                     </motion.div>
+                    </div>
                 </div>
             )}
 

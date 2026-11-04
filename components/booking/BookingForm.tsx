@@ -23,6 +23,10 @@ interface BookingFormProps {
     isSubmitting: boolean;
     error: string | null;
     onBackToSlots: () => void;
+    /** Pre-selected service from scope estimator query param */
+    initialService?: string;
+    /** Pre-filled message from scope estimator (e.g. budget context) */
+    initialMessage?: string;
 }
 
 export const BookingForm: React.FC<BookingFormProps> = ({
@@ -33,14 +37,25 @@ export const BookingForm: React.FC<BookingFormProps> = ({
     isSubmitting,
     error,
     onBackToSlots,
+    initialService,
+    initialMessage,
 }) => {
     // Form fields
     const [name, setName] = useState("");
     const [email, setEmail] = useState("");
     const [phone, setPhone] = useState("");
     const [company, setCompany] = useState("");
-    const [service, setService] = useState(servicesList[0] || "Web Development");
-    const [message, setMessage] = useState("");
+    const [service, setService] = useState(() => {
+        // If an initialService was passed via query param, try to match it against the services list
+        if (initialService) {
+            const match = servicesList.find(
+                (s) => s.toLowerCase() === initialService.toLowerCase()
+            );
+            if (match) return match;
+        }
+        return servicesList[0] || "Web Development";
+    });
+    const [message, setMessage] = useState(initialMessage || "");
     const [honeypot, setHoneypot] = useState("");
 
     // Cryptographic Math Captcha state
@@ -77,10 +92,25 @@ export const BookingForm: React.FC<BookingFormProps> = ({
     }, [refreshCaptcha]);
 
     useEffect(() => {
+        if (initialService && servicesList.length > 0) {
+            const match = servicesList.find(
+                (s) => s.toLowerCase() === initialService.toLowerCase()
+            );
+            if (match) {
+                setService(match);
+                return;
+            }
+        }
         if (servicesList.length > 0 && !service) {
             setService(servicesList[0]);
         }
-    }, [servicesList, service]);
+    }, [servicesList, service, initialService]);
+
+    useEffect(() => {
+        if (initialMessage) {
+            setMessage((prev) => (prev ? prev : initialMessage));
+        }
+    }, [initialMessage]);
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();

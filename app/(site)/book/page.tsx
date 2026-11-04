@@ -6,6 +6,7 @@ import { TYPOGRAPHY } from "@/lib/typography";
 import { VIDEO_STATS } from "@/lib/videoStats";
 import { Clock, Video } from "lucide-react";
 import { Metadata } from "next";
+import { Suspense } from "react";
 
 export const metadata: Metadata = {
     title: "Book a Free 15-Minute Discovery Call | Xinteck Technologies",
@@ -75,10 +76,16 @@ export default async function BookDiscoveryCallPage() {
 
                 {/* Main Interactive Booking Component */}
                 <section className="max-w-7xl mx-auto w-full">
-                    <BookingClient
-                        servicesList={servicesList}
-                        initialBlockedDates={initialBlockedDates}
-                    />
+                    <Suspense fallback={
+                        <div className="w-full max-w-7xl mx-auto flex items-center justify-center py-20">
+                            <div className="animate-pulse text-foreground/60 text-sm font-medium">Loading booking calendar…</div>
+                        </div>
+                    }>
+                        <BookingClient
+                            servicesList={servicesList}
+                            initialBlockedDates={initialBlockedDates}
+                        />
+                    </Suspense>
                 </section>
             </div>
         </VideoScrollLayout>

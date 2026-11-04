@@ -78,7 +78,7 @@ export function GraphicDesignSimulator() {
                 {activeAsset === "card" && (
                     <div className="flex items-center gap-1 bg-black/5 dark:bg-white/5 p-0.5 rounded-[6px]">
                         {[
-                            { id: "gold", label: "Gold Foil" },
+                            { id: "gold", label: "Gold Color" },
                             { id: "spotuv", label: "Spot UV" },
                             { id: "matte", label: "Velvet Matte" },
                             { id: "emboss", label: "Blind Emboss" },
@@ -191,7 +191,7 @@ export function GraphicDesignSimulator() {
                                                 />
                                                 <div className="absolute top-3 right-3 z-20">
                                                     <span className="text-[10px] font-black uppercase tracking-wider text-black bg-gradient-to-r from-[#D4AF37] via-[#FFF3A8] to-[#D4AF37] px-2.5 py-0.5 rounded-full shadow-lg border border-amber-300/60 flex items-center gap-1">
-                                                        <Sparkles size={11} className="text-black" /> Gold Foil
+                                                        <Sparkles size={11} className="text-black" /> Gold Color
                                                     </span>
                                                 </div>
                                             </>
@@ -280,7 +280,7 @@ export function GraphicDesignSimulator() {
                                                 />
                                                 <div className="absolute top-3 right-3 z-20">
                                                     <span className="text-[10px] font-black uppercase tracking-wider text-black bg-gradient-to-r from-[#D4AF37] via-[#FFF3A8] to-[#D4AF37] px-2.5 py-0.5 rounded-full shadow-lg border border-amber-300/60 flex items-center gap-1">
-                                                        <Sparkles size={11} className="text-black" /> Gold Foil
+                                                        <Sparkles size={11} className="text-black" /> Gold Color
                                                     </span>
                                                 </div>
                                             </>
@@ -346,7 +346,7 @@ export function GraphicDesignSimulator() {
                             <div className="mt-3 flex flex-wrap items-center justify-center gap-3 text-xs text-zinc-400">
                                 <div className="flex items-center gap-1.5 bg-zinc-900/70 border border-zinc-800/80 px-3 py-1 rounded-full text-[11px]">
                                     <Sparkles size={12} className="text-primary" />
-                                    <span>Finish: <strong className="text-zinc-200 capitalize">{finish === 'gold' ? 'Hot Gold Foil (#D4AF37)' : finish === 'spotuv' ? 'Selective Spot UV' : finish === 'matte' ? 'Velvet Matte 450gsm' : 'Blind Letterpress Deboss'}</strong></span>
+                                    <span>Finish: <strong className="text-zinc-200 capitalize">{finish === 'gold' ? 'Gold Color (#D4AF37)' : finish === 'spotuv' ? 'Selective Spot UV' : finish === 'matte' ? 'Velvet Matte 450gsm' : 'Blind Letterpress Deboss'}</strong></span>
                                 </div>
                                 <div className="flex items-center gap-1.5 bg-zinc-900/70 border border-zinc-800/80 px-3 py-1 rounded-full text-[11px]">
                                     <Printer size={12} className="text-primary" />

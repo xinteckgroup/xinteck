@@ -163,20 +163,33 @@ export async function updateSettings(data: SettingsState) {
 
 // HELPER for internal usage (fetching full secrets)
 export async function INTERNAL_getSecret(key: string): Promise<string | null> {
-    // Check Env first? Or DB first?
-    // Plan: DB overrides Env.
+    const upperKey = key.toUpperCase();
+    const lowerKey = key.toLowerCase();
 
-    const config = await prisma.secretConfig.findUnique({ where: { key } });
-    if (config) {
-        try {
-            return decrypt(config.encryptedValue);
-        } catch (e) {
-            console.error(`Decryption failed for ${key}`, e);
+    // Check DB first with graceful fallback if DB is unreachable or warming up
+    try {
+        const config = await prisma.secretConfig.findFirst({
+            where: {
+                OR: [
+                    { key },
+                    { key: upperKey },
+                    { key: lowerKey }
+                ]
+            }
+        });
+
+        if (config) {
+            try {
+                return decrypt(config.encryptedValue);
+            } catch (e) {
+                console.error(`[INTERNAL_getSecret] Decryption failed for key "${key}":`, e);
+            }
         }
+    } catch (dbError) {
+        console.warn(`[INTERNAL_getSecret] DB secret lookup failed for key "${key}". Falling back to environment variables:`, dbError);
     }
 
     // Fallback to Env
-    const upperKey = key.toUpperCase();
     if (upperKey === "CLOUDINARY_CLOUD_NAME" && process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME) {
         return process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME;
     }
@@ -189,5 +202,11 @@ export async function INTERNAL_getSecret(key: string): Promise<string | null> {
     if (upperKey === "RESEND_API_KEY") {
         return process.env.RESEND_API_KEY || process.env.RESEND_KI || null;
     }
-    return process.env[key] || process.env[upperKey] || null;
+    if (upperKey === "RESEND_FROM_EMAIL") {
+        return process.env.RESEND_FROM_EMAIL || null;
+    }
+    if (upperKey === "RESEND_TO_EMAIL") {
+        return process.env.RESEND_TO_EMAIL || null;
+    }
+    return process.env[key] || process.env[upperKey] || process.env[lowerKey] || null;
 }

@@ -30,6 +30,7 @@ const staticLinks = {
     { label: "Portfolio", href: "/portfolio" },
     { label: "Case Studies", href: "/portfolio" },
     { label: "Services", href: "/services" },
+    { label: "ROI Calculator", href: "/roi-calculator" },
   ],
   legal: [
     { label: "Privacy Policy", href: "/privacy" },

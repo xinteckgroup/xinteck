@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useSyncExternalStore } from "react";
 import type { CashflowDataPoint } from "@/types/roi";
 import { formatKES } from "@/lib/roi-calculator";
 import {
@@ -17,6 +17,16 @@ import {
 
 interface RoiBarChartProps {
     data: CashflowDataPoint[];
+}
+
+const emptySubscribe = () => () => {};
+
+function useIsClient() {
+    return useSyncExternalStore(
+        emptySubscribe,
+        () => true,
+        () => false
+    );
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -43,11 +53,7 @@ function CustomTooltip({ active, payload, label }: any) {
 }
 
 export function RoiBarChart({ data }: RoiBarChartProps) {
-    const [isMounted, setIsMounted] = useState(false);
-
-    useEffect(() => {
-        setIsMounted(true);
-    }, []);
+    const isMounted = useIsClient();
 
     // Sample data for readability: show every 3rd month
     const sampledData = data.filter(

@@ -1,4 +1,4 @@
-import { Button, Column, Heading, Hr, Row, Section, Text } from '@react-email/components';
+import { Button, Column, Heading, Row, Section, Text } from '@react-email/components';
 import { XinteckEmailLayout } from './XinteckEmailLayout';
 import { formatKESFull } from '@/lib/roi-calculator';
 
@@ -51,6 +51,17 @@ export const RoiBreakdownEmail = ({
           {modeTitle} Analysis
         </Text>
 
+        {company && (
+          <Row className="mb-[12px]">
+            <Column style={{ width: '160px' }}>
+              <Text className="text-dimText text-[13px] m-0" style={{ color: '#C0C0C0' }}>Prepared For:</Text>
+            </Column>
+            <Column>
+              <Text className="text-white font-bold text-[13px] m-0">{company}</Text>
+            </Column>
+          </Row>
+        )}
+
         <Row className="mb-[12px]">
           <Column style={{ width: '160px' }}>
             <Text className="text-dimText text-[13px] m-0" style={{ color: '#C0C0C0' }}>Investment Tier:</Text>
@@ -78,12 +89,21 @@ export const RoiBreakdownEmail = ({
           </Column>
         </Row>
 
-        <Row>
+        <Row className="mb-[12px]">
           <Column style={{ width: '160px' }}>
             <Text className="text-dimText text-[13px] m-0" style={{ color: '#C0C0C0' }}>{roiLabel}:</Text>
           </Column>
           <Column>
             <Text className="text-brand font-black text-[15px] m-0" style={{ color: '#D4AF37' }}>+{Math.round(roiPercentage)}%</Text>
+          </Column>
+        </Row>
+
+        <Row>
+          <Column style={{ width: '160px' }}>
+            <Text className="text-dimText text-[13px] m-0" style={{ color: '#C0C0C0' }}>Recipient Contact:</Text>
+          </Column>
+          <Column>
+            <Text className="text-dimText text-[12px] m-0" style={{ color: '#A0A0A0' }}>{email} {phone ? `• ${phone}` : ''}</Text>
           </Column>
         </Row>
       </Section>

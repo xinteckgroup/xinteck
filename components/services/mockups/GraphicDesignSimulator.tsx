@@ -191,7 +191,7 @@ export function GraphicDesignSimulator() {
                                                 />
                                                 <div className="absolute top-3 right-3 z-20">
                                                     <span className="text-[10px] font-black uppercase tracking-wider text-black bg-gradient-to-r from-[#D4AF37] via-[#FFF3A8] to-[#D4AF37] px-2.5 py-0.5 rounded-full shadow-lg border border-amber-300/60 flex items-center gap-1">
-                                                        <Sparkles size={11} className="text-black" /> 24K Gold Foil
+                                                        <Sparkles size={11} className="text-black" /> Gold Foil
                                                     </span>
                                                 </div>
                                             </>
@@ -280,7 +280,7 @@ export function GraphicDesignSimulator() {
                                                 />
                                                 <div className="absolute top-3 right-3 z-20">
                                                     <span className="text-[10px] font-black uppercase tracking-wider text-black bg-gradient-to-r from-[#D4AF37] via-[#FFF3A8] to-[#D4AF37] px-2.5 py-0.5 rounded-full shadow-lg border border-amber-300/60 flex items-center gap-1">
-                                                        <Sparkles size={11} className="text-black" /> 24K Gold Foil
+                                                        <Sparkles size={11} className="text-black" /> Gold Foil
                                                     </span>
                                                 </div>
                                             </>

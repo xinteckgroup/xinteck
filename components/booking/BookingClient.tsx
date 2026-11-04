@@ -4,7 +4,6 @@ import { BookingCalendar } from "@/components/booking/BookingCalendar";
 import { BookingForm } from "@/components/booking/BookingForm";
 import { BookingTimeSlots } from "@/components/booking/BookingTimeSlots";
 import {
-    calculateSlotEndTime,
     formatTime12h,
     generateGoogleCalendarUrl,
     generateIcsContent,
@@ -14,13 +13,9 @@ import {
 import { TYPOGRAPHY } from "@/lib/typography";
 import { motion } from "framer-motion";
 import {
-    Calendar as CalendarIcon,
     CheckCircle2,
-    Clock,
     Download,
     ExternalLink,
-    RefreshCw,
-    ShieldCheck,
     Video,
 } from "lucide-react";
 import React, { useCallback, useEffect, useState } from "react";
@@ -211,7 +206,7 @@ export const BookingClient: React.FC<BookingClientProps> = ({
                     initial={{ opacity: 0, scale: 0.95 }}
                     animate={{ opacity: 1, scale: 1 }}
                     transition={{ duration: 0.5 }}
-                    className="bg-white/40 dark:bg-[#0A0A0A]/90 backdrop-blur-2xl border border-primary/40 rounded-[24px] p-8 md:p-14 shadow-2xl text-center max-w-2xl mx-auto flex flex-col items-center gap-6"
+                    className="bg-white/30 dark:bg-black/80 backdrop-blur-xl rounded-[10px] p-8 md:p-14 shadow-2xl text-center max-w-2xl mx-auto flex flex-col items-center gap-6"
                 >
                     <div className="w-20 h-20 rounded-full bg-primary/20 border-2 border-primary flex items-center justify-center text-primary shadow-xl">
                         <CheckCircle2 size={44} className="stroke-[2.5]" />
@@ -224,33 +219,33 @@ export const BookingClient: React.FC<BookingClientProps> = ({
                         <h2 className="text-3xl md:text-4xl font-extrabold text-foreground tracking-tight mt-1">
                             Your Call is Booked!
                         </h2>
-                        <p className="text-sm md:text-base text-muted-foreground mt-2 max-w-md mx-auto">
+                        <p className="text-sm md:text-base text-foreground/80 mt-2 max-w-md mx-auto">
                             Thank you, <strong className="text-foreground">{confirmedBooking.name}</strong>. We have received your booking and reserved your session.
                         </p>
                     </div>
 
                     {/* Booking Details Card */}
-                    <div className="w-full bg-muted/15 border border-border/80 rounded-2xl p-6 text-left flex flex-col gap-3">
+                    <div className="w-full bg-muted/10 rounded-[10px] p-6 text-left flex flex-col gap-3">
                         <div className="flex items-center justify-between border-b border-border/50 pb-3">
-                            <span className="text-xs text-muted-foreground font-semibold">Appointment Date</span>
+                            <span className="text-xs text-foreground/70 font-semibold">Appointment Date</span>
                             <span className="text-sm font-bold text-foreground">
                                 📅 {confirmedBooking.date}
                             </span>
                         </div>
                         <div className="flex items-center justify-between border-b border-border/50 pb-3">
-                            <span className="text-xs text-muted-foreground font-semibold">Time Window (EAT)</span>
+                            <span className="text-xs text-foreground/70 font-semibold">Time Window (EAT)</span>
                             <span className="text-sm font-black text-primary">
                                 ⏰ {formatTime12h(confirmedBooking.startTime)} – {formatTime12h(confirmedBooking.endTime)}
                             </span>
                         </div>
                         <div className="flex items-center justify-between border-b border-border/50 pb-3">
-                            <span className="text-xs text-muted-foreground font-semibold">Meeting Format</span>
+                            <span className="text-xs text-foreground/70 font-semibold">Meeting Format</span>
                             <span className="text-xs font-bold text-foreground flex items-center gap-1.5">
                                 <Video size={14} className="text-primary" /> Google Meet Video Call
                             </span>
                         </div>
                         <div className="flex items-center justify-between">
-                            <span className="text-xs text-muted-foreground font-semibold">Email Delivered To</span>
+                            <span className="text-xs text-foreground/70 font-semibold">Email Delivered To</span>
                             <span className="text-xs font-medium text-foreground">
                                 {confirmedBooking.email}
                             </span>
@@ -258,7 +253,7 @@ export const BookingClient: React.FC<BookingClientProps> = ({
                     </div>
 
                     {/* Next Steps Notification */}
-                    <div className="text-xs text-muted-foreground bg-primary/10 border border-primary/20 rounded-xl p-4 text-left leading-relaxed">
+                    <div className="text-xs text-foreground/80 bg-primary/10 rounded-[10px] p-4 text-left leading-relaxed">
                         📩 An official confirmation has been dispatched to <strong>{confirmedBooking.email}</strong>. Once our engineering host is assigned, your direct Google Meet link will be emailed to you before the meeting.
                     </div>
 
@@ -274,7 +269,7 @@ export const BookingClient: React.FC<BookingClientProps> = ({
                             })}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="w-full sm:w-1/2 bg-white/10 hover:bg-white/20 border border-border text-foreground font-bold py-3 px-4 rounded-xl text-xs flex items-center justify-center gap-2 transition-all"
+                            className="w-full sm:w-1/2 bg-white/10 hover:bg-white/20 border border-border text-foreground font-bold py-3 px-4 rounded-[10px] text-xs flex items-center justify-center gap-2 transition-all shadow-sm"
                         >
                             <ExternalLink size={14} /> Add to Google Calendar
                         </a>
@@ -282,7 +277,7 @@ export const BookingClient: React.FC<BookingClientProps> = ({
                         <button
                             type="button"
                             onClick={handleDownloadIcs}
-                            className="w-full sm:w-1/2 bg-white/10 hover:bg-white/20 border border-border text-foreground font-bold py-3 px-4 rounded-xl text-xs flex items-center justify-center gap-2 transition-all cursor-pointer"
+                            className="w-full sm:w-1/2 bg-white/10 hover:bg-white/20 border border-border text-foreground font-bold py-3 px-4 rounded-[10px] text-xs flex items-center justify-center gap-2 transition-all cursor-pointer shadow-sm"
                         >
                             <Download size={14} /> Download (.ics file)
                         </button>
@@ -304,7 +299,7 @@ export const BookingClient: React.FC<BookingClientProps> = ({
                         initial={{ opacity: 0, x: -20 }}
                         animate={{ opacity: 1, x: 0 }}
                         transition={{ duration: 0.6 }}
-                        className="lg:col-span-7 bg-card/95 dark:bg-[#0A0A0A]/90 backdrop-blur-2xl border border-border rounded-[24px] p-6 sm:p-8 md:p-10 shadow-2xl"
+                        className="lg:col-span-7 bg-white/30 dark:bg-black/80 backdrop-blur-xl rounded-[10px] p-6 sm:p-8 md:p-10 shadow-2xl"
                     >
                         <BookingCalendar
                             selectedDate={selectedDate}
@@ -323,7 +318,7 @@ export const BookingClient: React.FC<BookingClientProps> = ({
                         initial={{ opacity: 0, x: 20 }}
                         animate={{ opacity: 1, x: 0 }}
                         transition={{ duration: 0.6, delay: 0.1 }}
-                        className="lg:col-span-5 bg-card/95 dark:bg-[#0A0A0A]/90 backdrop-blur-2xl border border-border rounded-[24px] p-6 sm:p-8 shadow-2xl flex flex-col justify-between"
+                        className="lg:col-span-5 bg-white/30 dark:bg-black/80 backdrop-blur-xl rounded-[10px] p-6 sm:p-8 shadow-2xl flex flex-col justify-between"
                     >
                         {step === "slots" ? (
                             <BookingTimeSlots
@@ -353,32 +348,32 @@ export const BookingClient: React.FC<BookingClientProps> = ({
 
             {/* SESSION OBJECTIVES */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 pt-6">
-                <div className="bg-card/90 dark:bg-black/80 backdrop-blur-xl border border-border rounded-[18px] p-6 flex flex-col gap-3 shadow-lg">
-                    <div className="w-10 h-10 rounded-xl bg-primary/20 text-primary flex items-center justify-center font-black">
+                <div className="bg-white/30 dark:bg-black/80 backdrop-blur-xl rounded-[10px] p-6 md:p-8 flex flex-col gap-4 shadow-lg">
+                    <div className="w-12 h-12 rounded-[10px] bg-background/80 flex items-center justify-center text-primary font-black text-lg">
                         1
                     </div>
-                    <h4 className="text-base font-bold text-foreground">Technical Exploration</h4>
-                    <p className="text-xs text-foreground/80 font-medium leading-relaxed">
+                    <h4 className={`${TYPOGRAPHY.cardTitle} text-foreground`}>Technical Exploration</h4>
+                    <p className={`${TYPOGRAPHY.meta} text-foreground text-sm leading-relaxed`}>
                         An introductory consultation focused on understanding your project scope, technical requirements, and goals.
                     </p>
                 </div>
 
-                <div className="bg-card/90 dark:bg-black/80 backdrop-blur-xl border border-border rounded-[18px] p-6 flex flex-col gap-3 shadow-lg">
-                    <div className="w-10 h-10 rounded-xl bg-primary/20 text-primary flex items-center justify-center font-black">
+                <div className="bg-white/30 dark:bg-black/80 backdrop-blur-xl rounded-[10px] p-6 md:p-8 flex flex-col gap-4 shadow-lg">
+                    <div className="w-12 h-12 rounded-[10px] bg-background/80 flex items-center justify-center text-primary font-black text-lg">
                         2
                     </div>
-                    <h4 className="text-base font-bold text-foreground">Direct Engineering Insights</h4>
-                    <p className="text-xs text-foreground/80 font-medium leading-relaxed">
+                    <h4 className={`${TYPOGRAPHY.cardTitle} text-foreground`}>Direct Engineering Insights</h4>
+                    <p className={`${TYPOGRAPHY.meta} text-foreground text-sm leading-relaxed`}>
                         Engage directly with senior engineering leads experienced in scalable cloud systems, mobile apps, and enterprise APIs.
                     </p>
                 </div>
 
-                <div className="bg-card/90 dark:bg-black/80 backdrop-blur-xl border border-border rounded-[18px] p-6 flex flex-col gap-3 shadow-lg">
-                    <div className="w-10 h-10 rounded-xl bg-primary/20 text-primary flex items-center justify-center font-black">
+                <div className="bg-white/30 dark:bg-black/80 backdrop-blur-xl rounded-[10px] p-6 md:p-8 flex flex-col gap-4 shadow-lg">
+                    <div className="w-12 h-12 rounded-[10px] bg-background/80 flex items-center justify-center text-primary font-black text-lg">
                         3
                     </div>
-                    <h4 className="text-base font-bold text-foreground">Architectural Roadmap</h4>
-                    <p className="text-xs text-foreground/80 font-medium leading-relaxed">
+                    <h4 className={`${TYPOGRAPHY.cardTitle} text-foreground`}>Architectural Roadmap</h4>
+                    <p className={`${TYPOGRAPHY.meta} text-foreground text-sm leading-relaxed`}>
                         Gain objective guidance on suitable technology stacks, project feasibility, delivery milestones, and scope estimates.
                     </p>
                 </div>

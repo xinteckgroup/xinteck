@@ -139,9 +139,9 @@ export const BookingTimeSlots: React.FC<BookingTimeSlotsProps> = ({
                                     disabled={!isAvailable}
                                     onClick={() => onSelectSlot(slot.startTime)}
                                     className={cn(
-                                        "px-4 py-3 rounded-xl border text-left flex items-center justify-between transition-all font-sans",
+                                        "px-4 py-3 rounded-[10px] border text-left flex items-center justify-between transition-all font-sans",
                                         // Available & unselected
-                                        isAvailable && !isSelected && "bg-card hover:bg-primary/10 border-border hover:border-primary text-foreground cursor-pointer group shadow-sm",
+                                        isAvailable && !isSelected && "bg-white/10 dark:bg-white/5 hover:bg-primary/20 border-border hover:border-primary text-foreground cursor-pointer group shadow-sm",
                                         // Selected
                                         isSelected && "bg-primary text-primary-foreground font-black border-primary shadow-lg ring-2 ring-primary/40 scale-[1.02]",
                                         // Booked

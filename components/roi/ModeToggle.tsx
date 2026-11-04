@@ -26,7 +26,7 @@ const modes = [
 
 export function ModeToggle({ mode, onChange }: ModeToggleProps) {
     return (
-        <div className="flex flex-col sm:flex-row gap-3 w-full">
+        <div className="flex flex-col sm:flex-row gap-4 w-full">
             {modes.map((m) => {
                 const isActive = mode === m.key;
                 const Icon = m.icon;
@@ -36,16 +36,16 @@ export function ModeToggle({ mode, onChange }: ModeToggleProps) {
                         key={m.key}
                         onClick={() => onChange(m.key)}
                         type="button"
-                        className={`relative flex-1 flex items-center gap-3.5 px-5 py-4 rounded-[12px] border transition-all duration-300 text-left cursor-pointer ${
+                        className={`relative flex-1 flex items-center gap-4 p-5 md:p-6 rounded-[10px] transition-all duration-300 text-left cursor-pointer bg-white/30 dark:bg-black/80 backdrop-blur-xl shadow-lg border ${
                             isActive
-                                ? "border-primary bg-primary/10 shadow-md"
-                                : "bg-white/80 dark:bg-black/75 backdrop-blur-xl border-border hover:border-primary/40 hover:bg-white/90 dark:hover:bg-black/90 shadow-sm"
+                                ? "border-primary ring-2 ring-primary/40 bg-primary/10"
+                                : "border-transparent hover:border-primary/40 hover:bg-white/40 dark:hover:bg-black/90"
                         }`}
                     >
                         {isActive && (
                             <motion.div
                                 layoutId="mode-indicator"
-                                className="absolute inset-0 rounded-[12px] border-2 border-primary/60 pointer-events-none"
+                                className="absolute inset-0 rounded-[10px] border-2 border-primary pointer-events-none"
                                 transition={{
                                     type: "spring",
                                     stiffness: 400,
@@ -53,24 +53,18 @@ export function ModeToggle({ mode, onChange }: ModeToggleProps) {
                                 }}
                             />
                         )}
-                        <div
-                            className={`p-2.5 rounded-[10px] shrink-0 transition-colors ${
-                                isActive
-                                    ? "bg-primary/20 text-primary"
-                                    : "bg-muted text-muted-foreground"
-                            }`}
-                        >
-                            <Icon size={20} />
+                        <div className="w-12 h-12 rounded-[10px] bg-background/80 shrink-0 flex items-center justify-center text-primary">
+                            <Icon size={24} />
                         </div>
                         <div className="flex flex-col">
                             <span
-                                className={`text-sm font-bold tracking-tight ${
+                                className={`text-base font-bold tracking-tight ${
                                     isActive ? "text-primary" : "text-foreground"
                                 }`}
                             >
                                 {m.label}
                             </span>
-                            <span className="text-xs text-muted-foreground mt-0.5 leading-snug">
+                            <span className="text-xs text-foreground/80 font-medium mt-1 leading-snug">
                                 {m.description}
                             </span>
                         </div>

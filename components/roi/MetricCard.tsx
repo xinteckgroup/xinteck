@@ -44,14 +44,14 @@ export function MetricCard({
 
     return (
         <div
-            className={`relative rounded-[12px] border p-4 sm:p-5 backdrop-blur-xl transition-all duration-300 flex flex-col justify-between ${
+            className={`relative rounded-[10px] border p-5 backdrop-blur-xl transition-all duration-300 flex flex-col justify-between shadow-lg ${
                 highlight
-                    ? "border-primary/60 bg-primary/10 dark:bg-primary/15 shadow-sm"
-                    : "bg-white/80 dark:bg-black/75 border-border shadow-sm"
+                    ? "border-primary/60 bg-primary/15 shadow-primary/10"
+                    : "bg-white/30 dark:bg-black/80 border-border/60"
             }`}
         >
             <div>
-                <p className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground mb-1.5">
+                <p className="text-[11px] font-bold uppercase tracking-wider text-foreground mb-1.5">
                     {label}
                 </p>
                 <motion.p
@@ -64,14 +64,14 @@ export function MetricCard({
             </div>
             
             {(subtitle || explanation) && (
-                <div className="mt-2.5 pt-2 border-t border-border/50 flex flex-col gap-0.5">
+                <div className="mt-3 pt-2.5 border-t border-border/50 flex flex-col gap-0.5">
                     {subtitle && (
-                        <p className="text-xs font-semibold text-foreground/90">
+                        <p className="text-xs font-semibold text-foreground">
                             {subtitle}
                         </p>
                     )}
                     {explanation && (
-                        <p className="text-[11px] text-muted-foreground leading-snug">
+                        <p className="text-[11px] text-foreground/80 leading-snug">
                             {explanation}
                         </p>
                     )}

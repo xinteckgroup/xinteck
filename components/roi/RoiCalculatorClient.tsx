@@ -22,6 +22,7 @@ import { MetricCard } from "./MetricCard";
 import { ModeToggle } from "./ModeToggle";
 import { RoiBarChart } from "./RoiBarChart";
 import { SendReportModal } from "./SendReportModal";
+import { TYPOGRAPHY } from "@/lib/typography";
 
 // ── Slider Config ────────────────────────────────────────────
 interface SliderConfig {
@@ -218,22 +219,22 @@ export function RoiCalculatorClient() {
                 <ModeToggle mode={mode} onChange={setMode} />
 
                 {/* Main Two-Column Layout */}
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-8">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
                     {/* LEFT — Inputs */}
                     <motion.div
                         key={mode}
                         initial={{ opacity: 0, x: -10 }}
                         animate={{ opacity: 1, x: 0 }}
                         transition={{ duration: 0.3 }}
-                        className="flex flex-col gap-6"
+                        className="flex flex-col gap-8"
                     >
                         {/* Sliders */}
-                        <div className="bg-white/80 dark:bg-black/75 backdrop-blur-xl border border-border rounded-[16px] p-5 sm:p-7 flex flex-col gap-6 shadow-lg">
-                            <div className="flex flex-col gap-1 border-b border-border/50 pb-3">
-                                <h3 className="text-xs font-bold uppercase tracking-wider text-primary">
+                        <div className="bg-white/30 dark:bg-black/80 backdrop-blur-xl rounded-[10px] p-6 md:p-8 shadow-2xl relative flex flex-col gap-6">
+                            <div className="flex flex-col gap-1.5 border-b border-border/40 pb-3">
+                                <h3 className="text-xs md:text-sm font-bold text-primary uppercase tracking-[0.2em]">
                                     Step 1: Your Current Baseline
                                 </h3>
-                                <p className="text-xs text-muted-foreground">
+                                <p className="text-xs md:text-sm text-foreground font-medium leading-relaxed">
                                     {mode === "efficiency"
                                         ? "Adjust to match your current team size, wasted hours, and hourly pay."
                                         : "Adjust to match your current monthly visitors, conversion rate, and deal size."}
@@ -256,10 +257,10 @@ export function RoiCalculatorClient() {
                                 return (
                                     <div key={slider.key}>
                                         <div className="flex items-center justify-between mb-2">
-                                            <label className="text-xs md:text-sm font-semibold text-foreground">
+                                            <label className={`${TYPOGRAPHY.tableHeader} text-foreground font-bold uppercase text-xs md:text-sm`}>
                                                 {slider.label}
                                             </label>
-                                            <span className="text-sm font-bold text-primary tabular-nums">
+                                            <span className="text-sm md:text-base font-bold text-primary tabular-nums">
                                                 {displayVal}
                                             </span>
                                         </div>
@@ -274,7 +275,7 @@ export function RoiCalculatorClient() {
                                                     parseFloat(e.target.value)
                                                 )
                                             }
-                                            className="w-full h-2 rounded-full appearance-none cursor-pointer bg-muted/60 dark:bg-white/10"
+                                            className="w-full h-2.5 rounded-full appearance-none cursor-pointer bg-muted/20 dark:bg-white/10"
                                             style={{
                                                 background: `linear-gradient(to right, #D4AF37 0%, #D4AF37 ${pct}%, rgba(120,120,120,0.2) ${pct}%, rgba(120,120,120,0.2) 100%)`,
                                                 WebkitAppearance: "none",
@@ -286,17 +287,17 @@ export function RoiCalculatorClient() {
                         </div>
 
                         {/* Investment Tier Selector */}
-                        <div className="bg-white/80 dark:bg-black/75 backdrop-blur-xl border border-border rounded-[16px] p-5 sm:p-7 flex flex-col gap-4 shadow-lg">
-                            <div className="flex flex-col gap-1 border-b border-border/50 pb-3">
-                                <h3 className="text-xs font-bold uppercase tracking-wider text-primary">
+                        <div className="bg-white/30 dark:bg-black/80 backdrop-blur-xl rounded-[10px] p-6 md:p-8 shadow-2xl relative flex flex-col gap-4">
+                            <div className="flex flex-col gap-1.5 border-b border-border/40 pb-3">
+                                <h3 className="text-xs md:text-sm font-bold text-primary uppercase tracking-[0.2em]">
                                     Step 2: Expected Project Scope
                                 </h3>
-                                <p className="text-xs text-muted-foreground">
+                                <p className="text-xs md:text-sm text-foreground font-medium leading-relaxed">
                                     Select the scale of software or platform you plan to build.
                                 </p>
                             </div>
 
-                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
                                 {tiers.map((tier, idx) => {
                                     const isSelected =
                                         idx === selectedTierIdx;
@@ -308,10 +309,10 @@ export function RoiCalculatorClient() {
                                                     ? setEfficiencyTierIdx(idx)
                                                     : setRevenueTierIdx(idx)
                                             }
-                                            className={`relative text-left p-3.5 rounded-[12px] border transition-all duration-200 cursor-pointer ${
+                                            className={`relative text-left p-4 rounded-[10px] transition-all duration-200 cursor-pointer border ${
                                                 isSelected
-                                                    ? "border-primary bg-primary/10 shadow-sm"
-                                                    : "border-border bg-card/60 dark:bg-white/5 hover:border-primary/40 hover:bg-muted/40 shadow-xs"
+                                                    ? "border-primary bg-primary/20 text-primary font-bold shadow-md ring-1 ring-primary/40"
+                                                    : "border-transparent bg-muted/10 text-foreground hover:bg-muted/20 hover:border-border"
                                             }`}
                                         >
                                             <p
@@ -323,14 +324,14 @@ export function RoiCalculatorClient() {
                                             >
                                                 {tier.label}
                                             </p>
-                                            <p className="text-xs text-muted-foreground mt-0.5 leading-snug">
+                                            <p className="text-xs text-foreground/80 font-medium mt-1 leading-snug">
                                                 {tier.description}
                                             </p>
                                             <p
-                                                className={`text-xs font-bold mt-2 ${
+                                                className={`text-xs font-bold mt-2.5 ${
                                                     isSelected
                                                         ? "text-primary"
-                                                        : "text-foreground/90"
+                                                        : "text-primary"
                                                 }`}
                                             >
                                                 {formatKES(tier.value)}
@@ -348,10 +349,10 @@ export function RoiCalculatorClient() {
                         initial={{ opacity: 0, x: 10 }}
                         animate={{ opacity: 1, x: 0 }}
                         transition={{ duration: 0.3, delay: 0.1 }}
-                        className="flex flex-col gap-6"
+                        className="flex flex-col gap-8"
                     >
                         {/* Metrics Grid */}
-                        <div className="grid grid-cols-2 gap-3 md:gap-4">
+                        <div className="grid grid-cols-2 gap-4">
                             <MetricCard
                                 label={
                                     mode === "efficiency"
@@ -431,12 +432,12 @@ export function RoiCalculatorClient() {
                         </div>
 
                         {/* Chart */}
-                        <div className="bg-white/80 dark:bg-black/75 backdrop-blur-xl border border-border rounded-[16px] p-5 sm:p-7 shadow-lg">
-                            <div className="flex flex-col gap-1 mb-4 border-b border-border/50 pb-3">
-                                <h3 className="text-xs font-bold uppercase tracking-wider text-foreground">
+                        <div className="bg-white/30 dark:bg-black/80 backdrop-blur-xl rounded-[10px] p-6 md:p-8 shadow-2xl relative">
+                            <div className="flex flex-col gap-1.5 mb-4 border-b border-border/40 pb-3">
+                                <h3 className="text-xs md:text-sm font-bold text-primary uppercase tracking-[0.2em]">
                                     24-Month Financial Outlook
                                 </h3>
-                                <p className="text-xs text-muted-foreground">
+                                <p className="text-xs md:text-sm text-foreground font-medium leading-relaxed">
                                     Compares doing nothing (red opportunity loss) with software breaking even and compounding gains (gold).
                                 </p>
                             </div>
@@ -446,24 +447,24 @@ export function RoiCalculatorClient() {
                 </div>
 
                 {/* CTAs */}
-                <div className="flex flex-col sm:flex-row gap-4 justify-center items-center pt-4">
+                <div className="flex flex-col sm:flex-row gap-4 justify-center items-center pt-6">
                     <Link
                         href={bookHref}
-                        className="group flex items-center gap-3 px-8 py-4 bg-primary text-black font-bold text-sm uppercase tracking-wider rounded-[10px] hover:scale-[1.02] transition-transform shadow-[0_4px_14px_0_rgba(212,175,55,0.3)]"
+                        className={`px-8 md:px-12 py-3.5 bg-primary text-primary-foreground font-bold rounded-[10px] hover:bg-primary/90 transition-all flex items-center justify-center gap-3 shadow-xl shadow-primary/20 ${TYPOGRAPHY.button}`}
                     >
                         <Calculator size={18} />
-                        Book a Free Call
+                        <span>Book a Free Call</span>
                         <ArrowUpRight
                             size={18}
-                            className="group-hover:rotate-45 transition-transform"
+                            className="transition-transform"
                         />
                     </Link>
                     <button
                         onClick={() => setShowModal(true)}
-                        className="group flex items-center gap-3 px-8 py-4 bg-white/80 dark:bg-black/75 border border-border text-foreground font-bold text-sm uppercase tracking-wider rounded-[10px] hover:bg-muted/80 transition-all cursor-pointer shadow-sm"
+                        className={`px-8 md:px-12 py-3.5 border border-border bg-white/30 dark:bg-black/80 backdrop-blur-xl text-foreground font-bold rounded-[10px] hover:bg-white/10 transition-all flex items-center justify-center gap-3 shadow-lg ${TYPOGRAPHY.button}`}
                     >
                         <Mail size={18} />
-                        Email My ROI Report
+                        <span>Email My ROI Report</span>
                     </button>
                 </div>
             </div>

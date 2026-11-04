@@ -2,7 +2,7 @@
 
 import { formatTime12h } from "@/lib/booking-utils";
 import { TYPOGRAPHY } from "@/lib/typography";
-import { ArrowLeft, CheckCircle2, Loader2, RefreshCw, Send, ShieldAlert } from "lucide-react";
+import { ArrowLeft, Loader2, RefreshCw, Send, ShieldAlert } from "lucide-react";
 import React, { useCallback, useEffect, useState } from "react";
 
 interface BookingFormProps {
@@ -166,7 +166,7 @@ export const BookingForm: React.FC<BookingFormProps> = ({
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 {/* Name */}
                 <div className="flex flex-col gap-1.5">
-                    <label className={`${TYPOGRAPHY.tableHeader} text-[11px] text-foreground font-bold`}>
+                    <label className={`${TYPOGRAPHY.tableHeader} text-[11px] text-foreground font-bold uppercase`}>
                         Your Name <span className="text-primary">*</span>
                     </label>
                     <input
@@ -175,13 +175,13 @@ export const BookingForm: React.FC<BookingFormProps> = ({
                         value={name}
                         onChange={(e) => setName(e.target.value)}
                         placeholder="John Kamau"
-                        className={`${TYPOGRAPHY.input} bg-card border border-border rounded-xl px-3.5 py-2.5 text-foreground placeholder:text-foreground/45 focus:border-primary focus:outline-none transition-all`}
+                        className={`${TYPOGRAPHY.input} bg-muted/10 rounded-[10px] px-4 py-3 outline-none transition-all placeholder:text-foreground/50 text-foreground focus:border-primary border border-transparent focus:border`}
                     />
                 </div>
 
                 {/* Email */}
                 <div className="flex flex-col gap-1.5">
-                    <label className={`${TYPOGRAPHY.tableHeader} text-[11px] text-foreground font-bold`}>
+                    <label className={`${TYPOGRAPHY.tableHeader} text-[11px] text-foreground font-bold uppercase`}>
                         Work/Personal Email <span className="text-primary">*</span>
                     </label>
                     <input
@@ -190,13 +190,13 @@ export const BookingForm: React.FC<BookingFormProps> = ({
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
                         placeholder="john@company.com"
-                        className={`${TYPOGRAPHY.input} bg-card border border-border rounded-xl px-3.5 py-2.5 text-foreground placeholder:text-foreground/45 focus:border-primary focus:outline-none transition-all`}
+                        className={`${TYPOGRAPHY.input} bg-muted/10 rounded-[10px] px-4 py-3 outline-none transition-all placeholder:text-foreground/50 text-foreground focus:border-primary border border-transparent focus:border`}
                     />
                 </div>
 
                 {/* Phone */}
                 <div className="flex flex-col gap-1.5">
-                    <label className={`${TYPOGRAPHY.tableHeader} text-[11px] text-foreground font-bold`}>
+                    <label className={`${TYPOGRAPHY.tableHeader} text-[11px] text-foreground font-bold uppercase`}>
                         Phone / WhatsApp <span className="text-primary">*</span>
                     </label>
                     <input
@@ -205,13 +205,13 @@ export const BookingForm: React.FC<BookingFormProps> = ({
                         value={phone}
                         onChange={(e) => setPhone(e.target.value)}
                         placeholder="+254 712 345 678"
-                        className={`${TYPOGRAPHY.input} bg-card border border-border rounded-xl px-3.5 py-2.5 text-foreground placeholder:text-foreground/45 focus:border-primary focus:outline-none transition-all`}
+                        className={`${TYPOGRAPHY.input} bg-muted/10 rounded-[10px] px-4 py-3 outline-none transition-all placeholder:text-foreground/50 text-foreground focus:border-primary border border-transparent focus:border`}
                     />
                 </div>
 
                 {/* Company Name */}
                 <div className="flex flex-col gap-1.5">
-                    <label className={`${TYPOGRAPHY.tableHeader} text-[11px] text-foreground font-bold`}>
+                    <label className={`${TYPOGRAPHY.tableHeader} text-[11px] text-foreground font-bold uppercase`}>
                         Company / Organization (Optional)
                     </label>
                     <input
@@ -219,20 +219,20 @@ export const BookingForm: React.FC<BookingFormProps> = ({
                         value={company}
                         onChange={(e) => setCompany(e.target.value)}
                         placeholder="Acme Global Ltd"
-                        className={`${TYPOGRAPHY.input} bg-card border border-border rounded-xl px-3.5 py-2.5 text-foreground placeholder:text-foreground/45 focus:border-primary focus:outline-none transition-all`}
+                        className={`${TYPOGRAPHY.input} bg-muted/10 rounded-[10px] px-4 py-3 outline-none transition-all placeholder:text-foreground/50 text-foreground focus:border-primary border border-transparent focus:border`}
                     />
                 </div>
             </div>
 
             {/* Service of Interest */}
             <div className="flex flex-col gap-1.5">
-                <label className={`${TYPOGRAPHY.tableHeader} text-[11px] text-foreground font-bold`}>
+                <label className={`${TYPOGRAPHY.tableHeader} text-[11px] text-foreground font-bold uppercase`}>
                     Primary Service of Interest
                 </label>
                 <select
                     value={service}
                     onChange={(e) => setService(e.target.value)}
-                    className={`${TYPOGRAPHY.input} bg-card border border-border rounded-xl px-3.5 py-2.5 text-foreground focus:border-primary focus:outline-none transition-all cursor-pointer`}
+                    className={`${TYPOGRAPHY.input} bg-muted/10 rounded-[10px] px-4 py-3 outline-none transition-all text-foreground focus:border-primary border border-transparent focus:border cursor-pointer appearance-none`}
                 >
                     {servicesList.map((srv) => (
                         <option key={srv} value={srv} className="bg-background text-foreground">
@@ -247,7 +247,7 @@ export const BookingForm: React.FC<BookingFormProps> = ({
 
             {/* Message / Agenda */}
             <div className="flex flex-col gap-1.5">
-                <label className={`${TYPOGRAPHY.tableHeader} text-[11px] text-foreground font-bold`}>
+                <label className={`${TYPOGRAPHY.tableHeader} text-[11px] text-foreground font-bold uppercase`}>
                     Briefly describe your goals or what you&apos;d like to discuss (Optional)
                 </label>
                 <textarea
@@ -255,12 +255,12 @@ export const BookingForm: React.FC<BookingFormProps> = ({
                     value={message}
                     onChange={(e) => setMessage(e.target.value)}
                     placeholder="e.g. We are building an on-demand platform and need guidance on M-Pesa automated payouts and serverless cloud deployment..."
-                    className={`${TYPOGRAPHY.input} bg-card border border-border rounded-xl px-3.5 py-2.5 text-foreground placeholder:text-foreground/45 focus:border-primary focus:outline-none transition-all resize-none`}
+                    className={`${TYPOGRAPHY.input} bg-muted/10 rounded-[10px] px-4 py-3 outline-none transition-all placeholder:text-foreground/50 text-foreground focus:border-primary border border-transparent focus:border resize-none`}
                 />
             </div>
 
             {/* Anti-Spam Math Verification */}
-            <div className="p-3.5 rounded-xl bg-card border border-border flex flex-col sm:flex-row items-center justify-between gap-3">
+            <div className="p-4 rounded-[10px] bg-white/10 flex flex-col sm:flex-row items-center justify-between gap-3">
                 <div className="flex items-center gap-2 text-xs text-foreground font-semibold">
                     <span>Security Check:</span>
                     <span className="bg-primary/20 text-primary font-black px-2.5 py-1 rounded-md tracking-wider">
@@ -286,7 +286,7 @@ export const BookingForm: React.FC<BookingFormProps> = ({
                             setCaptchaError(null);
                         }}
                         placeholder="Answer"
-                        className="w-full bg-background border border-border rounded-lg px-3 py-1.5 text-center text-sm font-bold text-foreground focus:border-primary focus:outline-none"
+                        className="w-full bg-background border border-border rounded-[8px] px-3 py-1.5 text-center text-sm font-bold text-foreground focus:border-primary focus:outline-none"
                     />
                 </div>
             </div>
@@ -312,7 +312,7 @@ export const BookingForm: React.FC<BookingFormProps> = ({
             <button
                 type="submit"
                 disabled={isSubmitting}
-                className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-black py-4 px-6 rounded-xl transition-all shadow-xl flex items-center justify-center gap-2 tracking-wide uppercase text-sm cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed group mt-2"
+                className={`w-full bg-primary hover:bg-primary/90 text-primary-foreground font-bold py-3.5 px-6 rounded-[10px] transition-all shadow-xl shadow-primary/20 flex items-center justify-center gap-3 tracking-wider uppercase text-sm cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed group mt-2 ${TYPOGRAPHY.button}`}
             >
                 {isSubmitting ? (
                     <>
@@ -322,7 +322,7 @@ export const BookingForm: React.FC<BookingFormProps> = ({
                 ) : (
                     <>
                         <span>Confirm 15-Minute Discovery Call</span>
-                        <Send size={16} className="group-hover:translate-x-1 transition-transform" />
+                        <Send size={18} className="group-hover:translate-x-1 transition-transform" />
                     </>
                 )}
             </button>

@@ -139,7 +139,7 @@ export const BookingCalendar: React.FC<BookingCalendarProps> = ({
                         return (
                             <div
                                 key={`prev-${i}`}
-                                className="h-12 sm:h-14 md:h-16 rounded-xl border border-transparent p-1.5 opacity-25 text-muted-foreground flex flex-col justify-between"
+                                className="h-12 sm:h-14 md:h-16 rounded-[10px] border border-transparent p-1.5 opacity-25 text-foreground/40 flex flex-col justify-between"
                             >
                                 <span className="text-xs font-medium">{dayNum}</span>
                             </div>
@@ -172,9 +172,9 @@ export const BookingCalendar: React.FC<BookingCalendarProps> = ({
                                 disabled={isDisabled}
                                 onClick={() => onSelectDate(dateStr)}
                                 className={cn(
-                                    "relative h-12 sm:h-14 md:h-16 rounded-xl p-1.5 sm:p-2 text-left flex flex-col justify-between transition-all border",
+                                    "relative h-12 sm:h-14 md:h-16 rounded-[10px] p-1.5 sm:p-2 text-left flex flex-col justify-between transition-all border",
                                     // Default open day
-                                    !isDisabled && !isSelected && "bg-card hover:bg-primary/10 border-border hover:border-primary text-foreground cursor-pointer shadow-sm",
+                                    !isDisabled && !isSelected && "bg-white/10 dark:bg-white/5 hover:bg-primary/20 border-border hover:border-primary text-foreground cursor-pointer shadow-sm",
                                     // Selected
                                     isSelected && "bg-primary text-primary-foreground font-black border-primary ring-2 sm:ring-4 ring-primary/30 shadow-lg scale-105 z-10",
                                     // Disabled (Weekend, Holiday, Past)

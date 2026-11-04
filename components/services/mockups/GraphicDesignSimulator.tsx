@@ -1,6 +1,7 @@
 "use client";
 
 import { motion, AnimatePresence } from "framer-motion";
+import Image from "next/image";
 import {
     Award,
     Briefcase,
@@ -23,6 +24,9 @@ import { useState } from "react";
 
 type MaterialFinish = "gold" | "matte" | "spotuv" | "emboss";
 type AssetView = "card" | "profile" | "guidelines" | "social";
+
+const CARD_FRONT = "/images/services/bs-card-front.jpg";
+const CARD_BACK = "/images/services/bs-card-back.jpg";
 
 export function GraphicDesignSimulator() {
     const [finish, setFinish] = useState<MaterialFinish>("gold");
@@ -77,13 +81,14 @@ export function GraphicDesignSimulator() {
                             { id: "gold", label: "Gold Foil" },
                             { id: "spotuv", label: "Spot UV" },
                             { id: "matte", label: "Velvet Matte" },
+                            { id: "emboss", label: "Blind Emboss" },
                         ].map((f) => (
                             <button
                                 key={f.id}
                                 onClick={() => setFinish(f.id as MaterialFinish)}
-                                className={`px-2 py-0.5 rounded-[4px] text-[10px] font-bold transition-all ${
+                                className={`px-2 py-0.5 rounded-[4px] text-[10px] font-bold transition-all cursor-pointer ${
                                     finish === f.id
-                                        ? "bg-primary text-black font-extrabold"
+                                        ? "bg-primary text-black font-extrabold shadow-sm"
                                         : "text-foreground/70 hover:text-foreground"
                                 }`}
                             >
@@ -137,88 +142,216 @@ export function GraphicDesignSimulator() {
                     {/* ASSET 1: Executive Business Card 3D Mockup */}
                     {activeAsset === "card" && (
                         <div className="w-full flex flex-col items-center justify-center my-auto py-4">
-                            <motion.div
-                                animate={{
-                                    rotateY: cardFlipped ? 180 : 0,
-                                    y: [0, -6, 0],
-                                }}
-                                transition={{
-                                    rotateY: { duration: 0.6 },
-                                    y: { duration: 4, repeat: Infinity, ease: "easeInOut" },
-                                }}
-                                style={{ transformStyle: "preserve-3d" }}
-                                className="relative w-full max-w-sm aspect-[1.75/1] rounded-[10px] shadow-2xl overflow-hidden cursor-pointer"
-                                onClick={() => setCardFlipped(!cardFlipped)}
-                            >
-                                {/* FRONT FACE */}
-                                <div
-                                    style={{ backfaceVisibility: "hidden" }}
-                                    className={`absolute inset-0 p-6 flex flex-col justify-between transition-all duration-300 ${
-                                        finish === "gold"
-                                            ? "bg-[#0c0c0e] border-2 border-primary/60 shadow-[0_0_30px_rgba(212,175,55,0.2)]"
-                                            : finish === "spotuv"
-                                            ? "bg-zinc-950 border border-zinc-700"
-                                            : "bg-[#141416] border border-zinc-800"
-                                    }`}
+                            {/* 3D Perspective Card Container */}
+                            <div className="relative w-full max-w-[420px] aspect-[1.75/1] cursor-pointer group select-none" style={{ perspective: "1200px" }}>
+                                <motion.div
+                                    animate={{
+                                        rotateY: cardFlipped ? 180 : 0,
+                                        y: [0, -6, 0],
+                                    }}
+                                    transition={{
+                                        rotateY: { duration: 0.7, ease: [0.4, 0, 0.2, 1] },
+                                        y: { duration: 4.5, repeat: Infinity, ease: "easeInOut" },
+                                    }}
+                                    style={{ transformStyle: "preserve-3d" }}
+                                    className="relative w-full h-full rounded-[12px] shadow-2xl cursor-pointer"
+                                    onClick={() => setCardFlipped(!cardFlipped)}
                                 >
-                                    {/* Subtle light reflection sheen */}
-                                    <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/5 to-transparent pointer-events-none" />
+                                    {/* FRONT FACE (bs-card-front.jpg) */}
+                                    <div
+                                        style={{ backfaceVisibility: "hidden" }}
+                                        className={`absolute inset-0 rounded-[12px] overflow-hidden transition-all duration-300 ${
+                                            finish === "gold"
+                                                ? "border-[2.5px] border-[#D4AF37] ring-1 ring-[#D4AF37]/50 shadow-[0_0_35px_rgba(212,175,55,0.35),0_20px_40px_rgba(0,0,0,0.85)]"
+                                                : finish === "spotuv"
+                                                ? "border border-cyan-400/50 ring-1 ring-cyan-400/20 shadow-[0_20px_45px_rgba(0,0,0,0.95)]"
+                                                : finish === "emboss"
+                                                ? "border border-amber-600/40 ring-1 ring-black/40 shadow-[inset_2px_2px_8px_rgba(0,0,0,0.6),inset_-2px_-2px_8px_rgba(255,255,255,0.08),0_20px_40px_rgba(0,0,0,0.8)]"
+                                                : "border border-zinc-700/80 ring-1 ring-white/10 shadow-[0_20px_40px_rgba(0,0,0,0.7)]"
+                                        }`}
+                                    >
+                                        <Image
+                                            src={CARD_FRONT}
+                                            alt="Xinteck Business Card — Front (bs-card-front.jpg)"
+                                            fill
+                                            className="object-cover"
+                                            sizes="(max-width: 768px) 90vw, 420px"
+                                            priority
+                                        />
 
-                                    <div className="flex items-center justify-between z-10">
-                                        <div className="flex items-center gap-2.5">
-                                            <div className="w-8 h-8 rounded-[6px] bg-primary flex items-center justify-center text-black font-black text-sm shadow-md">
-                                                X
-                                            </div>
-                                            <span className="font-bold tracking-tight text-zinc-100 text-sm">
-                                                XINTECK CAPITAL
+                                        {/* FINISH OVERLAYS — FRONT */}
+                                        {/* 1. Hot Gold Foil Effect */}
+                                        {finish === "gold" && (
+                                            <>
+                                                <div className="absolute inset-0 pointer-events-none bg-gradient-to-tr from-amber-500/10 via-transparent to-amber-300/15 mix-blend-color-dodge z-10" />
+                                                <motion.div
+                                                    animate={{ x: ["-130%", "230%"] }}
+                                                    transition={{ duration: 3.5, repeat: Infinity, repeatDelay: 1.5, ease: "easeInOut" }}
+                                                    className="absolute inset-0 w-1/2 h-full bg-gradient-to-r from-transparent via-[#FFE885]/35 to-transparent skew-x-[-25deg] pointer-events-none z-10"
+                                                />
+                                                <div className="absolute top-3 right-3 z-20">
+                                                    <span className="text-[10px] font-black uppercase tracking-wider text-black bg-gradient-to-r from-[#D4AF37] via-[#FFF3A8] to-[#D4AF37] px-2.5 py-0.5 rounded-full shadow-lg border border-amber-300/60 flex items-center gap-1">
+                                                        <Sparkles size={11} className="text-black" /> 24K Gold Foil
+                                                    </span>
+                                                </div>
+                                            </>
+                                        )}
+
+                                        {/* 2. Spot UV Gloss Effect */}
+                                        {finish === "spotuv" && (
+                                            <>
+                                                <motion.div
+                                                    animate={{ x: ["-140%", "240%"] }}
+                                                    transition={{ duration: 4, repeat: Infinity, repeatDelay: 1.2, ease: "easeInOut" }}
+                                                    className="absolute inset-0 w-2/3 h-full bg-gradient-to-r from-transparent via-white/45 to-transparent skew-x-[-30deg] pointer-events-none z-10"
+                                                />
+                                                <div className="absolute top-3 right-3 z-20">
+                                                    <span className="text-[10px] font-black uppercase tracking-wider text-cyan-200 bg-cyan-950/85 backdrop-blur-md px-2.5 py-0.5 rounded-full shadow-lg border border-cyan-400/50 flex items-center gap-1">
+                                                        <Sun size={11} className="text-cyan-400" /> High-Gloss Spot UV
+                                                    </span>
+                                                </div>
+                                            </>
+                                        )}
+
+                                        {/* 3. Velvet Matte Effect */}
+                                        {finish === "matte" && (
+                                            <>
+                                                <div className="absolute inset-0 pointer-events-none bg-[radial-gradient(ellipse_at_center,transparent_45%,rgba(0,0,0,0.35)_100%)] z-10" />
+                                                <div className="absolute top-3 right-3 z-20">
+                                                    <span className="text-[10px] font-black uppercase tracking-wider text-zinc-200 bg-zinc-900/85 backdrop-blur-md px-2.5 py-0.5 rounded-full shadow-lg border border-zinc-700 flex items-center gap-1">
+                                                        <Layers size={11} className="text-zinc-400" /> Velvet Matte 450gsm
+                                                    </span>
+                                                </div>
+                                            </>
+                                        )}
+
+                                        {/* 4. Deep Emboss Effect */}
+                                        {finish === "emboss" && (
+                                            <>
+                                                <div className="absolute inset-0 pointer-events-none bg-gradient-to-tr from-black/25 via-transparent to-white/10 mix-blend-overlay z-10" />
+                                                <div className="absolute top-3 right-3 z-20">
+                                                    <span className="text-[10px] font-black uppercase tracking-wider text-amber-200 bg-black/85 backdrop-blur-md px-2.5 py-0.5 rounded-full shadow-lg border border-amber-600/50 flex items-center gap-1">
+                                                        <Award size={11} className="text-amber-400" /> Blind Deboss Relief
+                                                    </span>
+                                                </div>
+                                            </>
+                                        )}
+
+                                        {/* Face label indicator */}
+                                        <div className="absolute bottom-2.5 left-3 z-20">
+                                            <span className="text-[9px] font-bold uppercase tracking-wider text-white/80 bg-black/60 backdrop-blur-md px-2 py-0.5 rounded border border-white/10">
+                                                Front Face
                                             </span>
                                         </div>
+                                    </div>
+
+                                    {/* BACK FACE (bs-card-back.jpg) */}
+                                    <div
+                                        style={{
+                                            backfaceVisibility: "hidden",
+                                            transform: "rotateY(180deg)",
+                                        }}
+                                        className={`absolute inset-0 rounded-[12px] overflow-hidden transition-all duration-300 ${
+                                            finish === "gold"
+                                                ? "border-[2.5px] border-[#D4AF37] ring-1 ring-[#D4AF37]/50 shadow-[0_0_35px_rgba(212,175,55,0.35),0_20px_40px_rgba(0,0,0,0.85)]"
+                                                : finish === "spotuv"
+                                                ? "border border-cyan-400/50 ring-1 ring-cyan-400/20 shadow-[0_20px_45px_rgba(0,0,0,0.95)]"
+                                                : finish === "emboss"
+                                                ? "border border-amber-600/40 ring-1 ring-black/40 shadow-[inset_2px_2px_8px_rgba(0,0,0,0.6),inset_-2px_-2px_8px_rgba(255,255,255,0.08),0_20px_40px_rgba(0,0,0,0.8)]"
+                                                : "border border-zinc-700/80 ring-1 ring-white/10 shadow-[0_20px_40px_rgba(0,0,0,0.7)]"
+                                        }`}
+                                    >
+                                        <Image
+                                            src={CARD_BACK}
+                                            alt="Xinteck Business Card — Back (bs-card-back.jpg)"
+                                            fill
+                                            className="object-cover"
+                                            sizes="(max-width: 768px) 90vw, 420px"
+                                        />
+
+                                        {/* FINISH OVERLAYS — BACK */}
                                         {finish === "gold" && (
-                                            <span className="text-[10px] text-primary border border-primary/40 px-2 py-0.5 rounded font-mono font-bold">
-                                                ★ Hot Gold Foil
-                                            </span>
+                                            <>
+                                                <div className="absolute inset-0 pointer-events-none bg-gradient-to-tr from-amber-500/10 via-transparent to-amber-300/15 mix-blend-color-dodge z-10" />
+                                                <motion.div
+                                                    animate={{ x: ["-130%", "230%"] }}
+                                                    transition={{ duration: 3.5, repeat: Infinity, repeatDelay: 1.5, ease: "easeInOut" }}
+                                                    className="absolute inset-0 w-1/2 h-full bg-gradient-to-r from-transparent via-[#FFE885]/35 to-transparent skew-x-[-25deg] pointer-events-none z-10"
+                                                />
+                                                <div className="absolute top-3 right-3 z-20">
+                                                    <span className="text-[10px] font-black uppercase tracking-wider text-black bg-gradient-to-r from-[#D4AF37] via-[#FFF3A8] to-[#D4AF37] px-2.5 py-0.5 rounded-full shadow-lg border border-amber-300/60 flex items-center gap-1">
+                                                        <Sparkles size={11} className="text-black" /> 24K Gold Foil
+                                                    </span>
+                                                </div>
+                                            </>
                                         )}
-                                    </div>
 
-                                    <div className="z-10">
-                                        <h4 className="text-base font-bold text-zinc-100">David Mwangi</h4>
-                                        <p className="text-xs text-primary font-semibold tracking-wide">
-                                            Managing Director & Chief Executive
-                                        </p>
-                                    </div>
+                                        {finish === "spotuv" && (
+                                            <>
+                                                <motion.div
+                                                    animate={{ x: ["-140%", "240%"] }}
+                                                    transition={{ duration: 4, repeat: Infinity, repeatDelay: 1.2, ease: "easeInOut" }}
+                                                    className="absolute inset-0 w-2/3 h-full bg-gradient-to-r from-transparent via-white/45 to-transparent skew-x-[-30deg] pointer-events-none z-10"
+                                                />
+                                                <div className="absolute top-3 right-3 z-20">
+                                                    <span className="text-[10px] font-black uppercase tracking-wider text-cyan-200 bg-cyan-950/85 backdrop-blur-md px-2.5 py-0.5 rounded-full shadow-lg border border-cyan-400/50 flex items-center gap-1">
+                                                        <Sun size={11} className="text-cyan-400" /> High-Gloss Spot UV
+                                                    </span>
+                                                </div>
+                                            </>
+                                        )}
 
-                                    <div className="flex items-center justify-between text-[10px] text-zinc-400 z-10 pt-2 border-t border-zinc-800/80">
-                                        <span>Nairobi, Kenya</span>
-                                        <span className="font-mono">david@xinteck.co.ke</span>
+                                        {finish === "matte" && (
+                                            <>
+                                                <div className="absolute inset-0 pointer-events-none bg-[radial-gradient(ellipse_at_center,transparent_45%,rgba(0,0,0,0.35)_100%)] z-10" />
+                                                <div className="absolute top-3 right-3 z-20">
+                                                    <span className="text-[10px] font-black uppercase tracking-wider text-zinc-200 bg-zinc-900/85 backdrop-blur-md px-2.5 py-0.5 rounded-full shadow-lg border border-zinc-700 flex items-center gap-1">
+                                                        <Layers size={11} className="text-zinc-400" /> Velvet Matte 450gsm
+                                                    </span>
+                                                </div>
+                                            </>
+                                        )}
+
+                                        {finish === "emboss" && (
+                                            <>
+                                                <div className="absolute inset-0 pointer-events-none bg-gradient-to-tr from-black/25 via-transparent to-white/10 mix-blend-overlay z-10" />
+                                                <div className="absolute top-3 right-3 z-20">
+                                                    <span className="text-[10px] font-black uppercase tracking-wider text-amber-200 bg-black/85 backdrop-blur-md px-2.5 py-0.5 rounded-full shadow-lg border border-amber-600/50 flex items-center gap-1">
+                                                        <Award size={11} className="text-amber-400" /> Blind Deboss Relief
+                                                    </span>
+                                                </div>
+                                            </>
+                                        )}
+
+                                        {/* Face label indicator */}
+                                        <div className="absolute bottom-2.5 left-3 z-20">
+                                            <span className="text-[9px] font-bold uppercase tracking-wider text-white/80 bg-black/60 backdrop-blur-md px-2 py-0.5 rounded border border-white/10">
+                                                Back Face
+                                            </span>
+                                        </div>
                                     </div>
+                                </motion.div>
+                            </div>
+
+                            {/* Interactive Flip Hint Button */}
+                            <button
+                                type="button"
+                                onClick={() => setCardFlipped(!cardFlipped)}
+                                className="mt-4 inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-zinc-900/90 hover:bg-zinc-800 border border-primary/30 text-zinc-200 text-xs font-semibold shadow-md transition-all cursor-pointer group"
+                            >
+                                <RotateCw size={13} className="text-primary group-hover:rotate-180 transition-transform duration-500" />
+                                <span>{cardFlipped ? "Viewing Back · Tap to flip to Front" : "Viewing Front · Tap to flip to Back"}</span>
+                            </button>
+
+                            <div className="mt-3 flex flex-wrap items-center justify-center gap-3 text-xs text-zinc-400">
+                                <div className="flex items-center gap-1.5 bg-zinc-900/70 border border-zinc-800/80 px-3 py-1 rounded-full text-[11px]">
+                                    <Sparkles size={12} className="text-primary" />
+                                    <span>Finish: <strong className="text-zinc-200 capitalize">{finish === 'gold' ? 'Hot Gold Foil (#D4AF37)' : finish === 'spotuv' ? 'Selective Spot UV' : finish === 'matte' ? 'Velvet Matte 450gsm' : 'Blind Letterpress Deboss'}</strong></span>
                                 </div>
-
-                                {/* BACK FACE */}
-                                <div
-                                    style={{
-                                        backfaceVisibility: "hidden",
-                                        transform: "rotateY(180deg)",
-                                    }}
-                                    className="absolute inset-0 bg-primary text-black p-6 flex flex-col items-center justify-center text-center shadow-2xl"
-                                >
-                                    <div className="w-12 h-12 rounded-[8px] bg-black text-primary flex items-center justify-center font-black text-xl mb-2 shadow-lg">
-                                        X
-                                    </div>
-                                    <h4 className="font-black text-base tracking-wider uppercase">
-                                        Xinteck Creative
-                                    </h4>
-                                    <p className="text-xs font-semibold text-black/80 mt-1">
-                                        High-Impact Visual Identity & Boardroom Assets
-                                    </p>
-                                    <span className="text-[10px] font-mono text-black/60 mt-3">
-                                        Tap to flip back
-                                    </span>
+                                <div className="flex items-center gap-1.5 bg-zinc-900/70 border border-zinc-800/80 px-3 py-1 rounded-full text-[11px]">
+                                    <Printer size={12} className="text-primary" />
+                                    <span>300 DPI · 1050 × 600px · Press Calibrated</span>
                                 </div>
-                            </motion.div>
-
-                            <div className="mt-4 flex items-center gap-2 text-xs text-zinc-400">
-                                <Sparkles size={13} className="text-primary" />
-                                <span>Finish: <strong className="text-zinc-200 capitalize">{finish}</strong> · 450gsm Heavyweight Silk Stock</span>
                             </div>
                         </div>
                     )}

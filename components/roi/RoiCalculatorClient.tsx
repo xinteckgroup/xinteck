@@ -228,10 +228,17 @@ export function RoiCalculatorClient() {
                         className="flex flex-col gap-6"
                     >
                         {/* Sliders */}
-                        <div className="bg-black/60 backdrop-blur-xl border border-white/10 rounded-[14px] p-5 md:p-6 flex flex-col gap-6">
-                            <h3 className="text-xs font-bold uppercase tracking-wider text-gray-400">
-                                Your Numbers
-                            </h3>
+                        <div className="bg-white/80 dark:bg-black/75 backdrop-blur-xl border border-border rounded-[16px] p-5 sm:p-7 flex flex-col gap-6 shadow-lg">
+                            <div className="flex flex-col gap-1 border-b border-border/50 pb-3">
+                                <h3 className="text-xs font-bold uppercase tracking-wider text-primary">
+                                    Step 1: Your Current Baseline
+                                </h3>
+                                <p className="text-xs text-muted-foreground">
+                                    {mode === "efficiency"
+                                        ? "Adjust to match your current team size, wasted hours, and hourly pay."
+                                        : "Adjust to match your current monthly visitors, conversion rate, and deal size."}
+                                </p>
+                            </div>
 
                             {sliders.map((slider) => {
                                 const val = values[slider.key];
@@ -249,10 +256,10 @@ export function RoiCalculatorClient() {
                                 return (
                                     <div key={slider.key}>
                                         <div className="flex items-center justify-between mb-2">
-                                            <label className="text-xs md:text-sm font-medium text-gray-300">
+                                            <label className="text-xs md:text-sm font-semibold text-foreground">
                                                 {slider.label}
                                             </label>
-                                            <span className="text-sm font-bold text-[#D4AF37] tabular-nums">
+                                            <span className="text-sm font-bold text-primary tabular-nums">
                                                 {displayVal}
                                             </span>
                                         </div>
@@ -267,9 +274,9 @@ export function RoiCalculatorClient() {
                                                     parseFloat(e.target.value)
                                                 )
                                             }
-                                            className="w-full h-2 rounded-full appearance-none cursor-pointer"
+                                            className="w-full h-2 rounded-full appearance-none cursor-pointer bg-muted/60 dark:bg-white/10"
                                             style={{
-                                                background: `linear-gradient(to right, #D4AF37 0%, #D4AF37 ${pct}%, rgba(255,255,255,0.1) ${pct}%, rgba(255,255,255,0.1) 100%)`,
+                                                background: `linear-gradient(to right, #D4AF37 0%, #D4AF37 ${pct}%, rgba(120,120,120,0.2) ${pct}%, rgba(120,120,120,0.2) 100%)`,
                                                 WebkitAppearance: "none",
                                             }}
                                         />
@@ -279,10 +286,15 @@ export function RoiCalculatorClient() {
                         </div>
 
                         {/* Investment Tier Selector */}
-                        <div className="bg-black/60 backdrop-blur-xl border border-white/10 rounded-[14px] p-5 md:p-6 flex flex-col gap-4">
-                            <h3 className="text-xs font-bold uppercase tracking-wider text-gray-400">
-                                Investment Level
-                            </h3>
+                        <div className="bg-white/80 dark:bg-black/75 backdrop-blur-xl border border-border rounded-[16px] p-5 sm:p-7 flex flex-col gap-4 shadow-lg">
+                            <div className="flex flex-col gap-1 border-b border-border/50 pb-3">
+                                <h3 className="text-xs font-bold uppercase tracking-wider text-primary">
+                                    Step 2: Expected Project Scope
+                                </h3>
+                                <p className="text-xs text-muted-foreground">
+                                    Select the scale of software or platform you plan to build.
+                                </p>
+                            </div>
 
                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                                 {tiers.map((tier, idx) => {
@@ -296,29 +308,29 @@ export function RoiCalculatorClient() {
                                                     ? setEfficiencyTierIdx(idx)
                                                     : setRevenueTierIdx(idx)
                                             }
-                                            className={`relative text-left p-3.5 rounded-[10px] border transition-all duration-200 cursor-pointer ${
+                                            className={`relative text-left p-3.5 rounded-[12px] border transition-all duration-200 cursor-pointer ${
                                                 isSelected
-                                                    ? "border-[#D4AF37]/60 bg-[#D4AF37]/10"
-                                                    : "border-white/10 bg-white/5 hover:border-white/20"
+                                                    ? "border-primary bg-primary/10 shadow-sm"
+                                                    : "border-border bg-card/60 dark:bg-white/5 hover:border-primary/40 hover:bg-muted/40 shadow-xs"
                                             }`}
                                         >
                                             <p
                                                 className={`text-sm font-bold ${
                                                     isSelected
-                                                        ? "text-[#D4AF37]"
-                                                        : "text-white"
+                                                        ? "text-primary"
+                                                        : "text-foreground"
                                                 }`}
                                             >
                                                 {tier.label}
                                             </p>
-                                            <p className="text-xs text-gray-500 mt-0.5">
+                                            <p className="text-xs text-muted-foreground mt-0.5 leading-snug">
                                                 {tier.description}
                                             </p>
                                             <p
-                                                className={`text-xs font-bold mt-1.5 ${
+                                                className={`text-xs font-bold mt-2 ${
                                                     isSelected
-                                                        ? "text-[#D4AF37]"
-                                                        : "text-gray-400"
+                                                        ? "text-primary"
+                                                        : "text-foreground/90"
                                                 }`}
                                             >
                                                 {formatKES(tier.value)}
@@ -349,7 +361,12 @@ export function RoiCalculatorClient() {
                                 value={annualValue}
                                 isKES
                                 highlight
-                                subtitle={`${formatKES(monthlyValue)}/month`}
+                                subtitle={`${formatKES(monthlyValue)} / month`}
+                                explanation={
+                                    mode === "efficiency"
+                                        ? "Labor money saved each year"
+                                        : "Extra money made each year"
+                                }
                             />
                             <MetricCard
                                 label="Payback Period"
@@ -357,11 +374,12 @@ export function RoiCalculatorClient() {
                                 suffix=" mo"
                                 subtitle={
                                     paybackMonths <= 6
-                                        ? "Excellent payback"
+                                        ? "Fast payback"
                                         : paybackMonths <= 12
-                                          ? "Strong payback"
+                                          ? "Under 1 year"
                                           : "Moderate payback"
                                 }
+                                explanation="Months until project pays for itself"
                             />
                             <MetricCard
                                 label={
@@ -376,9 +394,10 @@ export function RoiCalculatorClient() {
                                     roiPercentage > 500
                                         ? "Outstanding return"
                                         : roiPercentage > 200
-                                          ? "Excellent return"
+                                          ? "High return"
                                           : "Solid return"
                                 }
+                                explanation="Percentage return on money spent"
                             />
                             <MetricCard
                                 label={
@@ -389,13 +408,15 @@ export function RoiCalculatorClient() {
                                 value={netValue}
                                 isKES
                                 subtitle={`On ${formatKES(selectedTier.value)} investment`}
+                                explanation="Clean profit after software costs"
                             />
                             {mode === "efficiency" && (
                                 <MetricCard
                                     label="Hours Recovered / Year"
                                     value={efficiencyResults.hoursRecoveredAnnually}
                                     suffix=" hrs"
-                                    subtitle={`${Math.round(efficiencyResults.hoursRecoveredAnnually / 8)} working days`}
+                                    subtitle={`~${Math.round(efficiencyResults.hoursRecoveredAnnually / 8)} full work days`}
+                                    explanation="Productive hours handed back to team"
                                 />
                             )}
                             {mode === "revenue" && (
@@ -404,15 +425,21 @@ export function RoiCalculatorClient() {
                                     value={revenueResults.newConversionRate}
                                     suffix="%"
                                     subtitle={`Up from ${currentConversionRate}%`}
+                                    explanation="Expected percentage who buy or inquire"
                                 />
                             )}
                         </div>
 
                         {/* Chart */}
-                        <div className="bg-black/60 backdrop-blur-xl border border-white/10 rounded-[14px] p-5 md:p-6">
-                            <h3 className="text-xs font-bold uppercase tracking-wider text-gray-400 mb-4">
-                                24-Month Cashflow Comparison
-                            </h3>
+                        <div className="bg-white/80 dark:bg-black/75 backdrop-blur-xl border border-border rounded-[16px] p-5 sm:p-7 shadow-lg">
+                            <div className="flex flex-col gap-1 mb-4 border-b border-border/50 pb-3">
+                                <h3 className="text-xs font-bold uppercase tracking-wider text-foreground">
+                                    24-Month Financial Outlook
+                                </h3>
+                                <p className="text-xs text-muted-foreground">
+                                    Compares doing nothing (red opportunity loss) with software breaking even and compounding gains (gold).
+                                </p>
+                            </div>
                             <RoiBarChart data={cashflowData} />
                         </div>
                     </motion.div>
@@ -422,10 +449,10 @@ export function RoiCalculatorClient() {
                 <div className="flex flex-col sm:flex-row gap-4 justify-center items-center pt-4">
                     <Link
                         href={bookHref}
-                        className="group flex items-center gap-3 px-8 py-4 bg-[#D4AF37] text-black font-bold text-sm uppercase tracking-wider rounded-[10px] hover:scale-[1.02] transition-transform shadow-[0_4px_14px_0_rgba(212,175,55,0.3)]"
+                        className="group flex items-center gap-3 px-8 py-4 bg-primary text-black font-bold text-sm uppercase tracking-wider rounded-[10px] hover:scale-[1.02] transition-transform shadow-[0_4px_14px_0_rgba(212,175,55,0.3)]"
                     >
                         <Calculator size={18} />
-                        Book a Free Strategy Call
+                        Book a Free Call
                         <ArrowUpRight
                             size={18}
                             className="group-hover:rotate-45 transition-transform"
@@ -433,7 +460,7 @@ export function RoiCalculatorClient() {
                     </Link>
                     <button
                         onClick={() => setShowModal(true)}
-                        className="group flex items-center gap-3 px-8 py-4 bg-white/5 border border-white/10 text-white font-bold text-sm uppercase tracking-wider rounded-[10px] hover:bg-white/10 hover:border-white/20 transition-all cursor-pointer"
+                        className="group flex items-center gap-3 px-8 py-4 bg-white/80 dark:bg-black/75 border border-border text-foreground font-bold text-sm uppercase tracking-wider rounded-[10px] hover:bg-muted/80 transition-all cursor-pointer shadow-sm"
                     >
                         <Mail size={18} />
                         Email My ROI Report

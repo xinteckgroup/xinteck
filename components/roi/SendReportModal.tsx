@@ -104,7 +104,7 @@ export function SendReportModal({
     };
 
     const inputClass =
-        "w-full bg-white/5 border border-white/10 rounded-[10px] px-4 py-3 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-[#D4AF37]/50 focus:ring-1 focus:ring-[#D4AF37]/30 transition-all";
+        "w-full bg-muted/40 dark:bg-white/5 border border-border rounded-[10px] px-4 py-3 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/40 transition-all";
 
     return (
         <AnimatePresence>
@@ -113,7 +113,7 @@ export function SendReportModal({
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
-                    className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm"
+                    className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm"
                     onClick={(e) => {
                         if (e.target === e.currentTarget) onClose();
                     }}
@@ -123,18 +123,18 @@ export function SendReportModal({
                         animate={{ opacity: 1, scale: 1, y: 0 }}
                         exit={{ opacity: 0, scale: 0.95, y: 20 }}
                         transition={{ type: "spring", stiffness: 300, damping: 25 }}
-                        className="w-full max-w-md bg-black/95 border border-white/10 rounded-[14px] backdrop-blur-xl p-6 md:p-8 shadow-2xl"
+                        className="w-full max-w-md bg-card/95 dark:bg-[#0A0A0A]/95 border border-border rounded-[16px] backdrop-blur-2xl p-6 md:p-8 shadow-2xl"
                     >
                         {/* Header */}
                         <div className="flex items-center justify-between mb-6">
-                            <h3 className="text-lg font-bold text-white">
+                            <h3 className="text-lg font-bold text-foreground">
                                 {submitted
                                     ? "Report Sent!"
                                     : "Email Your ROI Report"}
                             </h3>
                             <button
                                 onClick={onClose}
-                                className="p-1.5 rounded-lg bg-white/5 hover:bg-white/10 text-gray-400 hover:text-white transition-colors cursor-pointer"
+                                className="p-1.5 rounded-lg bg-muted/40 hover:bg-muted text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
                             >
                                 <X size={18} />
                             </button>
@@ -144,19 +144,19 @@ export function SendReportModal({
                             <div className="flex flex-col items-center gap-4 py-8">
                                 <CheckCircle2
                                     size={48}
-                                    className="text-emerald-400"
+                                    className="text-emerald-500"
                                 />
-                                <p className="text-center text-gray-300 text-sm">
+                                <p className="text-center text-foreground/90 text-sm">
                                     Your personalized ROI breakdown has been
                                     sent to{" "}
-                                    <span className="text-[#D4AF37] font-bold">
+                                    <span className="text-primary font-bold">
                                         {email}
                                     </span>
                                     . Our team will reach out shortly.
                                 </p>
                                 <button
                                     onClick={onClose}
-                                    className="mt-4 px-6 py-3 bg-[#D4AF37] text-black font-bold text-sm rounded-[10px] hover:scale-[1.02] transition-transform cursor-pointer"
+                                    className="mt-4 px-6 py-3 bg-primary text-black font-bold text-sm rounded-[10px] hover:scale-[1.02] transition-transform cursor-pointer"
                                 >
                                     Done
                                 </button>
@@ -181,7 +181,7 @@ export function SendReportModal({
                                 />
 
                                 <div>
-                                    <label className="text-xs font-bold uppercase tracking-wider text-gray-400 mb-1.5 block">
+                                    <label className="text-xs font-bold uppercase tracking-wider text-muted-foreground mb-1.5 block">
                                         Full Name *
                                     </label>
                                     <input
@@ -198,7 +198,7 @@ export function SendReportModal({
                                 </div>
 
                                 <div>
-                                    <label className="text-xs font-bold uppercase tracking-wider text-gray-400 mb-1.5 block">
+                                    <label className="text-xs font-bold uppercase tracking-wider text-muted-foreground mb-1.5 block">
                                         Email Address *
                                     </label>
                                     <input
@@ -214,7 +214,7 @@ export function SendReportModal({
                                 </div>
 
                                 <div>
-                                    <label className="text-xs font-bold uppercase tracking-wider text-gray-400 mb-1.5 block">
+                                    <label className="text-xs font-bold uppercase tracking-wider text-muted-foreground mb-1.5 block">
                                         Phone Number *
                                     </label>
                                     <input
@@ -231,9 +231,9 @@ export function SendReportModal({
                                 </div>
 
                                 <div>
-                                    <label className="text-xs font-bold uppercase tracking-wider text-gray-400 mb-1.5 block">
+                                    <label className="text-xs font-bold uppercase tracking-wider text-muted-foreground mb-1.5 block">
                                         Company{" "}
-                                        <span className="text-gray-600">
+                                        <span className="text-muted-foreground/70">
                                             (optional)
                                         </span>
                                     </label>
@@ -250,7 +250,7 @@ export function SendReportModal({
 
                                 {/* Math Captcha */}
                                 <div>
-                                    <label className="text-xs font-bold uppercase tracking-wider text-gray-400 mb-1.5 block">
+                                    <label className="text-xs font-bold uppercase tracking-wider text-muted-foreground mb-1.5 block">
                                         Quick Verify: What is{" "}
                                         {captcha.num1} + {captcha.num2}? *
                                     </label>
@@ -267,7 +267,7 @@ export function SendReportModal({
                                 </div>
 
                                 {error && (
-                                    <div className="flex items-center gap-2 text-red-400 text-xs bg-red-500/10 border border-red-500/20 rounded-[10px] p-3">
+                                    <div className="flex items-center gap-2 text-red-500 text-xs bg-red-500/10 border border-red-500/20 rounded-[10px] p-3">
                                         <AlertCircle size={14} />
                                         {error}
                                     </div>
@@ -276,7 +276,7 @@ export function SendReportModal({
                                 <button
                                     type="submit"
                                     disabled={isSubmitting}
-                                    className="flex items-center justify-center gap-2 w-full mt-2 px-6 py-3.5 bg-[#D4AF37] text-black font-bold text-sm uppercase tracking-wider rounded-[10px] hover:scale-[1.02] transition-transform disabled:opacity-50 disabled:hover:scale-100 cursor-pointer"
+                                    className="flex items-center justify-center gap-2 w-full mt-2 px-6 py-3.5 bg-primary text-black font-bold text-sm uppercase tracking-wider rounded-[10px] hover:scale-[1.02] transition-transform disabled:opacity-50 disabled:hover:scale-100 cursor-pointer shadow-md"
                                 >
                                     {isSubmitting ? (
                                         <>

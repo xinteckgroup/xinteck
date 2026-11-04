@@ -2,7 +2,7 @@
 
 import type { RoiMode } from "@/types/roi";
 import { motion } from "framer-motion";
-import { BarChart3, TrendingUp } from "lucide-react";
+import { Clock, TrendingUp } from "lucide-react";
 
 interface ModeToggleProps {
     mode: RoiMode;
@@ -12,15 +12,15 @@ interface ModeToggleProps {
 const modes = [
     {
         key: "efficiency" as const,
-        label: "Automate & Save",
-        icon: BarChart3,
-        description: "Cut manual work & reclaim hours",
+        label: "Automate & Save Time",
+        icon: Clock,
+        description: "Cut manual repetitive work and reclaim productive team hours",
     },
     {
         key: "revenue" as const,
-        label: "Grow Revenue",
+        label: "Grow Sales & Revenue",
         icon: TrendingUp,
-        description: "Boost conversions & increase sales",
+        description: "Turn more website or app visitors into paying customers",
     },
 ];
 
@@ -35,16 +35,17 @@ export function ModeToggle({ mode, onChange }: ModeToggleProps) {
                     <button
                         key={m.key}
                         onClick={() => onChange(m.key)}
-                        className={`relative flex-1 flex items-center gap-3 px-5 py-4 rounded-[10px] border transition-all duration-300 cursor-pointer ${
+                        type="button"
+                        className={`relative flex-1 flex items-center gap-3.5 px-5 py-4 rounded-[12px] border transition-all duration-300 text-left cursor-pointer ${
                             isActive
-                                ? "border-[#D4AF37]/60 bg-[#D4AF37]/10"
-                                : "border-white/10 bg-white/5 hover:border-white/20 hover:bg-white/10"
+                                ? "border-primary bg-primary/10 shadow-md"
+                                : "bg-white/80 dark:bg-black/75 backdrop-blur-xl border-border hover:border-primary/40 hover:bg-white/90 dark:hover:bg-black/90 shadow-sm"
                         }`}
                     >
                         {isActive && (
                             <motion.div
                                 layoutId="mode-indicator"
-                                className="absolute inset-0 rounded-[10px] border-2 border-[#D4AF37]/50"
+                                className="absolute inset-0 rounded-[12px] border-2 border-primary/60 pointer-events-none"
                                 transition={{
                                     type: "spring",
                                     stiffness: 400,
@@ -53,25 +54,25 @@ export function ModeToggle({ mode, onChange }: ModeToggleProps) {
                             />
                         )}
                         <div
-                            className={`p-2 rounded-lg ${
+                            className={`p-2.5 rounded-[10px] shrink-0 transition-colors ${
                                 isActive
-                                    ? "bg-[#D4AF37]/20 text-[#D4AF37]"
-                                    : "bg-white/10 text-gray-400"
+                                    ? "bg-primary/20 text-primary"
+                                    : "bg-muted text-muted-foreground"
                             }`}
                         >
                             <Icon size={20} />
                         </div>
-                        <div className="text-left">
-                            <p
-                                className={`text-sm font-bold ${
-                                    isActive ? "text-[#D4AF37]" : "text-white"
+                        <div className="flex flex-col">
+                            <span
+                                className={`text-sm font-bold tracking-tight ${
+                                    isActive ? "text-primary" : "text-foreground"
                                 }`}
                             >
                                 {m.label}
-                            </p>
-                            <p className="text-xs text-gray-500">
+                            </span>
+                            <span className="text-xs text-muted-foreground mt-0.5 leading-snug">
                                 {m.description}
-                            </p>
+                            </span>
                         </div>
                     </button>
                 );

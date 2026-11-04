@@ -23,6 +23,16 @@ import { z } from "zod";
 
 type ServiceFormValues = z.infer<typeof serviceSchema>;
 
+// Slugs mapped to interactive hero simulators & scope estimators on the frontend
+const CORE_SERVICE_SLUGS = [
+    "mobile-app-development",
+    "web-development",
+    "custom-software-development",
+    "ui-ux-design",
+    "cloud-devops",
+    "graphic-design",
+];
+
 // Helper to safely cast JSON to specific types
 function safeCast<T>(data: any, fallback: T): T {
     if (!data) return fallback;
@@ -337,7 +347,14 @@ export function ServiceForm({ service }: ServiceFormProps) {
                                     />
                                 </div>
                                 <div className="flex flex-col gap-1 md:gap-2">
-                                    <label className="text-[8px] md:text-xs font-bold text-[var(--admin-text)] uppercase">Slug (URL)</label>
+                                    <div className="flex items-center justify-between">
+                                        <label className="text-[8px] md:text-xs font-bold text-[var(--admin-text)] uppercase">Slug (URL)</label>
+                                        {CORE_SERVICE_SLUGS.includes(formData.slug) && (
+                                            <span className="text-[10px] font-bold text-amber-500 bg-amber-500/10 border border-amber-500/30 px-2 py-0.5 rounded-full">
+                                                Protected Core Module
+                                            </span>
+                                        )}
+                                    </div>
                                     <div className="flex items-center admin-surface-input rounded-[8px] px-2 md:px-4 py-1.5 md:py-2 gap-1 md:gap-2 overflow-x-auto">
                                         <span className="text-[var(--admin-text)] text-[10px] md:text-sm whitespace-nowrap">xinteck.co.ke/services/</span>
                                         <input 
@@ -347,6 +364,11 @@ export function ServiceForm({ service }: ServiceFormProps) {
                                             className="bg-transparent border-none text-[var(--admin-text)] text-xs md:text-sm outline-none flex-1 font-mono min-w-0"
                                         />
                                     </div>
+                                    {CORE_SERVICE_SLUGS.includes(formData.slug) && (
+                                        <p className="text-[11px] text-amber-500 leading-relaxed bg-amber-500/10 border border-amber-500/20 rounded-[8px] p-2 mt-0.5">
+                                            ⚠️ <strong>Interactive Module Notice:</strong> This slug connects directly to the live interactive hero simulator, speed benchmarks, and scope cost estimator. Changing this slug will unlink those public modules.
+                                        </p>
+                                    )}
                                 </div>
                             </div>
 

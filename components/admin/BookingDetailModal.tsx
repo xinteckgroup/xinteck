@@ -314,6 +314,40 @@ export const BookingDetailModal: React.FC<BookingDetailModalProps> = ({
                     </div>
                 </div>
 
+                {/* Scope Estimator Pre-Calculation Highlight (if detected) */}
+                {(() => {
+                    const message = booking.message || "";
+                    const budgetMatch = message.match(/Estimated budget(?: from scope calculator)?:?\s*(KES\s*[\d,]+)/i);
+                    const packageMatch = message.match(/Selected package:?\s*([^\n]+)/i);
+                    const budget = budgetMatch ? budgetMatch[1].trim() : null;
+                    const pkg = packageMatch ? packageMatch[1].trim() : null;
+
+                    if (!budget && !pkg) return null;
+
+                    return (
+                        <div className="p-4 rounded-xl bg-primary/10 border border-primary/30 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+                            <div className="flex items-center gap-3">
+                                <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center text-primary font-bold text-lg">
+                                    💰
+                                </div>
+                                <div>
+                                    <span className="text-[10px] font-black uppercase tracking-wider text-primary block">
+                                        Calculated Scope Budget
+                                    </span>
+                                    <span className="text-base font-extrabold text-foreground">
+                                        {budget || "Custom Scope"}
+                                    </span>
+                                </div>
+                            </div>
+                            {pkg && (
+                                <span className="text-xs font-bold px-3 py-1 rounded-full bg-background border border-border text-foreground flex items-center gap-1.5 shadow-sm">
+                                    📦 {pkg}
+                                </span>
+                            )}
+                        </div>
+                    );
+                })()}
+
                 {/* Client Message / Discussion Agenda */}
                 {booking.message && (
                     <div className="flex flex-col gap-1.5">

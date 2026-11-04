@@ -41,6 +41,17 @@ interface BookingsClientProps {
     currentUser: { id: string; name: string; email: string; role: string };
 }
 
+// Helper to parse budget estimates and package selections from message
+export const extractBudgetAndPackage = (message?: string | null) => {
+    if (!message) return { budget: null, pkg: null };
+    const budgetMatch = message.match(/Estimated budget(?: from scope calculator)?:?\s*(KES\s*[\d,]+)/i);
+    const packageMatch = message.match(/Selected package:?\s*([^\n]+)/i);
+    return {
+        budget: budgetMatch ? budgetMatch[1].trim() : null,
+        pkg: packageMatch ? packageMatch[1].trim() : null,
+    };
+};
+
 export const BookingsClient: React.FC<BookingsClientProps> = ({
     initialBookings,
     initialStats,
@@ -103,7 +114,8 @@ export const BookingsClient: React.FC<BookingsClientProps> = ({
                 const phoneMatch = b.phone?.toLowerCase().includes(q);
                 const companyMatch = b.company?.toLowerCase().includes(q);
                 const serviceMatch = b.service?.toLowerCase().includes(q);
-                return nameMatch || emailMatch || phoneMatch || companyMatch || serviceMatch;
+                const messageMatch = b.message?.toLowerCase().includes(q);
+                return nameMatch || emailMatch || phoneMatch || companyMatch || serviceMatch || messageMatch;
             }
 
             return true;
@@ -351,9 +363,29 @@ export const BookingsClient: React.FC<BookingsClientProps> = ({
                                             </td>
 
                                             <td className="py-3.5 px-4">
-                                                <span className="font-medium text-foreground">
-                                                    {b.service || "General"}
-                                                </span>
+                                                <div className="flex flex-col gap-1 items-start">
+                                                    <span className="font-medium text-foreground">
+                                                        {b.service || "General"}
+                                                    </span>
+                                                    {(() => {
+                                                        const { budget, pkg } = extractBudgetAndPackage(b.message);
+                                                        if (!budget && !pkg) return null;
+                                                        return (
+                                                            <div className="flex flex-wrap items-center gap-1.5 mt-0.5">
+                                                                {budget && (
+                                                                    <span className="inline-flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded-full bg-primary/15 text-primary border border-primary/30">
+                                                                        💰 {budget}
+                                                                    </span>
+                                                                )}
+                                                                {pkg && (
+                                                                    <span className="inline-flex items-center text-[10px] font-medium px-1.5 py-0.5 rounded bg-muted/40 text-foreground/80 border border-border/50">
+                                                                        📦 {pkg}
+                                                                    </span>
+                                                                )}
+                                                            </div>
+                                                        );
+                                                    })()}
+                                                </div>
                                             </td>
 
                                             <td className="py-3.5 px-4 whitespace-nowrap">

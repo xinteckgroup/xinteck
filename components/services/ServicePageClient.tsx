@@ -427,13 +427,13 @@ export function ServicePageClient({ service }: { service: PublicService }) {
                 className={`${TYPOGRAPHY.button} inline-flex items-center gap-2 px-8 md:px-10 py-4 md:py-5 bg-primary text-black font-extrabold rounded-[10px] shadow-[0_0_25px_rgba(212,175,55,0.4)] hover:shadow-[0_0_35px_rgba(212,175,55,0.7)] hover:scale-105 transition-all text-sm md:text-base`}
               >
                 <Video size={18} className="text-black" />
-                <span>Book Free 15-Min Call</span>
+                <span>Schedule Free Call</span>
               </Link>
               <Link 
-                href="/contact"
+                href={`/contact?service=${encodeURIComponent(service.title)}`}
                 className={`${TYPOGRAPHY.button} inline-flex items-center gap-2 px-8 md:px-10 py-4 md:py-5 border border-white/20 hover:border-white/40 text-foreground rounded-[10px] hover:bg-white/5 transition-all text-sm md:text-base`}
               >
-                {service.buyNowSection?.button || "Start a Project"}
+                <span>Submit Project Brief</span>
                 <ArrowRight size={18} />
               </Link>
             </div>

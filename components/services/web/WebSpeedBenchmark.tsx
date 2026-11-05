@@ -49,7 +49,7 @@ export function WebSpeedBenchmark() {
                             }`}
                         >
                             <Zap size={16} />
-                            <span>Xinteck Next.js Edge (0.6s)</span>
+                            <span>Xinteck Edge (0.6s)</span>
                         </button>
                         <button
                             onClick={() => setSelectedSpeed("legacy")}
@@ -60,7 +60,7 @@ export function WebSpeedBenchmark() {
                             }`}
                         >
                             <AlertTriangle size={16} />
-                            <span>Legacy WordPress / Shared Hosting (4.8s)</span>
+                            <span>Legacy WordPress (4.8s)</span>
                         </button>
                     </div>
                 </div>

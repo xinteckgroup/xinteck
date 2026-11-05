@@ -2,7 +2,7 @@
 
 import { TYPOGRAPHY } from "@/lib/typography";
 import { motion, AnimatePresence } from "framer-motion";
-import { ChevronDown, HelpCircle, MessageCircle, Video } from "lucide-react";
+import { ChevronDown, HelpCircle, MessageCircle, Send } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
 
@@ -116,22 +116,24 @@ export function MobileFaqSection() {
                     </div>
 
                     <div className="flex flex-wrap items-center justify-center gap-3">
-                        <Link
-                            href="/book"
-                            className={`px-5 py-2.5 rounded-[10px] bg-primary text-primary-foreground font-bold text-xs uppercase tracking-wider hover:bg-primary/90 transition-all flex items-center gap-2 ${TYPOGRAPHY.button}`}
-                        >
-                            <Video size={14} />
-                            <span>Book 15-Min Call</span>
-                        </Link>
                         <a
-                            href="https://wa.me/254782063736"
+                            href={`https://wa.me/254782063736?text=${encodeURIComponent(
+                                "Hi Xinteck, I have a question regarding your Mobile App Development services."
+                            )}`}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className={`px-5 py-2.5 rounded-[10px] bg-green-600 text-white font-bold text-xs uppercase tracking-wider hover:bg-green-500 transition-all flex items-center gap-2 ${TYPOGRAPHY.button}`}
+                            className={`px-5 py-2.5 rounded-[10px] bg-emerald-600 text-white font-bold text-xs uppercase tracking-wider hover:bg-emerald-500 transition-all flex items-center gap-2 shadow-sm ${TYPOGRAPHY.button}`}
                         >
                             <MessageCircle size={14} />
-                            <span>Chat on WhatsApp</span>
+                            <span>Ask on WhatsApp</span>
                         </a>
+                        <Link
+                            href="/contact?service=Mobile+App+Development"
+                            className={`px-5 py-2.5 rounded-[10px] bg-white/40 dark:bg-zinc-800/60 hover:bg-white/60 dark:hover:bg-zinc-800 border border-border/50 text-foreground font-bold text-xs uppercase tracking-wider transition-all flex items-center gap-2 ${TYPOGRAPHY.button}`}
+                        >
+                            <Send size={14} />
+                            <span>Send Quick Question</span>
+                        </Link>
                     </div>
                 </div>
             </div>

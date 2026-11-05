@@ -234,13 +234,13 @@ export function MobileIndustryPacks() {
                             </div>
 
                             <div className="pt-2 flex flex-col gap-3">
-                                <Link
-                                    href={`/book?service=Mobile+App+Development&package=${encodeURIComponent(activePack.title)}`}
+                                <a
+                                    href="#scope-estimator"
                                     className={`w-full py-3.5 px-6 rounded-[10px] bg-primary text-primary-foreground font-bold text-sm uppercase tracking-wider hover:bg-primary/90 transition-all flex items-center justify-center gap-2 shadow-xl shadow-primary/20 ${TYPOGRAPHY.button}`}
                                 >
-                                    <span>Plan This App With Us</span>
+                                    <span>Customize App Scope</span>
                                     <ArrowRight size={16} />
-                                </Link>
+                                </a>
                                 <p className="text-[11px] text-foreground/70 text-center font-medium">
                                     Includes complete Apple App Store & Google Play Store publishing.
                                 </p>

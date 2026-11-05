@@ -135,7 +135,7 @@ export function UiUxScopeEstimator() {
     )}`;
 
     return (
-        <section className="px-6 py-8 md:py-16">
+        <section id="scope-estimator" className="px-6 py-8 md:py-16 scroll-mt-24">
             <div className="max-w-7xl mx-auto flex flex-col gap-8 md:gap-12">
                 {/* Header */}
                 <div className="text-center max-w-3xl mx-auto flex flex-col gap-3 bg-white/30 dark:bg-black/80 backdrop-blur-xl rounded-[10px] p-6 md:p-8 shadow-lg">

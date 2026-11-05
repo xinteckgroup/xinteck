@@ -2,7 +2,7 @@
 
 import { TYPOGRAPHY } from "@/lib/typography";
 import { motion, AnimatePresence } from "framer-motion";
-import { ChevronDown, HelpCircle, MessageCircle, Video } from "lucide-react";
+import { ChevronDown, HelpCircle, MessageCircle, Send } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
 
@@ -130,13 +130,26 @@ export function WebFaqSection() {
                             </div>
                         </div>
                     </div>
-                    <Link
-                        href="/book"
-                        className={`${TYPOGRAPHY.button} shrink-0 px-5 py-2.5 bg-primary text-black font-bold text-xs rounded-[8px] hover:bg-primary/90 transition-all flex items-center gap-2`}
-                    >
-                        <Video size={14} />
-                        <span>Book 15-Min Chat</span>
-                    </Link>
+                    <div className="flex flex-wrap items-center gap-3 shrink-0">
+                        <a
+                            href={`https://wa.me/254782063736?text=${encodeURIComponent(
+                                "Hi Xinteck, I have a question regarding your Web Development services."
+                            )}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className={`${TYPOGRAPHY.button} px-4 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs rounded-[8px] transition-all flex items-center gap-2 shadow-sm`}
+                        >
+                            <MessageCircle size={14} />
+                            <span>Ask on WhatsApp</span>
+                        </a>
+                        <Link
+                            href="/contact?service=Web+Development"
+                            className={`${TYPOGRAPHY.button} px-4 py-2.5 bg-white/40 dark:bg-zinc-800/60 hover:bg-white/60 dark:hover:bg-zinc-800 border border-border/50 text-foreground font-bold text-xs rounded-[8px] transition-all flex items-center gap-2`}
+                        >
+                            <Send size={14} />
+                            <span>Send Quick Question</span>
+                        </Link>
+                    </div>
                 </div>
             </div>
         </section>

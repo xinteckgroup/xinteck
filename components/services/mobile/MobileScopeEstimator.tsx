@@ -117,7 +117,7 @@ export function MobileScopeEstimator() {
     )}`;
 
     return (
-        <section className="px-6 py-8 md:py-16">
+        <section id="scope-estimator" className="px-6 py-8 md:py-16 scroll-mt-24">
             <div className="max-w-7xl mx-auto flex flex-col gap-8 md:gap-12">
                 {/* Header */}
                 <div className="text-center max-w-3xl mx-auto flex flex-col gap-3 bg-white/30 dark:bg-black/80 backdrop-blur-xl rounded-[10px] p-6 md:p-8 shadow-lg">
@@ -244,7 +244,7 @@ export function MobileScopeEstimator() {
                             className={`w-full py-4 px-6 rounded-[10px] bg-primary text-primary-foreground font-bold text-sm uppercase tracking-wider hover:bg-primary/90 transition-all flex items-center justify-center gap-3 shadow-xl shadow-primary/20 ${TYPOGRAPHY.button}`}
                         >
                             <Calendar size={18} />
-                            <span>Book Call with this Scope</span>
+                            <span>Lock In Estimate</span>
                             <ArrowRight size={16} />
                         </Link>
                     </div>

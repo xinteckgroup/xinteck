@@ -148,13 +148,13 @@ export function CloudCostOptimizer() {
                                 ))}
                             </div>
 
-                            <Link
-                                href="/book"
+                            <a
+                                href="#scope-estimator"
                                 className={`${TYPOGRAPHY.button} mt-2 w-full py-3 bg-primary text-black font-extrabold text-xs rounded-[8px] hover:bg-primary/90 transition-all flex items-center justify-center gap-2 shadow-md`}
                             >
-                                <span>Schedule Cloud Architecture Audit</span>
+                                <span>Estimate Cloud Scope</span>
                                 <ArrowRight size={14} />
-                            </Link>
+                            </a>
                         </div>
                     </div>
                 </div>

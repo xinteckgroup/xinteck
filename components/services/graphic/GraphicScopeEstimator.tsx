@@ -145,7 +145,7 @@ export function GraphicScopeEstimator() {
     )}`;
 
     return (
-        <section className="px-6 py-8 md:py-16">
+        <section id="scope-estimator" className="px-6 py-8 md:py-16 scroll-mt-24">
             <div className="max-w-7xl mx-auto flex flex-col gap-8 md:gap-12">
                 {/* Header */}
                 <div className="text-center max-w-3xl mx-auto flex flex-col gap-3 bg-white/30 dark:bg-black/80 backdrop-blur-xl rounded-[10px] p-6 md:p-8 shadow-lg">
@@ -318,7 +318,7 @@ export function GraphicScopeEstimator() {
                                 href={bookHref}
                                 className={`${TYPOGRAPHY.button} w-full py-3.5 bg-primary text-black font-extrabold rounded-[8px] shadow-lg hover:bg-primary/90 hover:scale-[1.02] transition-all flex items-center justify-center gap-2 text-sm`}
                             >
-                                <span>Commission Brand Assets</span>
+                                <span>Lock In Estimate</span>
                                 <ArrowRight size={16} />
                             </Link>
 

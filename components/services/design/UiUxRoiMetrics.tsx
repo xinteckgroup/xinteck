@@ -119,13 +119,13 @@ export function UiUxRoiMetrics() {
                         </div>
                     </div>
 
-                    <Link
-                        href="/book"
+                    <a
+                        href="#scope-estimator"
                         className={`${TYPOGRAPHY.button} shrink-0 px-6 py-3 bg-primary text-black font-extrabold text-xs rounded-[8px] hover:bg-primary/90 transition-all flex items-center gap-2 shadow-md`}
                     >
-                        <span>Request Design Sprint</span>
+                        <span>Estimate Sprint Scope</span>
                         <ArrowRight size={14} />
-                    </Link>
+                    </a>
                 </div>
             </div>
         </section>

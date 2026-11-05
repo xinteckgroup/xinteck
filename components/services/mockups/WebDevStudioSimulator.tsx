@@ -344,7 +344,7 @@ export function WebDevStudioSimulator() {
                                     onClick={triggerCheckout}
                                     className="w-full py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs rounded-[8px] shadow-md transition-all flex items-center justify-center gap-2"
                                 >
-                                    <span>Send M-Pesa STK Push to Phone</span>
+                                    <span>Send M-Pesa Prompt</span>
                                     <ArrowRight size={14} />
                                 </button>
                             )}

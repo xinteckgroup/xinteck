@@ -53,7 +53,7 @@ export function CustomSoftwareBeforeAfter() {
                             }`}
                         >
                             <ShieldCheck size={16} />
-                            <span>Xinteck Unified Engine (After)</span>
+                            <span>Xinteck Engine (After)</span>
                         </button>
                         <button
                             onClick={() => setViewMode("before")}
@@ -64,7 +64,7 @@ export function CustomSoftwareBeforeAfter() {
                             }`}
                         >
                             <ShieldAlert size={16} />
-                            <span>Excel & WhatsApp Chaos (Before)</span>
+                            <span>Manual Chaos (Before)</span>
                         </button>
                     </div>
                 </div>

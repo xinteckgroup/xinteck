@@ -224,7 +224,7 @@ export function UiUxDesignSimulator() {
                                     </div>
                                 ) : (
                                     <button className="w-full py-3 bg-primary text-black font-extrabold text-xs rounded-[6px] hover:scale-[1.01] transition-all flex items-center justify-center gap-2 shadow-lg">
-                                        <span>Deposit via M-Pesa STK</span>
+                                        <span>Deposit via M-Pesa</span>
                                         <Sparkles size={13} />
                                     </button>
                                 )}

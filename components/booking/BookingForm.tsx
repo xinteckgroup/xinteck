@@ -351,7 +351,7 @@ export const BookingForm: React.FC<BookingFormProps> = ({
                     </>
                 ) : (
                     <>
-                        <span>Confirm 15-Minute Discovery Call</span>
+                        <span>Confirm Your Booking</span>
                         <Send size={18} className="group-hover:translate-x-1 transition-transform" />
                     </>
                 )}

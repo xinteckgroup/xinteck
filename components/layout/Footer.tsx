@@ -13,8 +13,7 @@ import * as LucideIcons from "lucide-react";
 
 // Safe dynamic icon renderer
 const DynamicIcon = ({ name, ...props }: { name: string; size?: number; className?: string }) => {
-    // @ts-ignore
-    const IconComponent = LucideIcons[name] || LucideIcons.Link;
+    const IconComponent = (LucideIcons as Record<string, any>)[name] || LucideIcons.Link;
     return <IconComponent {...props} />;
 };
 

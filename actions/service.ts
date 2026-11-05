@@ -181,7 +181,6 @@ export async function deleteService(id: string) {
         where: { id: validatedId },
         data: {
             status: ContentStatus.ARCHIVED,
-            // @ts-ignore
             deletedAt: new Date(),
             slug: `${validatedId.slice(0, 8)}-deleted-${timestamp}` // Rename slug to free it up
         }

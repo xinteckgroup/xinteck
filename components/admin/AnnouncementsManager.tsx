@@ -191,8 +191,8 @@ export function AnnouncementsManager({ initialData }: Props) {
     // ─── Render Icon ───
 
     const renderIcon = (iconName: string, className?: string) => {
-        const IconComponent = ICON_MAP[iconName] || Zap;
-        return <IconComponent size={16} className={className} />;
+        const AnnouncementIcon = ICON_MAP[iconName] || Zap;
+        return <AnnouncementIcon size={16} className={className} />;
     };
 
     return (

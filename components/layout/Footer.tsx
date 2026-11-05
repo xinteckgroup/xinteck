@@ -4,7 +4,7 @@ import { getBusinessContact, type BusinessContact } from "@/actions/public-confi
 import { useCookieConsent } from "@/components/analytics/AnalyticsProvider";
 import { useServices } from "@/components/providers/ServicesContext";
 import { motion } from "framer-motion";
-import { ArrowUpRight, Cookie, Mail, MapPin, Phone } from "lucide-react";
+import { ArrowUpRight, Cookie, Mail, MapPin, Phone, type LucideIcon } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
@@ -13,8 +13,8 @@ import * as LucideIcons from "lucide-react";
 
 // Safe dynamic icon renderer
 const DynamicIcon = ({ name, ...props }: { name: string; size?: number; className?: string }) => {
-    const IconComponent = (LucideIcons as Record<string, any>)[name] || LucideIcons.Link;
-    return <IconComponent {...props} />;
+    const ResolvedSocialIcon = (LucideIcons as unknown as Record<string, LucideIcon | undefined>)[name] || LucideIcons.Link;
+    return <ResolvedSocialIcon {...props} />;
 };
 
 const staticLinks = {

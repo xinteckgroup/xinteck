@@ -58,11 +58,11 @@ function Separator() {
 }
 
 function BannerItemDisplay({ item }: { item: BannerItem }) {
-    const IconComponent = ICON_MAP[item.icon] || Zap;
+    const BannerIcon = ICON_MAP[item.icon] || Zap;
 
     const content = (
         <div className="flex items-center gap-1.5 whitespace-nowrap flex-shrink-0">
-            <IconComponent
+            <BannerIcon
                 size={12}
                 className={cn(
                     "flex-shrink-0",

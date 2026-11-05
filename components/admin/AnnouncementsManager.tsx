@@ -40,13 +40,14 @@ import {
     Trash2,
     X,
     Zap,
+    type LucideIcon,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 
 // ─── Icon Registry ───
 
-const ICON_MAP: Record<string, React.ComponentType<{ size?: number; className?: string }>> = {
+const ICON_MAP: Record<string, LucideIcon> = {
     Zap,
     Flame,
     ShieldCheck,

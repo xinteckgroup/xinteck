@@ -14,12 +14,13 @@ import {
     Sparkles,
     Star,
     Zap,
+    type LucideIcon,
 } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 
 // ─── Icon Registry (must match AnnouncementsManager) ───
 
-const ICON_MAP: Record<string, React.ComponentType<{ size?: number; className?: string }>> = {
+const ICON_MAP: Record<string, LucideIcon> = {
     Zap, Flame, ShieldCheck, Award, Headphones, Sparkles, Rocket, Clock, Star, Megaphone, Check,
 };
 

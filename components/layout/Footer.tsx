@@ -4,17 +4,48 @@ import { getBusinessContact, type BusinessContact } from "@/actions/public-confi
 import { useCookieConsent } from "@/components/analytics/AnalyticsProvider";
 import { useServices } from "@/components/providers/ServicesContext";
 import { motion } from "framer-motion";
-import { ArrowUpRight, Cookie, Mail, MapPin, Phone, type LucideIcon } from "lucide-react";
+import {
+    ArrowUpRight,
+    Cookie,
+    Facebook,
+    Github,
+    Globe,
+    Instagram,
+    Linkedin,
+    Link as LinkIcon,
+    Mail,
+    MapPin,
+    MessageCircle,
+    Phone,
+    Twitter,
+    Youtube,
+    type LucideIcon,
+} from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 
-import * as LucideIcons from "lucide-react";
+// Safe dynamic icon registry for social links
+const SOCIAL_ICON_MAP: Record<string, LucideIcon> = {
+    WhatsApp: MessageCircle,
+    MessageCircle,
+    Twitter,
+    X: Twitter,
+    Linkedin,
+    LinkedIn: Linkedin,
+    Facebook,
+    Instagram,
+    Github,
+    GitHub: Github,
+    Youtube,
+    YouTube: Youtube,
+    Globe,
+    Link: LinkIcon,
+};
 
-// Safe dynamic icon renderer
 const DynamicIcon = ({ name, ...props }: { name: string; size?: number; className?: string }) => {
-    const ResolvedSocialIcon = (LucideIcons as unknown as Record<string, LucideIcon | undefined>)[name] || LucideIcons.Link;
-    return <ResolvedSocialIcon {...props} />;
+    const SocialIcon = SOCIAL_ICON_MAP[name] || LinkIcon;
+    return <SocialIcon {...props} />;
 };
 
 const staticLinks = {

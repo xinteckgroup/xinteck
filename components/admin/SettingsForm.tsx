@@ -35,10 +35,10 @@ export function SettingsForm({ initialSettings, initialContactInfo }: SettingsFo
     // Contact & Social Info State
     const [contactInfo, setContactInfo] = useState<ContactInfo>(initialContactInfo || {
         businessEmail: "info@xinteck.co.ke",
-        businessPhone: "+254 782 063 736",
+        businessPhone: "+254 795 213 399",
         contactPhones: [],
         socialLinks: [
-           { platform: "WhatsApp", url: "", icon: "MessageCircle" }
+           { platform: "WhatsApp", url: "https://wa.me/254795213399", icon: "MessageCircle" }
         ],
     });
 
@@ -334,7 +334,7 @@ export function SettingsForm({ initialSettings, initialContactInfo }: SettingsFo
                                                 type="tel"
                                                 value={contactInfo.businessPhone}
                                                 onChange={e => setContactInfo(prev => ({ ...prev, businessPhone: e.target.value }))}
-                                                placeholder="+254 782 063 736"
+                                                placeholder="+254 795 213 399"
                                                 className="admin-surface-input rounded-[8px] px-4 py-2.5 text-[var(--admin-text)] text-sm font-bold border border-[var(--admin-border)] outline-none focus:border-gold/50 transition-colors placeholder:text-[var(--admin-text)]/30"
                                             />
                                             <p className="text-[10px] text-[var(--admin-text)]/50">Displayed in the footer and contact page.</p>
@@ -443,7 +443,7 @@ export function SettingsForm({ initialSettings, initialContactInfo }: SettingsFo
                                                             type="url"
                                                             value={social.url}
                                                             onChange={e => updateSocialLink(i, "url", e.target.value)}
-                                                            placeholder="https://wa.me/..."
+                                                            placeholder="https://wa.me/254795213399"
                                                             className="admin-surface-input rounded-[8px] px-3 py-2 text-[var(--admin-text)] text-sm font-bold border border-[var(--admin-border)] outline-none focus:border-gold/50 transition-colors placeholder:text-[var(--admin-text)]/30"
                                                         />
                                                     </div>

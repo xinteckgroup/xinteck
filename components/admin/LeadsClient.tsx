@@ -6,7 +6,7 @@ import { PageContainer, PageHeader, Pagination, useToast } from "@/components/ad
 import { ConfirmModal } from "@/components/admin/ui/ConfirmModal";
 import { InboxMessage } from "@/types";
 import { Role } from "@prisma/client";
-import { Archive, ArchiveRestore, ArrowLeft, Check, ClipboardCopy, ExternalLink, Mail, MailOpen, MessageSquare, MoreVertical, Plus, Reply, Search, Send, Star, Target, Trash2 } from "lucide-react";
+import { Archive, ArchiveRestore, ArrowLeft, Check, ClipboardCopy, ExternalLink, Mail, MailOpen, MessageCircle, MessageSquare, MoreVertical, Phone, Plus, Reply, Search, Send, Star, Target, Trash2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState, useTransition } from "react";
 
@@ -541,7 +541,25 @@ export function LeadsClient({ initialData, adminUsers, currentUserRole, currentU
                   <div className="grid grid-cols-2 md:grid-cols-3 gap-4 border-t border-[var(--admin-border)] pt-8 mt-8">
                       <div className="flex flex-col gap-1">
                           <span className="text-[10px] font-bold uppercase tracking-wider text-[var(--admin-text)]/40">Phone Number</span>
-                          <span className="text-sm font-semibold text-[var(--admin-text)]/80">{activeMessage.phone || "Not Provided"}</span>
+                          {activeMessage.phone ? (
+                              <div className="flex items-center gap-2 flex-wrap">
+                                  <a href={`tel:${activeMessage.phone}`} className="text-sm font-semibold text-[var(--admin-text)]/80 hover:text-primary transition-colors">
+                                      {activeMessage.phone}
+                                  </a>
+                                  <a
+                                      href={`https://wa.me/${activeMessage.phone.replace(/[^0-9]/g, '')}`}
+                                      target="_blank"
+                                      rel="noopener noreferrer"
+                                      className="inline-flex items-center gap-1 text-[11px] font-bold text-emerald-500 hover:text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-[6px] transition-all"
+                                      title="Chat with lead on WhatsApp"
+                                  >
+                                      <MessageCircle size={12} />
+                                      <span>WhatsApp</span>
+                                  </a>
+                              </div>
+                          ) : (
+                              <span className="text-sm font-semibold text-[var(--admin-text)]/40">Not Provided</span>
+                          )}
                       </div>
                       <div className="flex flex-col gap-1">
                           <span className="text-[10px] font-bold uppercase tracking-wider text-[var(--admin-text)]/40">Intent</span>

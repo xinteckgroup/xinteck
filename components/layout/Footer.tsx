@@ -72,7 +72,7 @@ const staticLinks = {
 export function Footer() {
   const dynamicServices = useServices();
   const { openPreferences } = useCookieConsent();
-  const [contact, setContact] = useState<BusinessContact>({ email: "info@xinteck.co.ke", phone: "+254 782 063 736", socialLinks: [] });
+  const [contact, setContact] = useState<BusinessContact>({ email: "info@xinteck.co.ke", phone: "+254 795 213 399", socialLinks: [] });
 
   useEffect(() => {
     getBusinessContact().then(setContact);

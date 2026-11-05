@@ -132,7 +132,7 @@ export function GraphicFaqSection() {
                     </div>
                     <div className="flex flex-wrap items-center gap-3 shrink-0">
                         <a
-                            href={`https://wa.me/254782063736?text=${encodeURIComponent(
+                            href={`https://wa.me/254795213399?text=${encodeURIComponent(
                                 "Hi Xinteck, I have a question regarding your Graphic Design & Branding services."
                             )}`}
                             target="_blank"

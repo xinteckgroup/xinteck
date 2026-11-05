@@ -117,7 +117,7 @@ export function MobileFaqSection() {
 
                     <div className="flex flex-wrap items-center justify-center gap-3">
                         <a
-                            href={`https://wa.me/254782063736?text=${encodeURIComponent(
+                            href={`https://wa.me/254795213399?text=${encodeURIComponent(
                                 "Hi Xinteck, I have a question regarding your Mobile App Development services."
                             )}`}
                             target="_blank"

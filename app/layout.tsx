@@ -84,7 +84,7 @@ export default function RootLayout({
               logo: "https://xinteck.co.ke/icon.png",
               description: "M-Pesa-ready websites, mobile apps, custom software, and graphic design for businesses in Kenya. eTIMS-compliant. Based in Nairobi.",
               foundingDate: "2018",
-              telephone: "+254782063736",
+              telephone: "+254795213399",
               priceRange: "KES 5,000 - KES 5,000,000",
               areaServed: {
                 "@type": "Country",
@@ -97,7 +97,7 @@ export default function RootLayout({
               },
               contactPoint: {
                 "@type": "ContactPoint",
-                telephone: "+254782063736",
+                telephone: "+254795213399",
                 email: "info@xinteck.co.ke",
                 contactType: "customer service",
                 availableLanguage: ["English", "Swahili"],

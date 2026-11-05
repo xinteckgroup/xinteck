@@ -17,7 +17,7 @@ function ContactPageContent() {
   
   // Dynamic Config State
   const [config, setConfig] = useState<ContactConfig | null>(null);
-  const [businessContact, setBusinessContact] = useState<BusinessContact>({ email: "info@xinteck.co.ke", phone: "+254 782 063 736", socialLinks: [] });
+  const [businessContact, setBusinessContact] = useState<BusinessContact>({ email: "info@xinteck.co.ke", phone: "+254 795 213 399", socialLinks: [] });
   const [contactPhones, setContactPhones] = useState<{ label: string; value: string }[]>([]);
   const [selectedService, setSelectedService] = useState<string>("");
   const [availableBudgets, setAvailableBudgets] = useState<string[]>([]);

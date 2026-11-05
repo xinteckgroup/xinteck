@@ -363,8 +363,8 @@ const contactConfig = {
 };
 
 const contactPhones = [
-    { label: "Main", value: "+254 782 063 736" },
-    { label: "Support", value: "+254 795 213 399" },
+    { label: "Main", value: "+254 795 213 399" },
+    { label: "Support", value: "+254 782 063 736" },
     { label: "Sales", value: "+254 110 861 797" }
 ];
 

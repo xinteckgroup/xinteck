@@ -19,6 +19,7 @@ import {
     ExternalLink,
     Loader2,
     Mail,
+    MessageCircle,
     MessageSquare,
     Phone,
     ShieldAlert,
@@ -293,12 +294,24 @@ export const BookingDetailModal: React.FC<BookingDetailModalProps> = ({
                         </a>
                     </div>
 
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-2 flex-wrap">
                         <Phone size={15} className="text-primary shrink-0" />
                         <span className="text-muted-foreground">Phone / WA:</span>
                         <a href={`tel:${booking.phone}`} className="text-foreground font-bold hover:underline">
                             {booking.phone}
                         </a>
+                        {booking.phone && (
+                            <a
+                                href={`https://wa.me/${booking.phone.replace(/[^0-9]/g, '')}`}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="inline-flex items-center gap-1 text-[11px] font-bold text-emerald-500 hover:text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-[6px] transition-all ml-1"
+                                title="Chat with client on WhatsApp"
+                            >
+                                <MessageCircle size={12} />
+                                <span>WhatsApp</span>
+                            </a>
+                        )}
                     </div>
 
                     <div className="flex items-center gap-2">

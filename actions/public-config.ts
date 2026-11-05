@@ -33,12 +33,12 @@ export const getBusinessContact = unstable_cache(
 
             return {
                 email: emailSetting?.isPublic ? emailSetting.value : "info@xinteck.co.ke",
-                phone: phoneSetting?.isPublic ? phoneSetting.value : "+254 782 063 736",
+                phone: phoneSetting?.isPublic ? phoneSetting.value : "+254 795 213 399",
                 socialLinks: parsedSocials,
             };
         } catch (error) {
             console.error("Failed to fetch business contact:", error);
-            return { email: "info@xinteck.co.ke", phone: "+254 782 063 736", socialLinks: [] };
+            return { email: "info@xinteck.co.ke", phone: "+254 795 213 399", socialLinks: [] };
         }
     },
     ["business-contact"],

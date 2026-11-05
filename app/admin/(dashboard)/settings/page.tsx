@@ -28,10 +28,10 @@ export default async function SettingsPage() {
 
     const contactInfo: ContactInfo = {
         businessEmail: emailSetting?.value || "info@xinteck.co.ke",
-        businessPhone: phoneSetting?.value || "+254 782 063 736",
+        businessPhone: phoneSetting?.value || "+254 795 213 399",
         contactPhones: phonesSetting?.value ? (() => { try { return JSON.parse(phonesSetting.value); } catch { return []; }})() : [],
         socialLinks: socialsSetting?.value ? (() => { try { return JSON.parse(socialsSetting.value); } catch { return []; }})() : [
-            { platform: "WhatsApp", url: "", icon: "MessageCircle" }
+            { platform: "WhatsApp", url: "https://wa.me/254795213399", icon: "MessageCircle" }
         ],
     };
 

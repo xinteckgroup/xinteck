@@ -3,19 +3,13 @@
 import { TYPOGRAPHY } from "@/lib/typography";
 import { motion } from "framer-motion";
 import {
-    Activity,
     AlertTriangle,
-    ArrowRight,
     CheckCircle2,
     Clock,
-    DollarSign,
-    Gauge,
-    Sparkles,
     TrendingDown,
     TrendingUp,
     Zap,
 } from "lucide-react";
-import Link from "next/link";
 import { useState } from "react";
 
 export function WebSpeedBenchmark() {

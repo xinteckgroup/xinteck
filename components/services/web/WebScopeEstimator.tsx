@@ -7,16 +7,8 @@ import {
     ArrowRight,
     Calculator,
     Check,
-    CheckCircle2,
     Clock,
-    DollarSign,
-    Globe,
-    Layers,
-    Lock,
-    Search,
     ShieldCheck,
-    Sparkles,
-    Zap,
 } from "lucide-react";
 import Link from "next/link";
 import { useMemo, useState } from "react";

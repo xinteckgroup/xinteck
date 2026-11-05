@@ -1,22 +1,15 @@
 "use client";
 
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import {
     CheckCircle2,
-    Code,
     Compass,
     Copy,
-    Eye,
     Figma,
-    Layers,
     Layout,
-    Maximize2,
     MousePointer,
-    Move,
     Palette,
-    Sliders,
     Sparkles,
-    Type,
     Zap,
 } from "lucide-react";
 import { useState } from "react";
@@ -27,7 +20,6 @@ type DesignTab = "canvas" | "tokens" | "prototype";
 export function UiUxDesignSimulator() {
     const [fidelity, setFidelity] = useState<FidelityMode>("highfi");
     const [activeTab, setActiveTab] = useState<DesignTab>("canvas");
-    const [selectedComponent, setSelectedComponent] = useState<string>("card");
     const [copiedToken, setCopiedToken] = useState<string | null>(null);
 
     const copyToken = (val: string) => {

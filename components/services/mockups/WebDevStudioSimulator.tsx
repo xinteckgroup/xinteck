@@ -1,24 +1,19 @@
 "use client";
 
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import {
-    Activity,
     ArrowRight,
     CheckCircle2,
-    ExternalLink,
     Gauge,
-    Globe,
     Laptop,
     Lock,
     Moon,
     RefreshCw,
-    Search,
     ShieldCheck,
     Smartphone,
     Sparkles,
     Sun,
     Tablet,
-    Zap,
 } from "lucide-react";
 import { useState } from "react";
 

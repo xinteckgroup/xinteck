@@ -2,6 +2,7 @@
 
 import { generateExclusions, updateAiSettings } from "@/actions/ai";
 import { useToast } from "@/components/admin/ui/Toast";
+import { GenerateAiDraftModal } from "@/components/admin/ai/GenerateAiDraftModal";
 import {
   CORE_NICHES,
   NICHE_CATEGORIES,
@@ -112,6 +113,7 @@ export function AiSettingsForm({ initialSettings }: SettingsProps) {
   const [newNiche, setNewNiche] = useState("");
   const [nicheSearch, setNicheSearch] = useState("");
   const [activeCategoryTab, setActiveCategoryTab] = useState<string>("all");
+  const [showDraftModal, setShowDraftModal] = useState(false);
 
   // Exclusions state
   const [newExclusion, setNewExclusion] = useState("");
@@ -290,6 +292,24 @@ export function AiSettingsForm({ initialSettings }: SettingsProps) {
     }
   };
 
+  const handleSaveAndGenerate = async () => {
+    if (settings.targetNiches.length === 0) {
+      error("Please select at least 1 target niche before generating.");
+      return;
+    }
+
+    setLoading(true);
+    try {
+      await updateAiSettings(settings);
+      success("Settings saved! Launching draft generator...");
+      setShowDraftModal(true);
+    } catch (err: any) {
+      error(err.message || "Failed to save settings.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const handleGenerateExclusions = async () => {
     if (settings.targetNiches.length === 0) {
       error("Please add target niches and save config first.");
@@ -363,6 +383,32 @@ export function AiSettingsForm({ initialSettings }: SettingsProps) {
             </div>
           </div>
         </div>
+      </div>
+
+      {/* Quick Launch Action Banner */}
+      <div className="p-4 md:p-5 rounded-[12px] bg-gradient-to-r from-gold/20 via-gold/10 to-transparent border border-gold/35 flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-sm">
+        <div className="flex items-center gap-3.5">
+          <div className="w-10 h-10 rounded-full bg-gold/20 text-gold flex items-center justify-center shrink-0 border border-gold/30">
+            <Sparkles size={18} className="animate-pulse" />
+          </div>
+          <div>
+            <h4 className="text-xs md:text-sm font-black text-[var(--admin-text)]">
+              One-Click Draft Generator
+            </h4>
+            <p className="text-[11px] md:text-xs text-[var(--admin-muted)]">
+              Instantly generate an unapproved 800+ word technical draft based on your active settings. Review and inspect it before publishing.
+            </p>
+          </div>
+        </div>
+
+        <button
+          type="button"
+          onClick={() => setShowDraftModal(true)}
+          className="px-5 py-2.5 bg-gold text-primary-foreground font-black text-xs md:text-sm rounded-[8px] hover:bg-gold-hover transition-all flex items-center justify-center gap-2 shadow-sm whitespace-nowrap cursor-pointer shrink-0"
+        >
+          <Sparkles size={15} />
+          <span>Generate AI Draft Now</span>
+        </button>
       </div>
 
       {/* ══════════════════════════════════════════════════════════════
@@ -812,21 +858,39 @@ export function AiSettingsForm({ initialSettings }: SettingsProps) {
       )}
 
       {/* Save Button Bar */}
-      <div className="flex items-center justify-between pt-4 pb-12 border-t border-[var(--admin-border)]">
+      <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-4 pb-12 border-t border-[var(--admin-border)]">
         <div className="text-xs text-[var(--admin-muted)] flex items-center gap-2">
-          <Info size={14} className="text-gold" />
-          <span>Changes take effect on all future Trend Scout runs and drafts.</span>
+          <Info size={14} className="text-gold shrink-0" />
+          <span>Config is applied automatically to all draft generations.</span>
         </div>
 
-        <button
-          onClick={handleSave}
-          disabled={loading}
-          className="flex items-center gap-2 px-8 py-3.5 bg-gold text-primary-foreground font-black text-sm rounded-[10px] hover:bg-gold-hover transition-all shadow-[0_4px_16px_0_rgba(212,175,55,0.35)] disabled:opacity-50"
-        >
-          {loading ? <Loader2 className="animate-spin" size={17} /> : <Save size={17} />}
-          Save AI Configuration
-        </button>
+        <div className="flex flex-wrap items-center gap-2.5 w-full sm:w-auto justify-end">
+          <button
+            type="button"
+            onClick={handleSave}
+            disabled={loading}
+            className="flex-1 sm:flex-initial flex items-center justify-center gap-2 px-6 py-3.5 admin-surface-secondary border border-[var(--admin-border)] text-[var(--admin-text)] font-bold text-xs md:text-sm rounded-[10px] hover:border-gold/40 hover:bg-neutral-800 transition-all disabled:opacity-50 cursor-pointer"
+          >
+            {loading ? <Loader2 className="animate-spin" size={16} /> : <Save size={16} />}
+            <span>Save Configuration</span>
+          </button>
+
+          <button
+            type="button"
+            onClick={handleSaveAndGenerate}
+            disabled={loading}
+            className="flex-1 sm:flex-initial flex items-center justify-center gap-2 px-7 py-3.5 bg-gold text-primary-foreground font-black text-xs md:text-sm rounded-[10px] hover:bg-gold-hover transition-all shadow-[0_4px_16px_0_rgba(212,175,55,0.35)] disabled:opacity-50 cursor-pointer"
+          >
+            {loading ? <Loader2 className="animate-spin" size={16} /> : <Sparkles size={16} />}
+            <span>Save &amp; Generate Draft Now</span>
+          </button>
+        </div>
       </div>
+
+      <GenerateAiDraftModal
+        isOpen={showDraftModal}
+        onClose={() => setShowDraftModal(false)}
+      />
     </div>
   );
 }

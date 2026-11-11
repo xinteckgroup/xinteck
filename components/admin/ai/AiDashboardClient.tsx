@@ -3,6 +3,7 @@
 import { AiSettingsForm } from "@/components/admin/ai/AiSettingsForm";
 import { IdeaQueue } from "@/components/admin/ai/IdeaQueue";
 import { TrendScout } from "@/components/admin/ai/TrendScout";
+import { GenerateAiDraftModal } from "@/components/admin/ai/GenerateAiDraftModal";
 import { PageContainer, PageHeader } from "@/components/admin/ui";
 import { cn } from "@/lib/utils";
 import { Newspaper, Settings, Sparkles } from "lucide-react";
@@ -14,6 +15,7 @@ interface AiDashboardProps {
 
 export function AiDashboardClient({ initialSettings }: AiDashboardProps) {
     const [activeTab, setActiveTab] = useState<"newsroom" | "queue" | "settings">("newsroom");
+    const [showAiModal, setShowAiModal] = useState(false);
 
     return (
         <PageContainer>
@@ -21,7 +23,15 @@ export function AiDashboardClient({ initialSettings }: AiDashboardProps) {
                 title="AI Editorial Assistant" 
                 subtitle="Automated trend discovery and drafting engine powered by Gemini 2.5 Flash."
                 actions={
-                    <div className="admin-surface-secondary p-1 rounded-[8px] flex gap-1">
+                    <div className="flex items-center gap-2">
+                        <button
+                            onClick={() => setShowAiModal(true)}
+                            className="px-3.5 py-1.5 rounded-[8px] bg-gold text-primary-foreground font-black text-xs hover:bg-gold-hover transition-all flex items-center gap-1.5 shadow-sm whitespace-nowrap cursor-pointer"
+                        >
+                            <Sparkles size={14} />
+                            <span>One-Click Draft</span>
+                        </button>
+                        <div className="admin-surface-secondary p-1 rounded-[8px] flex gap-1">
                         <button
                             onClick={() => setActiveTab("newsroom")}
                             className={cn(
@@ -58,6 +68,7 @@ export function AiDashboardClient({ initialSettings }: AiDashboardProps) {
                             <Settings size={14} />
                             Config
                         </button>
+                        </div>
                     </div>
                 }
             />
@@ -68,6 +79,11 @@ export function AiDashboardClient({ initialSettings }: AiDashboardProps) {
                 {activeTab === "queue" && <IdeaQueue />}
                 {activeTab === "settings" && <AiSettingsForm initialSettings={initialSettings} />}
             </div>
+
+            <GenerateAiDraftModal
+                isOpen={showAiModal}
+                onClose={() => setShowAiModal(false)}
+            />
         </PageContainer>
     );
 }

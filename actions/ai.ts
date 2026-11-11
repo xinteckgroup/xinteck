@@ -276,3 +276,167 @@ export async function generateDraft(ideaId: string) {
     revalidatePath("/admin/blog");
     return { success: true, postId: post.id };
 }
+
+// ─── DIRECT ONE-CLICK DRAFT GENERATION ───
+
+export interface GenerateDirectDraftInput {
+    customTopic?: string;
+    focusNiche?: string;
+    extraDirectives?: string;
+}
+
+export async function generateDirectDraft(input?: GenerateDirectDraftInput) {
+    const user = await requireRole([Role.ADMIN, Role.SUPER_ADMIN]);
+    await checkRateLimit(user.id);
+
+    const settings = (await getAiSettings()) || {
+        targetNiches: [
+            "Kenyan Fintech & M-Pesa Rails",
+            "KRA eTIMS & Tax Tech Compliance",
+            "Scalable Web Architecture",
+            "Enterprise Mobile Engineering",
+            "Custom Software Strategy"
+        ],
+        brandVoice: "Professional, Authoritative, Elite, Interesting, Senior Engineer. Use simple easily understandable words without academic jargon. Make sure to fully focus on the Kenyan tech today in all aspects.",
+        excludedKeywords: []
+    };
+
+    const targetNiches: string[] = settings.targetNiches && settings.targetNiches.length > 0
+        ? settings.targetNiches
+        : [
+            "Kenyan Fintech & M-Pesa Rails",
+            "KRA eTIMS & Tax Tech Compliance",
+            "Scalable Web Architecture",
+            "Enterprise Mobile Engineering",
+            "Custom Software Strategy"
+        ];
+    const brandVoice: string = settings.brandVoice || "Professional, Authoritative, Senior Engineer";
+
+    let title = input?.customTopic?.trim();
+    let angle = "";
+    let keywords: string[] = [];
+    let detectedCategory = "Technology";
+
+    if (title) {
+        // User provided specific headline or topic
+        const anglePrompt = `You are a Senior Technical Editorial Director at a premier software engineering firm in Nairobi, Kenya.
+For the blog title: "${title}"
+Context: Target Niches: ${targetNiches.join(", ")}
+Write a compelling 1-sentence hook/angle explaining why a Kenyan Founder, CTO, or Enterprise leader must read this right now.
+Respond in plain text without quotes.`;
+        try {
+            angle = await generateText(anglePrompt, 0.5);
+        } catch {
+            angle = `Strategic operational and engineering insights on ${title} for Kenyan businesses.`;
+        }
+    } else {
+        // Synthesize an elite topic automatically based on active niches and Kenyan context
+        const selectedNiche = input?.focusNiche || targetNiches[Math.floor(Math.random() * targetNiches.length)] || "Kenyan Fintech & Software Engineering";
+
+        const topicPrompt = `TASK: PROPOSE A HIGH-IMPACT TECHNICAL BLOG ARTICLE FOR XINTECK
+Focus Domain: ${selectedNiche}
+Target Niches: ${targetNiches.join(", ")}
+Voice & Persona: ${brandVoice}
+Geography: Nairobi, Kenya
+
+INSTRUCTION: Propose a timely, insightful, non-generic technical blog article that a Kenyan business founder, CTO, or VP of Engineering would read. Focus on real architecture, M-Pesa, eTIMS, cloud latency, or operational software ROI.
+
+Respond ONLY with a JSON object:
+{
+  "title": "Specific, authoritative article title",
+  "angle": "1-sentence hook on why this matters to Kenyan businesses today",
+  "keywords": ["tag1", "tag2", "tag3"],
+  "category": "Technology"
+}`;
+        try {
+            const res = await generateJSON(topicPrompt);
+            title = res.title;
+            angle = res.angle;
+            keywords = res.keywords || [];
+            if (res.category && ["Technology", "Business", "Design"].includes(res.category)) {
+                detectedCategory = res.category;
+            }
+        } catch {
+            title = "The Kenyan Enterprise Software Modernization Playbook";
+            angle = "Why relying on off-the-shelf templates and unmaintained scripts creates fatal operational bottlenecks for scaling businesses.";
+            keywords = ["Kenya Software", "Enterprise Architecture", "M-Pesa Integration"];
+        }
+    }
+
+    if (!title) {
+        throw new Error("Failed to formulate a valid blog topic.");
+    }
+
+    // Determine category if not explicitly set
+    const lowerTitle = (title + " " + (input?.focusNiche || "")).toLowerCase();
+    if (lowerTitle.includes("design") || lowerTitle.includes("ui") || lowerTitle.includes("ux") || lowerTitle.includes("brand")) {
+        detectedCategory = "Design";
+    } else if (lowerTitle.includes("business") || lowerTitle.includes("roi") || lowerTitle.includes("cost") || lowerTitle.includes("strategy") || lowerTitle.includes("etims") || lowerTitle.includes("tax")) {
+        detectedCategory = "Business";
+    } else {
+        detectedCategory = "Technology";
+    }
+
+    // Construct Draft Prompt
+    let prompt = DRAFT_PROMPT_TEMPLATE
+        .replace("{title}", title)
+        .replace("{angle}", angle || "High-impact technical strategy for modern Kenyan businesses.")
+        .replace("{brandVoice}", brandVoice)
+        .replace("{keywords}", keywords.length > 0 ? keywords.join(", ") : targetNiches.slice(0, 4).join(", "));
+
+    if (input?.extraDirectives?.trim()) {
+        prompt += `\nADDITIONAL INSTRUCTION: ${input.extraDirectives.trim()}`;
+    }
+
+    prompt = injectContext(prompt, {
+        niches: targetNiches,
+        brandVoice: brandVoice
+    });
+
+    // Generate 700-1000 word raw Markdown article using Gemini 2.5 Flash
+    const content = await generateText(prompt, 0.7);
+
+    // Validate Output
+    const outputCheck = validateOutput(content);
+    if (!outputCheck.valid) {
+        throw new Error(`AI Safety Violation: ${outputCheck.error}`);
+    }
+
+    // Generate safe slug
+    let slug = title.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
+    const random = Math.floor(Math.random() * 1000);
+    const existingSlug = await prisma.blogPost.findUnique({ where: { slug } });
+    if (existingSlug) slug = `${slug}-${random}`;
+
+    // Create UNAPPROVED Draft Post in DB
+    const post = await prisma.blogPost.create({
+        data: {
+            title,
+            slug,
+            content,
+            excerpt: angle || title,
+            status: "DRAFT", // UNAPPROVED draft
+            author: { connect: { id: user.id } },
+            category: {
+                connectOrCreate: {
+                    where: { name: detectedCategory },
+                    create: {
+                        name: detectedCategory,
+                        slug: detectedCategory.toLowerCase().replace(/[^a-z0-9]+/g, "-")
+                    }
+                }
+            }
+        }
+    });
+
+    revalidatePath("/admin/blog");
+    revalidatePath("/admin/blog/ai");
+
+    return {
+        success: true,
+        postId: post.id,
+        title: post.title,
+        slug: post.slug,
+        category: detectedCategory
+    };
+}

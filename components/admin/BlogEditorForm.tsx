@@ -8,11 +8,12 @@ import { PageContainer, PageHeader } from "@/components/admin/ui";
 import { ConfirmModal } from "@/components/admin/ui/ConfirmModal";
 import { Select } from "@/components/admin/ui/Select";
 import { Role } from "@prisma/client";
-import { Image as ImageIcon, Save, Send, Upload, X } from "lucide-react";
+import { Image as ImageIcon, Save, Send, Sparkles, Upload, X } from "lucide-react";
 import { isRedirectError } from "next/dist/client/components/redirect-error";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
+import { GenerateAiDraftModal } from "@/components/admin/ai/GenerateAiDraftModal";
 
 interface BlogEditorFormProps {
   initialData?: any;
@@ -25,6 +26,7 @@ export function BlogEditorForm({ initialData, isEditing = false }: BlogEditorFor
   const [error, setError] = useState("");
   const [showMediaPicker, setShowMediaPicker] = useState(false);
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
+  const [showAiModal, setShowAiModal] = useState(false);
   
   const [formData, setFormData] = useState({
     title: initialData?.title || "",
@@ -95,7 +97,17 @@ export function BlogEditorForm({ initialData, isEditing = false }: BlogEditorFor
          backUrl="/admin/blog"
          backLabel="Back to Blog"
          actions={
-           <div className="flex gap-2 md:gap-3 w-full sm:w-auto">
+           <div className="flex flex-wrap items-center gap-2 md:gap-3 w-full sm:w-auto">
+              {!isEditing && (
+                 <button
+                    type="button"
+                    onClick={() => setShowAiModal(true)}
+                    className="backdrop-blur-sm flex-1 sm:flex-initial px-3 py-1.5 md:px-4 md:py-2 rounded-[8px] bg-gold/15 text-gold hover:bg-gold/25 font-bold text-[10px] md:text-sm whitespace-nowrap border border-gold/40 flex items-center justify-center gap-1.5 cursor-pointer shadow-xs"
+                 >
+                    <Sparkles size={14} className="text-gold animate-pulse" />
+                    <span>Auto-Draft with AI</span>
+                 </button>
+              )}
               <button 
                  onClick={() => { setFormData({...formData, status: "Draft"}); handleSave(); }}
                  disabled={isPending}
@@ -141,6 +153,33 @@ export function BlogEditorForm({ initialData, isEditing = false }: BlogEditorFor
        {error && (
            <div className="bg-red-500/40 border border-red-500/20 text-red-400 p-3 rounded-[8px] text-sm">
                {error}
+           </div>
+       )}
+
+       {isEditing && formData.status !== "Published" && (
+           <div className="bg-gold/5 border border-gold/30 rounded-[10px] p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+             <div className="flex items-start gap-3">
+               <div className="w-8 h-8 rounded-full bg-gold/15 border border-gold/40 flex items-center justify-center shrink-0 mt-0.5">
+                 <Sparkles className="w-4 h-4 text-gold" />
+               </div>
+               <div>
+                 <div className="flex items-center gap-2">
+                   <h4 className="text-sm font-bold text-[var(--admin-text)]">
+                     Draft Post &mdash; Editorial Review Mode
+                   </h4>
+                   <span className="px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-gold/15 text-gold border border-gold/30">
+                     {formData.status}
+                   </span>
+                 </div>
+                 <p className="text-xs text-[var(--admin-muted)] mt-1">
+                   Carefully inspect the content, statistics, Kenyan tech citations, and headings before publishing. You can edit any field directly below.
+                 </p>
+               </div>
+             </div>
+             <div className="text-[11px] text-[var(--admin-muted)] sm:text-right shrink-0">
+               <span className="block font-mono text-[10px] text-gold/80">Draft Inspection Protocol</span>
+               <span>Review before publishing</span>
+             </div>
            </div>
        )}
 
@@ -299,6 +338,11 @@ export function BlogEditorForm({ initialData, isEditing = false }: BlogEditorFor
         confirmText="Reload Page"
         cancelText="Cancel"
         isDestructive={false}
+      />
+
+      <GenerateAiDraftModal
+        isOpen={showAiModal}
+        onClose={() => setShowAiModal(false)}
       />
     </PageContainer>
   );

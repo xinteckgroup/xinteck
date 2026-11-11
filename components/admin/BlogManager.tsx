@@ -16,6 +16,7 @@ import { BlogPostSummary } from "@/types/index";
 
 import { Pagination } from "@/components/admin/ui/Pagination";
 import { PaginatedResponse } from "@/lib/pagination";
+import { GenerateAiDraftModal } from "@/components/admin/ai/GenerateAiDraftModal";
 
 interface BlogManagerProps {
   initialData: PaginatedResponse<BlogPostSummary>;
@@ -28,6 +29,7 @@ export function BlogManager({ initialData }: BlogManagerProps) {
   const [viewMode, setViewMode] = useState<"list" | "grid">("list");
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
   const [confirmDeleteIds, setConfirmDeleteIds] = useState<string[] | null>(null);
+  const [showAiDraftModal, setShowAiDraftModal] = useState(false);
 
   // State derived from URL
   const searchQuery = searchParams.get("search") || "";
@@ -124,9 +126,17 @@ export function BlogManager({ initialData }: BlogManagerProps) {
         actions={
           <RoleGate allowedRoles={[Role.SUPER_ADMIN, Role.ADMIN]}>
               <div className="flex gap-2">
-                <Link href="/admin/blog/ai" className="admin-surface-primary text-[var(--admin-text)] font-bold px-3 py-1.5 md:px-6 md:py-3 text-[10px] md:text-sm rounded-[10px] flex items-center gap-1 md:gap-2 hover:bg-gold transition-colors whitespace-nowrap border border-[var(--admin-border)]">
+                <button
+                  type="button"
+                  onClick={() => setShowAiDraftModal(true)}
+                  className="bg-gold/15 hover:bg-gold/25 border border-gold/40 text-gold font-bold px-3 py-1.5 md:px-5 md:py-3 text-[10px] md:text-sm rounded-[10px] flex items-center gap-1.5 md:gap-2 transition-all whitespace-nowrap shadow-xs cursor-pointer"
+                >
+                  <Sparkles size={14} className="md:w-[18px] md:h-[18px] text-gold animate-pulse" />
+                  <span>Generate AI Draft</span>
+                </button>
+                <Link href="/admin/blog/ai" className="admin-surface-primary text-[var(--admin-text)] font-bold px-3 py-1.5 md:px-5 md:py-3 text-[10px] md:text-sm rounded-[10px] flex items-center gap-1 md:gap-2 hover:bg-gold hover:text-black transition-colors whitespace-nowrap border border-[var(--admin-border)]">
                     <Sparkles size={14} className="md:w-[18px] md:h-[18px] text-purple-400" />
-                    AI Assistant
+                    AI Newsroom
                 </Link>
                 <Link href="/admin/blog/new" className="bg-gold text-primary-foreground font-bold px-3 py-1.5 md:px-6 md:py-3 text-[10px] md:text-sm rounded-[10px] flex items-center gap-1 md:gap-2 hover:bg-gold/90 transition-colors shadow-[0_4px_14px_0_rgba(212,175,55,0.39)] whitespace-nowrap">
                     <Plus size={14} className="md:w-[18px] md:h-[18px]" />
@@ -295,6 +305,11 @@ export function BlogManager({ initialData }: BlogManagerProps) {
         </div>
       )}
       </div>
+
+      <GenerateAiDraftModal
+        isOpen={showAiDraftModal}
+        onClose={() => setShowAiDraftModal(false)}
+      />
     </PageContainer>
   );
 }

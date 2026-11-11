@@ -409,7 +409,7 @@ export const BookingDetailModal: React.FC<BookingDetailModalProps> = ({
                                         type="button"
                                         onClick={() => handleAssignHost(currentUser.id)}
                                         className="inline-flex items-center gap-1.5 text-xs font-semibold bg-primary/15 hover:bg-primary/25 text-primary border border-primary/30 px-2.5 py-1.5 rounded-lg transition-colors whitespace-nowrap cursor-pointer shadow-sm"
-                                        title="Assign this discovery call to yourself"
+                                        title="Assign this strategy session to yourself"
                                     >
                                         <UserCheck size={13} />
                                         Assign to Me

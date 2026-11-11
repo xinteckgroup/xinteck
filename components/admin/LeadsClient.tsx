@@ -4,7 +4,7 @@ import { archiveMessage, assignLead, deleteMessage, markAsRead, replyToMessage, 
 import { RoleGate } from "@/components/admin/RoleGate";
 import { PageContainer, PageHeader, Pagination, useToast } from "@/components/admin/ui";
 import { ConfirmModal } from "@/components/admin/ui/ConfirmModal";
-import { InboxMessage } from "@/types";
+import { InboxMessage } from "@/types/index";
 import { Role } from "@prisma/client";
 import { Archive, ArchiveRestore, ArrowLeft, Check, ClipboardCopy, ExternalLink, Mail, MailOpen, MessageCircle, MessageSquare, MoreVertical, Phone, Plus, Reply, Search, Send, Star, Target, Trash2 } from "lucide-react";
 import { useRouter } from "next/navigation";
@@ -591,7 +591,7 @@ export function LeadsClient({ initialData, adminUsers, currentUserRole, currentU
                         <MessageSquare size={14} className="text-gold" /> Conversation Thread ({activeMessage.replies.length})
                       </h5>
                       <div className="space-y-3">
-                        {activeMessage.replies.map((reply) => {
+                        {activeMessage.replies.map((reply: { id: string; content: string; sentAt: string; sentBy: string | null; direction?: "OUTBOUND" | "INBOUND" }) => {
                           const isInbound = reply.direction === "INBOUND" || reply.sentBy?.startsWith("Client");
                           return (
                             <div 

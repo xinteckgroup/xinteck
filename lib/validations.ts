@@ -129,7 +129,12 @@ export const serviceSchema = z.object({
         returnPolicy: z.string().optional()
     }).default({}),
 
-    budgetRanges: z.array(z.string().trim()).default(["KES 80k - 200k", "KES 200k - 600k", "KES 600k - 2M", "KES 2M+"]),
+    budgetRanges: z.array(z.string().trim()).default([
+        "Accelerated Sprint",
+        "Commercial Platform Scope",
+        "Enterprise Architecture Scope",
+        "To Be Determined During Strategy Session"
+    ]),
 
     status: z.string().default("Draft"),
     version: z.number().int().nonnegative().optional(),

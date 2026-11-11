@@ -10,7 +10,7 @@ import { revalidatePath } from "next/cache";
 import { NotificationService } from "@/lib/services/notification-service";
 
 import { createPaginatedResult, getPaginationParams, PaginatedResponse } from "@/lib/pagination";
-import { ProjectSummary } from "@/types";
+import { ProjectSummary } from "@/types/index";
 import { PaginationParams } from "@/types/pagination";
 import { Prisma } from "@prisma/client";
 

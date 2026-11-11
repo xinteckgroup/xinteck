@@ -348,7 +348,7 @@ export const AdminBookingCalendar: React.FC<AdminBookingCalendarProps> = ({
                                             {b.name}
                                         </h5>
                                         <p className="text-xs text-muted-foreground truncate">
-                                            {b.company ? `${b.company} · ` : ""}{b.service || "Discovery Call"}
+                                            {b.company ? `${b.company} · ` : ""}{b.service || "Strategy Session"}
                                         </p>
                                     </div>
 

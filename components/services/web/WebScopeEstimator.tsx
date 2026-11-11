@@ -149,30 +149,40 @@ export function WebScopeEstimator() {
                             <span className="text-xs uppercase font-bold tracking-wider text-primary">
                                 Step 1: Select Website Architecture
                             </span>
-                            <div className="grid sm:grid-cols-2 gap-3 mt-1">
+                            <div className="grid sm:grid-cols-2 gap-3.5 mt-1">
                                 {BASE_TIERS.map((tier) => (
                                     <button
                                         key={tier.id}
+                                        type="button"
                                         onClick={() => setSelectedTier(tier.id)}
-                                        className={`p-4 rounded-[8px] text-left transition-all border flex flex-col justify-between gap-2 ${
+                                        className={`p-4 rounded-[10px] text-left transition-all cursor-pointer border flex flex-col justify-between gap-3 ${
                                             selectedTier === tier.id
-                                                ? "bg-primary/10 border-primary ring-1 ring-primary/30"
-                                                : "bg-white/40 dark:bg-zinc-900/40 border-border/50 hover:border-foreground/30"
+                                                ? "bg-primary/20 border-primary shadow-sm"
+                                                : "bg-muted/10 border-transparent hover:border-border text-foreground"
                                         }`}
                                     >
                                         <div>
-                                            <div className="flex items-center justify-between">
-                                                <h4 className="font-bold text-sm text-foreground">{tier.title}</h4>
-                                                {selectedTier === tier.id && (
-                                                    <Check size={16} className="text-primary font-black" />
-                                                )}
+                                            <div className="flex items-start justify-between gap-2">
+                                                <h4 className={`text-sm font-bold leading-tight ${selectedTier === tier.id ? "text-primary" : "text-foreground"}`}>
+                                                    {tier.title}
+                                                </h4>
+                                                <div
+                                                    className={`w-5 h-5 rounded-[5px] flex items-center justify-center shrink-0 border transition-colors ${
+                                                        selectedTier === tier.id
+                                                            ? "bg-primary border-primary text-black"
+                                                            : "border-border/60 bg-background/50"
+                                                    }`}
+                                                >
+                                                    {selectedTier === tier.id && <Check size={14} className="stroke-[3]" />}
+                                                </div>
                                             </div>
-                                            <p className="text-xs text-foreground/70 mt-1 leading-relaxed">
+                                            <p className="text-xs text-foreground/75 font-medium leading-snug mt-2">
                                                 {tier.desc}
                                             </p>
                                         </div>
-                                        <div className="text-xs font-black text-primary pt-2 border-t border-border/30">
-                                            {formatKES(tier.cost)}
+                                        <div className={`text-xs font-black pt-2 border-t border-border/30 flex items-center justify-between ${selectedTier === tier.id ? "text-primary" : "text-foreground/70"}`}>
+                                            <span className="text-[11px] font-semibold text-foreground/60">Base Tier</span>
+                                            <span>{formatKES(tier.cost)}</span>
                                         </div>
                                     </button>
                                 ))}
@@ -184,40 +194,44 @@ export function WebScopeEstimator() {
                             <span className="text-xs uppercase font-bold tracking-wider text-primary">
                                 Step 2: Tailor Integrated Capabilities
                             </span>
-                            <div className="grid sm:grid-cols-2 gap-3 mt-1">
+                            <div className="grid sm:grid-cols-2 gap-3.5 mt-1">
                                 {ADDONS.map((addon) => {
                                     const active = selectedAddons.includes(addon.id);
                                     return (
                                         <button
                                             key={addon.id}
+                                            type="button"
                                             onClick={() => toggleAddon(addon.id)}
-                                            className={`p-4 rounded-[8px] text-left transition-all border flex items-start gap-3 ${
+                                            className={`p-4 rounded-[10px] text-left transition-all cursor-pointer border flex flex-col justify-between gap-3 ${
                                                 active
-                                                    ? "bg-primary/10 border-primary ring-1 ring-primary/30"
-                                                    : "bg-white/40 dark:bg-zinc-900/40 border-border/50 hover:border-foreground/30"
+                                                    ? "bg-primary/20 border-primary shadow-sm"
+                                                    : "bg-muted/10 border-transparent hover:border-border text-foreground"
                                             }`}
                                         >
-                                            <div
-                                                className={`w-5 h-5 rounded-[4px] mt-0.5 flex items-center justify-center shrink-0 border transition-all ${
-                                                    active
-                                                        ? "bg-primary border-primary text-black"
-                                                        : "border-border/80 bg-background"
-                                                }`}
-                                            >
-                                                {active && <Check size={14} className="font-black" />}
-                                            </div>
-                                            <div className="flex-1">
-                                                <div className="flex items-center justify-between">
-                                                    <span className="text-xs font-bold text-foreground">
-                                                        {addon.label}
-                                                    </span>
-                                                    <span className="text-xs font-black text-primary">
-                                                        +{formatKES(addon.cost)}
-                                                    </span>
+                                            <div className="flex items-start justify-between gap-2">
+                                                <span
+                                                    className={`text-sm font-bold leading-tight ${
+                                                        active ? "text-primary" : "text-foreground"
+                                                    }`}
+                                                >
+                                                    {addon.label}
+                                                </span>
+                                                <div
+                                                    className={`w-5 h-5 rounded-[5px] flex items-center justify-center shrink-0 border transition-colors ${
+                                                        active
+                                                            ? "bg-primary border-primary text-black"
+                                                            : "border-border/60 bg-background/50"
+                                                    }`}
+                                                >
+                                                    {active && <Check size={14} className="stroke-[3]" />}
                                                 </div>
-                                                <p className="text-[11px] text-foreground/70 mt-0.5 leading-snug">
-                                                    {addon.description}
-                                                </p>
+                                            </div>
+                                            <p className="text-xs text-foreground/75 font-medium leading-snug">
+                                                {addon.description}
+                                            </p>
+                                            <div className={`text-xs font-black pt-2 border-t border-border/30 flex items-center justify-between ${active ? "text-primary" : "text-foreground/70"}`}>
+                                                <span className="text-[11px] font-semibold text-foreground/60">Capability Addon</span>
+                                                <span>+{formatKES(addon.cost)}</span>
                                             </div>
                                         </button>
                                     );

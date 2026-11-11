@@ -33,7 +33,7 @@ interface FeatureOption {
 const BASE_APP = {
     label: "Core Native App (iOS + Android)",
     cost: 200_000,
-    days: 20,
+    days: 45, // 9 weeks baseline
 };
 
 const FEATURE_OPTIONS: FeatureOption[] = [
@@ -108,7 +108,8 @@ export function MobileScopeEstimator() {
             }
         });
 
-        const weeks = Math.ceil(days / 5);
+        // Guarantees no projected timeline is below 9 weeks in any user configuration
+        const weeks = Math.max(9, Math.ceil(days / 5));
         return { totalCost: cost, totalWeeks: weeks };
     }, [selectedFeatures]);
 
@@ -128,7 +129,7 @@ export function MobileScopeEstimator() {
                         ESTIMATE YOUR APP SCOPE & TIMELINE.
                     </h3>
                     <p className={`${TYPOGRAPHY.pageSubtitle} text-foreground/85 font-medium`}>
-                        Select the capabilities your mobile application needs. See real-time ballpark estimates and book a discovery call with your pre-configured scope.
+                        Select the capabilities your mobile application needs. See real-time ballpark estimates and apply for a strategy session with your pre-configured scope.
                     </p>
                 </div>
 

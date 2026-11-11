@@ -392,3 +392,27 @@ body {
 .rotate-y-180 {
   transform: rotateY(180deg);
 }
+
+/* ═══════════════════════════════════════════════════════════════
+   ROI CALCULATOR RANGE SLIDER
+   Eliminates SSR hydration mismatches by utilizing CSS custom properties
+   ═══════════════════════════════════════════════════════════════ */
+.roi-slider-input {
+  background: linear-gradient(
+    to right,
+    #D4AF37 0%,
+    #D4AF37 var(--slider-pct, 0%),
+    rgba(10, 10, 10, 0.25) var(--slider-pct, 0%),
+    rgba(10, 10, 10, 0.25) 100%
+  );
+}
+
+.dark .roi-slider-input {
+  background: linear-gradient(
+    to right,
+    #D4AF37 0%,
+    #D4AF37 var(--slider-pct, 0%),
+    rgba(255, 255, 255, 0.25) var(--slider-pct, 0%),
+    rgba(255, 255, 255, 0.25) 100%
+  );
+}

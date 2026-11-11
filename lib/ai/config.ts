@@ -4,14 +4,55 @@ export const CORE_NICHES = [
   "Enterprise Mobile Engineering",
   "Custom Software Strategy",
   "UX Systems & Product Design",
-  "Cloud Infrastructure & DevOps"
+  "Cloud Infrastructure & DevOps",
+  "Kenyan Fintech & M-Pesa Rails",
+  "KRA eTIMS & Tax Tech Compliance",
 ];
 
 export const SECONDARY_NICHES = [
   "AI Integration for Enterprise",
   "Software Security & Resilience",
   "SaaS Architecture Patterns",
-  "Digital Product Lifecycle Strategy"
+  "Digital Product Lifecycle Strategy",
+  "Low-Bandwidth Mobile Optimization",
+  "Kenya Data Protection (ODPC) Architecture",
+];
+
+export const NICHE_CATEGORIES = [
+  {
+    id: "core",
+    name: "Core Engineering",
+    description: "Foundational software, web, mobile, and cloud domains",
+    niches: [
+      "Scalable Web Architecture",
+      "Enterprise Mobile Engineering",
+      "Custom Software Strategy",
+      "Cloud Infrastructure & DevOps",
+      "UX Systems & Product Design",
+    ],
+  },
+  {
+    id: "kenya",
+    name: "Kenyan Tech & Rails",
+    description: "Local payment rails, tax compliance, and carrier realities",
+    niches: [
+      "Kenyan Fintech & M-Pesa Rails",
+      "KRA eTIMS & Tax Tech Compliance",
+      "Low-Bandwidth Mobile Optimization",
+      "Kenya Data Protection (ODPC) Architecture",
+    ],
+  },
+  {
+    id: "enterprise",
+    name: "Enterprise & Scale",
+    description: "Architectural patterns, security standards, and AI integration",
+    niches: [
+      "AI Integration for Enterprise",
+      "Software Security & Resilience",
+      "SaaS Architecture Patterns",
+      "Digital Product Lifecycle Strategy",
+    ],
+  },
 ];
 
 export const SCORING_WEIGHTS = {

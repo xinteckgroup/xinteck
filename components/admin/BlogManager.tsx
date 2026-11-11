@@ -12,7 +12,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useState, useTransition } from "react";
 import { useDebouncedCallback } from "use-debounce";
 
-import { BlogPostSummary } from "@/types";
+import { BlogPostSummary } from "@/types/index";
 
 import { Pagination } from "@/components/admin/ui/Pagination";
 import { PaginatedResponse } from "@/lib/pagination";

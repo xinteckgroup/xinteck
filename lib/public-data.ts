@@ -313,25 +313,25 @@ export async function getPublicService(slug: string): Promise<PublicService | nu
  * Lightweight fetch for navigation items (FloatingDock, Footer, ServicesFeatured).
  * Returns only { name, slug } to avoid leaking internal fields.
  */
-export async function getServiceNavItems(): Promise<{ name: string; slug: string }[]> {
+export async function getServiceNavItems(): Promise<{ name: string; slug: string; subName?: string }[]> {
     try {
         const services = await prisma.service.findMany({
             where: { status: ContentStatus.PUBLISHED },
             orderBy: { sortOrder: 'asc' },
-            select: { name: true, slug: true },
+            select: { name: true, slug: true, subName: true },
         });
 
-        return services.map(s => ({ name: s.name, slug: s.slug }));
+        return services.map(s => ({ name: s.name, slug: s.slug, subName: s.subName || undefined }));
     } catch (error) {
         console.error("Failed to fetch service nav items:", error);
         // Hardcoded fallback to prevent broken navigation
         return [
-            { name: "Web Development", slug: "web-development" },
-            { name: "Mobile App Development", slug: "mobile-app-development" },
-            { name: "Custom Software Development", slug: "custom-software-development" },
-            { name: "UI/UX Design", slug: "ui-ux-design" },
-            { name: "Cloud & DevOps", slug: "cloud-devops" },
-            { name: "Graphic Design", slug: "graphic-design" },
+            { name: "Launchpad", slug: "web-development", subName: "Web Platforms & API Integrations" },
+            { name: "Pulse", slug: "mobile-app-development", subName: "Android & iOS Applications" },
+            { name: "Backbone", slug: "custom-software-development", subName: "Custom Business Systems & Automation" },
+            { name: "Canvas", slug: "ui-ux-design", subName: "UI/UX Design & Prototyping" },
+            { name: "Sentinel", slug: "cloud-devops", subName: "Cloud Infrastructure & Security" },
+            { name: "Imprint", slug: "graphic-design", subName: "Business Identity & Print Design" },
         ];
     }
 }

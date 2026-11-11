@@ -6,8 +6,8 @@ import Link from "next/link";
 import RescheduleClient from "./RescheduleClient";
 
 export const metadata: Metadata = {
-    title: "Reschedule Discovery Call | Xinteck Technologies",
-    description: "Adjust your 15-minute technical discovery call schedule with Xinteck.",
+    title: "Reschedule Strategy Session | Xinteck Technologies",
+    description: "Adjust your 15-minute technical strategy session schedule with Xinteck.",
 };
 
 export const dynamic = "force-dynamic";

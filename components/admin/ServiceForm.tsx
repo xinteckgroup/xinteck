@@ -71,7 +71,12 @@ export function ServiceForm({ service }: ServiceFormProps) {
     const initialBuyNow = safeCast<ServiceBuyNowSection>(service?.buyNowSection, { title: "", description: "", button: "" });
     const initialStats = safeCast<ServiceStat[]>(service?.stats, [{ label: "", val: "" }]);
     const initialFeatures = service?.features || [];
-    const initialBudgetRanges = (service as any)?.budgetRanges || ["KES 80k - 200k", "KES 200k - 600k", "KES 600k - 2M", "KES 2M+"];
+    const initialBudgetRanges = (service as any)?.budgetRanges || [
+        "Sprint Scope (Rapid MVP / Accelerated Launch)",
+        "Growth Scope (Full Architecture & Integrations)",
+        "Enterprise Scope (Custom Systems & Mission-Critical Operations)",
+        "To Be Determined During Strategy Session"
+    ];
 
     // Core Form State
     const [formData, setFormData] = useState({
@@ -338,12 +343,12 @@ export function ServiceForm({ service }: ServiceFormProps) {
                             
                             <div className="grid md:grid-cols-2 gap-3 md:gap-4">
                                 <div className="flex flex-col gap-1 md:gap-2">
-                                    <label className="text-[8px] md:text-xs font-bold text-[var(--admin-text)] uppercase">Sub Name (Tag)</label>
+                                    <label className="text-[8px] md:text-xs font-bold text-[var(--admin-text)] uppercase">Tagline / Subtitle</label>
                                     <input 
                                         value={formData.subName}
                                         onChange={(e) => setFormData({...formData, subName: e.target.value})}
-                                        placeholder="SERVICE" 
-                                        className="admin-surface-input rounded-[8px] px-2 md:px-4 py-1.5 md:py-2 text-[var(--admin-text)] text-xs md:text-sm outline-none focus:border-gold/50 placeholder:text-[var(--admin-text)]"
+                                        placeholder="e.g. Web Platforms & API Integrations" 
+                                        className="admin-surface-input rounded-[8px] px-2 md:px-4 py-1.5 md:py-2 text-[var(--admin-text)] text-xs md:text-sm outline-none focus:border-gold/50 placeholder:text-[var(--admin-text)]/50"
                                     />
                                 </div>
                                 <div className="flex flex-col gap-1 md:gap-2">
@@ -445,68 +450,8 @@ export function ServiceForm({ service }: ServiceFormProps) {
                                 </div>
                             </div>
 
-                            {/* Block 1 */}
+                            {/* Capabilities Title */}
                             <div className="space-y-3 pt-4 border-t border-[var(--admin-border)]">
-                                <label className="text-[12px] font-bold uppercase tracking-wider text-gold/80 block">Content Block 1</label>
-                                <div className="grid gap-3">
-                                    <input 
-                                        value={formData.section2Title}
-                                        onChange={(e) => setFormData({...formData, section2Title: e.target.value})}
-                                        placeholder="Initial Challenge Title" 
-                                        className="w-full admin-surface-input rounded-[8px] px-3 py-2 text-[var(--admin-text)] text-sm focus:border-gold/50 placeholder:text-[var(--admin-text)] outline-none"
-                                    />
-                                    <textarea 
-                                        value={formData.section2Desc}
-                                        onChange={(e) => setFormData({...formData, section2Desc: e.target.value})}
-                                        placeholder="Description..." 
-                                        rows={3}
-                                        className="w-full admin-surface-input rounded-[8px] px-3 py-2 text-[var(--admin-text)] text-sm focus:border-gold/50 placeholder:text-[var(--admin-text)] outline-none resize-none"
-                                    />
-                                </div>
-                            </div>
-
-                            {/* Block 2 */}
-                            <div className="space-y-3 pt-4 border-t border-[var(--admin-border)]">
-                                <label className="text-[12px] font-bold uppercase tracking-wider text-gold/80 block">Content Block 2</label>
-                                <div className="grid gap-3">
-                                    <input 
-                                        value={formData.section3Title}
-                                        onChange={(e) => setFormData({...formData, section3Title: e.target.value})}
-                                        placeholder="Solution/Approach Title" 
-                                        className="w-full admin-surface-input rounded-[8px] px-3 py-2 text-[var(--admin-text)] text-sm focus:border-gold/50 placeholder:text-[var(--admin-text)] outline-none"
-                                    />
-                                    <textarea 
-                                        value={formData.section3Desc}
-                                        onChange={(e) => setFormData({...formData, section3Desc: e.target.value})}
-                                        placeholder="Description..." 
-                                        rows={3}
-                                        className="w-full admin-surface-input rounded-[8px] px-3 py-2 text-[var(--admin-text)] text-sm focus:border-gold/50 placeholder:text-[var(--admin-text)] outline-none resize-none"
-                                    />
-                                </div>
-                            </div>
-
-                            {/* Freshness */}
-                            <div className="space-y-3 pt-4 border-t border-[var(--admin-border)]">
-                                <label className="text-[12px] font-bold uppercase tracking-wider text-gold/80 block">Freshness / Innovation</label>
-                                <div className="grid gap-3">
-                                    <input 
-                                        value={formData.freshnessTitle}
-                                        onChange={(e) => setFormData({...formData, freshnessTitle: e.target.value})}
-                                        placeholder="Title (e.g. Always Cutting Edge)" 
-                                        className="w-full admin-surface-input rounded-[8px] px-3 py-2 text-[var(--admin-text)] text-sm focus:border-gold/50 placeholder:text-[var(--admin-text)] outline-none"
-                                    />
-                                    <textarea 
-                                        value={formData.freshnessDesc}
-                                        onChange={(e) => setFormData({...formData, freshnessDesc: e.target.value})}
-                                        placeholder="Innovation description..." 
-                                        rows={3}
-                                        className="w-full admin-surface-input rounded-[8px] px-3 py-2 text-[var(--admin-text)] text-sm focus:border-gold/50 placeholder:text-[var(--admin-text)] outline-none resize-none"
-                                    />
-                                </div>
-                            </div>
-
-                             {/* Capabilities Title */}
-                             <div className="space-y-3 pt-4 border-t border-[var(--admin-border)]">
                                 <label className="text-[12px] font-bold uppercase tracking-wider text-gold/80 block">Capabilities Section Title</label>
                                 <input 
                                     value={formData.capabilitiesTitle}
@@ -515,6 +460,76 @@ export function ServiceForm({ service }: ServiceFormProps) {
                                     className="w-full admin-surface-input rounded-[8px] px-3 py-2 text-[var(--admin-text)] text-sm focus:border-gold/50 placeholder:text-[var(--admin-text)] outline-none"
                                 />
                             </div>
+
+                            {/* Legacy Content Blocks (Retired from Page) */}
+                            <details className="pt-4 border-t border-[var(--admin-border)] group">
+                                <summary className="text-[12px] font-bold uppercase tracking-wider text-[var(--admin-text)]/70 hover:text-gold cursor-pointer flex items-center justify-between">
+                                    <span>Legacy Content Blocks (Retired from Page)</span>
+                                    <span className="text-[10px] text-[var(--admin-text)]/50 group-open:hidden">Click to expand</span>
+                                    <span className="text-[10px] text-[var(--admin-text)]/50 hidden group-open:inline">Click to collapse</span>
+                                </summary>
+                                <div className="space-y-6 pt-4">
+                                    {/* Block 1 */}
+                                    <div className="space-y-3">
+                                        <label className="text-[12px] font-bold uppercase tracking-wider text-gold/80 block">Content Block 1</label>
+                                        <div className="grid gap-3">
+                                            <input 
+                                                value={formData.section2Title}
+                                                onChange={(e) => setFormData({...formData, section2Title: e.target.value})}
+                                                placeholder="Initial Challenge Title" 
+                                                className="w-full admin-surface-input rounded-[8px] px-3 py-2 text-[var(--admin-text)] text-sm focus:border-gold/50 placeholder:text-[var(--admin-text)] outline-none"
+                                            />
+                                            <textarea 
+                                                value={formData.section2Desc}
+                                                onChange={(e) => setFormData({...formData, section2Desc: e.target.value})}
+                                                placeholder="Description..." 
+                                                rows={3}
+                                                className="w-full admin-surface-input rounded-[8px] px-3 py-2 text-[var(--admin-text)] text-sm focus:border-gold/50 placeholder:text-[var(--admin-text)] outline-none resize-none"
+                                            />
+                                        </div>
+                                    </div>
+
+                                    {/* Block 2 */}
+                                    <div className="space-y-3 pt-4 border-t border-[var(--admin-border)]">
+                                        <label className="text-[12px] font-bold uppercase tracking-wider text-gold/80 block">Content Block 2</label>
+                                        <div className="grid gap-3">
+                                            <input 
+                                                value={formData.section3Title}
+                                                onChange={(e) => setFormData({...formData, section3Title: e.target.value})}
+                                                placeholder="Solution/Approach Title" 
+                                                className="w-full admin-surface-input rounded-[8px] px-3 py-2 text-[var(--admin-text)] text-sm focus:border-gold/50 placeholder:text-[var(--admin-text)] outline-none"
+                                            />
+                                            <textarea 
+                                                value={formData.section3Desc}
+                                                onChange={(e) => setFormData({...formData, section3Desc: e.target.value})}
+                                                placeholder="Description..." 
+                                                rows={3}
+                                                className="w-full admin-surface-input rounded-[8px] px-3 py-2 text-[var(--admin-text)] text-sm focus:border-gold/50 placeholder:text-[var(--admin-text)] outline-none resize-none"
+                                            />
+                                        </div>
+                                    </div>
+
+                                    {/* Freshness */}
+                                    <div className="space-y-3 pt-4 border-t border-[var(--admin-border)]">
+                                        <label className="text-[12px] font-bold uppercase tracking-wider text-gold/80 block">Freshness / Innovation</label>
+                                        <div className="grid gap-3">
+                                            <input 
+                                                value={formData.freshnessTitle}
+                                                onChange={(e) => setFormData({...formData, freshnessTitle: e.target.value})}
+                                                placeholder="Title (e.g. Always Cutting Edge)" 
+                                                className="w-full admin-surface-input rounded-[8px] px-3 py-2 text-[var(--admin-text)] text-sm focus:border-gold/50 placeholder:text-[var(--admin-text)] outline-none"
+                                            />
+                                            <textarea 
+                                                value={formData.freshnessDesc}
+                                                onChange={(e) => setFormData({...formData, freshnessDesc: e.target.value})}
+                                                placeholder="Innovation description..." 
+                                                rows={3}
+                                                className="w-full admin-surface-input rounded-[8px] px-3 py-2 text-[var(--admin-text)] text-sm focus:border-gold/50 placeholder:text-[var(--admin-text)] outline-none resize-none"
+                                            />
+                                        </div>
+                                    </div>
+                                </div>
+                            </details>
                         </div>
                      </div>
                 </div>
@@ -583,7 +598,7 @@ export function ServiceForm({ service }: ServiceFormProps) {
                                             setBudgetRanges(newB);
                                         }}
                                         className="flex-1 admin-surface-input rounded-[6px] px-2 py-1.5 text-[var(--admin-text)] text-xs outline-none focus:border-gold/50"
-                                        placeholder="e.g. KES 80k - 200k"
+                                        placeholder="e.g. Sprint Scope (Rapid MVP / Accelerated Launch)"
                                     />
                                     <button 
                                         onClick={() => setBudgetRanges(budgetRanges.filter((_, idx) => idx !== i))}
@@ -644,45 +659,53 @@ export function ServiceForm({ service }: ServiceFormProps) {
                         </div>
                     </div>
 
-                    {/* Stats */}
-                    <div className="admin-surface-primary backdrop-blur-xs rounded-[10px] p-3 md:p-6 flex flex-col gap-3 md:gap-4">
-                        <div className="flex items-center justify-between border-b border-[var(--admin-border)] pb-2">
-                            <h3 className="font-bold text-[var(--admin-text)] text-xs md:text-sm">
+                    {/* Stats (Retired from Page) */}
+                    <details className="admin-surface-primary backdrop-blur-xs rounded-[10px] p-3 md:p-6 group">
+                        <summary className="flex items-center justify-between cursor-pointer list-none">
+                            <h3 className="font-bold text-[var(--admin-text)] text-xs md:text-sm flex items-center gap-2">
                                 Key Stats
+                                <span className="text-[9px] font-normal text-amber-500 bg-amber-500/10 px-1.5 py-0.5 rounded">Retired from Page</span>
                             </h3>
-                            <button 
-                                onClick={() => setStats([...stats, { label: "", val: "" }])}
-                                className="text-[10px] admin-surface-input hover:bg-[var(--admin-text)]/5 text-[var(--admin-text)] hover:text-gold px-2 py-1 rounded-[4px] font-bold transition-all flex items-center gap-1"
-                            >
-                                <Plus size={10} /> Add
-                            </button>
+                            <span className="text-[10px] text-[var(--admin-text)]/50 group-open:hidden">expand</span>
+                            <span className="text-[10px] text-[var(--admin-text)]/50 hidden group-open:inline">collapse</span>
+                        </summary>
+                        <div className="pt-3 border-t border-[var(--admin-border)] mt-3">
+                            <div className="flex items-center justify-between mb-2">
+                                <span className="text-[10px] text-[var(--admin-text)]/60">Legacy metrics stored for record</span>
+                                <button 
+                                    onClick={() => setStats([...stats, { label: "", val: "" }])}
+                                    className="text-[10px] admin-surface-input hover:bg-[var(--admin-text)]/5 text-[var(--admin-text)] hover:text-gold px-2 py-1 rounded-[4px] font-bold transition-all flex items-center gap-1"
+                                >
+                                    <Plus size={10} /> Add
+                                </button>
+                            </div>
+                            <div className="flex flex-col gap-2">
+                                {stats.map((stat, i) => (
+                                    <div key={i} className="flex flex-row items-center gap-2 w-full">
+                                        <input 
+                                            value={stat.val}
+                                            onChange={(e) => updateStat(i, 'val', e.target.value)}
+                                            className="w-[80px] shrink-0 admin-surface-input rounded-[6px] px-2 py-1.5 text-[var(--admin-text)] text-xs outline-none focus:border-gold/50 font-mono text-center min-w-0"
+                                            placeholder="Value"
+                                        />
+                                         <input 
+                                            value={stat.label}
+                                            onChange={(e) => updateStat(i, 'label', e.target.value)}
+                                            className="flex-1 min-w-0 admin-surface-input rounded-[6px] px-2 py-1.5 text-[var(--admin-text)] text-xs outline-none focus:border-gold/50"
+                                            placeholder="Label"
+                                        />
+                                        <button 
+                                            onClick={() => setStats(stats.filter((_, idx) => idx !== i))}
+                                            className="text-[var(--admin-text)] hover:text-red-500 transition-colors"
+                                        >
+                                            <X size={14} />
+                                        </button>
+                                    </div>
+                                 ))}
+                                  {stats.length === 0 && <p className="text-[var(--admin-text)]/50 text-[10px] italic">No stats added.</p>}
+                            </div>
                         </div>
-                        <div className="flex flex-col gap-2">
-                            {stats.map((stat, i) => (
-                                <div key={i} className="flex flex-row items-center gap-2 w-full">
-                                    <input 
-                                        value={stat.val}
-                                        onChange={(e) => updateStat(i, 'val', e.target.value)}
-                                        className="w-[80px] shrink-0 admin-surface-input rounded-[6px] px-2 py-1.5 text-[var(--admin-text)] text-xs outline-none focus:border-gold/50 font-mono text-center min-w-0"
-                                        placeholder="Value"
-                                    />
-                                     <input 
-                                        value={stat.label}
-                                        onChange={(e) => updateStat(i, 'label', e.target.value)}
-                                        className="flex-1 min-w-0 admin-surface-input rounded-[6px] px-2 py-1.5 text-[var(--admin-text)] text-xs outline-none focus:border-gold/50"
-                                        placeholder="Label"
-                                    />
-                                    <button 
-                                        onClick={() => setStats(stats.filter((_, idx) => idx !== i))}
-                                        className="text-[var(--admin-text)] hover:text-red-500 transition-colors"
-                                    >
-                                        <X size={14} />
-                                    </button>
-                                </div>
-                             ))}
-                              {stats.length === 0 && <p className="text-[var(--admin-text)]/50 text-[10px] italic">No stats added.</p>}
-                        </div>
-                    </div>
+                    </details>
 
                     {/* CTA */}
                     <div className="admin-surface-primary backdrop-blur-xs rounded-[10px] p-3 md:p-6 flex flex-col gap-3 md:gap-4">

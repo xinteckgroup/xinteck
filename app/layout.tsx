@@ -85,7 +85,7 @@ export default function RootLayout({
               description: "M-Pesa-ready websites, mobile apps, custom software, and graphic design for businesses in Kenya. eTIMS-compliant. Based in Nairobi.",
               foundingDate: "2018",
               telephone: "+254795213399",
-              priceRange: "KES 5,000 - KES 5,000,000",
+              priceRange: "$$$",
               areaServed: {
                 "@type": "Country",
                 name: "Kenya",

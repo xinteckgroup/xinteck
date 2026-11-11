@@ -146,14 +146,14 @@ export const BookingsClient: React.FC<BookingsClientProps> = ({
                 <div>
                     <div className="flex items-center gap-3">
                         <h2 className="text-2xl sm:text-3xl font-black tracking-tight text-foreground">
-                            Discovery Call Bookings
+                            Strategy Session Bookings
                         </h2>
                         <span className="text-xs font-bold px-2.5 py-0.5 rounded-full bg-primary/10 text-primary border border-primary/30 flex items-center gap-1">
                             <Shield size={12} /> {userRole}
                         </span>
                     </div>
                     <p className="text-xs sm:text-sm text-muted-foreground mt-1">
-                        15-minute consultations · Anti-double-booking sync · Resend email notifications
+                        Technical strategy sessions · Anti-double-booking sync · Resend email notifications
                     </p>
                 </div>
 

@@ -17,14 +17,14 @@ export const BookingReceivedEmail = ({
   service = "Web Development",
 }: BookingReceivedEmailProps) => {
   return (
-    <XinteckEmailLayout previewText={`We've received your discovery call request for ${date} at ${startTime} EAT`} showSignature={true}>
+    <XinteckEmailLayout previewText={`We've received your strategy session request for ${date} at ${startTime} EAT`} showSignature={true}>
       <Heading className="text-[22px] font-black tracking-tight text-brand m-0 mb-[16px]">
-        Discovery Call Request Received 🎯
+        Strategy Session Request Received 🎯
       </Heading>
 
       <Text className="text-white text-[15px] leading-[26px] m-0 mb-[24px]">
         Hello {name},<br /><br />
-        Thank you for scheduling a <strong>Free 15-Minute Discovery Call</strong> with Xinteck. We have successfully logged your appointment request in our system.
+        Thank you for scheduling a <strong>Strategy Session</strong> with Xinteck. We have successfully logged your appointment request in our system.
       </Text>
 
       {/* Appointment Window Details */}

@@ -230,7 +230,7 @@ export function generateIcsContent({
 
     const lines = [
         "BEGIN:VCALENDAR",
-        "PRODID:-//Xinteck Technologies//Discovery Call Scheduler//EN",
+        "PRODID:-//Xinteck Technologies//Strategy Session Scheduler//EN",
         "VERSION:2.0",
         "CALSCALE:GREGORIAN",
         "METHOD:REQUEST",
@@ -257,7 +257,7 @@ export function generateIcsContent({
     lines.push(
         "BEGIN:VALARM",
         "ACTION:DISPLAY",
-        "DESCRIPTION:Reminder: Xinteck Discovery Call starting in 15 minutes",
+        "DESCRIPTION:Reminder: Xinteck Strategy Session starting in 15 minutes",
         "TRIGGER:-PT15M",
         "END:VALARM"
     );
@@ -275,7 +275,7 @@ export function generateIcsContent({
 export function generateIcsCancelContent({
     id,
     title,
-    description = "This discovery call has been cancelled.",
+    description = "This strategy session has been cancelled.",
     startDate,
     startTime,
     endTime,
@@ -308,7 +308,7 @@ export function generateIcsCancelContent({
 
     const lines = [
         "BEGIN:VCALENDAR",
-        "PRODID:-//Xinteck Technologies//Discovery Call Scheduler//EN",
+        "PRODID:-//Xinteck Technologies//Strategy Session Scheduler//EN",
         "VERSION:2.0",
         "CALSCALE:GREGORIAN",
         "METHOD:CANCEL",

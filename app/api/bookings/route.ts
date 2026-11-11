@@ -25,7 +25,7 @@ export async function POST(req: NextRequest) {
         return NextResponse.json(
             {
                 success: true,
-                message: "Discovery call booked successfully! Please check your email for confirmation details.",
+                message: "Strategy session booked successfully! Please check your email for confirmation details.",
                 booking: result.booking,
             },
             { status: 201 }

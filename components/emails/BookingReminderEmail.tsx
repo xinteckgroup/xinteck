@@ -26,18 +26,18 @@ export const BookingReminderEmail = ({
     <XinteckEmailLayout
       previewText={
         isUpcomingSoon
-          ? `Starting soon: Your Xinteck Discovery Call at ${startTime} EAT`
-          : `Reminder: Your Xinteck Discovery Call tomorrow at ${startTime} EAT`
+          ? `Starting soon: Your Xinteck Strategy Session at ${startTime} EAT`
+          : `Reminder: Your Xinteck Strategy Session tomorrow at ${startTime} EAT`
       }
       showSignature={true}
     >
       <Heading className="text-[22px] font-black tracking-tight text-brand m-0 mb-[16px]">
-        {isUpcomingSoon ? "⏰ Your Discovery Call is Starting Soon!" : "🗓️ Reminder: Your Discovery Call Tomorrow"}
+        {isUpcomingSoon ? "⏰ Your Strategy Session is Starting Soon!" : "🗓️ Reminder: Your Strategy Session Tomorrow"}
       </Heading>
 
       <Text className="text-white text-[15px] leading-[26px] m-0 mb-[24px]">
         Hello {name},<br /><br />
-        This is a friendly reminder for your upcoming 15-minute technical discovery call with Xinteck Technologies.
+        This is a friendly reminder for your upcoming 15-minute technical strategy session with Xinteck Technologies.
         Our software engineering team is prepared to review your project goals and architecture roadmap.
       </Text>
 

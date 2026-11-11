@@ -137,58 +137,62 @@ export function CustomSoftwareScopeEstimator() {
 
                 <div className="grid lg:grid-cols-12 gap-8 items-start">
                     {/* Modules Checklist (8 cols) */}
-                    <div className="lg:col-span-8 flex flex-col gap-6">
+                    <div className="lg:col-span-8 bg-white/30 dark:bg-black/80 backdrop-blur-xl rounded-[10px] p-6 md:p-8 shadow-2xl flex flex-col gap-5">
                         {/* Base Core Banner */}
-                        <div className="p-5 rounded-[10px] bg-white/30 dark:bg-black/80 backdrop-blur-xl border border-primary/30 shadow-md flex items-center justify-between">
+                        <div className="flex items-center justify-between border-b border-border/40 pb-3">
                             <div className="flex items-center gap-3">
-                                <div className="w-10 h-10 rounded-[8px] bg-primary/10 text-primary flex items-center justify-center font-bold">
+                                <div className="w-10 h-10 rounded-[8px] bg-primary/10 text-primary flex items-center justify-center font-bold shrink-0">
                                     <Database size={22} />
                                 </div>
                                 <div>
-                                    <h4 className="font-bold text-sm text-foreground">{BASE_SYSTEM.title}</h4>
-                                    <p className="text-xs text-foreground/70">{BASE_SYSTEM.description}</p>
+                                    <h4 className="text-sm md:text-base font-bold text-foreground">{BASE_SYSTEM.title}</h4>
+                                    <p className="text-xs text-foreground/75 font-medium">{BASE_SYSTEM.description}</p>
                                 </div>
                             </div>
-                            <span className="text-xs font-bold text-primary font-mono shrink-0">
+                            <span className="text-xs font-bold text-primary bg-primary/10 px-3 py-1 rounded-[6px] font-mono shrink-0">
                                 {formatKES(BASE_SYSTEM.cost)}
                             </span>
                         </div>
 
                         {/* Interactive Modules */}
-                        <div className="grid sm:grid-cols-2 gap-3">
+                        <div className="grid sm:grid-cols-2 gap-3.5 pt-2">
                             {SOFTWARE_MODULES.map((mod) => {
                                 const active = selectedModules.includes(mod.id);
                                 return (
                                     <button
                                         key={mod.id}
+                                        type="button"
                                         onClick={() => toggleModule(mod.id)}
-                                        className={`p-4 rounded-[8px] text-left transition-all border flex items-start gap-3 ${
+                                        className={`p-4 rounded-[10px] text-left transition-all cursor-pointer border flex flex-col justify-between gap-3 ${
                                             active
-                                                ? "bg-primary/10 border-primary ring-1 ring-primary/30"
-                                                : "bg-white/40 dark:bg-zinc-900/40 border-border/50 hover:border-foreground/30"
+                                                ? "bg-primary/20 border-primary shadow-sm"
+                                                : "bg-muted/10 border-transparent hover:border-border text-foreground"
                                         }`}
                                     >
-                                        <div
-                                            className={`w-5 h-5 rounded-[4px] mt-0.5 flex items-center justify-center shrink-0 border transition-all ${
-                                                active
-                                                    ? "bg-primary border-primary text-black"
-                                                    : "border-border/80 bg-background"
-                                            }`}
-                                        >
-                                            {active && <Check size={14} className="font-black" />}
-                                        </div>
-                                        <div className="flex-1">
-                                            <div className="flex items-center justify-between">
-                                                <span className="text-xs font-bold text-foreground">
-                                                    {mod.label}
-                                                </span>
-                                                <span className="text-xs font-black text-primary">
-                                                    +{formatKES(mod.cost)}
-                                                </span>
+                                        <div className="flex items-start justify-between gap-2">
+                                            <span
+                                                className={`text-sm font-bold leading-tight ${
+                                                    active ? "text-primary" : "text-foreground"
+                                                }`}
+                                            >
+                                                {mod.label}
+                                            </span>
+                                            <div
+                                                className={`w-5 h-5 rounded-[5px] flex items-center justify-center shrink-0 border transition-colors ${
+                                                    active
+                                                        ? "bg-primary border-primary text-black"
+                                                        : "border-border/60 bg-background/50"
+                                                }`}
+                                            >
+                                                {active && <Check size={14} className="stroke-[3]" />}
                                             </div>
-                                            <p className="text-[11px] text-foreground/70 mt-0.5 leading-snug">
-                                                {mod.description}
-                                            </p>
+                                        </div>
+                                        <p className="text-xs text-foreground/75 font-medium leading-snug">
+                                            {mod.description}
+                                        </p>
+                                        <div className={`text-xs font-black pt-2 border-t border-border/30 flex items-center justify-between ${active ? "text-primary" : "text-foreground/70"}`}>
+                                            <span className="text-[11px] font-semibold text-foreground/60">Module Scope</span>
+                                            <span>+{formatKES(mod.cost)}</span>
                                         </div>
                                     </button>
                                 );

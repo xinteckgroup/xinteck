@@ -7,8 +7,8 @@ import { AlertTriangle, Bell, Cookie, Database, Eye, FileText, Globe, Mail, Scal
 import Link from "next/link";
 
 export default function PrivacyPage() {
-  const lastUpdated = "February 6, 2026";
-  const effectiveDate = "February 6, 2026";
+  const lastUpdated = "November 11, 2026";
+  const effectiveDate = "November 11, 2026";
 
   return (
     <VideoScrollLayout videoSrc={VIDEO_STATS.contact.src} videoStats={VIDEO_STATS.contact}>
@@ -92,24 +92,25 @@ export default function PrivacyPage() {
         {/* Section 1: Who We Are */}
         <PolicySection id="section-1" icon={Users} title="1. Who We Are">
           <p>
-            <strong>Xinteck</strong> is a technology solutions company registered and operating in <strong>Kenya</strong>. 
-            We specialize in:
+            <strong>Xinteck</strong> is a premier software engineering and digital transformation enterprise registered and operating in <strong>Nairobi, Kenya</strong>. 
+            We provide specialized technology solutions across six core methodology domains:
           </p>
           <ul className="list-disc list-inside mt-4 space-y-2 text-foreground/70">
-            <li>Web Development</li>
-            <li>Mobile Application Development</li>
-            <li>Custom Software Development</li>
-            <li>UI/UX Design</li>
-            <li>Cloud & DevOps Services</li>
+            <li><strong>Launchpad:</strong> Web Platforms & API Integrations (including Daraja M-Pesa automated rails)</li>
+            <li><strong>Pulse:</strong> Android & iOS Mobile Applications</li>
+            <li><strong>Backbone:</strong> Custom Business Systems & Automation (including KRA eTIMS integrations)</li>
+            <li><strong>Canvas:</strong> UI/UX Design & Prototyping</li>
+            <li><strong>Sentinel:</strong> Cloud Infrastructure & Security</li>
+            <li><strong>Imprint:</strong> Business Identity & Print Design</li>
           </ul>
-          <p className="mt-4">
-            For the purposes of the Kenya Data Protection Act 2019, Xinteck acts as the <strong>Data Controller</strong> 
-            for personal data collected through our website and services.
+          <p className="mt-4 leading-relaxed">
+            For the purposes of the <strong>Kenya Data Protection Act, 2019 (KDPA)</strong> and the <em>Data Protection (Registration of Data Controllers and Data Processors) Regulations, 2021</em>, 
+            Xinteck acts as a registered <strong>Data Controller</strong> for personal data collected directly through our website and strategy sessions, and as a <strong>Data Processor</strong> when processing personal data strictly on behalf of our enterprise clients.
           </p>
           <div className="mt-6 p-4 bg-primary/5 rounded-[10px] border border-primary/10">
             <p className="text-sm text-foreground/70">
-              <strong>Registered Address:</strong> Nairobi, Kenya<br />
-              <strong>Contact Email:</strong> <a href="mailto:privacy@xinteck.co.ke" className="text-gold hover:underline">privacy@xinteck.co.ke</a>
+              <strong>Registered Jurisdiction:</strong> Nairobi, Kenya<br />
+              <strong>Data Protection Point of Contact:</strong> <a href="mailto:info@xinteck.co.ke" className="text-gold hover:underline">info@xinteck.co.ke</a>
             </p>
           </div>
         </PolicySection>
@@ -240,62 +241,61 @@ export default function PrivacyPage() {
 
         {/* Section 7: Data Retention */}
         <PolicySection id="section-7" icon={Server} title="7. Data Retention">
-          <p>We retain your personal data only for as long as necessary to fulfill the purposes for which it was collected:</p>
+          <p>We retain your personal data strictly for as long as necessary to fulfill the statutory, contractual, and operational purposes for which it was obtained:</p>
           <div className="mt-6 overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
                 <tr className="border-b border-primary/10">
-                  <th className="text-left py-3 font-bold text-foreground">Data Type</th>
+                  <th className="text-left py-3 font-bold text-foreground">Data Category</th>
                   <th className="text-left py-3 font-bold text-foreground">Retention Period</th>
+                  <th className="text-left py-3 font-bold text-foreground">Legal & Regulatory Basis</th>
                 </tr>
               </thead>
               <tbody className="text-foreground/70">
                 <tr className="border-b border-primary/5">
-                  <td className="py-3">Client project data</td>
-                  <td className="py-3">7 years (legal/tax requirements)</td>
+                  <td className="py-3 font-medium text-foreground">Invoices, eTIMS data & financial records</td>
+                  <td className="py-3">5 to 7 years</td>
+                  <td className="py-3 text-xs">Tax Procedures Act, 2015 (Cap 469B) & KRA Regulations</td>
                 </tr>
                 <tr className="border-b border-primary/5">
-                  <td className="py-3">Contract records</td>
-                  <td className="py-3">7 years after contract ends</td>
+                  <td className="py-3 font-medium text-foreground">Client service agreements & SOW contracts</td>
+                  <td className="py-3">7 years post-termination</td>
+                  <td className="py-3 text-xs">Limitation of Actions Act (Cap 22, Laws of Kenya)</td>
                 </tr>
                 <tr className="border-b border-primary/5">
-                  <td className="py-3">Contact form submissions</td>
-                  <td className="py-3">2 years (or until request fulfilled)</td>
+                  <td className="py-3 font-medium text-foreground">Strategy session & consultation requests</td>
+                  <td className="py-3">2 years from submission</td>
+                  <td className="py-3 text-xs">Legitimate commercial interest & client onboarding</td>
                 </tr>
                 <tr className="border-b border-primary/5">
-                  <td className="py-3">Marketing consent records</td>
-                  <td className="py-3">Duration of consent + 3 years</td>
+                  <td className="py-3 font-medium text-foreground">Marketing & newsletter consent</td>
+                  <td className="py-3">Until consent withdrawn + 1 year</td>
+                  <td className="py-3 text-xs">Section 37 Kenya Data Protection Act 2019</td>
                 </tr>
                 <tr className="border-b border-primary/5">
-                  <td className="py-3">Website analytics</td>
-                  <td className="py-3">12 months (then anonymized)</td>
+                  <td className="py-3 font-medium text-foreground">Aggregated website analytics telemetry</td>
+                  <td className="py-3">14 months (then anonymized)</td>
+                  <td className="py-3 text-xs">Performance optimization & statistical modeling</td>
                 </tr>
               </tbody>
             </table>
           </div>
           <p className="mt-4 text-foreground/70 text-sm">
-            When data is no longer needed, we securely delete or anonymize it.
+            Upon expiry of the applicable statutory or operational retention period, personal data is permanently deleted or irreversibly anonymized using secure data destruction standards.
           </p>
         </PolicySection>
 
-        {/* Section 8: Data Security */}
-        <PolicySection id="section-8" icon={Shield} title="8. Data Security">
+        {/* Section 8: Data Security & Incident Breach Notification */}
+        <PolicySection id="section-8" icon={Shield} title="8. Data Security & Breach Notification">
           <p>
-            We implement appropriate technical and organizational measures to protect your personal data 
-            against unauthorized access, alteration, disclosure, or destruction:
+            We implement industry-standard technical, administrative, and organizational safeguards designed to protect personal data against accidental loss, unauthorized access, destruction, or alteration:
           </p>
           <ul className="list-disc list-inside mt-4 space-y-2 text-foreground/70">
-            <li><strong>Encryption:</strong> Data is encrypted in transit (TLS/SSL) and at rest</li>
-            <li><strong>Access Controls:</strong> Role-based access limited to authorized personnel</li>
-            <li><strong>Secure Infrastructure:</strong> Enterprise-grade cloud security with regular audits</li>
-            <li><strong>Incident Response:</strong> Procedures to detect, report, and respond to data breaches</li>
-            <li><strong>Employee Training:</strong> Regular security awareness training for team members</li>
+            <li><strong>Cryptographic Controls:</strong> 256-bit TLS encryption in transit and AES-256 encryption at rest for sensitive database fields.</li>
+            <li><strong>Access Governance:</strong> Role-based access control (RBAC), multi-factor authentication (MFA), and zero-trust VPC networks.</li>
+            <li><strong>Infrastructure Hardening:</strong> Cloudflare edge security, rate-limiting, Web Application Firewalls (WAF), and automated vulnerability audits.</li>
+            <li><strong>72-Hour Statutory Breach Protocol:</strong> In strict compliance with <strong>Section 43 of the Kenya Data Protection Act 2019</strong>, in the event of a personal data breach where there is a real risk of harm to data subjects, Xinteck shall notify the <strong>Office of the Data Protection Commissioner (ODPC) within 72 hours</strong> of becoming aware of the incident, and promptly notify affected individuals without undue delay.</li>
           </ul>
-          <p className="mt-4 text-foreground/70">
-            Despite our best efforts, no method of transmission over the internet is 100% secure. 
-            We cannot guarantee absolute security but commit to notifying you and relevant authorities 
-            of any breach as required by law.
-          </p>
         </PolicySection>
 
         {/* Section 9: Your Rights */}
@@ -336,7 +336,7 @@ export default function PrivacyPage() {
           <div className="mt-6 p-4 bg-primary/5 rounded-[10px] border border-primary/10">
             <p className="text-sm text-foreground/70">
               <strong>To exercise your rights:</strong> Contact us at{" "}
-              <a href="mailto:privacy@xinteck.co.ke" className="text-gold hover:underline">privacy@xinteck.co.ke</a>. 
+              <a href="mailto:info@xinteck.co.ke" className="text-gold hover:underline">info@xinteck.co.ke</a>. 
               We will respond within <strong>30 days</strong> as required by law.
             </p>
             <p className="text-sm text-foreground/70 mt-2">
@@ -367,7 +367,7 @@ export default function PrivacyPage() {
           </p>
           <p className="mt-4 text-foreground/70">
             If you believe we have inadvertently collected data from a child, please contact us immediately 
-            at <a href="mailto:privacy@xinteck.co.ke" className="text-gold hover:underline">privacy@xinteck.co.ke</a>, 
+            at <a href="mailto:info@xinteck.co.ke" className="text-gold hover:underline">info@xinteck.co.ke</a>, 
             and we will take steps to delete such information.
           </p>
         </PolicySection>
@@ -406,7 +406,7 @@ export default function PrivacyPage() {
               data practices, please contact us:
             </p>
             <div className="space-y-2 text-foreground">
-              <p><strong>Email:</strong> <a href="mailto:privacy@xinteck.co.ke" className="text-gold hover:underline">privacy@xinteck.co.ke</a></p>
+              <p><strong>Email:</strong> <a href="mailto:info@xinteck.co.ke" className="text-gold hover:underline">info@xinteck.co.ke</a></p>
               <p><strong>Address:</strong> Nairobi, Kenya</p>
             </div>
             <p className="text-sm text-foreground mt-6">

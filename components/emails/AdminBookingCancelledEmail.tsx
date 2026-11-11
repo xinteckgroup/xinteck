@@ -21,7 +21,7 @@ export const AdminBookingCancelledEmail = ({
 }: AdminBookingCancelledEmailProps) => {
   return (
     <XinteckEmailLayout
-      previewText={`[Cancelled] Discovery Call: ${clientName} (${date} at ${startTime} EAT)`}
+      previewText={`[Cancelled] Strategy Session: ${clientName} (${date} at ${startTime} EAT)`}
     >
       {/* Category Badge */}
       <Section className="text-left mb-[16px]">
@@ -39,16 +39,16 @@ export const AdminBookingCancelledEmail = ({
             border: '1px solid rgba(239, 68, 68, 0.35)',
           }}
         >
-          {isExecutive ? 'Executive Cancellation Alert' : 'Discovery Call Cancelled'}
+          {isExecutive ? 'Executive Cancellation Alert' : 'Strategy Session Cancelled'}
         </div>
       </Section>
 
       <Heading className="text-[22px] font-black tracking-tight text-white m-0 mb-[16px]">
-        Discovery Call Cancelled
+        Strategy Session Cancelled
       </Heading>
 
       <Text className="text-[#E0E0E0] text-[15px] leading-[26px] m-0 mb-[24px]">
-        The discovery call with <strong style={{ color: '#FFFFFF' }}>{clientName}</strong> scheduled for{' '}
+        The strategy session with <strong style={{ color: '#FFFFFF' }}>{clientName}</strong> scheduled for{' '}
         <strong style={{ color: '#FFFFFF' }}>{date} at {startTime} EAT</strong> was cancelled by{' '}
         <strong style={{ color: '#D4AF37' }}>{cancelledBy}</strong>.
       </Text>

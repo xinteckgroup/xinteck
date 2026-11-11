@@ -5,7 +5,7 @@ import { prisma } from "@/lib/prisma";
 import { ContentStatus, Role } from "@prisma/client";
 import { unstable_cache } from "next/cache";
 
-import { IconName } from "@/types";
+import { IconName } from "@/types/index";
 
 export async function getDashboardStats() {
     await requireRole([Role.ADMIN, Role.SUPER_ADMIN, Role.SUPPORT_STAFF]);

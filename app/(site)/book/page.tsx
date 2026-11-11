@@ -9,11 +9,11 @@ import { Metadata } from "next";
 import { Suspense } from "react";
 
 export const metadata: Metadata = {
-    title: "Book a Free 15-Minute Discovery Call | Xinteck Technologies",
-    description: "Schedule a 15-minute consultation with senior engineers at Xinteck Technologies. Discuss web development, mobile apps, cloud architecture, and custom business software.",
+    title: "Executive Strategy Session | Xinteck Technologies",
+    description: "Schedule a high-impact technical architecture session with senior engineers at Xinteck Technologies. Discuss web platforms, mobile apps, eTIMS integration, and custom business software.",
     openGraph: {
-        title: "Book a Free 15-Minute Discovery Call | Xinteck Technologies",
-        description: "Zero sales pressure. Direct technical advice from senior software architects.",
+        title: "Executive Strategy Session | Xinteck Technologies",
+        description: "Direct architectural advice from senior engineers. Focused scope alignment and technical roadmap.",
         url: "https://xinteck.co.ke/book",
         siteName: "Xinteck Technologies",
     },
@@ -51,7 +51,7 @@ export default async function BookDiscoveryCallPage() {
                         <div className="bg-white/30 dark:bg-black/80 backdrop-blur-xl p-6 md:p-8 rounded-[10px] inline-block w-fit mx-auto lg:mx-0 shadow-lg">
                             <h1 className="text-sm md:text-base font-bold text-primary uppercase tracking-[0.2em] mb-4 flex items-center justify-center lg:justify-start gap-2">
                                 <Video size={18} className="text-primary" />
-                                <span>Free 15-Minute Strategy Call</span>
+                                <span>Executive Strategy Session</span>
                             </h1>
                             <h2 className="text-2xl md:text-5xl font-extrabold tracking-tighter text-foreground uppercase">
                                 ENGINEER YOUR <br />
@@ -59,14 +59,14 @@ export default async function BookDiscoveryCallPage() {
                             </h2>
                         </div>
                         <p className={`${TYPOGRAPHY.pageSubtitle} max-w-xl mx-auto lg:mx-0 bg-white/30 dark:bg-black/80 backdrop-blur-xl p-6 rounded-[10px] shadow-lg text-foreground font-medium leading-relaxed text-sm md:text-base`}>
-                            Reserve a focused, 15-minute video consultation with our team. We&apos;ll analyze your goals, immediate needs and pain points, outline the best recommendations, and discuss clear budget expectations. 100% free.
+                            Reserve a focused technical architecture session with our team. We&apos;ll analyze your operational bottlenecks, architect the right technical solutions (M-Pesa, eTIMS, Cloud, Systems), and outline your exact implementation roadmap.
                         </p>
                     </div>
 
                     <div className="hidden lg:flex flex-col gap-4 text-right items-end">
                         <div className={`${TYPOGRAPHY.badge} flex items-center gap-3 text-primary bg-white/30 dark:bg-black/80 backdrop-blur-md px-6 py-3 rounded-full shadow-lg`}>
                             <Clock size={20} />
-                            <span>15-Min Focused Call</span>
+                            <span>Architecture & Scope Session</span>
                         </div>
                         <div className="text-xs font-semibold text-foreground bg-white/30 dark:bg-black/80 backdrop-blur-md px-5 py-2 rounded-full shadow-md">
                             ✨ Real-time calendar sync

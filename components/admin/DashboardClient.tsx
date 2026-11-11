@@ -8,7 +8,7 @@ import { useState } from "react";
 import { Area, AreaChart, Bar, BarChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 
 import { TYPOGRAPHY } from "@/lib/typography";
-import { DashboardStat, RecentActivity } from "@/types";
+import { DashboardStat, RecentActivity } from "@/types/index";
 
 import { BookingsDashboardWidget } from "@/components/admin/BookingsDashboardWidget";
 
@@ -68,7 +68,7 @@ export function DashboardClient({ stats, activity, analytics = [], bookingStats 
         ))}
       </div>
 
-      {/* Discovery Calls Highlight Widget */}
+      {/* Strategy Sessions Highlight Widget */}
       {bookingStats && (
         <div className="w-full">
           <BookingsDashboardWidget stats={bookingStats} nextCall={bookingStats.nextCall} />

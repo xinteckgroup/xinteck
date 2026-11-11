@@ -126,7 +126,7 @@ export function GraphicFaqSection() {
                         <div>
                             <div className="text-sm font-bold text-foreground">Have a custom corporate rebrand in mind?</div>
                             <div className="text-xs text-foreground/70">
-                                Schedule a 15-minute consultation with our Creative Director.
+                                Apply for a strategy session with our Creative Director.
                             </div>
                         </div>
                     </div>

@@ -15,14 +15,14 @@ export const BookingCancellationEmail = ({
   reason = "Schedule conflict due to emergency client deployment.",
 }: BookingCancellationEmailProps) => {
   return (
-    <XinteckEmailLayout previewText={`Update regarding your discovery call on ${date}`} showSignature={true}>
+    <XinteckEmailLayout previewText={`Update regarding your strategy session on ${date}`} showSignature={true}>
       <Heading className="text-[20px] font-black tracking-tight text-brand m-0 mb-[16px]">
-        Discovery Call Update
+        Strategy Session Update
       </Heading>
 
       <Text className="text-white text-[15px] leading-[26px] m-0 mb-[24px]">
         Hello {name},<br /><br />
-        We regret to inform you that your scheduled discovery call on <strong>{date} at {startTime} EAT</strong> has been cancelled.
+        We regret to inform you that your scheduled strategy session on <strong>{date} at {startTime} EAT</strong> has been cancelled.
       </Text>
 
       {/* Reason Box */}

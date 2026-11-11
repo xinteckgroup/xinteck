@@ -162,8 +162,8 @@ export default function RescheduleClient({ booking }: { booking: RescheduleBooki
     if (rescheduledSuccess) {
         const newEndTime = calculateSlotEndTime(selectedSlot!);
         const googleCalUrl = generateGoogleCalendarUrl({
-            title: `Discovery Call: Xinteck Technologies & ${booking.name}`,
-            description: `15-Minute Technical Discovery & Consultation Session.`,
+            title: `Strategy Session: Xinteck Technologies & ${booking.name}`,
+            description: `15-Minute Technical Strategy Session.`,
             startDate: selectedDate,
             startTime: selectedSlot!,
             endTime: newEndTime,
@@ -183,7 +183,7 @@ export default function RescheduleClient({ booking }: { booking: RescheduleBooki
                     Rescheduled Successfully!
                 </h2>
                 <p className="text-sm text-foreground/80 leading-relaxed mb-6">
-                    Your discovery call has been moved to:
+                    Your strategy session has been moved to:
                 </p>
 
                 <div className="p-6 rounded-2xl bg-white/5 border border-primary/40 mb-8 flex flex-col gap-2">

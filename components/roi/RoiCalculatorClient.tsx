@@ -209,7 +209,7 @@ export function RoiCalculatorClient() {
 
     // ── Book link with context ───────────────────────────────
     const bookHref = `/book?service=${encodeURIComponent(
-        mode === "efficiency" ? "Custom Software Development" : "Web Development"
+        mode === "efficiency" ? "Backbone" : "Launchpad"
     )}`;
 
     return (
@@ -275,11 +275,13 @@ export function RoiCalculatorClient() {
                                                     parseFloat(e.target.value)
                                                 )
                                             }
-                                            className="w-full h-2.5 rounded-full appearance-none cursor-pointer bg-muted/20 dark:bg-white/10"
-                                            style={{
-                                                background: `linear-gradient(to right, #D4AF37 0%, #D4AF37 ${pct}%, rgba(120,120,120,0.2) ${pct}%, rgba(120,120,120,0.2) 100%)`,
-                                                WebkitAppearance: "none",
-                                            }}
+                                            suppressHydrationWarning
+                                            className="roi-slider-input w-full h-2.5 rounded-full appearance-none cursor-pointer border border-black/15 dark:border-white/20 transition-all focus:outline-none [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-4.5 [&::-webkit-slider-thumb]:h-4.5 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-[#D4AF37] [&::-webkit-slider-thumb]:border-2 [&::-webkit-slider-thumb]:border-black dark:[&::-webkit-slider-thumb]:border-white [&::-webkit-slider-thumb]:shadow-md [&::-webkit-slider-thumb]:cursor-pointer [&::-webkit-slider-thumb]:hover:scale-110 [&::-webkit-slider-thumb]:transition-transform"
+                                            style={
+                                                {
+                                                    "--slider-pct": `${pct}%`,
+                                                } as React.CSSProperties
+                                            }
                                         />
                                     </div>
                                 );
@@ -453,7 +455,7 @@ export function RoiCalculatorClient() {
                         className={`px-8 md:px-12 py-3.5 bg-primary text-primary-foreground font-bold rounded-[10px] hover:bg-primary/90 transition-all flex items-center justify-center gap-3 shadow-xl shadow-primary/20 ${TYPOGRAPHY.button}`}
                     >
                         <Calculator size={18} />
-                        <span>Book a Free Call</span>
+                        <span>Apply for a Strategy Session</span>
                         <ArrowUpRight
                             size={18}
                             className="transition-transform"

@@ -21,14 +21,14 @@ export const BookingConfirmedEmail = ({
   adminNote = null,
 }: BookingConfirmedEmailProps) => {
   return (
-    <XinteckEmailLayout previewText={`Confirmed: Your Xinteck Discovery Call is on ${date} at ${startTime} EAT`} showSignature={true}>
+    <XinteckEmailLayout previewText={`Confirmed: Your Xinteck Strategy Session is on ${date} at ${startTime} EAT`} showSignature={true}>
       <Heading className="text-[22px] font-black tracking-tight text-brand m-0 mb-[16px]">
-        Your Discovery Call is Confirmed! ✅
+        Your Strategy Session is Confirmed! ✅
       </Heading>
 
       <Text className="text-white text-[15px] leading-[26px] m-0 mb-[24px]">
         Hello {name},<br /><br />
-        We're excited to speak with you! Your free 15-minute discovery call has been confirmed. Below are your meeting details and direct Google Meet video link.
+        We're excited to speak with you! Your technical strategy session has been confirmed. Below are your meeting details and direct Google Meet video link.
       </Text>
 
       {/* Prominent Google Meet Box */}
@@ -83,7 +83,7 @@ export const BookingConfirmedEmail = ({
       {/* Preparation Tips */}
       <Section className="bg-[#0A0A0A] border border-[#222222] rounded-[8px] p-[24px] mb-[24px]">
         <Text className="text-[12px] font-black text-brand uppercase tracking-widest m-0 mb-[12px]">
-          How to get the most from this 15-minute call
+          How to get the most from this strategy session
         </Text>
         <Row className="mb-[8px]">
           <Column style={{ width: '20px' }}><Text className="text-brand text-[14px] m-0">✓</Text></Column>

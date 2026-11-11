@@ -184,7 +184,7 @@ export async function createBooking(rawInput: unknown, clientIp?: string, userAg
             action: "booking.create",
             entity: "DiscoveryBooking",
             entityId: booking.id,
-            details: `Discovery call booked by ${data.name} on ${data.date} at ${data.startTime} EAT`,
+            details: `Strategy session booked by ${data.name} on ${data.date} at ${data.startTime} EAT`,
         });
 
         // In-App Notification to Admins
@@ -193,8 +193,8 @@ export async function createBooking(rawInput: unknown, clientIp?: string, userAg
                 roles: [Role.ADMIN, Role.SUPER_ADMIN],
                 type: NotificationType.INFO,
                 priority: NotificationPriority.HIGH,
-                title: "🗓️ New Discovery Call Booking",
-                message: `${data.name} booked a call for ${data.date} at ${data.startTime} EAT.`,
+                title: "🗓️ New Strategy Session Booking",
+                message: `${data.name} booked a session for ${data.date} at ${data.startTime} EAT.`,
                 link: `/admin/bookings?id=${booking.id}`,
             });
         } catch (notifErr) {
@@ -226,7 +226,7 @@ export async function createBooking(rawInput: unknown, clientIp?: string, userAg
                     from: senderAddress,
                     to: [adminRecipient],
                     replyTo: data.email,
-                    subject: `🗓️ New Discovery Call: ${data.name} — ${data.date} at ${data.startTime} EAT`,
+                    subject: `🗓️ New Strategy Session: ${data.name} — ${data.date} at ${data.startTime} EAT`,
                     html: adminHtml,
                 });
             } catch (emailErr) {
@@ -249,7 +249,7 @@ export async function createBooking(rawInput: unknown, clientIp?: string, userAg
                     from: senderAddress,
                     to: [data.email],
                     replyTo: "info@xinteck.co.ke",
-                    subject: "Your Discovery Call Request with Xinteck is Received! 🎯",
+                    subject: "Your Strategy Session Request with Xinteck is Received! 🎯",
                     html: customerHtml,
                 });
 
@@ -419,8 +419,8 @@ export async function confirmBooking(rawInput: unknown) {
     if (resend) {
         try {
             const googleCalUrl = generateGoogleCalendarUrl({
-                title: `Discovery Call: Xinteck Technologies & ${booking.name}`,
-                description: `15-Minute Technical Discovery & Consultation Session.`,
+                title: `Strategy Session: Xinteck Technologies & ${booking.name}`,
+                description: `15-Minute Technical Strategy Session.`,
                 startDate: dateStr,
                 startTime: booking.startTime,
                 endTime: booking.endTime,
@@ -441,7 +441,7 @@ export async function confirmBooking(rawInput: unknown) {
                 });
             }
 
-            const icsDescription = `15-Minute Technical Discovery & Strategy Session with Xinteck Technologies.\n\n` +
+            const icsDescription = `15-Minute Technical Strategy Session with Xinteck Technologies.\n\n` +
                 `Client: ${booking.name} (${booking.email})\n` +
                 `Phone: ${booking.phone || "Not provided"}\n` +
                 `Company: ${booking.company || "N/A"}\n` +
@@ -452,7 +452,7 @@ export async function confirmBooking(rawInput: unknown) {
 
             const icsContent = generateIcsContent({
                 id: booking.id,
-                title: `Discovery Call: Xinteck & ${booking.name}`,
+                title: `Strategy Session: Xinteck & ${booking.name}`,
                 description: icsDescription,
                 startDate: dateStr,
                 startTime: booking.startTime,
@@ -484,7 +484,7 @@ export async function confirmBooking(rawInput: unknown) {
                 from: senderAddress,
                 to: [booking.email],
                 replyTo: "info@xinteck.co.ke",
-                subject: `Confirmed! Your Discovery Call with Xinteck — ${dateStr} at ${booking.startTime} EAT ✅`,
+                subject: `Confirmed! Your Strategy Session with Xinteck — ${dateStr} at ${booking.startTime} EAT ✅`,
                 html: clientHtml,
                 attachments: [icsAttachment],
             });
@@ -532,7 +532,7 @@ export async function confirmBooking(rawInput: unknown) {
                     from: senderAddress,
                     to: [assignedHost.email],
                     replyTo: booking.email,
-                    subject: `🗓️ Host Assigned: Discovery Call with ${booking.name} — ${dateStr} at ${booking.startTime} EAT`,
+                    subject: `🗓️ Host Assigned: Strategy Session with ${booking.name} — ${dateStr} at ${booking.startTime} EAT`,
                     html: hostBriefingHtml,
                     attachments: [icsAttachment],
                 });
@@ -567,7 +567,7 @@ export async function confirmBooking(rawInput: unknown) {
                         from: senderAddress,
                         to: [sa.email],
                         replyTo: booking.email,
-                        subject: `🗓️ [Executive] Confirmed Discovery Call: ${booking.name} — ${dateStr} at ${booking.startTime} EAT`,
+                        subject: `🗓️ [Executive] Confirmed Strategy Session: ${booking.name} — ${dateStr} at ${booking.startTime} EAT`,
                         html: executiveBriefingHtml,
                         attachments: [icsAttachment],
                     });
@@ -581,7 +581,7 @@ export async function confirmBooking(rawInput: unknown) {
                     from: senderAddress,
                     to: [adminRecipient],
                     replyTo: booking.email,
-                    subject: `🗓️ Confirmed Discovery Call: ${booking.name} — ${dateStr} at ${booking.startTime} EAT`,
+                    subject: `🗓️ Confirmed Strategy Session: ${booking.name} — ${dateStr} at ${booking.startTime} EAT`,
                     html: clientHtml,
                     attachments: [icsAttachment],
                 });
@@ -622,8 +622,8 @@ export async function assignBookingHost(bookingId: string, assignedToId: string 
                 userId: assignedToId,
                 type: NotificationType.INFO,
                 priority: NotificationPriority.HIGH,
-                title: "🗓️ Assigned as Discovery Call Host",
-                message: `You were assigned as lead host for ${booking.name}'s call on ${booking.date.toISOString().split("T")[0]} at ${booking.startTime} EAT.`,
+                title: "🗓️ Assigned as Strategy Session Host",
+                message: `You were assigned as lead host for ${booking.name}'s strategy session on ${booking.date.toISOString().split("T")[0]} at ${booking.startTime} EAT.`,
                 link: `/admin/bookings?id=${booking.id}`,
             });
         } catch (notifErr) {
@@ -639,7 +639,7 @@ export async function assignBookingHost(bookingId: string, assignedToId: string 
                 const dateStr = booking.date.toISOString().split("T")[0];
                 const icsContent = generateIcsContent({
                     id: booking.id,
-                    title: `Discovery Call: Xinteck & ${booking.name}`,
+                    title: `Strategy Session: Xinteck & ${booking.name}`,
                     description: `You are assigned as host.\nClient: ${booking.name} (${booking.email})\nCompany: ${booking.company || "N/A"}\nService: ${booking.service || "General Inquiry"}\nJoin Meet: ${booking.meetLink || "TBD"}`,
                     startDate: dateStr,
                     startTime: booking.startTime,
@@ -673,7 +673,7 @@ export async function assignBookingHost(bookingId: string, assignedToId: string 
                 await resend.emails.send({
                     from: senderAddress,
                     to: [booking.assignedTo.email],
-                    subject: `Host Assignment: Discovery Call with ${booking.name} — ${dateStr} at ${booking.startTime} EAT 🗓️`,
+                    subject: `Host Assignment: Strategy Session with ${booking.name} — ${dateStr} at ${booking.startTime} EAT 🗓️`,
                     html: hostBriefingHtml,
                     attachments: [
                         {
@@ -738,8 +738,8 @@ export async function cancelBooking(rawInput: unknown) {
         try {
             const cancelIcs = generateIcsCancelContent({
                 id: booking.id,
-                title: `Cancelled: Discovery Call with Xinteck & ${booking.name}`,
-                description: `This discovery call has been cancelled.\nReason: ${reason}`,
+                title: `Cancelled: Strategy Session with Xinteck & ${booking.name}`,
+                description: `This strategy session has been cancelled.\nReason: ${reason}`,
                 startDate: dateStr,
                 startTime: booking.startTime,
                 endTime: booking.endTime,
@@ -770,7 +770,7 @@ export async function cancelBooking(rawInput: unknown) {
                 from: senderAddress,
                 to: [booking.email],
                 replyTo: "info@xinteck.co.ke",
-                subject: `Discovery Call Update — Xinteck (${dateStr})`,
+                subject: `Strategy Session Update — Xinteck (${dateStr})`,
                 html,
                 attachments: [cancelAttachment],
             });
@@ -805,7 +805,7 @@ export async function cancelBooking(rawInput: unknown) {
                 await resend.emails.send({
                     from: senderAddress,
                     to: [booking.assignedTo.email],
-                    subject: `Cancelled: Discovery Call with ${booking.name} (${dateStr})`,
+                    subject: `Cancelled: Strategy Session with ${booking.name} (${dateStr})`,
                     html: hostCancelHtml,
                     attachments: [cancelAttachment],
                 });
@@ -830,7 +830,7 @@ export async function cancelBooking(rawInput: unknown) {
                     await resend.emails.send({
                         from: senderAddress,
                         to: [sa.email],
-                        subject: `[Cancelled] Discovery Call: ${booking.name} (${dateStr})`,
+                        subject: `[Cancelled] Strategy Session: ${booking.name} (${dateStr})`,
                         html: executiveCancelHtml,
                         attachments: [cancelAttachment],
                     });
@@ -869,7 +869,7 @@ export async function completeBooking(bookingId: string, notes?: string) {
         action: "booking.complete",
         entity: "DiscoveryBooking",
         entityId: bookingId,
-        details: `Marked discovery call with ${existing.name} as COMPLETED by ${user.name}`,
+        details: `Marked strategy session with ${existing.name} as COMPLETED by ${user.name}`,
     });
 
     revalidatePath("/admin/bookings");
@@ -900,7 +900,7 @@ export async function markNoShow(bookingId: string, notes?: string) {
         action: "booking.no_show",
         entity: "DiscoveryBooking",
         entityId: bookingId,
-        details: `Marked discovery call with ${existing.name} as NO_SHOW by ${user.name}`,
+        details: `Marked strategy session with ${existing.name} as NO_SHOW by ${user.name}`,
     });
 
     revalidatePath("/admin/bookings");
@@ -1249,8 +1249,8 @@ export async function customerRescheduleBooking(rawInput: unknown) {
     if (resend) {
         try {
             const googleCalUrl = generateGoogleCalendarUrl({
-                title: `Discovery Call: Xinteck Technologies & ${existing.name}`,
-                description: `15-Minute Technical Discovery & Consultation Session.`,
+                title: `Strategy Session: Xinteck Technologies & ${existing.name}`,
+                description: `15-Minute Technical Strategy Session.`,
                 startDate: newDate,
                 startTime: newStartTime,
                 endTime: newEndTime,
@@ -1259,8 +1259,8 @@ export async function customerRescheduleBooking(rawInput: unknown) {
 
             const icsContent = generateIcsContent({
                 id: existing.id,
-                title: `Discovery Call: Xinteck & ${existing.name}`,
-                description: `Rescheduled 15-Minute Technical Discovery & Consultation Session with Xinteck Technologies.\n\nJoin Google Meet: ${existing.meetLink || "https://meet.google.com/new"}`,
+                title: `Strategy Session: Xinteck & ${existing.name}`,
+                description: `Rescheduled 15-Minute Technical Strategy Session with Xinteck Technologies.\n\nJoin Google Meet: ${existing.meetLink || "https://meet.google.com/new"}`,
                 startDate: newDate,
                 startTime: newStartTime,
                 endTime: newEndTime,
@@ -1293,7 +1293,7 @@ export async function customerRescheduleBooking(rawInput: unknown) {
                 from: senderAddress,
                 to: [existing.email],
                 replyTo: "info@xinteck.co.ke",
-                subject: `Rescheduled: Your Discovery Call with Xinteck — ${newDate} at ${newStartTime} EAT ✅`,
+                subject: `Rescheduled: Your Strategy Session with Xinteck — ${newDate} at ${newStartTime} EAT ✅`,
                 html: customerHtml,
                 attachments: [icsAttachment],
             });
@@ -1302,8 +1302,8 @@ export async function customerRescheduleBooking(rawInput: unknown) {
                 from: senderAddress,
                 to: [adminRecipient],
                 replyTo: existing.email,
-                subject: `🗓️ Reschedule Alert: ${existing.name} moved call to ${newDate} at ${newStartTime} EAT`,
-                text: `${existing.name} has rescheduled their discovery call.\nPrevious: ${currentDateStr} at ${existing.startTime} EAT\nNew: ${newDate} at ${newStartTime} EAT\nReason: ${reason || "None"}\nAdmin: https://xinteck.co.ke/admin/bookings`,
+                subject: `🗓️ Reschedule Alert: ${existing.name} moved session to ${newDate} at ${newStartTime} EAT`,
+                text: `${existing.name} has rescheduled their strategy session.\nPrevious: ${currentDateStr} at ${existing.startTime} EAT\nNew: ${newDate} at ${newStartTime} EAT\nReason: ${reason || "None"}\nAdmin: https://xinteck.co.ke/admin/bookings`,
                 attachments: [icsAttachment],
             });
         } catch (emailErr) {

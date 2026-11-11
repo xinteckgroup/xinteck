@@ -8,7 +8,7 @@ import { ConfirmModal } from "@/components/admin/ui/ConfirmModal";
 import { Pagination } from "@/components/admin/ui/Pagination";
 import { Select } from "@/components/admin/ui/Select";
 import { PaginatedResponse } from "@/lib/pagination";
-import { ProjectSummary } from "@/types";
+import { ProjectSummary } from "@/types/index";
 import { Role } from "@prisma/client";
 import { Edit, Eye, Grid, LayoutList, Plus, Search, Sparkles, Trash2 } from "lucide-react";
 import Link from "next/link";

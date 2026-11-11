@@ -11,7 +11,7 @@ import { NotificationService } from "@/lib/services/notification-service";
 
 import { createPaginatedResult, getPaginationParams, PaginatedResponse } from "@/lib/pagination";
 
-import { BlogPostSummary } from "@/types";
+import { BlogPostSummary } from "@/types/index";
 import { PaginationParams } from "@/types/pagination";
 
 export type BlogFilter = PaginationParams & {

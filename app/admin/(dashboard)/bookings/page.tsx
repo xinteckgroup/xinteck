@@ -6,7 +6,7 @@ import { Role, UserStatus } from "@prisma/client";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-    title: "Discovery Calls & Bookings | Xinteck Administration",
+    title: "Strategy Sessions & Bookings | Xinteck Administration",
 };
 
 export default async function AdminBookingsPage() {

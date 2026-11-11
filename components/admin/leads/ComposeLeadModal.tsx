@@ -87,7 +87,7 @@ I am reaching out from Xinteck Engineering Group. We specialize in building robu
 
 Having observed your recent initiatives, we see several strategic opportunities to accelerate your technical roadmap and enhance your platform's performance and security.
 
-Would you be open to a brief 15-minute introductory technical discussion next week?
+Would you be open to a 15-minute technical strategy session next week?
 
 Looking forward to connecting.`;
     setFormData(prev => ({ ...prev, message: template }));

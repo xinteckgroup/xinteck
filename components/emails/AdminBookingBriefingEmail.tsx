@@ -39,7 +39,7 @@ export const AdminBookingBriefingEmail = ({
 
   return (
     <XinteckEmailLayout
-      previewText={`${isHost ? 'Host Assignment' : 'Executive Briefing'}: Discovery Call with ${clientName} (${date} at ${startTime} EAT)`}
+      previewText={`${isHost ? 'Host Assignment' : 'Executive Briefing'}: Strategy Session with ${clientName} (${date} at ${startTime} EAT)`}
     >
       {/* Executive/Host Category Badge */}
       <Section className="text-left mb-[16px]">
@@ -57,24 +57,24 @@ export const AdminBookingBriefingEmail = ({
             border: '1px solid rgba(212, 175, 55, 0.35)',
           }}
         >
-          {isHost ? '🗓️ Discovery Call Host Assignment' : 'Executive Calendar Notification'}
+          {isHost ? '🗓️ Strategy Session Host Assignment' : 'Executive Calendar Notification'}
         </div>
       </Section>
 
       <Heading className="text-[22px] font-black tracking-tight text-white m-0 mb-[8px]">
-        {isHost ? 'Discovery Call Host Assignment' : 'Discovery Call Confirmed'}
+        {isHost ? 'Strategy Session Host Assignment' : 'Strategy Session Confirmed'}
       </Heading>
 
       <Text className="text-[#E0E0E0] text-[14px] leading-[22px] m-0 mb-[24px]">
         {isHost
-          ? 'You are the assigned lead host for this confirmed technical discovery call. Below are the briefing details:'
-          : 'A new discovery call has been confirmed. Below are the executive briefing details:'}
+          ? 'You are the assigned lead host for this confirmed technical strategy session. Below are the briefing details:'
+          : 'A new strategy session has been confirmed. Below are the executive briefing details:'}
       </Text>
 
       {/* Prominent Appointment Window Box */}
       <Section className="bg-[#141414] border-2 border-brand/40 rounded-[10px] p-[20px] mb-[24px] text-left">
         <Text className="text-dimText text-[11px] uppercase font-bold tracking-widest m-0 mb-[6px]" style={{ color: '#D4AF37' }}>
-          Scheduled Appointment (15 Minutes)
+          Scheduled Strategy Session (15 Minutes)
         </Text>
         <Text className="text-white text-[18px] sm:text-[20px] font-black m-0">
           📅 {date} · ⏰ {startTime} – {endTime} EAT

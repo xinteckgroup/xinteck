@@ -33,7 +33,7 @@ const FALLBACK_ITEMS: BannerItem[] = [
     { text: "Average Sprint Delivery: Under 1 Week", icon: "Zap", highlight: false },
     { text: "ISO 27001 Compliant Workflows", icon: "Award", highlight: false },
     { text: "24/7 Post-Launch Support & Monitoring", icon: "Headphones", highlight: false },
-    { text: "Free Discovery Call — Let's Scope Your Vision", icon: "Sparkles", highlight: true },
+    { text: "Strategic Architecture Session — 4 Slots per Quarter", icon: "Sparkles", highlight: true },
     { text: "AI-Powered Product Analytics Integration", icon: "Rocket", highlight: false },
     { text: "99.99% Uptime Guarantee on All Platforms", icon: "Clock", highlight: false },
 ];

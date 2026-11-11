@@ -50,19 +50,19 @@ export function Hero() {
               <span className="relative inline-flex rounded-full h-2 w-2 bg-primary"></span>
             </span>
             <span className={`${TYPOGRAPHY.badge} text-primary`}>
-              Now Accepting New Projects
+              Q1 2027: 2 of 4 Project Slots Remaining
             </span>
           </div>
 
           <h1 className="text-3xl md:text-5xl lg:text-6xl font-black tracking-tighter text-white leading-[0.95]">
-            WE BUILD <span className="text-white/40">THE SOFTWARE</span> <br />
+            SOFTWARE <span className="text-white/40">THAT WORKS</span> <br />
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary via-yellow-200 to-primary animate-gradient-x">
-              YOUR BUSINESS NEEDS.
+              FOR KENYA.
             </span>
           </h1>
 
           <p className={`${TYPOGRAPHY.pageSubtitle} text-white max-w-lg`}>
-            M-Pesa-ready platforms. eTIMS-compliant systems. Enterprise-grade mobile apps. We build the digital infrastructure that powers your business — from startup to scale.
+            From M-Pesa checkout to eTIMS compliance — we build the digital infrastructure Kenyan businesses need to compete and win.
           </p>
 
           <div className="flex flex-wrap items-center gap-3 md:gap-4 mt-2">
@@ -72,7 +72,7 @@ export function Hero() {
             >
               <div className={`${TYPOGRAPHY.button} relative z-10 flex items-center gap-2.5 px-7 md:px-8 py-3.5 md:py-4 bg-primary text-black font-black shadow-[0_0_25px_rgba(212,175,55,0.45)] hover:shadow-[0_0_45px_rgba(212,175,55,0.85)] hover:scale-105 transition-all text-sm md:text-base tracking-wide`}>
                 <Video size={18} className="text-black shrink-0" />
-                <span>Book Free 15-Min Call</span>
+                <span>Apply for Strategy Session</span>
                 <ArrowRight className="group-hover:translate-x-1.5 transition-transform" size={18} />
               </div>
             </Link>
@@ -102,12 +102,12 @@ export function Hero() {
 
           <div className="flex items-center gap-8 pt-8 border-t border-primary/10 mt-4">
             {[
-              { label: "Average Sprint Cycle", val: "<1 Week" },
-              { label: "Client Retention Rate", val: "100%" },
+              { label: "M-Pesa Failures Post-Launch", val: "KES 0" },
+              { label: "KRA Compliance Guarantee", val: "100%" },
             ].map((stat) => (
               <div key={stat.label}>
                 <div className={`${TYPOGRAPHY.sectionTitle} text-primary font-mono`}>{stat.val}</div>
-                <div className={`${TYPOGRAPHY.meta} text-foreground/50 uppercase tracking-widest font-bold`}>
+                <div className={`${TYPOGRAPHY.meta} text-white/70 uppercase tracking-widest font-bold`}>
                   {stat.label}
                 </div>
               </div>

@@ -27,15 +27,15 @@ export const AdminBookingAlertEmail = ({
   endTime = "10:25",
 }: AdminBookingAlertEmailProps) => {
   return (
-    <XinteckEmailLayout previewText={`New Discovery Call: ${name} (${date} at ${startTime} EAT)`}>
+    <XinteckEmailLayout previewText={`New Strategy Session: ${name} (${date} at ${startTime} EAT)`}>
       <Heading className="text-[20px] font-black tracking-tight text-brand m-0 mb-[24px]">
-        New Discovery Call Booking Alert
+        New Strategy Session Booking Alert
       </Heading>
 
       {/* Appointment Window Highlight */}
       <Section className="bg-[#141414] border-2 border-brand/40 rounded-[8px] p-[20px] mb-[24px] text-left">
         <Text className="text-dimText text-[12px] uppercase font-bold tracking-widest m-0 mb-[6px]" style={{ color: '#D4AF37' }}>
-          Scheduled Appointment (15 Minutes)
+          Scheduled Strategy Session (15 Minutes)
         </Text>
         <Text className="text-white text-[18px] font-black m-0">
           📅 {date} · ⏰ {startTime} – {endTime} EAT

@@ -64,16 +64,24 @@ export const getContactConfig = unstable_cache(
             const servicesList: string[] = [];
             const budgetsMap: Record<string, string[]> = {};
 
+            const DEFAULT_PROJECT_SCOPES = [
+                "Sprint Scope (Rapid MVP / Accelerated Launch)",
+                "Growth Scope (Full Architecture & Integrations)",
+                "Enterprise Scope (Custom Systems & Mission-Critical Operations)",
+                "Dedicated Retainer (SLA & Ongoing Optimization)",
+                "To Be Determined During Strategy Session"
+            ];
+
             activeServices.forEach(s => {
                 servicesList.push(s.name);
                 budgetsMap[s.name] = s.budgetRanges && s.budgetRanges.length > 0
                     ? s.budgetRanges
-                    : ["KES 50k - 150k", "KES 150k - 500k", "KES 500k - 1M", "KES 1M+"]; // Fallback
+                    : DEFAULT_PROJECT_SCOPES;
             });
 
             // Add standard options for edge cases
             servicesList.push("Other");
-            budgetsMap["Other"] = ["KES 50k - 150k", "KES 150k - 500k", "KES 500k - 1M", "KES 1M+"];
+            budgetsMap["Other"] = DEFAULT_PROJECT_SCOPES;
 
             return {
                 services: servicesList,

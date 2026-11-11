@@ -12,21 +12,21 @@ const prisma = new PrismaClient({
 const services = [
     {
         slug: "web-development",
-        name: "Web Development",
-        subName: "Modern Websites & Web Platforms",
-        price: "From KES 80,000",
-        description: "Your website is often the first impression a customer has of your business. We design and build clean, fast, and mobile-friendly websites that look world-class and actively convert visitors into paying clients. Whether you need a corporate company site, an online store with direct M-Pesa checkout, or a custom booking portal, we make sure it loads instantly on any phone and ranks high on Google.",
+        name: "Launchpad",
+        subName: "Web Platforms & API Integrations",
+        price: "Custom Scope",
+        description: "We build modern web platforms with instant M-Pesa checkout, KRA eTIMS readiness, and sub-100ms load speeds. Built for Kenyan companies that need direct mobile payment rails, bulletproof uptime, and a digital storefront engineered to convert visitors into repeat customers.",
 
         features: [
-            "M-Pesa & Card Checkout",
-            "Fast on All Mobile Networks",
-            "Google SEO Optimized",
-            "Simple Admin Dashboard",
-            "WhatsApp Chat Integration",
-            "99.9% Reliable Uptime"
+            "M-Pesa STK Push & Daraja Checkout",
+            "KRA eTIMS Tax Compliant Invoicing",
+            "Sub-100ms Mobile Load Speeds",
+            "Client Admin & Content Dashboard",
+            "WhatsApp Lead & Order Integration",
+            "99.9% High-Availability Uptime"
         ],
         stats: [{ label: "Lighthouse", val: "100" }, { label: "Uptime", val: "99.9%" }, { label: "Speed", val: "<100ms" }],
-        section1: { title: "Web Development.", subtitle: "Digital Excellence." },
+        section1: { title: "Launchpad.", subtitle: "Web Platforms Engineered for Revenue." },
         section2: { title: "Blazing fast performance.", subtitle: "Built on the latest Next.js infrastructure for instant page loads and superior SEO." },
         section3: { title: "Pixel-perfect engineering.", subtitle: "Every interaction is crafted with precision, ensuring a premium user experience across all devices." },
         section4: { title: "Scalable architecture.", subtitle: "" },
@@ -40,33 +40,39 @@ const services = [
             description: "Our codebases are strictly typed with TypeScript and linted for consistency. We adhere to SOLID principles, ensuring that your application remains robust, readable, and easy to extend for years to come."
         },
         buyNowSection: {
-            price: "From KES 80,000",
-            unit: "per project",
-            processingParams: ["SEO Ready", "Analytics", "CMS Integration"],
-            deliveryPromise: "Agile delivery with bi-weekly demos. Full source code ownership.",
-            returnPolicy: "30-day bug fix warranty included."
+            price: "Custom Scope",
+            unit: "per engagement",
+            processingParams: ["M-Pesa STK", "eTIMS Invoicing", "CMS Integration"],
+            deliveryPromise: "Agile delivery with weekly progress demos. Full source code ownership.",
+            returnPolicy: "30-day post-launch warranty included."
         },
+        budgetRanges: [
+            "Accelerated Sprint (M-Pesa Checkout & Fast Go-To-Market)",
+            "Commercial Web Platform (Direct Daraja + eTIMS Integration)",
+            "High-Scale Custom Web Architecture",
+            "To Be Determined During Strategy Session"
+        ],
         status: ContentStatus.PUBLISHED,
         sortOrder: 1,
         image: "/images/services/web_dev_caricature_1771020665861.webp"
     },
     {
         slug: "mobile-app-development",
-        name: "Mobile Apps",
+        name: "Pulse",
         subName: "Android & iOS Applications",
-        price: "From KES 200,000",
-        description: "Put your business directly into your customers' pockets. We build intuitive, easy-to-use mobile apps for both Android and iPhone from a single codebase. Whether you're launching an on-demand delivery app, a customer loyalty program, or an internal tool for your field team, our apps run smoothly, work reliably even with weak internet, and make doing business with you effortless.",
+        price: "Custom Scope",
+        description: "Put your business directly into your customers' hands. We engineer high-performance mobile apps for Android and iOS with native M-Pesa STK push, offline capabilities, and instant push notifications—built to perform flawlessly on any device across Kenya.",
 
         features: [
-            "Android & iPhone in One App",
-            "Instant Push Notifications",
-            "Works Offline & Low Data Use",
-            "In-App M-Pesa & SMS Alerts",
-            "Google Play & App Store Setup",
-            "Easy for Anyone to Use"
+            "Unified Android & iPhone Codebase",
+            "Instant In-App M-Pesa STK Push",
+            "Offline-First Data Synchronization",
+            "Targeted Push Notifications & SMS",
+            "Google Play & App Store Publication",
+            "Zero-Lag High Performance UX"
         ],
         stats: [{ label: "Platforms", val: "2" }, { label: "Code Share", val: "90%" }, { label: "FPS", val: "60" }],
-        section1: { title: "Mobile Apps.", subtitle: "Native Performance." },
+        section1: { title: "Pulse.", subtitle: "Mobile Architecture in Your Customer's Hands." },
         section2: { title: "One codebase, everywhere.", subtitle: "React Native allows us to deploy to iOS and Android simultaneously without compromising quality." },
         section3: { title: "Silky smooth animations.", subtitle: "Optimized for 60fps performance with native driver integrations and gesture handling." },
         section4: { title: "Offline-first design.", subtitle: "" },
@@ -80,33 +86,39 @@ const services = [
             description: "We handle the entire submission process for Apple App Store and Google Play Store, ensuring your app meets all guidelines and gets approved quickly."
         },
         buyNowSection: {
-            price: "From KES 200,000",
-            unit: "per project",
-            processingParams: ["iOS + Android", "Push Notifs", "Biometrics"],
-            deliveryPromise: "TestFlight builds delivered weekly.",
+            price: "Custom Scope",
+            unit: "per engagement",
+            processingParams: ["iOS + Android", "M-Pesa Push", "Biometrics"],
+            deliveryPromise: "Weekly demo builds delivered directly to your device.",
             returnPolicy: "Post-launch crash monitoring included."
         },
+        budgetRanges: [
+            "MVP Mobile Build (Android + iOS)",
+            "Commercial App (Native Daraja STK + Push & Offline Support)",
+            "High-Volume Fintech / Enterprise Mobile Platform",
+            "To Be Determined During Strategy Session"
+        ],
         status: ContentStatus.PUBLISHED,
         sortOrder: 2,
         image: "/images/services/mobile_app_caricature_1771020693351.webp"
     },
     {
         slug: "custom-software-development",
-        name: "Custom Software",
-        subName: "Business Systems & Automation",
-        price: "From KES 300,000",
-        description: "When off-the-shelf software doesn't fit the way your company actually runs, we build custom systems tailored to your unique operations. We help businesses replace disorganized spreadsheets and manual paperwork with unified management portals, inventory trackers, and eTIMS-ready invoicing—giving your team peace of mind and saving hours of administrative time every single week.",
+        name: "Backbone",
+        subName: "Custom Business Systems & Automation",
+        price: "Custom Scope",
+        description: "When generic off-the-shelf tools slow you down, we engineer custom operations software tailored to your company's exact workflow. Replace disorganized spreadsheets with unified management portals, automated stock tracking, and native eTIMS invoicing that saves your team dozens of manual hours every week.",
 
         features: [
-            "Built for Your Exact Workflow",
-            "eTIMS Invoicing & KRA Ready",
-            "Inventory & Stock Tracking",
-            "Staff Portals & Role Permissions",
-            "Automated Reports & Analytics",
-            "Full Data Privacy & Backups"
+            "Engineered for Your Exact Operations",
+            "Automated eTIMS / KRA Invoicing",
+            "Real-Time Stock & Warehouse Tracking",
+            "Granular Role & Staff Permissions",
+            "Automated Executive Financial Reports",
+            "End-to-End Encryption & Daily Backups"
         ],
         stats: [{ label: "Security", val: "AES-256" }, { label: "Scale", val: "Unltd" }, { label: "API", val: "REST/QL" }],
-        section1: { title: "Custom Software.", subtitle: "Tailored Solutions." },
+        section1: { title: "Backbone.", subtitle: "The System Your Operations Run On." },
         section2: { title: "Complex problems, solved.", subtitle: "We maintain rigorous logic to handle intricate business rules and data flows." },
         section3: { title: "Integrated ecosystems.", subtitle: "Seamlessly connect with your existing CRM, ERP, and third-party tools." },
         section4: { title: "Data-driven insights.", subtitle: "" },
@@ -120,33 +132,39 @@ const services = [
             description: "We implement defense-in-depth strategies, including role-based access control (RBAC), data encryption at rest and in transit, and regular security audits."
         },
         buyNowSection: {
-            price: "From KES 300,000",
-            unit: "per project",
-            processingParams: ["Cloud Native", "Dockerized", "CI/CD Pipeline"],
-            deliveryPromise: "Phased rollout with user training.",
+            price: "Custom Scope",
+            unit: "per engagement",
+            processingParams: ["Cloud Native", "Dockerized", "eTIMS Fiscal Core"],
+            deliveryPromise: "Phased rollout with team training sessions.",
             returnPolicy: "SLA-backed support agreements."
         },
+        budgetRanges: [
+            "Internal Operations System (Inventory / Staff / Workflow)",
+            "Custom ERP & Automated eTIMS Invoicing Core",
+            "Enterprise Multi-Branch Operations & Financial Engine",
+            "To Be Determined During Strategy Session"
+        ],
         status: ContentStatus.PUBLISHED,
         sortOrder: 3,
         image: "/images/services/custom_software_caricature_1771020721906.webp"
     },
     {
         slug: "ui-ux-design",
-        name: "UI/UX Design",
-        subName: "Product Design & Prototyping",
-        price: "From KES 50,000",
-        description: "Before writing any code, we test and perfect how your app or website will look and feel. We craft intuitive screens and clickable prototypes so you and your team can test the complete user experience before development begins. By putting your customers' needs first, we create digital journeys that are enjoyable to navigate, keep users engaged, and drive higher sales.",
+        name: "Canvas",
+        subName: "UI/UX Design & Prototyping",
+        price: "Custom Scope",
+        description: "Before writing a single line of code, we design high-converting user journeys and interactive clickable prototypes. Eliminate developer waste, validate workflows with real Kenyan users, and guarantee seamless customer checkout before engineering begins.",
 
         features: [
-            "Interactive Clickable Prototypes",
-            "User-Friendly Journey Flows",
-            "Modern Visual Aesthetics",
-            "High-Conversion Screen Layouts",
-            "Tested for Low Customer Friction",
-            "Complete Design System Handoff"
+            "High-Fidelity Interactive Prototypes",
+            "Friction-Free Checkout Journey Mapping",
+            "Conversion-Optimized UI Systems",
+            "Reusable Figma Component Libraries",
+            "Accessibility & Mobile Usability Testing",
+            "Developer-Ready Implementation Handoff"
         ],
         stats: [{ label: "Users", val: "Happy" }, { label: "Conversion", val: "+40%" }, { label: "Awards", val: "Yes" }],
-        section1: { title: "UI/UX Design.", subtitle: "User Centric." },
+        section1: { title: "Canvas.", subtitle: "Design Engineered to Convert." },
         section2: { title: "Designs that convert.", subtitle: "Aesthetics meet function. We design interfaces that guide users naturally towards your goals." },
         section3: { title: "Interactive prototypes.", subtitle: "Visualize the product before writing a single line of code with clickable high-fidelity prototypes." },
         section4: { title: "Accessibility included.", subtitle: "" },
@@ -160,33 +178,39 @@ const services = [
             description: "We start with the user. Through persona layout and journey mapping, we identify pain points and design solutions that truly solve user problems."
         },
         buyNowSection: {
-            price: "From KES 50,000",
-            unit: "per project",
-            processingParams: ["Figma Files", "Style Guide", "Assets"],
-            deliveryPromise: "Developer-ready handover files.",
-            returnPolicy: "Unlimited revisions during design phase."
+            price: "Custom Scope",
+            unit: "per engagement",
+            processingParams: ["Figma Master Files", "Style Guide", "Developer Handoff"],
+            deliveryPromise: "Interactive prototypes you can click through on mobile.",
+            returnPolicy: "Iterative revisions during design phase."
         },
+        budgetRanges: [
+            "Interactive Clickable Prototype (Figma Master)",
+            "Full Product Design System & Zero-Waste Developer Handoff",
+            "Multi-Platform UX Architecture & User Testing",
+            "To Be Determined During Strategy Session"
+        ],
         status: ContentStatus.PUBLISHED,
         sortOrder: 4,
         image: "/images/services/ui_ux_caricature_1771020743886.webp"
     },
     {
         slug: "cloud-devops",
-        name: "Cloud & DevOps",
-        subName: "Cloud Hosting & Security",
-        price: "From KES 80,000 / mo",
-        description: "Keep your digital platforms running smoothly around the clock without sudden crashes, slow loading times, or security worries. We set up and manage secure cloud servers with automatic daily backups, real-time monitoring, and enterprise-grade security. Whether you're handling 20 visitors or 20,000 during a big promotion, your platform stays fast, stable, and cost-efficient.",
+        name: "Sentinel",
+        subName: "Cloud Infrastructure & Security",
+        price: "SLA Retainer",
+        description: "24/7 infrastructure protection and cloud optimization. We deploy and manage resilient server environments with automated daily backups, threat mitigation, and instant auto-scaling—guaranteeing 99.9% uptime during your highest-traffic sales peaks.",
 
         features: [
-            "24/7 Uptime & Monitoring",
-            "Automatic Daily Data Backups",
-            "Advanced Security & Threat Shield",
-            "Handles High Traffic Without Crashing",
-            "Cloud Cost Optimization",
-            "Fast Disaster Recovery Plan"
+            "24/7 Telemetry & Health Monitoring",
+            "Automated Daily Redundant Backups",
+            "Threat Shield & Attack Mitigation",
+            "Auto-Scaling Traffic Peak Resilience",
+            "Cloud Cost Optimization & Audits",
+            "Sub-15 Minute Disaster Recovery SLA"
         ],
         stats: [{ label: "Uptime", val: "99.99%" }, { label: "Deploy", val: "Auto" }, { label: "Cost", val: "-30%" }],
-        section1: { title: "Cloud & DevOps.", subtitle: "Infrastructure." },
+        section1: { title: "Sentinel.", subtitle: "Your Infrastructure, Always Guarded." },
         section2: { title: "Scale without fear.", subtitle: "Kubernetes clusters that grow with your traffic, handling millions of requests automatically." },
         section3: { title: "GitOps workflows.", subtitle: "Push to git, and let our pipelines handle testing, building, and deploying to production." },
         section4: { title: "Resilient systems.", subtitle: "" },
@@ -200,29 +224,35 @@ const services = [
             description: "We set up comprehensive observability with tools like Prometheus and Grafana, giving you real-time insights into system health and alerting you before issues affect users."
         },
         buyNowSection: {
-            price: "From KES 80,000",
+            price: "SLA Retainer",
             unit: "per month",
-            processingParams: ["AWS/GCP/Azure", "CI/CD Setup", "Audits"],
-            deliveryPromise: "Zero-downtime migrations.",
-            returnPolicy: "Monthly performance reports."
+            processingParams: ["AWS/GCP/DigitalOcean", "CI/CD Pipeline", "Security Audits"],
+            deliveryPromise: "Zero-downtime migrations & proactive patch management.",
+            returnPolicy: "Monthly executive performance reports."
         },
+        budgetRanges: [
+            "Infrastructure Audit & Threat Hardening",
+            "High-Availability Cloud Migration & Auto-Scaling",
+            "24/7 Managed Cloud Operations & SLA Retainer",
+            "To Be Determined During Strategy Session"
+        ],
         status: ContentStatus.PUBLISHED,
         sortOrder: 5,
         image: "/images/services/cloud_devops_caricature_1771021166591.webp"
     },
     {
         slug: "graphic-design",
-        name: "Graphic Design",
-        subName: "Brand Identity & Print Design",
-        price: "From KES 5,000",
-        description: "Make your business unforgettable from the very first handshake. We create distinctive visual identities that build instant credibility—including executive business cards that command respect in meetings, memorable logos, company profiles, and branded marketing materials. Everything we design is 100% print-ready with accurate color setups, so what you approve on screen is exactly what comes off the press.",
+        name: "Imprint",
+        subName: "Business Identity & Print Design",
+        price: "Custom Scope",
+        description: "Make your business unforgettable from the very first handshake. We craft executive visual identities that command authority in boardrooms and tenders—including luxury business cards, distinctive logos, corporate profiles, and 100% press-ready print collateral.",
         features: [
-            "Premium Business Card Design",
-            "Memorable Logos & Brand Style Guides",
-            "Professional Company Profiles",
-            "100% Print-Ready (CMYK & Bleeds)",
-            "Social Media & Marketing Graphics",
-            "High-Resolution Vector Files"
+            "Executive Business Card Architecture",
+            "Distinctive Logos & Brand Guidelines",
+            "Tender-Ready Corporate Company Profiles",
+            "100% Press-Ready CMYK & Bleed Specs",
+            "Professional Marketing & Pitch Decks",
+            "High-Resolution Vector Master Files"
         ],
         stats: [
             { label: "Print-Ready", val: "100%" },
@@ -231,112 +261,61 @@ const services = [
             { label: "Print Resolution", val: "300 DPI" }
         ],
         section1: {
-            title: "VISUAL IDENTITY THAT COMMANDS ATTENTION.",
-            subtitle: "From business cards to full brand systems, we craft designs that leave lasting impressions. Every pixel is intentional, every color purposeful.",
+            title: "Imprint.",
+            subtitle: "The Mark Your Business Leaves in Every Meeting.",
             image: "/images/services/bs-card-front.webp"
         },
         section2: {
-            title: "DESIGN THAT CONVERTS.",
-            description: "Great design isn't just aesthetic — it's strategic. We create visual assets that communicate your brand's value proposition at a glance, building trust and driving engagement from the first touchpoint.\n\nOur design philosophy combines modern minimalism with bold brand expression, ensuring your materials stand out in any context — digital or print."
+            title: "DESIGN THAT COMMANDS RESPECT.",
+            description: "Executive design isn't just decoration — it's commercial leverage. When presenting to corporate clients, investors, or tender committees, your print collateral and brand presentation establish authority before you say a single word.\n\nWe craft cohesive identities engineered to build institutional trust."
         },
         section3: {
-            title: "PRINT-READY PRECISION.",
-            description: "Every design we deliver is production-ready. We handle bleeds, color profiles (CMYK/RGB), resolution standards, and die-cut specifications so your prints come out flawless every time.\n\nFrom premium card stocks to large-format banners, we optimize for the medium."
+            title: "PRESS-READY CMYK PRECISION.",
+            description: "Every file we deliver is production-ready for professional press. We handle bleeds, color calibration (CMYK/Pantone), spot UV layers, and die-cut specifications so what you approve is exactly what comes off the printer."
         },
         section4: {
-            title: "HOW WE DESIGN.",
+            title: "HOW WE DELIVER.",
             steps: [
                 {
-                    title: "Discovery & Brief",
-                    description: "We learn your brand, audience, and goals. A detailed creative brief ensures alignment before any design work begins."
+                    title: "Brand Brief & Objective",
+                    description: "We understand your target audience, meeting contexts, and commercial positioning."
                 },
                 {
                     title: "Concept Development",
-                    description: "Multiple design concepts are explored, each rooted in strategic thinking and contemporary design trends."
+                    description: "2-3 distinct visual concepts exploring clean typography and executive aesthetics."
                 },
                 {
-                    title: "Refinement",
-                    description: "Your chosen concept is refined through iterative feedback rounds until every detail is perfect."
+                    title: "Iterative Refinement",
+                    description: "Polishing your selected concept to pixel and print perfection."
                 },
                 {
-                    title: "Final Delivery",
-                    description: "Print-ready and digital-ready files delivered in all required formats (PDF, AI, PNG, SVG, etc.)."
+                    title: "Press-Ready Handoff",
+                    description: "Vector masters, print-ready PDFs with bleed markers, and digital asset packages."
                 }
             ]
         },
         detailsSection: {
-            title: "WHAT WE DESIGN.",
-            description: "From luxury business cards and executive stationery to comprehensive brand identity systems, logos, corporate pitch decks, and digital collateral.",
-            imageAlt: "Graphic Design Assets"
+            title: "WHAT WE CRAFT.",
+            description: "Luxury business cards, tender-ready company profiles, executive stationery, logos, and digital presentation decks.",
+            imageAlt: "Executive Brand Assets"
         },
         freshnessSection: {
-            title: "DESIGN TRENDS, TIMELESS RESULTS.",
-            description: "We stay current with global design trends while building assets that won't feel dated in a year. Our work balances trend-awareness with timeless design principles — clean typography, purposeful whitespace, and cohesive color systems that scale across every touchpoint."
+            title: "ENDURING IDENTITY.",
+            description: "We avoid short-lived design fads in favor of timeless, authoritative aesthetics that remain modern and respectable for years to come."
         },
         buyNowSection: {
-            price: "From KES 5,000",
-            unit: "per project",
-            processingParams: ["Business Cards", "Logos", "Brand Kits"],
-            deliveryPromise: "48-hour turnaround on standard designs.",
-            returnPolicy: "Unlimited revisions during design phase.",
-            pricingTiers: [
-                {
-                    name: "Business Card Design",
-                    price: "KES 5,000",
-                    description: "Professional double-sided business card design, print-ready.",
-                    includes: [
-                        "2 initial design concepts",
-                        "2 revision rounds",
-                        "Print-ready files (PDF, AI)",
-                        "CMYK color profile + bleed setup"
-                    ],
-                    turnaround: "48 hours",
-                    popular: true,
-                    note: "Design only — printing not included."
-                },
-                {
-                    name: "Logo Design",
-                    price: "KES 15,000",
-                    description: "Custom professional logo with full file package.",
-                    includes: [
-                        "3 initial concepts",
-                        "3 revision rounds",
-                        "All formats (SVG, PNG, AI, PDF)",
-                        "Brand color codes (HEX, RGB, CMYK)",
-                        "Light & dark versions"
-                    ],
-                    turnaround: "3–5 business days"
-                },
-                {
-                    name: "Brand Identity Kit",
-                    price: "KES 45,000",
-                    description: "Complete visual brand system for a professional presence.",
-                    includes: [
-                        "Logo design (full package)",
-                        "Business card design",
-                        "Letterhead & envelope templates",
-                        "Brand guidelines document",
-                        "2 social media profile templates"
-                    ],
-                    turnaround: "7–10 business days",
-                    popular: false
-                },
-                {
-                    name: "Full Brand Package",
-                    price: "KES 120,000",
-                    description: "End-to-end brand identity and marketing collateral.",
-                    includes: [
-                        "Everything in Brand Identity Kit",
-                        "Corporate presentation deck",
-                        "Email signature template",
-                        "Flyer / brochure design",
-                        "Social media kit (5 templates)",
-                        "Vehicle branding mockup"
-                    ],
-                    turnaround: "2–3 weeks"
-                }
-            ]
+            price: "Custom Scope",
+            unit: "per engagement",
+            processingParams: ["Executive Cards", "Company Profiles", "Brand Systems"],
+            deliveryPromise: "Fast turnaround with 100% press-ready specifications.",
+            returnPolicy: "Revision rounds included."
         },
+        budgetRanges: [
+            "Executive Identity Kit (Business Cards, Letterhead & Brand Assets)",
+            "Tender-Ready Corporate Profile & Presentation Deck",
+            "Complete Commercial Brand Architecture",
+            "To Be Determined During Strategy Session"
+        ],
         status: ContentStatus.PUBLISHED,
         sortOrder: 6,
         image: "/images/services/bs-card-front.webp"
@@ -345,20 +324,50 @@ const services = [
 
 const contactConfig = {
     services: [
-        "Web Development",
-        "Mobile App Dev",
-        "Custom Software",
-        "UI/UX Design",
-        "Cloud & DevOps",
-        "Graphic Design"
+        "Launchpad",
+        "Pulse",
+        "Backbone",
+        "Canvas",
+        "Sentinel",
+        "Imprint"
     ],
     budgets: {
-        "Web Development": ["KES 80k - 200k", "KES 200k - 600k", "KES 600k - 2M", "KES 2M+"],
-        "Mobile App Dev": ["KES 200k - 400k", "KES 400k - 1M", "KES 1M - 3M", "KES 3M+"],
-        "Custom Software": ["KES 300k - 700k", "KES 700k - 2M", "KES 2M - 5M", "KES 5M+"],
-        "UI/UX Design": ["KES 50k - 150k", "KES 150k - 400k", "KES 400k - 800k", "KES 800k+"],
-        "Cloud & DevOps": ["KES 80k - 200k", "KES 200k - 500k", "KES 500k+"],
-        "Graphic Design": ["KES 5k - 15k", "KES 15k - 50k", "KES 50k - 150k", "KES 150k+"]
+        "Launchpad": [
+            "Accelerated Sprint (M-Pesa Checkout & Fast Go-To-Market)",
+            "Commercial Web Platform (Direct Daraja + eTIMS Integration)",
+            "High-Scale Custom Web Architecture",
+            "To Be Determined During Strategy Session"
+        ],
+        "Pulse": [
+            "MVP Mobile Build (Android + iOS)",
+            "Commercial App (Native Daraja STK + Push & Offline Support)",
+            "High-Volume Fintech / Enterprise Mobile Platform",
+            "To Be Determined During Strategy Session"
+        ],
+        "Backbone": [
+            "Internal Operations System (Inventory / Staff / Workflow)",
+            "Custom ERP & Automated eTIMS Invoicing Core",
+            "Enterprise Multi-Branch Operations & Financial Engine",
+            "To Be Determined During Strategy Session"
+        ],
+        "Canvas": [
+            "Interactive Clickable Prototype (Figma Master)",
+            "Full Product Design System & Zero-Waste Developer Handoff",
+            "Multi-Platform UX Architecture & User Testing",
+            "To Be Determined During Strategy Session"
+        ],
+        "Sentinel": [
+            "Infrastructure Audit & Threat Hardening",
+            "High-Availability Cloud Migration & Auto-Scaling",
+            "24/7 Managed Cloud Operations & SLA Retainer",
+            "To Be Determined During Strategy Session"
+        ],
+        "Imprint": [
+            "Executive Identity Kit (Business Cards, Letterhead & Brand Assets)",
+            "Tender-Ready Corporate Profile & Presentation Deck",
+            "Complete Commercial Brand Architecture",
+            "To Be Determined During Strategy Session"
+        ]
     }
 };
 

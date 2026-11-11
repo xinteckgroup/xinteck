@@ -90,20 +90,17 @@ export function Navbar() {
         
         {/* Right Actions */}
         <div className="flex items-center gap-2 sm:gap-4">
-            {/* Conspicuous Book Free Call CTA */}
-            <Link href="/book" className="group relative">
+            <Link href="/contact" className="group relative">
                 <div className="px-3.5 py-2 sm:px-5 sm:py-2.5 rounded-[10px] bg-primary text-black font-extrabold text-xs sm:text-sm flex items-center gap-1.5 sm:gap-2 shadow-[0_0_20px_rgba(212,175,55,0.4)] hover:shadow-[0_0_35px_rgba(212,175,55,0.7)] hover:scale-105 transition-all">
-                   <Video size={15} className="text-black shrink-0" />
-                   <span className="whitespace-nowrap">Book Free Call</span>
+                   <Rocket size={15} className="text-black shrink-0 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
+                   <span className="whitespace-nowrap">Start a Project</span>
                 </div>
             </Link>
 
-            <Link href="/contact" className="hidden lg:block group relative">
-                <div 
-                  className="px-5 py-2.5 rounded-[10px] border-2 border-primary bg-white/30 dark:bg-black/70 hover:scale-105 transition-transform animate-gold-pulse"
-                >
-                   <span className="flex items-center gap-2 text-sm font-bold text-primary">
-                     Get Started <Rocket size={16} className="group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
+            <Link href="/book" className="hidden lg:block group relative">
+                <div className="px-4 py-2 sm:px-4 sm:py-2 rounded-[10px] border border-primary/30 hover:border-primary bg-white/20 dark:bg-black/40 hover:scale-105 transition-all">
+                   <span className="flex items-center gap-1.5 text-xs sm:text-sm font-bold text-foreground hover:text-primary transition-colors">
+                     <Video size={14} className="text-primary" /> Strategy Session
                    </span>
                 </div>
             </Link>

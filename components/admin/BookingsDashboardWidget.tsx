@@ -33,7 +33,7 @@ export const BookingsDashboardWidget: React.FC<BookingsDashboardWidgetProps> = (
             <div>
                 <div className="flex items-center justify-between">
                     <span className="text-xs uppercase font-black tracking-widest text-primary flex items-center gap-1.5">
-                        <Video size={14} /> Discovery Calls
+                        <Video size={14} /> Strategy Sessions
                     </span>
 
                     {stats.pendingCount > 0 ? (
@@ -83,7 +83,7 @@ export const BookingsDashboardWidget: React.FC<BookingsDashboardWidgetProps> = (
                 href="/admin/bookings"
                 className="text-xs font-bold text-primary hover:text-primary/80 flex items-center gap-1.5 pt-2 border-t border-border/40 group-hover:translate-x-1 transition-all"
             >
-                <span>Manage Discovery Calls & Calendar</span>
+                <span>Manage Strategy Sessions & Calendar</span>
                 <ArrowRight size={14} />
             </Link>
         </div>

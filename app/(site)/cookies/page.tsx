@@ -8,7 +8,7 @@ import { BarChart2, Check, Cookie, Eye, Mail, Settings, Shield, Target } from "l
 import Link from "next/link";
 
 export default function CookiesPage() {
-  const lastUpdated = "September 24, 2026";
+  const lastUpdated = "November 11, 2026";
   const { consent, openPreferences } = useCookieConsent();
 
   const cookieTypes = [
@@ -66,7 +66,8 @@ export default function CookiesPage() {
             </h2>
             <p className="text-lg md:text-xl text-foreground leading-relaxed max-w-2xl mx-auto">
               This policy explains how Xinteck uses cookies and similar technologies 
-              on our website, your choices regarding cookies, and how they affect your privacy.
+              on our website in compliance with the <strong>Kenya Data Protection Act, 2019</strong>, 
+              your choices regarding cookie classification, and how they protect your privacy.
             </p>
             <div className="text-xs font-bold uppercase tracking-widest text-foreground mt-4">
               Last Updated: {lastUpdated}
@@ -355,7 +356,7 @@ export default function CookiesPage() {
               If you have any questions about our use of cookies or this policy, please contact us:
             </p>
             <p className="text-foreground">
-              <strong>Email:</strong> <a href="mailto:privacy@xinteck.co.ke" className="text-gold hover:underline">privacy@xinteck.co.ke</a>
+              <strong>Email:</strong> <a href="mailto:info@xinteck.co.ke" className="text-gold hover:underline">info@xinteck.co.ke</a>
             </p>
             <p className="mt-6">
               <Link href="/privacy" className="text-gold hover:underline font-bold">

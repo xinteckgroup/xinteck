@@ -1,7 +1,7 @@
 "use client";
 
 import { TYPOGRAPHY } from "@/lib/typography";
-import { IconName } from "@/types";
+import { IconName } from "@/types/index";
 import { motion } from "framer-motion";
 import { Activity, ArrowDown, ArrowUp, File, FileText, Inbox, LucideIcon, MessageSquare, Monitor, Newspaper, Server } from "lucide-react";
 import Link from "next/link";

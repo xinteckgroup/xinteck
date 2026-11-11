@@ -143,8 +143,8 @@ async function handleCron(req: NextRequest) {
                     replyTo: "info@xinteck.co.ke",
                     subject:
                         reminderType === "1h"
-                            ? `⏰ Starting Soon: Discovery Call with Xinteck (${booking.startTime} EAT)`
-                            : `🗓️ Reminder: Your Discovery Call with Xinteck Tomorrow (${booking.startTime} EAT)`,
+                            ? `⏰ Starting Soon: Strategy Session with Xinteck (${booking.startTime} EAT)`
+                            : `🗓️ Reminder: Your Strategy Session with Xinteck Tomorrow (${booking.startTime} EAT)`,
                     html,
                 });
 

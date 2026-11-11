@@ -1,10 +1,12 @@
+import { RoiCalculatorClient } from "@/components/roi/RoiCalculatorClient";
 import { Hero } from "@/components/sections/Hero";
+import { HomeFaqSection } from "@/components/sections/HomeFaqSection";
 import { ServicesFeatured } from "@/components/sections/ServicesFeatured";
 import { VideoScrollLayout } from "@/components/services/VideoScrollLayout";
 import { getFeaturedProject } from "@/lib/public-data";
 import { TYPOGRAPHY } from "@/lib/typography";
 import { VIDEO_STATS } from "@/lib/videoStats";
-import { ArrowUpRight, Plus } from "lucide-react";
+import { ArrowUpRight, Calculator } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -21,6 +23,37 @@ export default async function Home() {
       <Hero />
 
       <ServicesFeatured />
+
+      {/* Interactive Value Engine (ROI Calculator) */}
+      <section className="py-12 md:py-24 px-6 relative overflow-hidden" id="roi-calculator">
+        <div className="max-w-7xl mx-auto flex flex-col gap-8 md:gap-12">
+          <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6 bg-white/30 dark:bg-black/80 backdrop-blur-xl rounded-[10px] p-6 md:p-10 border border-primary/10 shadow-lg">
+            <div className="flex flex-col gap-3">
+              <div className={`${TYPOGRAPHY.badge} inline-flex items-center gap-2 px-3 py-1 rounded-[10px] bg-primary/10 border border-primary/20 w-fit text-primary`}>
+                <Calculator size={14} className="text-primary" />
+                <span className="tracking-widest uppercase">Value Projection Engine</span>
+              </div>
+              <h2 className={`${TYPOGRAPHY.pageTitle} text-foreground text-2xl md:text-4xl`}>
+                QUANTIFY YOUR <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary via-yellow-200 to-primary">RETURN.</span>
+              </h2>
+              <p className={`${TYPOGRAPHY.pageSubtitle} text-foreground/80 max-w-2xl`}>
+                Calculate your estimated operational savings or revenue lift from custom software engineering before committing a single shilling.
+              </p>
+            </div>
+            <Link
+              href="/roi-calculator"
+              className={`${TYPOGRAPHY.button} group flex items-center gap-2 text-foreground hover:text-primary transition-colors`}
+            >
+              Dedicated Calculator View
+              <div className="w-8 h-8 rounded-[10px] bg-secondary/5 flex items-center justify-center group-hover:bg-primary group-hover:text-black transition-all">
+                <ArrowUpRight size={14} className="group-hover:rotate-45 transition-transform" />
+              </div>
+            </Link>
+          </div>
+
+          <RoiCalculatorClient />
+        </div>
+      </section>
       
       {/* Featured Project Teaser */}
       {featuredProject && (
@@ -194,22 +227,22 @@ export default async function Home() {
           <div className="flex gap-6 overflow-x-auto snap-x snap-mandatory pb-4 gold-scrollbar -mx-2 px-2">
             {[
               {
-                text: "Building a healthcare platform that handles sensitive patient data required a developer we could trust completely. Xinteck understood the complexity of the task from day one and translated it into a clean, intuitive product. We recommend their work.",
+                text: "Handling patient records under Kenya's Data Protection Act left us zero room for error. Xinteck designed our clinical onboarding portal with strict role-based access. Clinic staff adopted it within days without training hiccups, and our record lookups are now instant.",
                 author: "Edwin Lubanga",
                 role: "Co-Founder, Snark Health",
               },
               {
-                text: "We needed a platform that could present our products to international buyers while handling quote requests with ease. Xinteck delivered exactly that — a polished, professional solution built with real understanding of our export business. Very impressed with the quality of work.",
+                text: "International buyers needed landed export quotes fast, but manual back-and-forth was stalling deals. Xinteck built an RFQ catalogue with automated weight and freight calculations. It cut our quote turnaround from 48 hours to under 30 minutes.",
                 author: "Francis Salaton",
                 role: "Managing Director, Al-Barka Halali Meats",
               },
               {
-                text: "Absolutely reliable and highly efficient! Not only was our project completed on schedule, but the quality of work delivered surpassed our expectations. Exceptional service from start to finish.",
+                text: "Reconciling daily investor transactions across multiple accounts used to take hours of manual ledger checks every evening. Xinteck built an automated verification pipeline that matches disbursements against bank statements in minutes. We launched on schedule with zero reconciliation errors.",
                 author: "Kimathi I.",
                 role: "Founder, Plutus Capital",
               },
               {
-                text: "Xinteck provided unparalleled expertise and support throughout the entire development process. The attention to detail and commitment to delivering high-quality results. Highly recommended for anyone looking for top-notch tech solutions.",
+                text: "We needed our commercial energy monitoring dashboard to function reliably over spotty 3G connections at remote sites. Xinteck engineered a lightweight sync protocol that eliminated data drops. Our field teams now get real-time telemetry without system lag.",
                 author: "Jeremy Omare",
                 role: "Project Manager, Best Energy",
               },
@@ -237,55 +270,7 @@ export default async function Home() {
       </section>
 
       {/* FAQ Section */}
-      <section className="py-12 md:py-24 px-6 relative">
-        <div className="max-w-4xl mx-auto glass-panel rounded-[10px] p-8 md:p-12 shadow-[0_10px_40px_-10px_rgba(0,0,0,0.1)]">
-          <div className="text-center mb-12 md:mb-20 flex flex-col gap-4">
-            <h2 className={`${TYPOGRAPHY.tableHeader} text-primary`}>
-              Common Questions
-            </h2>
-            <h3 className={`${TYPOGRAPHY.pageTitle} text-foreground text-2xl md:text-4xl`}>
-              CLEAR <span className="text-foreground/40">ANSWERS.</span>
-            </h3>
-          </div>
-          <div className="flex flex-col gap-4">
-            {[
-              {
-                q: "Do you integrate with M-Pesa and Safaricom Daraja APIs?",
-                a: "Yes. M-Pesa Daraja STK Push, C2B, B2C, and automated instant payment confirmation are standard in all our web and mobile applications.",
-              },
-              {
-                q: "Are your platforms eTIMS and KRA compliant?",
-                a: "Absolutely. We build direct eTIMS electronic tax invoicing APIs into our ERP, POS, and custom software systems, ensuring complete compliance with KRA regulations from day one.",
-              },
-              {
-                q: "What is your typical project timeline?",
-                a: "Timelines vary depending on complexity. Identity and card design takes 48-72 hours, standard websites 3-4 weeks, while complex full-stack or mobile platforms typically range from 6-12 weeks.",
-              },
-              {
-                q: "What payment currencies and terms do you offer?",
-                a: "We bill in Kenyan Shillings (KES) with phased milestone payments (e.g., 40% kickoff, 30% beta demo, 30% launch handover). We accept M-Pesa Paybill, bank transfers, and cards.",
-              },
-              {
-                q: "Do you offer post-launch support and hosting?",
-                a: "Yes. Every project includes a 30-day post-launch warranty, and we provide ongoing maintenance, cloud backups, and DevOps monitoring to guarantee 99.9% uptime.",
-              },
-            ].map((faq, i) => (
-              <div 
-                key={i}
-                className="group p-6 md:p-8 rounded-[10px] border border-primary/10 bg-white/50 dark:bg-secondary/5 hover:bg-white/70 dark:hover:bg-secondary/10 hover:border-primary/20 transition-all flex flex-col gap-4 cursor-pointer"
-              >
-                <h4 className={`${TYPOGRAPHY.cardTitle} flex justify-between items-center text-foreground group-hover:text-primary transition-colors`}>
-                  {faq.q}
-                  <Plus className="text-primary/20 group-hover:text-primary transition-colors" />
-                </h4>
-                <p className={`${TYPOGRAPHY.body} text-foreground/60 leading-relaxed max-w-2xl`}>
-                  {faq.a}
-                </p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
+      <HomeFaqSection />
 
       {/* CTA Section */}
       <section className="py-12 md:py-24 px-6 relative overflow-hidden">
@@ -298,15 +283,14 @@ export default async function Home() {
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-yellow-200">NEXT BIG THING?</span>
           </h2>
           <p className={`${TYPOGRAPHY.pageSubtitle} max-w-2xl mx-auto text-white`}>
-            Our team of world-class engineers and designers are ready to bring
-            your vision to life with precision and speed.
+            Our team is ready to bring your vision to life with precision and speed.
           </p>
           <div className="flex justify-center gap-4 mt-8">
             <Link 
               href="/book"
               className={`${TYPOGRAPHY.button} px-12 py-4 bg-primary text-primary-foreground rounded-[10px] shadow-[0_0_30px_rgba(212,175,55,0.3)] hover:shadow-[0_0_50px_rgba(212,175,55,0.5)] hover:scale-105 transition-all text-center`}
             >
-              Book a Discovery Call
+              Apply for Strategy Session
             </Link>
           </div>
         </div>

@@ -75,18 +75,55 @@ const defaultConfig = {
   hoverBorder: "border-white/20",
 };
 
+// Canonical fallback service config matching exact approved methodologies & taglines
+const CANONICAL_SERVICES = [
+  {
+    name: "Launchpad",
+    slug: "web-development",
+    subName: "Web Platforms & API Integrations",
+  },
+  {
+    name: "Pulse",
+    slug: "mobile-app-development",
+    subName: "Android & iOS Applications",
+  },
+  {
+    name: "Backbone",
+    slug: "custom-software-development",
+    subName: "Custom Business Systems & Automation",
+  },
+  {
+    name: "Canvas",
+    slug: "ui-ux-design",
+    subName: "UI/UX Design & Prototyping",
+  },
+  {
+    name: "Sentinel",
+    slug: "cloud-devops",
+    subName: "Cloud Infrastructure & Security",
+  },
+  {
+    name: "Imprint",
+    slug: "graphic-design",
+    subName: "Business Identity & Print Design",
+  },
+];
+
 // Alternating col-span pattern for services not in slugConfig
 const colSpanPattern = ["md:col-span-2", "md:col-span-1", "md:col-span-1", "md:col-span-2"];
 
 export function ServicesFeatured() {
   const dynamicServices = useServices();
+  const sourceServices = dynamicServices && dynamicServices.length > 0 ? dynamicServices : CANONICAL_SERVICES;
 
-  // Build service cards from context
-  const services = dynamicServices.map((s, i) => {
+  // Build service cards from context with exact approved taglines
+  const services = sourceServices.map((s, i) => {
     const config = slugConfig[s.slug] || defaultConfig;
+    const canonical = CANONICAL_SERVICES.find((c) => c.slug === s.slug);
+    const exactTagline = s.subName || canonical?.subName || "";
     return {
       title: s.name,
-      desc: "", // Brief descriptions are not stored in nav items — the card still looks good without
+      desc: exactTagline,
       icon: config.icon,
       href: `/services/${s.slug}`,
       colSpan: slugConfig[s.slug]?.colSpan || colSpanPattern[i % colSpanPattern.length],
@@ -186,13 +223,13 @@ export function ServicesFeatured() {
               <div className="flex flex-col gap-3 max-w-2xl">
                 <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-black/15 text-black font-mono text-xs uppercase tracking-widest font-black w-fit">
                   <span className="w-2 h-2 rounded-full bg-black animate-pulse" />
-                  Engineering Execution
+                  Controlled Capacity · Q1 2027
                 </div>
                 <h4 className="text-3xl md:text-5xl font-black text-black tracking-tight leading-tight">
-                  BUILD YOUR VISION.
+                  BUILD WITH FOCUS.
                 </h4>
                 <p className="text-black/85 text-base md:text-lg font-medium leading-relaxed">
-                  Partner directly with elite software engineers in Nairobi. From instant M-Pesa STK push rails to KRA eTIMS fiscal systems, we turn complex architecture into high-yield velocity.
+                  We work with a maximum of 4 clients per quarter to guarantee dedicated engineering attention. Next available project start: Q1 2027.
                 </p>
               </div>
 
@@ -202,7 +239,7 @@ export function ServicesFeatured() {
                   className={`${TYPOGRAPHY.button} px-8 py-4 bg-black text-white hover:bg-black/85 rounded-[12px] transition-all flex items-center justify-center gap-2.5 font-black shadow-xl hover:scale-105 text-sm md:text-base tracking-wide`}
                 >
                   <Video size={18} className="text-[#D4AF37] shrink-0" />
-                  <span>Book Free 15-Min Call</span>
+                  <span>Reserve a Q1 Slot</span>
                   <ArrowRight size={18} />
                 </Link>
                 <Link 

@@ -82,13 +82,21 @@ function ContactPageContent() {
     });
   }, []);
 
+  const DEFAULT_SCOPES = [
+    "Sprint Scope (Rapid MVP / Accelerated Launch)",
+    "Growth Scope (Full Architecture & Integrations)",
+    "Enterprise Scope (Custom Systems & Mission-Critical Operations)",
+    "Dedicated Retainer (SLA & Ongoing Optimization)",
+    "To Be Determined During Strategy Session"
+  ];
+
   // Update budgets when service changes
   useEffect(() => {
     if (config && selectedService) {
         const budgets = config.budgets[selectedService] || config.budgets["Other"] || [];
-        setAvailableBudgets(budgets);
+        setAvailableBudgets(budgets.length > 0 ? budgets : DEFAULT_SCOPES);
     } else {
-        setAvailableBudgets(["KES 50k - 150k", "KES 150k - 500k", "KES 500k - 1M", "KES 1M+"]);
+        setAvailableBudgets(DEFAULT_SCOPES);
     }
   }, [selectedService, config]);
 
@@ -105,14 +113,7 @@ function ContactPageContent() {
     setIsSubmitting(true);
 
     const formData = new FormData(e.currentTarget);
-    const finalIndustry = industry === "Other" ? industryOther : industry;
-
-    // Validate Other Industry
-    if (industry === "Other" && !finalIndustry.trim()) {
-        setError("Please specify your industry.");
-        setIsSubmitting(false);
-        return;
-    }
+    const companyOrIndustry = (formData.get("industry") as string) || "General Enterprise";
 
     const data = {
       name: formData.get("name"),
@@ -121,7 +122,7 @@ function ContactPageContent() {
       service: formData.get("service"),
       budget: formData.get("budget"),
       projectType: formData.get("projectType"),
-      industry: finalIndustry,
+      industry: companyOrIndustry,
       message: formData.get("message"),
       website_url: formData.get("website_url"),
     };
@@ -158,8 +159,10 @@ function ContactPageContent() {
   ];
 
   const industries = [
-     "Fintech", "Healthcare", "E-commerce", "Education", "Real Estate",
-     "Logistics", "Media & Entertainment", "Travel & Hospitality", "Agriculture", "Manufacturing",
+     "Fintech & Financial Services",
+     "Mid-Market & Commercial Enterprise",
+     "Healthcare & Pharmaceuticals",
+     "Logistics & Supply Chain",
      "Other"
   ];
 
@@ -186,17 +189,17 @@ function ContactPageContent() {
 
   const infoCards = [
     {
-        title: "Free Discovery Call",
+        title: "Strategy Session",
         value: (
           <a
             href="/book"
             className="inline-flex items-center gap-2 text-primary hover:text-primary/80 font-bold underline underline-offset-4 text-base"
           >
-            Book 15-Min Free Session →
+            Schedule Strategy Session →
           </a>
         ),
         icon: Video,
-        sub: "Direct consultation with Google Meet link",
+        sub: "Direct architectural consultation via Google Meet",
     },
     {
         title: "Email Us",
@@ -232,7 +235,7 @@ function ContactPageContent() {
                 href="/book"
                 className="px-8 py-3 bg-primary text-primary-foreground font-bold rounded-full hover:bg-primary/90 transition-all flex items-center gap-2 shadow-lg"
               >
-                <Video size={18} /> Or Book a 15-Min Free Call Now
+                <Video size={18} /> Schedule Strategy Session
               </a>
               <button 
                 onClick={() => { setSubmitted(false); setIsSubmitting(false); generateCaptcha(); }}
@@ -392,7 +395,7 @@ function ContactPageContent() {
                   </select>
                 </div>
                  <div className="flex flex-col gap-3">
-                  <label className={`${TYPOGRAPHY.tableHeader} text-foreground font-bold uppercase`}>Budget Range</label>
+                  <label className={`${TYPOGRAPHY.tableHeader} text-foreground font-bold uppercase`}>Target Project Scope</label>
                   <select name="budget" className={`bg-muted/10 rounded-[10px] px-6 py-4 outline-none transition-all appearance-none cursor-pointer text-foreground ${TYPOGRAPHY.input}`}>
                       {availableBudgets.map(b => (
                         <option key={b} className="bg-background text-foreground">{b}</option>
@@ -401,29 +404,16 @@ function ContactPageContent() {
                 </div>
               </div>
 
-                <div className="grid md:grid-cols-1 gap-6 md:gap-8">
-                   <div className="flex flex-col gap-3">
-                  <label className={`${TYPOGRAPHY.tableHeader} text-foreground font-bold uppercase`}>Industry</label>
-                  <select 
-                     name="industry"
-                     required
-                     value={industry}
-                     onChange={(e) => setIndustry(e.target.value)}
-                     className={`bg-muted/10 rounded-[10px] px-6 py-4 outline-none transition-all appearance-none cursor-pointer text-foreground ${TYPOGRAPHY.input}`}
-                  >
-                     {industries.map(i => <option key={i} value={i} className="bg-background text-foreground">{i}</option>)}
-                  </select>
-                  {industry === "Other" && (
-                    <motion.input 
-                        initial={{ opacity: 0, height: 0 }}
-                        animate={{ opacity: 1, height: "auto" }}
-                        type="text" 
-                        value={industryOther}
-                        onChange={(e) => setIndustryOther(e.target.value)}
-                        placeholder="Please specify your industry..."
-                        className="bg-muted/10 rounded-[10px] px-6 py-3 mt-2 outline-none transition-all text-foreground font-bold placeholder:text-foreground"
-                    />
-                  )}
+              {/* Row 4: Company / Organization */}
+              <div className="grid md:grid-cols-1 gap-6 md:gap-8">
+                <div className="flex flex-col gap-3">
+                  <label className={`${TYPOGRAPHY.tableHeader} text-foreground font-bold uppercase`}>Company / Organization</label>
+                  <input 
+                    type="text" 
+                    name="industry"
+                    placeholder="e.g. Acme Corp / Scaling Fintech / Commercial Enterprise"
+                    className={`bg-muted/10 rounded-[10px] px-6 py-4 outline-none transition-all placeholder:text-white/70 text-foreground ${TYPOGRAPHY.input}`}
+                  />
                 </div>
               </div>
 

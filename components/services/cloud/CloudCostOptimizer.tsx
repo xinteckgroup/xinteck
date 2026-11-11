@@ -22,14 +22,12 @@ import Link from "next/link";
 import { useState } from "react";
 
 export function CloudCostOptimizer() {
-    const [monthlySpendUSD, setMonthlySpendUSD] = useState<number>(1200);
+    const [monthlySpendKES, setMonthlySpendKES] = useState<number>(150_000);
 
     // 40% typical savings
-    const projectedSavingsUSD = Math.round(monthlySpendUSD * 0.4);
-    const optimizedSpendUSD = monthlySpendUSD - projectedSavingsUSD;
-
-    // Approximate conversion to KES (1 USD ~ 130 KES)
-    const annualSavingsKES = projectedSavingsUSD * 12 * 130;
+    const projectedSavingsKES = Math.round(monthlySpendKES * 0.4);
+    const optimizedSpendKES = monthlySpendKES - projectedSavingsKES;
+    const annualSavingsKES = projectedSavingsKES * 12;
 
     return (
         <section className="px-6 py-8 md:py-16">
@@ -66,22 +64,22 @@ export function CloudCostOptimizer() {
                                     Current Monthly AWS / GCP / DigitalOcean Bill:
                                 </label>
                                 <span className="text-2xl font-black text-primary font-mono">
-                                    ${monthlySpendUSD.toLocaleString()} /mo
+                                    {formatKES(monthlySpendKES)} /mo
                                 </span>
                             </div>
                             <input
                                 type="range"
-                                min={300}
-                                max={10000}
-                                step={100}
-                                value={monthlySpendUSD}
-                                onChange={(e) => setMonthlySpendUSD(Number(e.target.value))}
-                                className="w-full accent-primary h-2 bg-zinc-800 rounded-lg cursor-pointer"
+                                min={40_000}
+                                max={1_500_000}
+                                step={10_000}
+                                value={monthlySpendKES}
+                                onChange={(e) => setMonthlySpendKES(Number(e.target.value))}
+                                className="w-full accent-primary h-2 bg-muted/40 border border-border/40 rounded-lg cursor-pointer"
                             />
                             <div className="flex justify-between text-[11px] text-foreground/60 font-mono">
-                                <span>$300/mo (Startups)</span>
-                                <span>$5,000/mo (Mid-Scale)</span>
-                                <span>$10,000+/mo (Enterprise)</span>
+                                <span>KES 40,000/mo (Startups)</span>
+                                <span>KES 500,000/mo (Mid-Scale)</span>
+                                <span>KES 1.5M+/mo (Enterprise)</span>
                             </div>
                         </div>
 
@@ -90,7 +88,7 @@ export function CloudCostOptimizer() {
                             <div className="p-4 rounded-[8px] bg-red-500/5 border border-red-500/30 flex flex-col">
                                 <span className="text-xs text-red-500 uppercase font-bold">Current Unoptimized</span>
                                 <span className="text-2xl font-black text-red-500 font-mono mt-1">
-                                    ${monthlySpendUSD.toLocaleString()} /mo
+                                    {formatKES(monthlySpendKES)} /mo
                                 </span>
                                 <span className="text-[11px] text-foreground/60 mt-1">
                                     Over-provisioned RAM & idle CPU cycles
@@ -100,7 +98,7 @@ export function CloudCostOptimizer() {
                             <div className="p-4 rounded-[8px] bg-emerald-500/5 border border-emerald-500/30 flex flex-col">
                                 <span className="text-xs text-emerald-500 uppercase font-bold">Xinteck Engineered</span>
                                 <span className="text-2xl font-black text-emerald-500 font-mono mt-1">
-                                    ${optimizedSpendUSD.toLocaleString()} /mo
+                                    {formatKES(optimizedSpendKES)} /mo
                                 </span>
                                 <span className="text-[11px] text-foreground/60 mt-1">
                                     Autoscaling + serverless container rightsizing
@@ -128,7 +126,7 @@ export function CloudCostOptimizer() {
                                     <ShieldCheck size={22} />
                                 </div>
                                 <div>
-                                    <h4 className="text-sm font-bold text-foreground">Bank-Grade Infrastructure Security</h4>
+                                    <h4 className="text-sm font-bold text-foreground">High-Grade Infrastructure Security</h4>
                                     <p className="text-xs text-foreground/70">Included in every cloud architecture contract</p>
                                 </div>
                             </div>

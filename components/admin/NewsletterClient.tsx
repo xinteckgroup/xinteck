@@ -8,7 +8,7 @@ import { Download, MailOpen, Pen, Search, Trash2, UserMinus, UserPlus, Users } f
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 
-import { NewsletterSubscriber } from "@/types";
+import { NewsletterSubscriber } from "@/types/index";
 
 import { PaginatedResponse } from "@/lib/pagination";
 import { cn } from "@/lib/utils";

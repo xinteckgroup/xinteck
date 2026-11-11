@@ -54,7 +54,7 @@ const staticLinks = {
     { label: "Careers", href: "/careers" },
     { label: "Blog", href: "/blog" },
     { label: "Contact", href: "/contact" },
-    { label: "Free Discovery Call", href: "/book" },
+    { label: "Strategy Session", href: "/book" },
   ],
   resources: [
     { label: "Portfolio", href: "/portfolio" },

@@ -1,6 +1,7 @@
 "use client";
 
 import { useSyncExternalStore } from "react";
+import { useTheme } from "next-themes";
 import type { CashflowDataPoint } from "@/types/roi";
 import { formatKES } from "@/lib/roi-calculator";
 import {
@@ -54,6 +55,13 @@ function CustomTooltip({ active, payload, label }: any) {
 
 export function RoiBarChart({ data }: RoiBarChartProps) {
     const isMounted = useIsClient();
+    const { resolvedTheme } = useTheme();
+    const isDark = resolvedTheme === "dark";
+
+    // Black on light mode, White on dark mode
+    const doNothingBarColor = isDark ? "#ffffff" : "#0a0a0a";
+    // Brand gold color
+    const investBarColor = "#D4AF37";
 
     // Sample data for readability: show every 3rd month
     const sampledData = data.filter(
@@ -109,16 +117,16 @@ export function RoiBarChart({ data }: RoiBarChartProps) {
                     <Bar
                         dataKey="doNothing"
                         name="Cost of Doing Nothing"
-                        fill="#ef4444"
+                        fill={doNothingBarColor}
                         radius={[4, 4, 0, 0]}
-                        opacity={0.8}
+                        opacity={0.9}
                     />
                     <Bar
                         dataKey="investWithXinteck"
                         name="Return with Xinteck"
-                        fill="#D4AF37"
+                        fill={investBarColor}
                         radius={[4, 4, 0, 0]}
-                        opacity={0.95}
+                        opacity={1}
                     />
                 </BarChart>
             </ResponsiveContainer>

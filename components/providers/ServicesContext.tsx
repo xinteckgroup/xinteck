@@ -5,6 +5,7 @@ import { createContext, useContext, type ReactNode } from "react";
 export interface ServiceNavItem {
   name: string;
   slug: string;
+  subName?: string;
 }
 
 const ServicesContext = createContext<ServiceNavItem[]>([]);

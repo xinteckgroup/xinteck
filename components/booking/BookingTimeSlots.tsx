@@ -72,7 +72,7 @@ export const BookingTimeSlots: React.FC<BookingTimeSlotsProps> = ({
                     </span>
                     <span className="text-xs text-foreground/80 font-bold flex items-center gap-1">
                         <Clock size={13} className="text-primary" />
-                        15-min call
+                        Strategy session
                     </span>
                 </div>
                 <h4 className="text-xl font-bold text-foreground mt-1">

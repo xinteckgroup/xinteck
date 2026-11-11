@@ -187,8 +187,8 @@ export const BookingClient: React.FC<BookingClientProps> = ({
 
         const icsData = generateIcsContent({
             id: confirmedBooking.id,
-            title: `Discovery Call: Xinteck & ${confirmedBooking.name}`,
-            description: `Free 15-Minute Technical Discovery & Strategy Call with Xinteck Technologies.`,
+            title: `Strategy Session: Xinteck & ${confirmedBooking.name}`,
+            description: `Technical Architecture & Strategy Session with Xinteck Technologies.`,
             startDate: confirmedBooking.date,
             startTime: confirmedBooking.startTime,
             endTime: confirmedBooking.endTime,
@@ -275,8 +275,8 @@ export const BookingClient: React.FC<BookingClientProps> = ({
                     <div className="flex flex-col sm:flex-row items-center gap-3 w-full">
                         <a
                             href={generateGoogleCalendarUrl({
-                                title: `Discovery Call: Xinteck & ${confirmedBooking.name}`,
-                                description: `15-Minute Technical Discovery & Strategy Session.`,
+                                title: `Strategy Session: Xinteck & ${confirmedBooking.name}`,
+                                description: `Technical Architecture & Strategy Session with Xinteck Technologies.`,
                                 startDate: confirmedBooking.date,
                                 startTime: confirmedBooking.startTime,
                                 endTime: confirmedBooking.endTime,

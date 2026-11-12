@@ -205,7 +205,7 @@ export function BlogManager({ initialData }: BlogManagerProps) {
       
       {/* Quick Filters */}
       <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide">
-         {["All Categories", "Technology", "Design", "DevOps", "Sustainability", "Engineering"].map((filter) => (
+         {["All Categories", "Business", "Technology", "Engineering", "Design", "DevOps", "Case Study", "Sustainability"].map((filter) => (
            <button 
              key={filter}
              onClick={() => handleFilter("category", filter)}

@@ -20,6 +20,16 @@ interface BlogEditorFormProps {
   isEditing?: boolean;
 }
 
+const DEFAULT_CATEGORIES = [
+  "Business",
+  "Technology",
+  "Engineering",
+  "Design",
+  "DevOps",
+  "Case Study",
+  "Sustainability",
+];
+
 export function BlogEditorForm({ initialData, isEditing = false }: BlogEditorFormProps) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
@@ -247,13 +257,10 @@ export function BlogEditorForm({ initialData, isEditing = false }: BlogEditorFor
                    <Select 
                      value={formData.category}
                      onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setFormData({...formData, category: e.target.value})}
-                     options={[
-                        { value: "Technology", label: "Technology" },
-                        { value: "Design", label: "Design" },
-                        { value: "Engineering", label: "Engineering" },
-                        { value: "DevOps", label: "DevOps" },
-                        { value: "Sustainability", label: "Sustainability" }
-                     ]}
+                     options={Array.from(new Set([...DEFAULT_CATEGORIES, ...(formData.category ? [formData.category] : [])])).map((cat) => ({
+                        value: cat,
+                        label: cat
+                     }))}
                    />
                 </div>
              </div>

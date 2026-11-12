@@ -8,6 +8,7 @@
  */
 
 import type { Components } from "react-markdown";
+import Link from "next/link";
 
 export const clientMarkdownComponents: Components = {
   img: ({ node, ...props }: any) => {
@@ -66,14 +67,31 @@ export const clientMarkdownComponents: Components = {
     />
   ),
 
-  a: ({ node, ...props }: any) => (
-    <a
-      {...props}
-      className="text-primary hover:text-primary/80 underline underline-offset-4 decoration-primary/40 transition-colors"
-      target="_blank"
-      rel="noopener noreferrer"
-    />
-  ),
+  a: ({ node, href, children, ...props }: any) => {
+    const isInternal = href && (href.startsWith("/") || href.startsWith("#"));
+    if (isInternal) {
+      return (
+        <Link
+          href={href}
+          {...props}
+          className="text-primary hover:text-primary/80 underline underline-offset-4 decoration-primary/40 transition-colors"
+        >
+          {children}
+        </Link>
+      );
+    }
+    return (
+      <a
+        href={href}
+        {...props}
+        className="text-primary hover:text-primary/80 underline underline-offset-4 decoration-primary/40 transition-colors"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        {children}
+      </a>
+    );
+  },
 
   blockquote: ({ node, ...props }: any) => (
     <blockquote

@@ -89,7 +89,7 @@ export function SocialShareButtons({
   if (variant === "compact") {
     return (
       <div className="flex items-center gap-1.5 sm:gap-2">
-        <span className="text-[10px] md:text-xs font-bold uppercase tracking-widest text-[var(--admin-muted)]/80 mr-1 hidden sm:inline-block">
+        <span className="text-[10px] md:text-xs font-bold uppercase tracking-widest text-foreground/60 mr-1 hidden sm:inline-block">
           Share:
         </span>
 
@@ -169,7 +169,7 @@ export function SocialShareButtons({
 
   // Full Callout Variant (Bottom of article)
   return (
-    <div className="my-10 p-6 md:p-8 rounded-[16px] bg-white/40 dark:bg-black/60 backdrop-blur-xl border border-primary/10 shadow-xl flex flex-col md:flex-row md:items-center justify-between gap-6">
+    <div className="my-10 p-6 md:p-8 rounded-[20px] bg-white/40 dark:bg-black/80 backdrop-blur-xl border border-primary/10 shadow-xl flex flex-col md:flex-row md:items-center justify-between gap-6">
       <div className="flex flex-col gap-1.5">
         <div className="flex items-center gap-2 text-gold text-xs font-bold uppercase tracking-wider">
           <Share2 size={16} />
@@ -211,7 +211,7 @@ export function SocialShareButtons({
           href={shareLinks.twitter}
           target="_blank"
           rel="noopener noreferrer"
-          className="px-4 py-2.5 rounded-[10px] bg-primary/5 dark:bg-white/5 hover:bg-gold hover:text-black text-foreground border border-primary/15 transition-all font-bold text-xs flex items-center gap-2 shadow-sm"
+          className="px-4 py-2.5 rounded-[10px] bg-primary/5 dark:bg-white/5 hover:bg-gold hover:text-black text-foreground border border-primary/10 transition-all font-bold text-xs flex items-center gap-2 shadow-sm"
         >
           <XTwitterIcon />
           <span>X / Twitter</span>
@@ -220,7 +220,7 @@ export function SocialShareButtons({
         {/* Copy Link Button */}
         <button
           onClick={handleCopyLink}
-          className="px-4 py-2.5 rounded-[10px] bg-gold/15 hover:bg-gold text-gold hover:text-black border border-gold/40 transition-all font-bold text-xs flex items-center gap-2 cursor-pointer shadow-sm"
+          className="px-4 py-2.5 rounded-[10px] bg-gold/15 hover:bg-gold text-gold hover:text-black border border-gold/30 transition-all font-bold text-xs flex items-center gap-2 cursor-pointer shadow-sm"
         >
           {copied ? (
             <>

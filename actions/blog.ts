@@ -253,6 +253,18 @@ export async function deleteBlogPost(id: string) {
     return { success: true };
 }
 
+export async function incrementPostViews(slug: string) {
+    if (!slug) return;
+    try {
+        await prisma.blogPost.update({
+            where: { slug, status: ContentStatus.PUBLISHED },
+            data: { views: { increment: 1 } }
+        });
+    } catch {
+        // Silently fail so public reading is never interrupted
+    }
+}
+
 // Helpers
 function formatStatus(status: ContentStatus): string {
     if (status === "PUBLISHED") return "Published";

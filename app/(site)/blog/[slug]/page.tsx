@@ -1,5 +1,6 @@
 import { VideoScrollLayout } from "@/components/services/VideoScrollLayout";
 import { BlogFeaturedImage } from "@/components/blog/BlogFeaturedImage";
+import { BlogViewTracker } from "@/components/blog/BlogViewTracker";
 import { getPublicPost } from "@/lib/public-data";
 import { clientMarkdownComponents } from "@/lib/markdown-components";
 import { VIDEO_STATS } from "@/lib/videoStats";
@@ -120,6 +121,9 @@ export default async function BlogPostPage({ params }: BlogSlugParams) {
 
   return (
     <VideoScrollLayout videoSrc={VIDEO_STATS.portfolio.src} videoStats={VIDEO_STATS.portfolio}>
+      {/* Session-debounced View Tracker */}
+      <BlogViewTracker slug={post.slug} />
+
       {/* JSON-LD Article Schema for Google, WhatsApp, LinkedIn, and Rich Previews */}
       <script
         type="application/ld+json"

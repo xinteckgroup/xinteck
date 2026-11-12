@@ -17,3 +17,4 @@ export function BlogViewTracker({ slug }: { slug: string }) {
 
   return null;
 }
+

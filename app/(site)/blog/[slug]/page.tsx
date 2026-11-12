@@ -1,6 +1,7 @@
 import { VideoScrollLayout } from "@/components/services/VideoScrollLayout";
 import { BlogFeaturedImage } from "@/components/blog/BlogFeaturedImage";
 import { BlogViewTracker } from "@/components/blog/BlogViewTracker";
+import { SocialShareButtons } from "@/components/blog/SocialShareButtons";
 import { getPublicPost } from "@/lib/public-data";
 import { clientMarkdownComponents } from "@/lib/markdown-components";
 import { VIDEO_STATS } from "@/lib/videoStats";
@@ -148,16 +149,23 @@ export default async function BlogPostPage({ params }: BlogSlugParams) {
           </p>
         </header>
 
-        {/* Metadata Navigation Bar */}
-        <div className="flex flex-wrap items-center gap-4 bg-white/60 dark:bg-[#0A0A0A] backdrop-blur-xl border border-primary/10 rounded-[12px] p-4 md:p-6 shadow-md text-xs md:text-sm font-bold uppercase tracking-widest text-foreground/70">
-          <div className="flex items-center gap-2 bg-gold/10 text-gold px-4 py-2 rounded-[8px]">
-            <User size={16} /> <span>{post.author}</span>
+        {/* Metadata Navigation Bar with Social Share */}
+        <div className="flex flex-wrap items-center justify-between gap-4 bg-white/60 dark:bg-[#0A0A0A] backdrop-blur-xl border border-primary/10 rounded-[12px] p-4 md:p-6 shadow-md text-xs md:text-sm font-bold uppercase tracking-widest text-foreground/70">
+          <div className="flex flex-wrap items-center gap-3 md:gap-4">
+            <div className="flex items-center gap-2 bg-gold/10 text-gold px-4 py-2 rounded-[8px]">
+              <User size={16} /> <span>{post.author}</span>
+            </div>
+            <div className="flex items-center gap-2 bg-primary/5 dark:bg-white/5 px-4 py-2 rounded-[8px]">
+              <Calendar size={16} /> <span>{post.date}</span>
+            </div>
+            <div className="flex items-center gap-2 bg-primary/5 dark:bg-white/5 px-4 py-2 rounded-[8px]">
+              <Clock size={16} /> <span>{post.readTime}</span>
+            </div>
           </div>
-          <div className="flex items-center gap-2 bg-primary/5 dark:bg-white/5 px-4 py-2 rounded-[8px]">
-            <Calendar size={16} /> <span>{post.date}</span>
-          </div>
-          <div className="flex items-center gap-2 bg-primary/5 dark:bg-white/5 px-4 py-2 rounded-[8px]">
-            <Clock size={16} /> <span>{post.readTime}</span>
+
+          {/* Top Compact Social Share Pill */}
+          <div className="border-t sm:border-t-0 pt-3 sm:pt-0 w-full sm:w-auto border-primary/10 flex sm:inline-flex justify-end">
+            <SocialShareButtons title={post.title} slug={post.slug} variant="compact" />
           </div>
         </div>
 
@@ -183,7 +191,10 @@ export default async function BlogPostPage({ params }: BlogSlugParams) {
             )}
           </div>
 
-          <div className="mt-24 pt-12 border-t border-primary/10 flex flex-col items-center gap-8 text-center text-foreground">
+          {/* Social Share Callout Block */}
+          <SocialShareButtons title={post.title} slug={post.slug} variant="full" />
+
+          <div className="mt-16 md:mt-24 pt-12 border-t border-primary/10 flex flex-col items-center gap-8 text-center text-foreground">
               <p className="max-w-md text-lg font-medium text-foreground">
                 Want more engineering insights? Join our mission to build the future of software.
               </p>

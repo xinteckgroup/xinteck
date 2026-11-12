@@ -4,26 +4,78 @@ import { getPublicPost } from "@/lib/public-data";
 import { clientMarkdownComponents } from "@/lib/markdown-components";
 import { VIDEO_STATS } from "@/lib/videoStats";
 import { Calendar, ChevronLeft, Clock, User } from "lucide-react";
+import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 
-// export const dynamic = "force-static"; // Disabled to prevent build failure if DB is unreachable
-// export async function generateStaticParams() { ... }
+function getAbsoluteImageUrl(imagePath?: string): string {
+  if (!imagePath) return "https://xinteck.co.ke/images/home-ui/fallback.webp";
+  if (imagePath.startsWith("http://") || imagePath.startsWith("https://")) {
+    return imagePath;
+  }
+  return `https://xinteck.co.ke${imagePath.startsWith("/") ? "" : "/"}${imagePath}`;
+}
 
+type BlogSlugParams = {
+  params: Promise<{ slug: string }> | { slug: string };
+};
 
-export async function generateMetadata({ params }: { params: { slug: string } }) {
+export async function generateMetadata({ params }: BlogSlugParams): Promise<Metadata> {
     const { slug } = await params;
     const post = await getPublicPost(slug);
-    if (!post) return { title: "Post Not Found" };
+    if (!post) {
+      return { 
+        title: "Post Not Found | Xinteck Blog",
+        description: "The requested article could not be found."
+      };
+    }
+
+    const postUrl = `https://xinteck.co.ke/blog/${post.slug}`;
+    const postTitle = `${post.title} | Xinteck Insights`;
+    const postDescription = post.excerpt || "Read technical architecture insights and engineering deep dives from Xinteck.";
+    const imageUrl = getAbsoluteImageUrl(post.featuredImage || post.image);
+
     return {
-      title: post.title,
-      description: post.excerpt,
+      title: postTitle,
+      description: postDescription,
+      alternates: {
+        canonical: `/blog/${post.slug}`,
+      },
+      openGraph: {
+        title: post.title,
+        description: postDescription,
+        url: postUrl,
+        siteName: "Xinteck",
+        locale: "en_KE",
+        type: "article",
+        publishedTime: post.publishedAtISO,
+        modifiedTime: post.updatedAtISO || post.publishedAtISO,
+        authors: [post.author || "Xinteck Engineering Team"],
+        section: post.tag,
+        tags: [post.tag, "Kenyan Tech", "M-Pesa", "eTIMS", "Software Engineering", "Xinteck"],
+        images: [
+          {
+            url: imageUrl,
+            width: 1200,
+            height: 630,
+            alt: post.title,
+          },
+        ],
+      },
+      twitter: {
+        card: "summary_large_image",
+        title: post.title,
+        description: postDescription,
+        images: [imageUrl],
+        creator: "@xinteck",
+        site: "@xinteck",
+      },
     };
 }
 
-export default async function BlogPostPage({ params }: { params: { slug: string } }) {
+export default async function BlogPostPage({ params }: BlogSlugParams) {
   const { slug } = await params;
   const post = await getPublicPost(slug);
 
@@ -31,8 +83,49 @@ export default async function BlogPostPage({ params }: { params: { slug: string 
       notFound();
   }
 
+  const postUrl = `https://xinteck.co.ke/blog/${post.slug}`;
+  const imageUrl = getAbsoluteImageUrl(post.featuredImage || post.image);
+
+  // Schema.org Article / BlogPosting structured data for Google and social crawlers
+  const articleJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "mainEntityOfPage": {
+      "@type": "WebPage",
+      "@id": postUrl,
+    },
+    "headline": post.title,
+    "description": post.excerpt,
+    "image": [imageUrl],
+    "datePublished": post.publishedAtISO || undefined,
+    "dateModified": post.updatedAtISO || post.publishedAtISO || undefined,
+    "author": {
+      "@type": "Organization",
+      "name": post.author || "Xinteck Engineering Team",
+      "url": "https://xinteck.co.ke",
+    },
+    "publisher": {
+      "@type": "Organization",
+      "name": "Xinteck",
+      "url": "https://xinteck.co.ke",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://xinteck.co.ke/icon.png",
+      },
+    },
+    "articleSection": post.tag,
+    "keywords": `${post.tag}, Kenyan Tech, M-Pesa, eTIMS, Software Engineering Kenya, Xinteck`,
+    "inLanguage": "en-KE",
+  };
+
   return (
     <VideoScrollLayout videoSrc={VIDEO_STATS.portfolio.src} videoStats={VIDEO_STATS.portfolio}>
+      {/* JSON-LD Article Schema for Google, WhatsApp, LinkedIn, and Rich Previews */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(articleJsonLd) }}
+      />
+
       <div className="py-20 px-6 max-w-7xl mx-auto my-12 md:my-20 flex flex-col gap-8 md:gap-12">
         <Link 
           href="/blog" 

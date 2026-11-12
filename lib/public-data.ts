@@ -7,6 +7,8 @@ export interface PublicPost {
     title: string;
     excerpt: string;
     date: string;
+    publishedAtISO?: string;
+    updatedAtISO?: string;
     author: string;
     readTime: string;
     tag: string;
@@ -88,6 +90,8 @@ export async function getPublicPosts(): Promise<PublicPost[]> {
             title: post.title,
             excerpt: post.excerpt || "",
             date: post.publishedAt ? format(post.publishedAt, "MMM dd, yyyy") : "",
+            publishedAtISO: post.publishedAt ? post.publishedAt.toISOString() : undefined,
+            updatedAtISO: post.updatedAt ? post.updatedAt.toISOString() : undefined,
             author: post.author.name || "Team Xinteck",
             readTime: calculateReadTime(post.content || ""),
             tag: post.category?.name || "Tech",
@@ -114,6 +118,8 @@ export async function getPublicPost(slug: string): Promise<PublicPost | null> {
             title: post.title,
             excerpt: post.excerpt || "",
             date: post.publishedAt ? format(post.publishedAt, "MMM dd, yyyy") : "",
+            publishedAtISO: post.publishedAt ? post.publishedAt.toISOString() : undefined,
+            updatedAtISO: post.updatedAt ? post.updatedAt.toISOString() : undefined,
             author: post.author.name || "Team Xinteck",
             readTime: calculateReadTime(post.content || ""),
             tag: post.category?.name || "Tech",

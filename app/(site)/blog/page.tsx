@@ -3,10 +3,38 @@ import { BlogNewsletter } from "@/components/sections/BlogNewsletter";
 import { VideoScrollLayout } from "@/components/services/VideoScrollLayout";
 import { getPublicPosts } from "@/lib/public-data";
 import { VIDEO_STATS } from "@/lib/videoStats";
+import type { Metadata } from "next";
 
-export const metadata = {
+export const metadata: Metadata = {
   title: "Insights & Innovation | Xinteck Blog",
-  description: "Deep dives into technology, engineering, and the future of software.",
+  description: "Deep dives into scalable web architecture, M-Pesa rails, KRA eTIMS compliance, and software engineering in Kenya.",
+  alternates: {
+    canonical: "/blog",
+  },
+  openGraph: {
+    title: "Insights & Innovation | Xinteck Blog",
+    description: "Deep dives into scalable web architecture, M-Pesa rails, KRA eTIMS compliance, and software engineering in Kenya.",
+    url: "https://xinteck.co.ke/blog",
+    siteName: "Xinteck",
+    locale: "en_KE",
+    type: "website",
+    images: [
+      {
+        url: "https://xinteck.co.ke/images/home-ui/fallback.webp",
+        width: 1200,
+        height: 630,
+        alt: "Xinteck Blog - Insights & Innovation",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Insights & Innovation | Xinteck Blog",
+    description: "Deep dives into scalable web architecture, M-Pesa rails, KRA eTIMS compliance, and software engineering in Kenya.",
+    images: ["https://xinteck.co.ke/images/home-ui/fallback.webp"],
+    creator: "@xinteck",
+    site: "@xinteck",
+  },
 };
 
 export const dynamic = "force-dynamic";

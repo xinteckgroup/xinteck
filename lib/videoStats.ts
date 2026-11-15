@@ -35,7 +35,7 @@ export const VIDEO_STATS = {
         frameDuration: 1 / 24,
     },
     portfolio: {
-        src: '/images/portfolio-blog-ui/porfolio.mp4',
+        src: '/images/portfolio-blog-ui/portfolio.mp4',
         fallback: '/images/portfolio-blog-ui/fallback.webp',
         duration: 5.041667,
         frameRate: 24,

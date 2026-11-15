@@ -130,7 +130,7 @@ export function ServiceComparisonMatrix({
     {
       id: "xinteck",
       name: `${finalBrandedName}`,
-      badge: "Xinteck Branded Methodology",
+      badge: "Xinteck Service",
       icon: Sparkles,
       isHighlighted: true,
       speed: `Guaranteed ${meta.turnaround}`,
@@ -283,7 +283,7 @@ export function ServiceComparisonMatrix({
                     href={`/contact?service=${encodeURIComponent(serviceTitle)}`}
                     className={`${TYPOGRAPHY.button} mt-2 w-full flex items-center justify-center gap-2 py-3 bg-primary text-primary-foreground rounded-[8px] text-xs font-bold shadow-md hover:bg-primary/90 transition-all`}
                   >
-                    Deploy with {finalBrandedName}
+                    Get Started
                     <ArrowRight size={14} />
                   </Link>
                 )}
@@ -414,7 +414,7 @@ export function ServiceComparisonMatrix({
                       href={`/contact?service=${encodeURIComponent(serviceTitle)}`}
                       className={`${TYPOGRAPHY.button} w-full flex items-center justify-center gap-2 py-3 bg-primary text-primary-foreground rounded-[8px] text-xs font-bold shadow-lg hover:bg-primary/90 transition-all`}
                     >
-                      Choose {finalBrandedName}
+                      Get Started
                       <ArrowRight size={14} />
                     </Link>
                   ) : (

@@ -14,10 +14,11 @@ export function ThemeToggle({ className }: { className?: string } = {}) {
     setMounted(true);
   }, []);
 
-  if (!mounted) return <div className={cn("w-10 h-10", className)} />;
+  if (!mounted) return <div suppressHydrationWarning className={cn("w-10 h-10", className)} />;
 
   return (
     <button
+      suppressHydrationWarning
       onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
       className={cn(
         "w-10 h-10 rounded-full border-2 border-primary bg-black/60 dark:bg-white/30 flex items-center justify-center text-gold dark:text-white hover:scale-110 transition-transform animate-gold-pulse",

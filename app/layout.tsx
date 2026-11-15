@@ -120,6 +120,7 @@ export default function RootLayout({
         />
       </head>
       <body
+        suppressHydrationWarning
         className={`${outfit.variable} font-sans antialiased text-foreground transition-colors duration-300`}
       >
         <NextTopLoader 

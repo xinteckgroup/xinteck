@@ -140,16 +140,18 @@ export function Footer() {
                             src="/logos/logo-dark.webp"
                             alt="Xinteck"
                             fill
-                            className="object-contain"
+                            className="object-contain object-center"
                         />
                     </div>
-                    <div className="absolute inset-0 transition-opacity duration-300 opacity-0 group-hover:opacity-100">
-                        <Image
-                            src="/logos/logo-dark-full.webp"
-                            alt="Xinteck Full"
-                            fill
-                            className="object-cover"
-                        />
+                    <div className="absolute inset-0 flex items-center justify-center px-6 py-4 transition-opacity duration-300 opacity-0 group-hover:opacity-100">
+                        <div className="relative w-full h-full">
+                            <Image
+                                src="/logos/logo-dark-full.webp"
+                                alt="Xinteck Full"
+                                fill
+                                className="object-contain object-center"
+                            />
+                        </div>
                     </div>
                 </div>
               </motion.div>

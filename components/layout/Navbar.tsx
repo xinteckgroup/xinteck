@@ -39,7 +39,7 @@ export function Navbar() {
         <Link href="/" className="flex items-center gap-2 group relative z-50">
           <motion.div
             initial={{ width: "52px", borderRadius: "9999px" }}
-            whileHover={{ width: "130px", borderRadius: "10px" }}
+            whileHover={{ width: "148px", borderRadius: "12px" }}
             transition={{
               width: { type: "spring", stiffness: 300, damping: 20 },
               borderRadius: { type: "spring", stiffness: 300, damping: 20 }
@@ -48,41 +48,49 @@ export function Navbar() {
           >
             {/* Light Mode Container */}
             <div className="absolute inset-0 flex items-center justify-center dark:hidden">
-              <div className="relative w-[44px] h-[44px] transition-opacity duration-300 group-hover:opacity-0">
+              <div className="relative w-[42px] h-[42px] transition-opacity duration-300 group-hover:opacity-0">
                   <Image
                     src="/logos/logo-light.webp"
                     alt="Xinteck"
                     fill
-                    className="object-contain"
+                    className="object-contain object-center"
+                    priority
                   />
               </div>
-              <div className="absolute inset-0 transition-opacity duration-300 opacity-0 group-hover:opacity-100">
+              <div className="absolute inset-0 flex items-center justify-center px-3.5 py-2 transition-opacity duration-300 opacity-0 group-hover:opacity-100">
+                <div className="relative w-full h-full">
                   <Image
                     src="/logos/logo-light-full.webp"
                     alt="Xinteck Full"
                     fill
-                    className="object-cover" 
+                    className="object-contain object-center" 
+                    priority
                   />
+                </div>
               </div>
             </div>
 
             {/* Dark Mode Container */}
             <div className="absolute inset-0 flex items-center justify-center hidden dark:flex">
-              <div className="relative w-[44px] h-[44px] transition-opacity duration-300 group-hover:opacity-0">
+              <div className="relative w-[42px] h-[42px] transition-opacity duration-300 group-hover:opacity-0">
                   <Image
                     src="/logos/logo-dark.webp"
                     alt="Xinteck"
                     fill
-                    className="object-contain"
+                    className="object-contain object-center"
+                    priority
                   />
               </div>
-              <div className="absolute inset-0 transition-opacity duration-300 opacity-0 group-hover:opacity-100">
+              <div className="absolute inset-0 flex items-center justify-center px-3.5 py-2 transition-opacity duration-300 opacity-0 group-hover:opacity-100">
+                <div className="relative w-full h-full">
                   <Image
                     src="/logos/logo-dark-full.webp"
                     alt="Xinteck Full"
                     fill
-                    className="object-cover" 
+                    className="object-contain object-center" 
+                    priority
                   />
+                </div>
               </div>
             </div>
           </motion.div>

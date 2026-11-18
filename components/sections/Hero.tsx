@@ -36,7 +36,7 @@ export function Hero() {
         />
       </div>
 
-      <div className="max-w-7xl mx-auto w-full grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+      <div className="max-w-8xl mx-auto w-full grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
         {/* Content Side */}
         <motion.div
           initial={{ opacity: 0, x: -20 }}

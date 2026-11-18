@@ -27,7 +27,7 @@ export function Navbar() {
         transition={{ duration: 0.8, ease: "easeOut" }}
         className={cn(
           "pointer-events-auto",
-          "w-full max-w-7xl mx-auto rounded-[10px]",
+          "w-full max-w-8xl mx-auto rounded-[10px]",
           "flex items-center justify-between",
           "px-4 sm:px-6 py-2 transition-all duration-300",
           scrolled 

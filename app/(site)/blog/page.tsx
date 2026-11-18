@@ -51,7 +51,7 @@ export default async function BlogPage() {
 
         {/* Newsletter Section */}
         <section className="px-6 mb-12 md:mb-20">
-          <div className="max-w-7xl mx-auto">
+          <div className="max-w-8xl mx-auto">
             <BlogNewsletter />
           </div>
         </section>

@@ -214,7 +214,7 @@ export function RoiCalculatorClient() {
 
     return (
         <>
-            <div className="flex flex-col gap-8 md:gap-10 w-full max-w-7xl mx-auto">
+            <div className="flex flex-col gap-8 md:gap-10 w-full max-w-8xl mx-auto">
                 {/* Mode Toggle */}
                 <ModeToggle mode={mode} onChange={setMode} />
 

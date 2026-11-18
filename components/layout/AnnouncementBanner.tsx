@@ -155,7 +155,7 @@ export function AnnouncementBanner({ items }: AnnouncementBannerProps) {
                     transition={{ duration: 0.5, ease: "easeOut", delay: 0.4 }}
                     className={cn(
                         "pointer-events-auto",
-                        "w-full max-w-7xl mx-auto",
+                        "w-full max-w-8xl mx-auto",
                         "overflow-hidden",
                         "rounded-[10px]",
                         "transition-all duration-300",

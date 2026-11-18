@@ -20,7 +20,7 @@ export default async function PortfolioPage() {
       <div className="flex flex-col gap-12 md:gap-24 py-12 md:py-20">
         {/* Hero Section */}
         <section className="px-6 pt-12 md:pt-20">
-          <div className="max-w-7xl mx-auto">
+          <div className="max-w-8xl mx-auto">
             <div className="flex flex-col items-center text-center gap-6 md:gap-8 bg-white/30 dark:bg-black/80 backdrop-blur-xl rounded-[10px] p-6 md:p-16 shadow-[0_10px_40px_-10px_rgba(0,0,0,0.1)]">
               <div className="flex flex-col gap-4 md:gap-6">
                 <h1 className="text-sm md:text-base font-bold text-gold uppercase tracking-[0.2em] mb-2">
@@ -40,7 +40,7 @@ export default async function PortfolioPage() {
 
         {/* Stats Section */}
         <section className="px-6">
-          <div className="max-w-7xl mx-auto">
+          <div className="max-w-8xl mx-auto">
             <div className="grid grid-cols-2 lg:grid-cols-5 gap-6">
               {[
                 { val: "99.9%", label: "Uptime Delivered" },
@@ -67,7 +67,7 @@ export default async function PortfolioPage() {
 
         {/* Projects Grid */}
         <section className="px-6">
-          <div className="max-w-7xl mx-auto">
+          <div className="max-w-8xl mx-auto">
             <div className="mb-12 md:mb-16 text-center bg-white/30 dark:bg-black/80 backdrop-blur-xl rounded-[10px] p-6 md:p-8 shadow-[0_10px_40px_-10px_rgba(0,0,0,0.1)]">
               <h3 className="text-sm md:text-base font-bold text-foreground uppercase tracking-[0.2em] mb-4">
                 Featured Work
@@ -82,7 +82,7 @@ export default async function PortfolioPage() {
 
         {/* CTA Section */}
         <section className="px-6 mb-12 md:mb-20">
-          <div className="max-w-7xl mx-auto bg-white/30 dark:bg-black/80 backdrop-blur-xl rounded-[10px] p-8 md:p-24 text-center shadow-[0_10px_40px_-10px_rgba(0,0,0,0.1)]">
+          <div className="max-w-8xl mx-auto bg-white/30 dark:bg-black/80 backdrop-blur-xl rounded-[10px] p-8 md:p-24 text-center shadow-[0_10px_40px_-10px_rgba(0,0,0,0.1)]">
             <h3 className={`${TYPOGRAPHY.pageTitle} text-foreground mb-6 md:mb-8`}>
               HAVE A VISION? <br />
               <span className="text-gold">LET&apos;S CODE IT.</span>

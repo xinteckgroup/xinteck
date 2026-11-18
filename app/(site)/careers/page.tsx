@@ -39,7 +39,7 @@ export default async function CareersPage() {
 
       {/* Values / Benefits Section */}
       <section className="bg-white/30 dark:bg-black/80 backdrop-blur-xl py-24 px-6 border-y border-primary/10">
-        <div className="max-w-7xl mx-auto">
+        <div className="max-w-8xl mx-auto">
           <div className="text-center mb-16 flex flex-col gap-4">
              <h3 className="text-sm font-bold tracking-[0.3em] text-gold uppercase">Perks & Benefits</h3>
              <h4 className="text-4xl md:text-6xl font-black tracking-tighter">WHY WORK <span className="text-foreground/40">HERE.</span></h4>
@@ -75,7 +75,7 @@ export default async function CareersPage() {
 
       {/* Culture Section */}
       <section className="px-6 mb-20">
-        <div className="max-w-7xl mx-auto grid lg:grid-cols-2 gap-12 items-center bg-white/30 dark:bg-black/80 backdrop-blur-xl border border-primary/20 rounded-[10px] overflow-hidden p-12 md:p-24 shadow-xl">
+        <div className="max-w-8xl mx-auto grid lg:grid-cols-2 gap-12 items-center bg-white/30 dark:bg-black/80 backdrop-blur-xl border border-primary/20 rounded-[10px] overflow-hidden p-12 md:p-24 shadow-xl">
            <div className="flex flex-col gap-8">
               <h3 className="text-4xl md:text-7xl font-black tracking-tighter text-foreground">
                  OUR CODE <br />

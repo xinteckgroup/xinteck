@@ -35,7 +35,7 @@ export default function ServicesClient({ services }: { services: PublicService[]
       <div className="flex flex-col gap-12 md:gap-24 py-12 md:py-20">
       {/* Hero Section */}
       <section className="px-6 pt-12 md:pt-20">
-        <div className="max-w-7xl mx-auto">
+        <div className="max-w-8xl mx-auto">
             <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -59,7 +59,7 @@ export default function ServicesClient({ services }: { services: PublicService[]
 
       {/* Services Grid */}
       <section className="px-6">
-        <div className="max-w-7xl mx-auto flex flex-col gap-12">
+        <div className="max-w-8xl mx-auto flex flex-col gap-12">
           {services.map((service, i) => (
             <motion.div
                 key={service.slug}
@@ -152,7 +152,7 @@ export default function ServicesClient({ services }: { services: PublicService[]
 
       {/* Why Choose Us Icons */}
       <section className="px-6">
-        <div className="max-w-7xl mx-auto">
+        <div className="max-w-8xl mx-auto">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
             {[
               { icon: Code, title: "Clean Code", desc: "Maintainable, scalable, documented." },

@@ -213,7 +213,7 @@ export const BookingClient: React.FC<BookingClientProps> = ({
     };
 
     return (
-        <div className="w-full max-w-7xl mx-auto flex flex-col gap-10">
+        <div className="w-full max-w-8xl mx-auto flex flex-col gap-10">
             {/* SUCCESS SCREEN */}
             {step === "success" && confirmedBooking ? (
                 <motion.div

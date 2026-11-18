@@ -91,7 +91,7 @@ export function Footer() {
         <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px]"></div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-6 relative z-10 flex flex-col gap-16">
+      <div className="max-w-8xl mx-auto px-6 relative z-10 flex flex-col gap-16">
         {/* CTA Section */}
         <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-8 pb-16 border-b border-white/10">
           <div className="flex flex-col gap-4">

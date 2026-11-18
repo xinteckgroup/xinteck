@@ -254,7 +254,7 @@ function ContactPageContent() {
     <VideoScrollLayout videoSrc={VIDEO_STATS.contact.src} videoStats={VIDEO_STATS.contact}>
       <div className="flex flex-col gap-12 md:gap-24 py-12 md:py-20 px-6">
         {/* Header */}
-        <section className="max-w-7xl mx-auto w-full text-center lg:text-left grid lg:grid-cols-2 gap-12 lg:gap-16 items-end pt-12 md:pt-20">
+        <section className="max-w-8xl mx-auto w-full text-center lg:text-left grid lg:grid-cols-2 gap-12 lg:gap-16 items-end pt-12 md:pt-20">
           <motion.div
              initial={{ opacity: 0, x: -30 }}
              animate={{ opacity: 1, x: 0 }}
@@ -285,7 +285,7 @@ function ContactPageContent() {
         </section>
 
         {/* Main Grid */}
-        <section className="max-w-7xl mx-auto w-full grid lg:grid-cols-3 gap-8 lg:gap-16">
+        <section className="max-w-8xl mx-auto w-full grid lg:grid-cols-3 gap-8 lg:gap-16">
           {/* Info Cards */}
           <div className="flex flex-col gap-6 md:gap-8 lg:col-span-1">
             {infoCards.map((item, i) => (
@@ -480,7 +480,7 @@ function ContactPageContent() {
         </section>
 
          {/* Social Bar */}
-        <section className="max-w-7xl mx-auto w-full flex flex-col items-center gap-8 md:gap-12 pt-12 md:pt-24 text-center pb-12 md:pb-20">
+        <section className="max-w-8xl mx-auto w-full flex flex-col items-center gap-8 md:gap-12 pt-12 md:pt-24 text-center pb-12 md:pb-20">
            <div className="bg-white/30 dark:bg-black/80 backdrop-blur-xl px-8 py-4 rounded-[10px] shadow-lg">
               <h4 className="font-bold text-lg md:text-xl text-foreground">Prefer direct messaging?</h4>
            </div>

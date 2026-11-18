@@ -26,7 +26,7 @@ export default async function Home() {
 
       {/* Interactive Value Engine (ROI Calculator) */}
       <section className="py-12 md:py-24 px-6 relative overflow-hidden" id="roi-calculator">
-        <div className="max-w-7xl mx-auto flex flex-col gap-8 md:gap-12">
+        <div className="max-w-8xl mx-auto flex flex-col gap-8 md:gap-12">
           <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6 bg-white/30 dark:bg-black/80 backdrop-blur-xl rounded-[10px] p-6 md:p-10 border border-primary/10 shadow-lg">
             <div className="flex flex-col gap-3">
               <div className={`${TYPOGRAPHY.badge} inline-flex items-center gap-2 px-3 py-1 rounded-[10px] bg-primary/10 border border-primary/20 w-fit text-primary`}>
@@ -58,7 +58,7 @@ export default async function Home() {
       {/* Featured Project Teaser */}
       {featuredProject && (
       <section className="py-12 md:py-24 px-6 overflow-hidden">
-        <div className="max-w-7xl mx-auto">
+        <div className="max-w-8xl mx-auto">
           <div className="group relative glass-panel p-1 md:p-2 rounded-[10px] overflow-hidden shadow-lg">
              {/* Glowing Border Effect */}
              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-primary/50 to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000" />
@@ -102,7 +102,7 @@ export default async function Home() {
 
       {/* Tech Stack Section */}
       <section className="py-12 md:py-24 px-6 relative overflow-hidden">
-        <div className="max-w-7xl mx-auto glass-panel rounded-[10px] p-8 md:p-12 shadow-[0_10px_40px_-10px_rgba(0,0,0,0.1)]">
+        <div className="max-w-8xl mx-auto glass-panel rounded-[10px] p-8 md:p-12 shadow-[0_10px_40px_-10px_rgba(0,0,0,0.1)]">
           <div className="flex flex-col md:flex-row md:justify-between items-start md:items-end gap-8 mb-12 md:mb-16">
             <div className="flex flex-col gap-4">
               <h2 className={`${TYPOGRAPHY.tableHeader} text-primary`}>
@@ -212,7 +212,7 @@ export default async function Home() {
 
       {/* Testimonials Section */}
       <section className="py-12 md:py-24 px-6 relative">
-        <div className="max-w-7xl mx-auto glass-panel rounded-[10px] p-8 md:p-12 shadow-[0_10px_40px_-10px_rgba(0,0,0,0.1)]">
+        <div className="max-w-8xl mx-auto glass-panel rounded-[10px] p-8 md:p-12 shadow-[0_10px_40px_-10px_rgba(0,0,0,0.1)]">
           <div className="flex flex-col md:flex-row md:justify-between items-start md:items-end gap-8 mb-16">
             <div className="flex flex-col gap-4">
                 <h2 className={`${TYPOGRAPHY.tableHeader} text-primary`}>

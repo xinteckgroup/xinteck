@@ -28,7 +28,7 @@ export function ProjectGallery({ images, category, title }: ProjectGalleryProps)
 
   return (
     <section className="px-6">
-      <div className="max-w-7xl mx-auto">
+      <div className="max-w-8xl mx-auto">
         {isMobile ? (
           <div className="py-4">
             <MobileAppShowcase images={images} title={title} />

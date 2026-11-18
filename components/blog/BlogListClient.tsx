@@ -36,7 +36,7 @@ export function BlogListClient({ allPosts }: { allPosts: PublicPost[] }) {
     <>
       {/* Hero Search Section - Moved here to control state */}
       <section className="px-6 pt-12 md:pt-20">
-        <div className="max-w-7xl mx-auto">
+        <div className="max-w-8xl mx-auto">
           <div className="flex flex-col items-center text-center gap-6 md:gap-8 bg-white/30 dark:bg-black/80 backdrop-blur-xl rounded-[10px] p-6 md:p-16 shadow-[0_10px_40px_-10px_rgba(0,0,0,0.1)]">
             <div className="flex flex-col gap-4 md:gap-6">
               <h1 className="text-sm md:text-base font-bold tracking-[0.2em] text-gold uppercase mb-2">
@@ -71,7 +71,7 @@ export function BlogListClient({ allPosts }: { allPosts: PublicPost[] }) {
       </section>
 
       <section className="px-6">
-        <div className="max-w-7xl mx-auto">
+        <div className="max-w-8xl mx-auto">
           <div className="mb-12 md:mb-16 text-center bg-white/30 dark:bg-black/80 backdrop-blur-xl rounded-[10px] p-6 md:p-8 shadow-[0_10px_40px_-10px_rgba(0,0,0,0.1)]">
             <h3 className="text-base md:text-lg font-bold tracking-[0.2em] uppercase text-foreground mb-4">
               Latest Articles

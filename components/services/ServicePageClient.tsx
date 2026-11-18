@@ -53,7 +53,7 @@ export function ServicePageClient({ service }: { service: PublicService }) {
       <div className="flex flex-col gap-12 md:gap-24 py-12 md:py-20">
         {/* Hero Section */}
         <section className="px-6 pt-12 md:pt-20">
-          <div className="max-w-7xl mx-auto grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+          <div className="max-w-8xl mx-auto grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
             <motion.div
               initial={{ opacity: 0, x: -30 }}
               animate={{ opacity: 1, x: 0 }}
@@ -132,7 +132,7 @@ export function ServicePageClient({ service }: { service: PublicService }) {
 
         {/* Features Grid */}
         <section className="px-6">
-          <div className="max-w-7xl mx-auto">
+          <div className="max-w-8xl mx-auto">
             <div className="text-center max-w-3xl mx-auto mb-12 md:mb-16 flex flex-col gap-4 md:gap-6 bg-white/30 dark:bg-black/80 backdrop-blur-xl rounded-[10px] p-6 md:p-8 shadow-lg">
               <h2 className={`${TYPOGRAPHY.tableHeader} text-foreground`}>
                 Capabilities
@@ -179,7 +179,7 @@ export function ServicePageClient({ service }: { service: PublicService }) {
         {/* Process Section */}
         {service.section4?.steps && service.section4.steps.length > 0 && (
         <section className="px-6">
-          <div className="max-w-7xl mx-auto">
+          <div className="max-w-8xl mx-auto">
             <div className="text-center max-w-3xl mx-auto mb-12 md:mb-16 flex flex-col gap-4 md:gap-6 bg-white/30 dark:bg-black/80 backdrop-blur-xl rounded-[10px] p-6 md:p-8 shadow-lg">
               <h2 className={`${TYPOGRAPHY.tableHeader} text-foreground`}>
                 The Process
@@ -219,7 +219,7 @@ export function ServicePageClient({ service }: { service: PublicService }) {
         {/* Pricing Packages */}
         {service.buyNowSection?.pricingTiers && service.buyNowSection.pricingTiers.length > 0 && (
           <section className="px-6 py-6 md:py-12" id="pricing">
-            <div className="max-w-7xl mx-auto">
+            <div className="max-w-8xl mx-auto">
               <div className="text-center max-w-3xl mx-auto mb-12 md:mb-16 flex flex-col gap-4 md:gap-6 bg-white/30 dark:bg-black/80 backdrop-blur-xl rounded-[10px] p-6 md:p-8 shadow-lg">
                 <h2 className={`${TYPOGRAPHY.tableHeader} text-primary`}>
                   Transparent Pricing
@@ -325,7 +325,7 @@ export function ServicePageClient({ service }: { service: PublicService }) {
 
         {/* CTA Section */}
         <section className="px-6 mb-12 md:mb-20">
-          <div className="max-w-7xl mx-auto bg-white/30 dark:bg-black/80 backdrop-blur-xl rounded-[10px] p-8 md:p-24 text-center shadow-lg">
+          <div className="max-w-8xl mx-auto bg-white/30 dark:bg-black/80 backdrop-blur-xl rounded-[10px] p-8 md:p-24 text-center shadow-lg">
             <h3 className={`${TYPOGRAPHY.pageTitle} mb-6 md:mb-8 max-w-4xl mx-auto text-foreground`}>
                {service.buyNowSection?.title || "READY TO BUILD?"}
             </h3>

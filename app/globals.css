@@ -32,6 +32,12 @@
   --radius-lg: var(--radius);
   --radius-md: calc(var(--radius) - 2px);
   --radius-sm: calc(var(--radius) - 4px);
+
+  --container-8xl: 90rem;
+}
+
+@utility max-w-8xl {
+  max-width: 90rem;
 }
 
 :root {

@@ -39,7 +39,7 @@ export default async function ProjectPage({ params }: { params: { slug: string }
 
         {/* Hero Section */}
         <section className="px-6 pt-12 md:pt-20">
-          <div className="max-w-7xl mx-auto">
+          <div className="max-w-8xl mx-auto">
             <div className="">
 
               {/* Back Link */}
@@ -133,7 +133,7 @@ export default async function ProjectPage({ params }: { params: { slug: string }
         {/* Case Study Content (text only — images extracted to gallery above) */}
         {textContent && (
           <section className="px-6">
-            <div className="max-w-7xl mx-auto">
+            <div className="max-w-8xl mx-auto">
               <div className="bg-white/30 dark:bg-black/80 backdrop-blur-xl rounded-[10px] border border-primary/10 p-6 md:p-12 lg:p-16 shadow-[0_10px_40px_-10px_rgba(0,0,0,0.1)]">
                 <div className="max-w-none break-words">
                   <ReactMarkdown
@@ -150,7 +150,7 @@ export default async function ProjectPage({ params }: { params: { slug: string }
 
         {/* CTA Section */}
         <section className="px-6 mb-12 md:mb-20">
-          <div className="max-w-7xl mx-auto">
+          <div className="max-w-8xl mx-auto">
             <div className="bg-white/30 dark:bg-black/80 backdrop-blur-xl rounded-[10px] border border-primary/10 p-8 md:p-16 lg:p-24 text-center shadow-[0_10px_40px_-10px_rgba(0,0,0,0.1)]">
               <h4 className={`${TYPOGRAPHY.pageTitle} text-foreground mb-6 md:mb-8 !text-2xl md:!text-4xl`}>
                 READY TO <span className="text-primary">SCALE?</span>

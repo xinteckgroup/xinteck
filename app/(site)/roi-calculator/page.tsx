@@ -26,7 +26,7 @@ export default function RoiCalculatorPage() {
         >
             <div className="flex flex-col gap-12 md:gap-24 py-12 md:py-20 px-6">
                 {/* Hero Section */}
-                <section className="max-w-7xl mx-auto w-full pt-12 md:pt-20">
+                <section className="max-w-8xl mx-auto w-full pt-12 md:pt-20">
                     <div className="flex flex-col gap-6 md:gap-8 max-w-3xl">
                         <div className="bg-white/30 dark:bg-black/80 backdrop-blur-xl p-6 md:p-8 rounded-[10px] inline-block w-fit shadow-lg">
                             <h1 className="text-sm md:text-base font-bold text-primary uppercase tracking-[0.2em] mb-4 flex items-center gap-2">
@@ -47,7 +47,7 @@ export default function RoiCalculatorPage() {
                 </section>
 
                 {/* Main Interactive Calculator Component */}
-                <section className="max-w-7xl mx-auto w-full">
+                <section className="max-w-8xl mx-auto w-full">
                     <RoiCalculatorClient />
                 </section>
             </div>

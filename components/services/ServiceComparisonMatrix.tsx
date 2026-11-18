@@ -145,7 +145,7 @@ export function ServiceComparisonMatrix({
 
   return (
     <section className="px-6 py-12 md:py-20" id="comparison-matrix">
-      <div className="max-w-7xl mx-auto flex flex-col gap-10 md:gap-14">
+      <div className="max-w-8xl mx-auto flex flex-col gap-10 md:gap-14">
         {/* Section Header */}
         <div className="text-center max-w-3xl mx-auto flex flex-col gap-4 bg-white/30 dark:bg-black/80 backdrop-blur-xl rounded-[10px] p-6 md:p-8 shadow-lg">
           <div className="flex items-center justify-center gap-2">

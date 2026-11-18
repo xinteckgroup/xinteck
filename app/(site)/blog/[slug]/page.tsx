@@ -131,7 +131,7 @@ export default async function BlogPostPage({ params }: BlogSlugParams) {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(articleJsonLd) }}
       />
 
-      <div className="py-20 px-6 max-w-7xl mx-auto my-12 md:my-20 flex flex-col gap-8 md:gap-12">
+      <div className="py-20 px-6 max-w-8xl mx-auto my-12 md:my-20 flex flex-col gap-8 md:gap-12">
         <Link 
           href="/blog" 
           className="flex items-center gap-2 text-gold font-bold hover:-translate-x-2 transition-transform w-fit bg-white/5 dark:bg-white/5 px-4 py-2 rounded-full border border-primary/10 backdrop-blur-md"

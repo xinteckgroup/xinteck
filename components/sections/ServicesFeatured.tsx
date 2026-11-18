@@ -134,7 +134,7 @@ export function ServicesFeatured() {
 
   return (
     <section className="py-24 px-6 relative overflow-hidden">
-      <div className="max-w-7xl mx-auto">
+      <div className="max-w-8xl mx-auto">
         <div className="flex flex-col md:flex-row justify-between items-end gap-8 mb-16">
           <div className="flex flex-col gap-4">
             <div className={`${TYPOGRAPHY.badge} inline-flex items-center gap-2 px-3 py-1 rounded-[10px] bg-secondary/5 w-fit text-primary`}>

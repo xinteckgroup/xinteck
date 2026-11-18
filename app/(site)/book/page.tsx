@@ -46,7 +46,7 @@ export default async function BookDiscoveryCallPage() {
         >
             <div className="flex flex-col gap-12 md:gap-24 py-12 md:py-20 px-6">
                 {/* Hero Section */}
-                <section className="max-w-7xl mx-auto w-full text-center lg:text-left grid lg:grid-cols-2 gap-12 lg:gap-16 items-end pt-12 md:pt-20">
+                <section className="max-w-8xl mx-auto w-full text-center lg:text-left grid lg:grid-cols-2 gap-12 lg:gap-16 items-end pt-12 md:pt-20">
                     <div className="flex flex-col gap-6 md:gap-8">
                         <div className="bg-white/30 dark:bg-black/80 backdrop-blur-xl p-6 md:p-8 rounded-[10px] inline-block w-fit mx-auto lg:mx-0 shadow-lg">
                             <h1 className="text-sm md:text-base font-bold text-primary uppercase tracking-[0.2em] mb-4 flex items-center justify-center lg:justify-start gap-2">
@@ -75,9 +75,9 @@ export default async function BookDiscoveryCallPage() {
                 </section>
 
                 {/* Main Interactive Booking Component */}
-                <section className="max-w-7xl mx-auto w-full">
+                <section className="max-w-8xl mx-auto w-full">
                     <Suspense fallback={
-                        <div className="w-full max-w-7xl mx-auto flex items-center justify-center py-20">
+                        <div className="w-full max-w-8xl mx-auto flex items-center justify-center py-20">
                             <div className="animate-pulse text-foreground/60 text-sm font-medium">Loading booking calendar…</div>
                         </div>
                     }>

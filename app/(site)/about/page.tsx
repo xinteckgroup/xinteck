@@ -73,7 +73,7 @@ export default function AboutPage() {
       <div className="flex flex-col gap-12 md:gap-24 py-12 md:py-20">
         {/* Hero Section */}
         <section className="px-6">
-          <div className="max-w-7xl mx-auto grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+          <div className="max-w-8xl mx-auto grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
             <motion.div
               initial={{ opacity: 0, x: -30 }}
               animate={{ opacity: 1, x: 0 }}
@@ -141,7 +141,7 @@ export default function AboutPage() {
 
         {/* Stats Bar */}
         <section className="px-6">
-          <div className="max-w-7xl mx-auto">
+          <div className="max-w-8xl mx-auto">
              <div className="bg-white/30 dark:bg-black/80 backdrop-blur-xl border border-primary/10 rounded-[10px] p-8 md:p-12 shadow-[0_10px_40px_-10px_rgba(0,0,0,0.1)]">
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-12">
                   {stats.map((stat, i) => (
@@ -168,7 +168,7 @@ export default function AboutPage() {
 
         {/* Values Section */}
         <section className="px-6">
-          <div className="max-w-7xl mx-auto">
+          <div className="max-w-8xl mx-auto">
             <div className="text-center max-w-3xl mx-auto mb-12 md:mb-20 flex flex-col gap-4 md:gap-6 bg-white/30 dark:bg-black/80 backdrop-blur-xl border border-primary/10 rounded-[10px] p-6 md:p-8">
               <h2 className="text-xs md:text-sm font-bold tracking-[0.3em] uppercase text-foreground">
                 Core Philosophy
@@ -202,7 +202,7 @@ export default function AboutPage() {
 
         {/* How We Work Section */}
         <section className="px-6">
-          <div className="max-w-7xl mx-auto">
+          <div className="max-w-8xl mx-auto">
             <div className="text-center max-w-3xl mx-auto mb-12 md:mb-20 flex flex-col gap-4 md:gap-6 bg-white/30 dark:bg-black/80 backdrop-blur-xl border border-primary/10 rounded-[10px] p-6 md:p-8">
               <h2 className="text-xs md:text-sm font-bold tracking-[0.3em] uppercase text-foreground">
                 How We Deliver
@@ -331,7 +331,7 @@ export default function AboutPage() {
 
         {/* Team CTA */}
         <section className="px-6 mb-12 md:mb-20">
-          <div className="max-w-7xl mx-auto bg-white/30 dark:bg-black/80 backdrop-blur-xl border border-primary/10 rounded-[10px] p-8 md:p-24 text-center shadow-[0_10px_40px_-10px_rgba(0,0,0,0.1)]">
+          <div className="max-w-8xl mx-auto bg-white/30 dark:bg-black/80 backdrop-blur-xl border border-primary/10 rounded-[10px] p-8 md:p-24 text-center shadow-[0_10px_40px_-10px_rgba(0,0,0,0.1)]">
               <h3 className={`${TYPOGRAPHY.pageTitle} text-foreground !text-5xl mb-6 md:mb-8 max-w-4xl mx-auto`}>
                 PASSIONATE ABOUT <span className="text-gold">CODE?</span>
               </h3>
